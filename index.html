@@ -653,10 +653,10 @@ footer{background:var(--navy);color:rgba(255,255,255,0.75)}
         </div>
         <div class="form-card">
           <h3 class="form-title">Patient Appointment Form</h3>
-          <div class="form-message" id="appt-message"></div>
+          <div class="form-message" id="appt-feedback"></div>
           <div class="form-grid">
-            <div class="form-group"><label>Full Name *</label><input type="text" id="appt-name" placeholder="Your full name" required></div>
-            <div class="form-group"><label>Phone Number *</label><input type="tel" id="appt-phone" placeholder="08XXXXXXXXX" required></div>
+            <div class="form-group"><label>Full Name *</label><input type="text" id="appt-name" placeholder="Your full name"></div>
+            <div class="form-group"><label>Phone Number *</label><input type="tel" id="appt-phone" placeholder="08XXXXXXXXX"></div>
             <div class="form-group"><label>Email Address</label><input type="email" id="appt-email" placeholder="your@email.com"></div>
             <div class="form-group"><label>Department *</label>
               <select id="appt-dept">
@@ -672,11 +672,11 @@ footer{background:var(--navy);color:rgba(255,255,255,0.75)}
               </select>
             </div>
             <div class="form-group"><label>Preferred Doctor</label><input type="text" id="appt-doctor" placeholder="Doctor's name (optional)"></div>
-            <div class="form-group"><label>Preferred Date *</label><input type="date" id="appt-date" required></div>
-            <div class="form-group"><label>Preferred Time *</label><input type="time" id="appt-time" required></div>
-            <div class="form-group full"><label>Message / Symptoms</label><textarea id="appt-message-txt" placeholder="Briefly describe your symptoms or reason for visit..."></textarea></div>
+            <div class="form-group"><label>Preferred Date *</label><input type="date" id="appt-date"></div>
+            <div class="form-group"><label>Preferred Time *</label><input type="time" id="appt-time"></div>
+            <div class="form-group full"><label>Message / Symptoms</label><textarea id="appt-notes" placeholder="Briefly describe your symptoms or reason for visit..."></textarea></div>
           </div>
-          <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:8px" onclick="submitAppointment()"><i class="fas fa-calendar-check"></i> Confirm Appointment</button>
+          <button class="btn btn-primary" id="appt-submit-btn" style="width:100%;justify-content:center;margin-top:8px" onclick="submitAppointment()"><i class="fas fa-calendar-check"></i> Confirm Appointment</button>
         </div>
       </div>
     </div>
@@ -712,14 +712,14 @@ footer{background:var(--navy);color:rgba(255,255,255,0.75)}
         </div>
         <div class="form-card" style="align-self:start">
           <h3 class="form-title">Send Us a Message</h3>
-          <div class="form-message" id="contact-message"></div>
+          <div class="form-message" id="contact-feedback"></div>
           <div style="display:flex;flex-direction:column;gap:16px">
             <div class="form-group"><label>Full Name *</label><input type="text" id="contact-name" placeholder="Your full name"></div>
             <div class="form-group"><label>Email *</label><input type="email" id="contact-email" placeholder="your@email.com"></div>
             <div class="form-group"><label>Phone</label><input type="tel" id="contact-phone" placeholder="08XXXXXXXXX"></div>
             <div class="form-group"><label>Subject</label><input type="text" id="contact-subject" placeholder="How can we help?"></div>
             <div class="form-group"><label>Message *</label><textarea id="contact-msg" rows="5" placeholder="Tell us more..."></textarea></div>
-            <button class="btn btn-primary" style="justify-content:center" onclick="submitContact()"><i class="fas fa-paper-plane"></i> Send Message</button>
+            <button class="btn btn-primary" id="contact-submit-btn" style="justify-content:center" onclick="submitContact()"><i class="fas fa-paper-plane"></i> Send Message</button>
           </div>
         </div>
       </div>
@@ -1191,60 +1191,114 @@ function renderAdminGallery(){
 
 // ===== APPOINTMENT SUBMIT =====
 window.submitAppointment = async function(){
-  const name = document.getElementById('appt-name').value.trim();
-  const phone = document.getElementById('appt-phone').value.trim();
-  const dept = document.getElementById('appt-dept').value;
-  const date = document.getElementById('appt-date').value;
-  const time = document.getElementById('appt-time').value;
-  const msg = document.getElementById('appt-message');
-  if(!name||!phone||!dept||!date||!time){
-    msg.className='form-message error';msg.style.display='block';
-    msg.textContent='Please fill all required fields.'; return;
+  const fb = document.getElementById('appt-feedback');
+  const btn = document.getElementById('appt-submit-btn');
+
+  const name  = (document.getElementById('appt-name')?.value  || '').trim();
+  const phone = (document.getElementById('appt-phone')?.value || '').trim();
+  const dept  = (document.getElementById('appt-dept')?.value  || '').trim();
+  const date  = (document.getElementById('appt-date')?.value  || '').trim();
+  const time  = (document.getElementById('appt-time')?.value  || '').trim();
+
+  // Validate
+  if(!name || !phone || !dept || !date || !time){
+    fb.className='form-message error'; fb.style.display='block';
+    fb.textContent='⚠ Please fill in all required fields (Name, Phone, Department, Date, Time).';
+    return;
   }
+
+  // Loading state
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+  fb.style.display='none';
+
+  const apptData = {
+    name,
+    phone,
+    email:  (document.getElementById('appt-email')?.value  || '').trim(),
+    dept,
+    doctor: (document.getElementById('appt-doctor')?.value || '').trim(),
+    date,
+    time,
+    notes:  (document.getElementById('appt-notes')?.value  || '').trim(),
+    status: 'pending',
+    createdAt: serverTimestamp()
+  };
+
   try {
-    await addDoc(collection(db,'appointments'),{
-      name, phone,
-      email: document.getElementById('appt-email').value,
-      dept,
-      doctor: document.getElementById('appt-doctor').value,
-      date, time,
-      message: document.getElementById('appt-message-txt').value,
-      status:'pending',
-      createdAt: serverTimestamp()
-    });
-    msg.className='form-message success';msg.style.display='block';
-    msg.textContent='✓ Appointment booked! We will confirm within 24 hours.';
-    ['appt-name','appt-phone','appt-email','appt-doctor','appt-date','appt-time','appt-message-txt'].forEach(id=>document.getElementById(id).value='');
+    await addDoc(collection(db, 'appointments'), apptData);
+
+    fb.className='form-message success'; fb.style.display='block';
+    fb.textContent='✓ Appointment booked successfully! We will confirm within 24 hours.';
+    fb.scrollIntoView({behavior:'smooth', block:'nearest'});
+
+    // Clear form
+    ['appt-name','appt-phone','appt-email','appt-doctor','appt-date','appt-time','appt-notes']
+      .forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
     document.getElementById('appt-dept').value='';
-  } catch(e){
-    msg.className='form-message error';msg.style.display='block';
-    msg.textContent='Error submitting. Please try again.';
+
+  } catch(err){
+    console.error('Appointment error:', err);
+    let errMsg = 'Could not save appointment. ';
+    if(err.code === 'permission-denied'){
+      errMsg += 'Firebase permission denied — please set Firestore rules to allow public writes to the "appointments" collection.';
+    } else if(err.code === 'unavailable' || err.message?.includes('offline')){
+      errMsg += 'Network error. Please check your internet connection and try again.';
+    } else {
+      errMsg += err.message || 'Please try again.';
+    }
+    fb.className='form-message error'; fb.style.display='block';
+    fb.textContent='✗ ' + errMsg;
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-calendar-check"></i> Confirm Appointment';
   }
 };
 
 // ===== CONTACT SUBMIT =====
 window.submitContact = async function(){
-  const name = document.getElementById('contact-name').value.trim();
-  const email = document.getElementById('contact-email').value.trim();
-  const message = document.getElementById('contact-msg').value.trim();
-  const msg = document.getElementById('contact-message');
-  if(!name||!email||!message){
-    msg.className='form-message error';msg.style.display='block';
-    msg.textContent='Please fill name, email and message.'; return;
+  const fb  = document.getElementById('contact-feedback');
+  const btn = document.getElementById('contact-submit-btn');
+
+  const name    = (document.getElementById('contact-name')?.value    || '').trim();
+  const email   = (document.getElementById('contact-email')?.value   || '').trim();
+  const message = (document.getElementById('contact-msg')?.value     || '').trim();
+
+  if(!name || !email || !message){
+    fb.className='form-message error'; fb.style.display='block';
+    fb.textContent='⚠ Please fill in your name, email and message.';
+    return;
   }
+
+  btn.disabled=true;
+  btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Sending...';
+  fb.style.display='none';
+
   try {
     await addDoc(collection(db,'messages'),{
       name, email,
-      phone: document.getElementById('contact-phone').value,
-      subject: document.getElementById('contact-subject').value,
-      message, createdAt: serverTimestamp()
+      phone:   (document.getElementById('contact-phone')?.value   || '').trim(),
+      subject: (document.getElementById('contact-subject')?.value || '').trim(),
+      message,
+      createdAt: serverTimestamp()
     });
-    msg.className='form-message success';msg.style.display='block';
-    msg.textContent='✓ Message sent! We will get back to you soon.';
-    ['contact-name','contact-email','contact-phone','contact-subject','contact-msg'].forEach(id=>document.getElementById(id).value='');
-  } catch(e){
-    msg.className='form-message error';msg.style.display='block';
-    msg.textContent='Error sending message. Please try again.';
+    fb.className='form-message success'; fb.style.display='block';
+    fb.textContent='✓ Message sent! We will get back to you soon.';
+    ['contact-name','contact-email','contact-phone','contact-subject','contact-msg']
+      .forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  } catch(err){
+    console.error('Contact error:', err);
+    let errMsg = 'Could not send message. ';
+    if(err.code === 'permission-denied'){
+      errMsg += 'Firebase permission denied — please update your Firestore security rules.';
+    } else {
+      errMsg += err.message || 'Please try again.';
+    }
+    fb.className='form-message error'; fb.style.display='block';
+    fb.textContent='✗ ' + errMsg;
+  } finally {
+    btn.disabled=false;
+    btn.innerHTML='<i class="fas fa-paper-plane"></i> Send Message';
   }
 };
 
