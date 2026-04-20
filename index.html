@@ -966,13 +966,12 @@ footer{background:var(--navy);color:rgba(255,255,255,0.75)}
   </div>
 </div>
 
-<!-- ===== FIREBASE + APP LOGIC ===== -->
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, query, orderBy, serverTimestamp }
-  from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
-import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
-  from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+<!-- ===== FIREBASE COMPAT SDKs ===== -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script>
+/* ===== FIREBASE INIT ===== */
 
 const firebaseConfig = {
   apiKey: "AIzaSyBB5f8kF480v1tP70B367yGmNtbzF7vivg",
@@ -983,9 +982,9 @@ const firebaseConfig = {
   appId: "1:922733242379:web:0c5cfc2eac51e51503ff0e"
 };
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
+firebase.initializeApp(firebaseConfig);
+const db   = firebase.firestore();
+const auth = firebase.auth();
 
 // ===== DEFAULT DATA =====
 const defaultServices = [
@@ -1052,7 +1051,7 @@ function renderTestimonial(t){
 
 async function loadServices(){
   try {
-    const snap = await getDocs(collection(db,'services'));
+    const snap = await db.collection('services').get();
     window._services = snap.docs.map(d=>({id:d.id,...d.data()}));
   } catch(e){ window._services = []; }
   if(window._services.length===0) window._services = defaultServices.map((s,i)=>({id:'d'+i,...s}));
@@ -1060,7 +1059,7 @@ async function loadServices(){
 }
 async function loadDoctors(){
   try {
-    const snap = await getDocs(collection(db,'doctors'));
+    const snap = await db.collection('doctors').get();
     window._doctors = snap.docs.map(d=>({id:d.id,...d.data()}));
   } catch(e){ window._doctors = []; }
   if(window._doctors.length===0) window._doctors = defaultDoctors.map((d,i)=>({id:'d'+i,...d}));
@@ -1068,7 +1067,7 @@ async function loadDoctors(){
 }
 async function loadTestimonials(){
   try {
-    const snap = await getDocs(collection(db,'testimonials'));
+    const snap = await db.collection('testimonials').get();
     window._testimonials = snap.docs.map(d=>({id:d.id,...d.data()}));
   } catch(e){ window._testimonials = []; }
   if(window._testimonials.length===0) window._testimonials = defaultTestimonials.map((t,i)=>({id:'d'+i,...t}));
@@ -1076,21 +1075,21 @@ async function loadTestimonials(){
 }
 async function loadAppointments(){
   try {
-    const snap = await getDocs(query(collection(db,'appointments'),orderBy('createdAt','desc')));
+    const snap = await db.collection('appointments').orderBy('createdAt','desc').get();
     window._appointments = snap.docs.map(d=>({id:d.id,...d.data()}));
   } catch(e){ window._appointments = []; }
   renderAppointments();
 }
 async function loadMessages(){
   try {
-    const snap = await getDocs(query(collection(db,'messages'),orderBy('createdAt','desc')));
+    const snap = await db.collection('messages').orderBy('createdAt','desc').get();
     window._messages = snap.docs.map(d=>({id:d.id,...d.data()}));
   } catch(e){ window._messages = []; }
   renderMessages();
 }
 async function loadGallery(){
   try {
-    const snap = await getDocs(collection(db,'gallery'));
+    const snap = await db.collection('gallery').get();
     window._gallery = snap.docs.map(d=>({id:d.id,...d.data()}));
   } catch(e){ window._gallery = []; }
   renderAdminGallery();
@@ -1191,7 +1190,7 @@ function renderAdminGallery(){
 
 // ===== APPOINTMENT SUBMIT =====
 window.submitAppointment = async function(){
-  const fb = document.getElementById('appt-feedback');
+  const fb  = document.getElementById('appt-feedback');
   const btn = document.getElementById('appt-submit-btn');
 
   const name  = (document.getElementById('appt-name')?.value  || '').trim();
@@ -1200,39 +1199,32 @@ window.submitAppointment = async function(){
   const date  = (document.getElementById('appt-date')?.value  || '').trim();
   const time  = (document.getElementById('appt-time')?.value  || '').trim();
 
-  // Validate
   if(!name || !phone || !dept || !date || !time){
     fb.className='form-message error'; fb.style.display='block';
     fb.textContent='⚠ Please fill in all required fields (Name, Phone, Department, Date, Time).';
     return;
   }
 
-  // Loading state
   btn.disabled = true;
   btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
   fb.style.display='none';
 
-  const apptData = {
-    name,
-    phone,
-    email:  (document.getElementById('appt-email')?.value  || '').trim(),
-    dept,
-    doctor: (document.getElementById('appt-doctor')?.value || '').trim(),
-    date,
-    time,
-    notes:  (document.getElementById('appt-notes')?.value  || '').trim(),
-    status: 'pending',
-    createdAt: serverTimestamp()
-  };
-
   try {
-    await addDoc(collection(db, 'appointments'), apptData);
+    await db.collection('appointments').add({
+      name, phone,
+      email:  (document.getElementById('appt-email')?.value  || '').trim(),
+      dept,
+      doctor: (document.getElementById('appt-doctor')?.value || '').trim(),
+      date, time,
+      notes:  (document.getElementById('appt-notes')?.value  || '').trim(),
+      status: 'pending',
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
 
     fb.className='form-message success'; fb.style.display='block';
     fb.textContent='✓ Appointment booked successfully! We will confirm within 24 hours.';
     fb.scrollIntoView({behavior:'smooth', block:'nearest'});
 
-    // Clear form
     ['appt-name','appt-phone','appt-email','appt-doctor','appt-date','appt-time','appt-notes']
       .forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
     document.getElementById('appt-dept').value='';
@@ -1241,11 +1233,11 @@ window.submitAppointment = async function(){
     console.error('Appointment error:', err);
     let errMsg = 'Could not save appointment. ';
     if(err.code === 'permission-denied'){
-      errMsg += 'Firebase permission denied — please set Firestore rules to allow public writes to the "appointments" collection.';
-    } else if(err.code === 'unavailable' || err.message?.includes('offline')){
-      errMsg += 'Network error. Please check your internet connection and try again.';
+      errMsg = 'Permission denied by Firebase. Please ask the admin to update Firestore security rules to allow public writes on the "appointments" collection.';
+    } else if(err.code === 'unavailable'){
+      errMsg = 'Network error. Please check your connection and try again.';
     } else {
-      errMsg += err.message || 'Please try again.';
+      errMsg += (err.message || 'Please try again.');
     }
     fb.className='form-message error'; fb.style.display='block';
     fb.textContent='✗ ' + errMsg;
@@ -1260,9 +1252,9 @@ window.submitContact = async function(){
   const fb  = document.getElementById('contact-feedback');
   const btn = document.getElementById('contact-submit-btn');
 
-  const name    = (document.getElementById('contact-name')?.value    || '').trim();
-  const email   = (document.getElementById('contact-email')?.value   || '').trim();
-  const message = (document.getElementById('contact-msg')?.value     || '').trim();
+  const name    = (document.getElementById('contact-name')?.value || '').trim();
+  const email   = (document.getElementById('contact-email')?.value || '').trim();
+  const message = (document.getElementById('contact-msg')?.value  || '').trim();
 
   if(!name || !email || !message){
     fb.className='form-message error'; fb.style.display='block';
@@ -1275,12 +1267,12 @@ window.submitContact = async function(){
   fb.style.display='none';
 
   try {
-    await addDoc(collection(db,'messages'),{
+    await db.collection('messages').add({
       name, email,
       phone:   (document.getElementById('contact-phone')?.value   || '').trim(),
       subject: (document.getElementById('contact-subject')?.value || '').trim(),
       message,
-      createdAt: serverTimestamp()
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
     });
     fb.className='form-message success'; fb.style.display='block';
     fb.textContent='✓ Message sent! We will get back to you soon.';
@@ -1288,12 +1280,9 @@ window.submitContact = async function(){
       .forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
   } catch(err){
     console.error('Contact error:', err);
-    let errMsg = 'Could not send message. ';
-    if(err.code === 'permission-denied'){
-      errMsg += 'Firebase permission denied — please update your Firestore security rules.';
-    } else {
-      errMsg += err.message || 'Please try again.';
-    }
+    let errMsg = err.code === 'permission-denied'
+      ? 'Permission denied. Please ask the admin to update Firestore security rules.'
+      : (err.message || 'Please try again.');
     fb.className='form-message error'; fb.style.display='block';
     fb.textContent='✗ ' + errMsg;
   } finally {
@@ -1307,22 +1296,23 @@ window.adminLogin = async function(){
   const email = document.getElementById('admin-email').value;
   const pass = document.getElementById('admin-pass').value;
   const err = document.getElementById('login-error');
+  err.style.display='none';
   try {
-    await signInWithEmailAndPassword(auth, email, pass);
+    await auth.signInWithEmailAndPassword(email, pass);
   } catch(e){
     err.style.display='block';err.className='form-message error';
     err.textContent='Invalid credentials. Please try again.';
   }
 };
 window.adminLogout = async function(){
-  await signOut(auth);
+  await auth.signOut();
   document.getElementById('adminDashboard').classList.remove('active');
   showToast('Logged out successfully');
 };
 window.closeAdmin = function(){
   document.getElementById('adminLogin').style.display='none';
 };
-onAuthStateChanged(auth, user=>{
+auth.onAuthStateChanged(function(user){
   const loginEl = document.getElementById('adminLogin');
   const dashEl = document.getElementById('adminDashboard');
   if(user){
@@ -1344,11 +1334,11 @@ async function loadAllAdminData(){
 window.updateApptStatus = async function(id, status){
   if(id.startsWith('d')) return showToast('Cannot update demo data','error');
   try {
-    await updateDoc(doc(db,'appointments',id),{status});
+    await db.collection('appointments').doc(id).update({status});
     const a = window._appointments.find(a=>a.id===id);
     if(a) a.status=status;
     renderAppointments();
-    showToast(`Appointment ${status}`,'success');
+    showToast('Appointment '+status,'success');
   } catch(e){ showToast('Error updating','error'); }
 };
 
@@ -1362,11 +1352,11 @@ window.saveDoctor = async function(){
   if(!name||!spec){ showToast('Name and specialization required','error'); return; }
   try {
     if(editId && !editId.startsWith('d')){
-      await updateDoc(doc(db,'doctors',editId),{name,spec,bio,photo});
+      await db.collection('doctors').doc(editId).update({name,spec,bio,photo});
       const idx=window._doctors.findIndex(d=>d.id===editId);
       if(idx>-1) window._doctors[idx]={...window._doctors[idx],name,spec,bio,photo};
     } else {
-      const ref=await addDoc(collection(db,'doctors'),{name,spec,bio,photo});
+      const ref=await db.collection('doctors').add({name,spec,bio,photo});
       window._doctors.push({id:ref.id,name,spec,bio,photo});
     }
     clearDoctorForm();renderDoctors();renderAdminDoctors();showToast('Doctor saved','success');
@@ -1386,7 +1376,7 @@ window.editDoctor = function(id){
 window.deleteDoctor = async function(id){
   if(!confirm('Delete this doctor?')) return;
   if(!id.startsWith('d')){
-    try { await deleteDoc(doc(db,'doctors',id)); } catch(e){}
+    try { await db.collection('doctors').doc(id).delete(); } catch(e){}
   }
   window._doctors=window._doctors.filter(d=>d.id!==id);
   renderDoctors();renderAdminDoctors();showToast('Doctor deleted');
@@ -1405,11 +1395,11 @@ window.saveService = async function(){
   if(!name){ showToast('Service name required','error'); return; }
   try {
     if(editId && !editId.startsWith('d')){
-      await updateDoc(doc(db,'services',editId),{name,icon,desc});
+      await db.collection('services').doc(editId).update({name,icon,desc});
       const idx=window._services.findIndex(s=>s.id===editId);
       if(idx>-1) window._services[idx]={...window._services[idx],name,icon,desc};
     } else {
-      const ref=await addDoc(collection(db,'services'),{name,icon,desc});
+      const ref=await db.collection('services').add({name,icon,desc});
       window._services.push({id:ref.id,name,icon,desc});
     }
     clearServiceForm();renderServices();renderAdminServices();showToast('Service saved','success');
@@ -1427,7 +1417,7 @@ window.editService = function(id){
 window.deleteService = async function(id){
   if(!confirm('Delete this service?')) return;
   if(!id.startsWith('d')){
-    try { await deleteDoc(doc(db,'services',id)); } catch(e){}
+    try { await db.collection('services').doc(id).delete(); } catch(e){}
   }
   window._services=window._services.filter(s=>s.id!==id);
   renderServices();renderAdminServices();showToast('Service deleted');
@@ -1446,11 +1436,11 @@ window.saveTestimonial = async function(){
   if(!name||!text){ showToast('Name and text required','error'); return; }
   try {
     if(editId && !editId.startsWith('d')){
-      await updateDoc(doc(db,'testimonials',editId),{name,text,rating});
+      await db.collection('testimonials').doc(editId).update({name,text,rating});
       const idx=window._testimonials.findIndex(t=>t.id===editId);
       if(idx>-1) window._testimonials[idx]={...window._testimonials[idx],name,text,rating};
     } else {
-      const ref=await addDoc(collection(db,'testimonials'),{name,text,rating});
+      const ref=await db.collection('testimonials').add({name,text,rating});
       window._testimonials.push({id:ref.id,name,text,rating});
     }
     clearTestForm();renderTestimonials();renderAdminTestimonials();showToast('Testimonial saved','success');
@@ -1468,7 +1458,7 @@ window.editTestimonial = function(id){
 window.deleteTestimonial = async function(id){
   if(!confirm('Delete this testimonial?')) return;
   if(!id.startsWith('d')){
-    try { await deleteDoc(doc(db,'testimonials',id)); } catch(e){}
+    try { await db.collection('testimonials').doc(id).delete(); } catch(e){}
   }
   window._testimonials=window._testimonials.filter(t=>t.id!==id);
   renderTestimonials();renderAdminTestimonials();showToast('Testimonial deleted');
@@ -1485,7 +1475,7 @@ window.saveGalleryImage = async function(){
   const caption=document.getElementById('gallery-caption').value.trim();
   if(!url){ showToast('Image URL required','error'); return; }
   try {
-    const ref=await addDoc(collection(db,'gallery'),{url,caption});
+    const ref=await db.collection('gallery').add({url,caption});
     window._gallery.push({id:ref.id,url,caption});
     renderAdminGallery();
     document.getElementById('gallery-url').value='';
@@ -1495,7 +1485,7 @@ window.saveGalleryImage = async function(){
 };
 window.deleteGalleryImage = async function(id){
   if(!confirm('Delete this image?')) return;
-  try { await deleteDoc(doc(db,'gallery',id)); } catch(e){}
+  try { await db.collection('gallery').doc(id).delete(); } catch(e){}
   window._gallery=window._gallery.filter(g=>g.id!==id);
   renderAdminGallery();showToast('Image deleted');
 };
@@ -1503,7 +1493,7 @@ window.deleteGalleryImage = async function(id){
 // ===== MESSAGES =====
 window.deleteMessage = async function(id){
   if(!confirm('Delete this message?')) return;
-  try { await deleteDoc(doc(db,'messages',id)); } catch(e){}
+  try { await db.collection('messages').doc(id).delete(); } catch(e){}
   window._messages=window._messages.filter(m=>m.id!==id);
   renderMessages();showToast('Message deleted');
 };
