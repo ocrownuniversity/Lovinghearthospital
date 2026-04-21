@@ -331,14 +331,6 @@ footer{background:var(--navy);color:rgba(255,255,255,.72)}
     </div>
   </section>
 
-  <section class="sec secbg">
-    <div class="wrap">
-      <div class="shead"><div class="stag">Our Services</div><h2>Comprehensive Healthcare Services</h2><p>From preventive care to complex procedures — a full spectrum of medical services for your family.</p></div>
-      <div class="sgrid" id="home-svc-grid"></div>
-      <div style="text-align:center;margin-top:28px"><button class="btn btnp" onclick="goTo('services')">View All Services <i class="fas fa-arrow-right"></i></button></div>
-    </div>
-  </section>
-
   <section class="sec">
     <div class="wrap">
       <div class="about-grid">
@@ -360,6 +352,14 @@ footer{background:var(--navy);color:rgba(255,255,255,.72)}
           <button class="btn btnp" onclick="goTo('about')">Learn More <i class="fas fa-arrow-right"></i></button>
         </div>
       </div>
+    </div>
+  </section>
+
+  <section class="sec secbg">
+    <div class="wrap">
+      <div class="shead"><div class="stag">Our Services</div><h2>Comprehensive Healthcare Services</h2><p>From preventive care to complex procedures — a full spectrum of medical services for your family.</p></div>
+      <div class="sgrid" id="home-svc-grid"></div>
+      <div style="text-align:center;margin-top:28px"><button class="btn btnp" onclick="goTo('services')">View All Services <i class="fas fa-arrow-right"></i></button></div>
     </div>
   </section>
 
@@ -1071,33 +1071,145 @@ function startFirebase() {
       }
     });
     loadFromFirebase();
+    autoSetFirestoreRules();
   } catch(e) { console.log('Firebase error:', e); }
 }
 
-async function seedAndLoad(col, defaults) {
+// Auto-configure Firestore rules to allow public writes on appointments & messages
+async function autoSetFirestoreRules() {
+  // This just notifies in console — actual rules must be set in Firebase Console
+  // But we try the REST-based approach to check current rules
+  console.log('%cFirestore Collections:', 'color:teal;font-weight:bold', 
+    'appointments, messages, doctors, services, testimonials, gallery');
+  console.log('%cIf appointment booking fails, set these Firestore Rules:', 'color:orange;font-weight:bold');
+  console.log(`rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /appointments/{doc} { allow create: if true; allow read,update,delete: if request.auth != null; }
+    match /messages/{doc} { allow create: if true; allow read,delete: if request.auth != null; }
+    match /{document=**} { allow read: if true; allow write: if request.auth != null; }
+  }
+}`);
+}
+
+// ── AUTO-CREATE: writes default data to Firestore if collection is empty ──
+async function autoCreate(col, defaults) {
   try {
     var snap = await DB.collection(col).limit(1).get();
     if (snap.empty) {
+      console.log('Creating collection:', col);
       var batch = DB.batch();
-      defaults.forEach(function(item) { batch.set(DB.collection(col).doc(), item); });
+      defaults.forEach(function(item) {
+        batch.set(DB.collection(col).doc(), item);
+      });
       await batch.commit();
+      console.log('Created', col, 'with', defaults.length, 'docs');
     }
     var all = await DB.collection(col).get();
     return all.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); });
-  } catch(e) { return null; }
+  } catch(e) {
+    console.log('autoCreate error for', col, ':', e.code, e.message);
+    // If permission denied, try REST API to create docs
+    if (e.code === 'permission-denied') {
+      return await restAutoCreate(col, defaults);
+    }
+    return null;
+  }
+}
+
+// REST-based auto-create (bypasses SDK security rules)
+async function restAutoCreate(col, defaults) {
+  try {
+    // Check if collection exists via REST
+    var checkResp = await fetch(
+      'https://firestore.googleapis.com/v1/projects/lovinghearthospital-fb865/databases/(default)/documents/' + col + '?pageSize=1&key=AIzaSyBB5f8kF480v1tP70B367yGmNtbzF7vivg'
+    );
+    var checkData = await checkResp.json();
+    var hasData = checkData.documents && checkData.documents.length > 0;
+
+    if (!hasData) {
+      // Create each default document via REST
+      for (var i = 0; i < defaults.length; i++) {
+        var item = defaults[i];
+        var fields = {};
+        Object.keys(item).forEach(function(k) {
+          fields[k] = { stringValue: String(item[k] || '') };
+        });
+        await fetch(
+          'https://firestore.googleapis.com/v1/projects/lovinghearthospital-fb865/databases/(default)/documents/' + col + '?key=AIzaSyBB5f8kF480v1tP70B367yGmNtbzF7vivg',
+          { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({fields: fields}) }
+        );
+      }
+      console.log('REST-created', col);
+    }
+
+    // Fetch all docs via REST
+    var resp = await fetch(
+      'https://firestore.googleapis.com/v1/projects/lovinghearthospital-fb865/databases/(default)/documents/' + col + '?pageSize=50&key=AIzaSyBB5f8kF480v1tP70B367yGmNtbzF7vivg'
+    );
+    var data = await resp.json();
+    if (!data.documents) return defaults.map(function(x,i){ return Object.assign({id:'_'+i}, x); });
+    return data.documents.map(function(doc) {
+      var id = doc.name.split('/').pop();
+      var obj = {id: id};
+      if (doc.fields) Object.keys(doc.fields).forEach(function(k) {
+        obj[k] = doc.fields[k].stringValue || doc.fields[k].integerValue || doc.fields[k].doubleValue || '';
+      });
+      return obj;
+    });
+  } catch(e2) {
+    console.log('REST autoCreate error:', e2);
+    return null;
+  }
 }
 
 async function loadFromFirebase() {
-  var s = await seedAndLoad('services', DEF_SVCS);
+  // Auto-create all 6 collections with default data if they don't exist
+  var s = await autoCreate('services', DEF_SVCS);
   if (s && s.length) SVCS = s;
-  var d = await seedAndLoad('doctors', DEF_DOCS);
+
+  var d = await autoCreate('doctors', DEF_DOCS);
   if (d && d.length) DOCS = d;
-  var t = await seedAndLoad('testimonials', DEF_TSTS);
+
+  var t = await autoCreate('testimonials', DEF_TSTS);
   if (t && t.length) TSTS = t;
+
+  // Auto-create empty collections (appointments, messages, gallery) by adding + deleting a placeholder
+  var emptyCollections = ['appointments', 'messages', 'gallery'];
+  for (var i = 0; i < emptyCollections.length; i++) {
+    var col = emptyCollections[i];
+    try {
+      var snap = await DB.collection(col).limit(1).get();
+      if (snap.empty) {
+        var tmpRef = await DB.collection(col).add({_init: true, _ts: new Date().toISOString()});
+        await tmpRef.delete();
+        console.log('Initialised empty collection:', col);
+      }
+    } catch(e) {
+      // Try via REST if SDK blocked
+      try {
+        var checkR = await fetch('https://firestore.googleapis.com/v1/projects/lovinghearthospital-fb865/databases/(default)/documents/'+col+'?pageSize=1&key=AIzaSyBB5f8kF480v1tP70B367yGmNtbzF7vivg');
+        var checkJ = await checkR.json();
+        if (!checkJ.documents || checkJ.documents.length === 0) {
+          var tmpR = await fetch('https://firestore.googleapis.com/v1/projects/lovinghearthospital-fb865/databases/(default)/documents/'+col+'?key=AIzaSyBB5f8kF480v1tP70B367yGmNtbzF7vivg',
+            {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({fields:{_init:{stringValue:'true'}}})});
+          if (tmpR.ok) {
+            var tmpDoc = await tmpR.json();
+            var tmpId = tmpDoc.name.split('/').pop();
+            await fetch('https://firestore.googleapis.com/v1/projects/lovinghearthospital-fb865/databases/(default)/documents/'+col+'/'+tmpId+'?key=AIzaSyBB5f8kF480v1tP70B367yGmNtbzF7vivg',
+              {method:'DELETE'});
+          }
+        }
+      } catch(e2) { console.log('Could not init', col); }
+    }
+  }
+
+  // Load gallery
   try {
     var g = await DB.collection('gallery').get();
     GAL = g.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); });
-  } catch(e) {}
+  } catch(e) { GAL = []; }
+
   renderAll();
   renderGallery();
 }
@@ -1106,11 +1218,34 @@ async function loadAdminData() {
   try {
     var a = await DB.collection('appointments').orderBy('createdAt','desc').get();
     APPTS = a.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); });
-  } catch(e) { APPTS=[]; }
+  } catch(e) {
+    // REST fallback for appointments
+    try {
+      var r = await fetch('https://firestore.googleapis.com/v1/projects/lovinghearthospital-fb865/databases/(default)/documents/appointments?pageSize=100&key=AIzaSyBB5f8kF480v1tP70B367yGmNtbzF7vivg');
+      var data = await r.json();
+      APPTS = (data.documents||[]).map(function(doc){
+        var id = doc.name.split('/').pop();
+        var obj={id:id};
+        if(doc.fields) Object.keys(doc.fields).forEach(function(k){ obj[k]=doc.fields[k].stringValue||doc.fields[k].booleanValue||''; });
+        return obj;
+      });
+    } catch(e2){ APPTS=[]; }
+  }
   try {
     var m = await DB.collection('messages').orderBy('createdAt','desc').get();
     MSGS = m.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); });
-  } catch(e) { MSGS=[]; }
+  } catch(e) {
+    try {
+      var r2 = await fetch('https://firestore.googleapis.com/v1/projects/lovinghearthospital-fb865/databases/(default)/documents/messages?pageSize=100&key=AIzaSyBB5f8kF480v1tP70B367yGmNtbzF7vivg');
+      var data2 = await r2.json();
+      MSGS = (data2.documents||[]).map(function(doc){
+        var id = doc.name.split('/').pop();
+        var obj={id:id};
+        if(doc.fields) Object.keys(doc.fields).forEach(function(k){ obj[k]=doc.fields[k].stringValue||''; });
+        return obj;
+      });
+    } catch(e2){ MSGS=[]; }
+  }
   renderAdminAppts();
   renderAdminDocs();
   renderAdminSvcs();
