@@ -3,1476 +3,1171 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Loving Heart Hospital - Quality Healthcare with Compassion.">
-<title>Loving Heart Hospital | Compassionate Care, Expert Healing</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<title>Loving Heart Hospital</title>
 <style>
+/* Hide loader immediately via CSS after 1s using animation */
+@keyframes fadeOut{0%,80%{opacity:1;visibility:visible}100%{opacity:0;visibility:hidden;pointer-events:none}}
+#loader{position:fixed;inset:0;background:#0a2558;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;animation:fadeOut 1s ease forwards 1.5s}
+#loader .hb{font-size:4rem;animation:hb 1s infinite}
+@keyframes hb{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
+#loader p{color:rgba(255,255,255,0.8);font-family:sans-serif;font-size:1rem}
+
 :root{
   --navy:#0a2558;--blue:#1a5cad;--sky:#3b9de0;--mint:#2ec4a9;
-  --light-mint:#e8f9f6;--light-blue:#eaf2fb;--white:#ffffff;
-  --off-white:#f7fafd;--gray:#64748b;--light-gray:#e2ecf5;
-  --text:#1e2d45;--danger:#e53e3e;--success:#38a169;--warning:#d69e2e;
-  --shadow:0 4px 24px rgba(10,37,88,0.10);--shadow-lg:0 12px 48px rgba(10,37,88,0.15);
-  --radius:14px;--radius-sm:8px;--transition:all 0.3s cubic-bezier(.4,0,.2,1);
+  --lmint:#e8f9f6;--lblue:#eaf2fb;--white:#fff;--offwhite:#f7fafd;
+  --gray:#64748b;--lgray:#e2ecf5;--text:#1e2d45;
+  --red:#e53e3e;--green:#38a169;--yellow:#d69e2e;
+  --sh:0 4px 24px rgba(10,37,88,.10);--shlg:0 12px 48px rgba(10,37,88,.15);
+  --r:14px;--rs:8px;--tr:all .3s ease;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{font-family:'DM Sans',sans-serif;color:var(--text);background:var(--white);overflow-x:hidden}
-h1,h2,h3,h4,h5{font-family:'Playfair Display',serif;line-height:1.2}
+body{font-family:'Segoe UI',system-ui,sans-serif;color:var(--text);background:#fff;overflow-x:hidden}
+h1,h2,h3,h4{font-family:Georgia,serif;line-height:1.2}
 a{text-decoration:none;color:inherit}
 img{max-width:100%;display:block}
-.container{max-width:1200px;margin:0 auto;padding:0 24px}
-/* LOADER */
-#page-loader{position:fixed;inset:0;background:var(--navy);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .4s ease,visibility .4s ease;gap:16px}
-#page-loader.hidden{opacity:0;visibility:hidden;pointer-events:none}
-#page-loader img{width:90px;height:90px;border-radius:16px;object-fit:contain;background:white;padding:6px;animation:pulse 1.2s ease-in-out infinite}
-#page-loader p{color:rgba(255,255,255,0.7);font-size:0.9rem;letter-spacing:1px}
-@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.1);opacity:0.8}}
-/* NAVBAR */
-#navbar{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(255,255,255,0.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--light-gray);transition:var(--transition)}
-#navbar.scrolled{box-shadow:var(--shadow)}
-.nav-inner{display:flex;align-items:center;justify-content:space-between;height:70px}
-.nav-logo{display:flex;align-items:center;gap:10px;cursor:pointer}
-.nav-logo img{width:46px;height:46px;border-radius:10px;object-fit:contain;background:white}
-.nav-logo .logo-name{font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:700;color:var(--navy);line-height:1}
-.nav-logo .logo-sub{font-size:0.65rem;color:var(--gray);text-transform:uppercase;letter-spacing:1px}
-.nav-links{display:flex;align-items:center;gap:8px}
-.nav-links a{padding:8px 14px;border-radius:8px;font-size:0.9rem;font-weight:500;color:var(--gray);transition:var(--transition);cursor:pointer}
-.nav-links a:hover,.nav-links a.active{color:var(--blue);background:var(--light-blue)}
-.nav-cta{display:flex;align-items:center;gap:10px}
-.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer;border:none;transition:var(--transition)}
-.btn-primary{background:linear-gradient(135deg,var(--blue),var(--sky));color:white;box-shadow:0 4px 16px rgba(26,92,173,0.3)}
-.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(26,92,173,0.4)}
-.btn-outline{background:transparent;color:var(--blue);border:2px solid var(--blue)}
-.btn-outline:hover{background:var(--blue);color:white}
-.btn-mint{background:linear-gradient(135deg,var(--mint),#26b09a);color:white;box-shadow:0 4px 16px rgba(46,196,169,0.3)}
-.btn-mint:hover{transform:translateY(-2px)}
-.btn-danger{background:var(--danger);color:white}
-.btn-success{background:var(--success);color:white}
-.btn-sm{padding:6px 14px;font-size:0.8rem}
-.btn-white{background:white;color:var(--mint);font-weight:700}
-.btn-outline-white{background:transparent;color:white;border:2px solid rgba(255,255,255,0.6)}
-.btn-outline-white:hover{background:rgba(255,255,255,0.15)}
-.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px}
-.hamburger span{display:block;width:24px;height:2px;background:var(--navy);border-radius:2px;transition:var(--transition)}
-/* EMERGENCY BANNER */
-.emergency-banner{background:linear-gradient(90deg,var(--danger),#c53030);color:white;text-align:center;padding:10px;font-size:0.85rem;font-weight:500;position:relative;top:70px;z-index:900}
-.emergency-banner a{color:white;font-weight:700;text-decoration:underline}
-/* HERO */
-.hero{min-height:100vh;background:linear-gradient(135deg,var(--navy) 0%,#0d3575 40%,#1a5cad 100%);display:flex;align-items:center;position:relative;overflow:hidden;padding-top:120px}
-.hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
-.hero-content{position:relative;z-index:2;max-width:620px}
-.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(46,196,169,0.2);border:1px solid rgba(46,196,169,0.4);color:var(--mint);padding:6px 16px;border-radius:50px;font-size:0.8rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:20px}
-.hero h1{font-size:clamp(2.2rem,5vw,3.8rem);color:white;margin-bottom:20px;line-height:1.1}
-.hero h1 span{color:var(--mint)}
-.hero p{font-size:1.1rem;color:rgba(255,255,255,0.75);margin-bottom:36px;line-height:1.7}
-.hero-actions{display:flex;gap:16px;flex-wrap:wrap}
-.hero-stats{display:flex;gap:32px;margin-top:48px;flex-wrap:wrap}
-.hero-stat .num{font-family:'Playfair Display',serif;font-size:2rem;color:white;font-weight:700}
-.hero-stat .label{font-size:0.8rem;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:1px}
-/* SECTION */
-section{padding:80px 0}
-.section-header{text-align:center;margin-bottom:56px}
-.section-tag{display:inline-block;background:var(--light-mint);color:var(--mint);padding:4px 16px;border-radius:50px;font-size:0.78rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:12px}
-.section-header h2{font-size:clamp(1.8rem,3.5vw,2.6rem);color:var(--navy);margin-bottom:14px}
-.section-header p{color:var(--gray);max-width:560px;margin:0 auto;line-height:1.7}
-/* SERVICES */
-.services{background:var(--off-white)}
-.services-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:24px}
-.service-card{background:white;border-radius:var(--radius);overflow:hidden;border:1px solid var(--light-gray);transition:var(--transition)}
-.service-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg)}
-.service-img{height:180px;background:var(--light-blue);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:4rem}
-.service-img img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
-.service-body{padding:24px}
-.service-icon-wrap{width:52px;height:52px;border-radius:12px;background:var(--light-blue);display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:14px;transition:var(--transition)}
-.service-card:hover .service-icon-wrap{background:linear-gradient(135deg,var(--blue),var(--sky));color:white}
-.service-body h3{font-size:1.05rem;color:var(--navy);margin-bottom:8px}
-.service-body p{color:var(--gray);font-size:0.88rem;line-height:1.6}
-/* DOCTORS */
-.doctors-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:24px}
-.doctor-card{background:white;border-radius:var(--radius);overflow:hidden;border:1px solid var(--light-gray);transition:var(--transition)}
-.doctor-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg)}
-.doctor-img{height:220px;background:linear-gradient(135deg,var(--light-blue),var(--light-mint));display:flex;align-items:center;justify-content:center;font-size:5rem;position:relative;overflow:hidden}
-.doctor-img img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
-.doctor-info{padding:20px}
-.doctor-info h3{font-size:1rem;color:var(--navy);margin-bottom:4px}
-.doctor-specialty{color:var(--mint);font-size:0.83rem;font-weight:600;margin-bottom:8px}
-.doctor-info p{color:var(--gray);font-size:0.84rem;line-height:1.5;margin-bottom:12px}
-.doctor-socials{display:flex;gap:8px}
-.doctor-socials a{width:30px;height:30px;border-radius:7px;background:var(--light-blue);display:flex;align-items:center;justify-content:center;color:var(--blue);font-size:0.8rem;transition:var(--transition)}
-.doctor-socials a:hover{background:var(--blue);color:white}
-/* TESTIMONIALS */
-.testimonials{background:linear-gradient(135deg,var(--navy),#1a3a6e)}
-.testimonials .section-header h2{color:white}
-.testimonials .section-tag{background:rgba(46,196,169,0.2);color:var(--mint)}
-.testimonials .section-header p{color:rgba(255,255,255,0.6)}
-.testimonials-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:24px}
-.testimonial-card{background:rgba(255,255,255,0.07);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.1);border-radius:var(--radius);padding:28px}
-.testimonial-stars{color:#f6c344;font-size:0.9rem;margin-bottom:14px}
-.testimonial-text{color:rgba(255,255,255,0.85);font-size:0.95rem;line-height:1.7;margin-bottom:20px;font-style:italic}
-.testimonial-author{display:flex;align-items:center;gap:12px}
-.testimonial-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--mint));display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:1rem;flex-shrink:0;overflow:hidden}
-.testimonial-avatar img{width:100%;height:100%;object-fit:cover}
-.testimonial-name{font-weight:600;color:white;font-size:0.9rem}
-.testimonial-role{color:rgba(255,255,255,0.5);font-size:0.78rem}
-/* ABOUT */
-.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
-.about-img-main{border-radius:var(--radius);height:420px;position:relative;overflow:hidden;background:var(--light-blue);display:flex;align-items:center;justify-content:center}
-.about-img-main img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
-.about-img-main .placeholder-icon{font-size:6rem;position:relative;z-index:1}
-.about-badge{position:absolute;bottom:-20px;right:-20px;background:white;border-radius:var(--radius);padding:20px;box-shadow:var(--shadow-lg);text-align:center}
-.about-badge .num{font-family:'Playfair Display',serif;font-size:2.2rem;color:var(--blue);font-weight:700}
-.about-badge .label{font-size:0.75rem;color:var(--gray);text-transform:uppercase;letter-spacing:1px}
-.about-content h2{font-size:clamp(1.8rem,3vw,2.4rem);color:var(--navy);margin-bottom:16px}
-.about-content p{color:var(--gray);line-height:1.8;margin-bottom:16px}
-.about-features{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:28px 0}
-.about-feature{display:flex;align-items:flex-start;gap:12px}
-.about-feature-icon{width:36px;height:36px;border-radius:8px;background:var(--light-mint);color:var(--mint);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-/* APPOINTMENT */
-.appt-section{background:var(--off-white)}
-.appointment-wrap{display:grid;grid-template-columns:1fr 1.5fr;gap:48px;align-items:start}
-.appointment-info h2{font-size:clamp(1.6rem,2.5vw,2.2rem);color:var(--navy);margin-bottom:16px}
-.appointment-info p{color:var(--gray);line-height:1.7;margin-bottom:28px}
-.appt-features{display:flex;flex-direction:column;gap:14px}
-.appt-feature{display:flex;align-items:center;gap:14px;padding:14px 18px;background:white;border-radius:var(--radius-sm);border:1px solid var(--light-gray)}
-.appt-feature i{color:var(--mint);font-size:1.2rem;width:24px;text-align:center}
-.form-card{background:white;border-radius:var(--radius);padding:32px;box-shadow:var(--shadow)}
-.form-title{font-size:1.2rem;color:var(--navy);margin-bottom:22px}
-.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.form-group{display:flex;flex-direction:column;gap:6px}
-.form-group.full{grid-column:1/-1}
-.form-group label{font-size:0.84rem;font-weight:600;color:var(--text)}
-.form-group input,.form-group select,.form-group textarea{padding:11px 14px;border:1.5px solid var(--light-gray);border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;font-size:0.9rem;color:var(--text);transition:var(--transition);background:white;outline:none}
-.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,92,173,0.1)}
-.form-group textarea{resize:vertical;min-height:90px}
-.form-msg{padding:12px 16px;border-radius:var(--radius-sm);font-size:0.88rem;margin-bottom:14px;display:none}
-.form-msg.success{background:#f0fff4;color:var(--success);border:1px solid #c6f6d5;display:block}
-.form-msg.error{background:#fff5f5;color:var(--danger);border:1px solid #fed7d7;display:block}
-/* CONTACT */
-.contact-grid{display:grid;grid-template-columns:1fr 1.4fr;gap:48px}
-.contact-item{display:flex;align-items:flex-start;gap:16px;margin-bottom:16px}
-.contact-item-icon{width:46px;height:46px;border-radius:12px;background:var(--light-blue);color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
-.map-container{border-radius:var(--radius);overflow:hidden;height:200px;margin-top:16px}
-.map-container iframe{width:100%;height:100%;border:none}
-.whatsapp-btn{display:inline-flex;align-items:center;gap:10px;padding:14px 24px;background:#25d366;color:white;border-radius:var(--radius-sm);font-weight:600;transition:var(--transition);margin-top:16px}
-.whatsapp-btn:hover{background:#128c7e;transform:translateY(-2px)}
-/* GALLERY */
-.gallery-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
-.gallery-item{border-radius:var(--radius-sm);overflow:hidden;aspect-ratio:1;background:var(--light-blue);display:flex;align-items:center;justify-content:center;font-size:3rem;cursor:pointer;transition:var(--transition);position:relative}
-.gallery-item img{width:100%;height:100%;object-fit:cover;transition:var(--transition)}
-.gallery-item:hover img{transform:scale(1.05)}
-.gallery-item:first-child{grid-column:span 2;grid-row:span 2}
-.gallery-overlay{position:absolute;inset:0;background:rgba(10,37,88,0.5);opacity:0;transition:var(--transition);display:flex;align-items:center;justify-content:center;color:white;font-size:1.5rem}
-.gallery-item:hover .gallery-overlay{opacity:1}
-/* CTA */
-.cta{background:linear-gradient(135deg,var(--mint),#26b09a);padding:60px 0}
-.cta-inner{text-align:center}
-.cta-inner h2{font-size:clamp(1.8rem,3.5vw,2.6rem);color:white;margin-bottom:12px}
-.cta-inner p{color:rgba(255,255,255,0.85);max-width:500px;margin:0 auto 28px}
-.cta-actions{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
-/* FOOTER */
-footer{background:var(--navy);color:rgba(255,255,255,0.75)}
-.footer-top{padding:60px 0 40px;display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:40px}
-.footer-brand p{font-size:0.88rem;line-height:1.7;margin-bottom:20px;margin-top:12px}
-.footer-socials{display:flex;gap:10px}
-.footer-socials a{width:36px;height:36px;border-radius:8px;background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.7);transition:var(--transition)}
-.footer-socials a:hover{background:var(--blue);color:white}
-.footer-col h4{color:white;font-size:1rem;margin-bottom:16px}
-.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:8px}
-.footer-col ul li a{font-size:0.88rem;color:rgba(255,255,255,0.6);transition:var(--transition)}
-.footer-col ul li a:hover{color:var(--mint)}
-.footer-bottom{border-top:1px solid rgba(255,255,255,0.1);padding:20px 0;display:flex;align-items:center;justify-content:space-between;font-size:0.83rem}
-/* WHATSAPP FLOAT */
-.whatsapp-float{position:fixed;bottom:24px;right:24px;z-index:900}
-.whatsapp-float a{width:56px;height:56px;background:#25d366;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:1.6rem;box-shadow:0 4px 20px rgba(37,211,102,0.5);transition:var(--transition)}
-.whatsapp-float a:hover{transform:scale(1.1)}
+.con{max-width:1180px;margin:0 auto;padding:0 20px}
+
+/* NAV */
+#nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(255,255,255,.97);backdrop-filter:blur(10px);border-bottom:1px solid var(--lgray);transition:var(--tr)}
+#nav.sc{box-shadow:var(--sh)}
+.ni{display:flex;align-items:center;justify-content:space-between;height:66px}
+.nlogo{display:flex;align-items:center;gap:10px;cursor:pointer}
+.nlogo .li{width:42px;height:42px;background:linear-gradient(135deg,var(--blue),var(--mint));border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.3rem;flex-shrink:0}
+.nlogo .ln{font-family:Georgia,serif;font-size:1rem;font-weight:700;color:var(--navy);line-height:1.1}
+.nlogo .ls{font-size:.62rem;color:var(--gray);text-transform:uppercase;letter-spacing:1px}
+.nl{display:flex;align-items:center;gap:6px}
+.nl a{padding:7px 13px;border-radius:7px;font-size:.88rem;font-weight:500;color:var(--gray);transition:var(--tr);cursor:pointer}
+.nl a:hover,.nl a.ac{color:var(--blue);background:var(--lblue)}
+.nc{display:flex;gap:8px;align-items:center}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:var(--rs);font-size:.88rem;font-weight:600;cursor:pointer;border:none;transition:var(--tr);font-family:inherit}
+.bp{background:linear-gradient(135deg,var(--blue),var(--sky));color:#fff;box-shadow:0 4px 14px rgba(26,92,173,.3)}
+.bp:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(26,92,173,.4)}
+.bm{background:linear-gradient(135deg,var(--mint),#26b09a);color:#fff;box-shadow:0 4px 14px rgba(46,196,169,.3)}
+.bm:hover{transform:translateY(-2px)}
+.bo{background:transparent;color:var(--blue);border:2px solid var(--blue)}
+.bo:hover{background:var(--blue);color:#fff}
+.bw{background:#fff;color:var(--mint);font-weight:700}
+.bow{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.6)}
+.bow:hover{background:rgba(255,255,255,.15)}
+.bd{background:var(--red);color:#fff}
+.bsu{background:var(--green);color:#fff}
+.bsm{padding:6px 12px;font-size:.78rem}
+.hbg{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px}
+.hbg span{display:block;width:24px;height:2px;background:var(--navy);border-radius:2px;transition:var(--tr)}
+
+/* BANNER */
+.ebanner{background:linear-gradient(90deg,var(--red),#c53030);color:#fff;text-align:center;padding:9px;font-size:.83rem;font-weight:500;position:relative;top:66px;z-index:900}
+.ebanner a{color:#fff;font-weight:700;text-decoration:underline}
+
 /* PAGE */
 .page{display:none}
-.page.active{display:block}
-.page-hero{background:linear-gradient(135deg,var(--navy),#1a3a6e);padding:60px 0;text-align:center;padding-top:130px}
-/* ===== ADMIN ===== */
-.admin-overlay{display:none;position:fixed;inset:0;z-index:2000;background:var(--off-white)}
-.admin-overlay.active{display:flex}
-.admin-sidebar{width:250px;background:var(--navy);color:white;display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto}
-.admin-logo{padding:20px;border-bottom:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;gap:10px}
-.admin-logo img{width:38px;height:38px;border-radius:8px;object-fit:contain;background:white}
-.admin-logo .logo-name{font-family:'Playfair Display',serif;font-size:1rem;color:white}
-.admin-logo .logo-sub{font-size:0.65rem;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:1px}
-.admin-nav{padding:12px 0;flex:1;overflow-y:auto}
-.admin-nav-item{display:flex;align-items:center;gap:12px;padding:12px 20px;color:rgba(255,255,255,0.65);cursor:pointer;transition:var(--transition);font-size:0.88rem;border-left:3px solid transparent}
-.admin-nav-item:hover{color:white;background:rgba(255,255,255,0.07)}
-.admin-nav-item.active{color:white;background:rgba(59,157,224,0.2);border-left-color:var(--sky)}
-.admin-nav-item i{width:18px;text-align:center}
-.admin-main{flex:1;display:flex;flex-direction:column;overflow:hidden}
-.admin-topbar{height:60px;background:white;border-bottom:1px solid var(--light-gray);display:flex;align-items:center;justify-content:space-between;padding:0 24px;flex-shrink:0}
-.admin-topbar h2{font-size:1.05rem;color:var(--navy)}
-.admin-content{flex:1;overflow-y:auto;padding:24px}
-.admin-section{display:none}
-.admin-section.active{display:block}
-/* Admin Login */
-.admin-login{position:fixed;inset:0;background:linear-gradient(135deg,var(--navy),#1a3a6e);z-index:3000;display:flex;align-items:center;justify-content:center}
-.login-card{background:white;border-radius:var(--radius);padding:40px 36px;width:100%;max-width:380px;box-shadow:var(--shadow-lg)}
-/* Admin Cards */
-.stat-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-bottom:24px}
-.stat-card{background:white;border-radius:var(--radius);padding:18px;border:1px solid var(--light-gray)}
-.stat-card .stat-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;margin-bottom:10px}
-.stat-card .stat-num{font-family:'Playfair Display',serif;font-size:1.8rem;color:var(--navy)}
-.stat-card .stat-label{font-size:0.8rem;color:var(--gray)}
-.stat-card.blue .stat-icon{background:var(--light-blue);color:var(--blue)}
-.stat-card.mint .stat-icon{background:var(--light-mint);color:var(--mint)}
-.stat-card.orange .stat-icon{background:#fff7ed;color:#ea580c}
-.stat-card.purple .stat-icon{background:#faf5ff;color:#7c3aed}
-.admin-table-wrap{background:white;border-radius:var(--radius);border:1px solid var(--light-gray);overflow:hidden;margin-bottom:20px}
-.admin-table-header{padding:14px 18px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--light-gray)}
-.admin-table-header h3{font-size:0.95rem;color:var(--navy)}
-.admin-table{width:100%;border-collapse:collapse}
-.admin-table th{padding:10px 14px;text-align:left;font-size:0.78rem;font-weight:600;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--light-gray);background:var(--off-white)}
-.admin-table td{padding:10px 14px;font-size:0.86rem;color:var(--text);border-bottom:1px solid var(--light-gray);vertical-align:middle}
-.admin-table tr:last-child td{border-bottom:none}
-.admin-table tr:hover td{background:var(--off-white)}
-.badge{display:inline-block;padding:3px 10px;border-radius:50px;font-size:0.73rem;font-weight:600}
-.badge-success{background:#f0fff4;color:var(--success)}
-.badge-warning{background:#fffbeb;color:var(--warning)}
-.badge-danger{background:#fff5f5;color:var(--danger)}
-.badge-blue{background:var(--light-blue);color:var(--blue)}
-.admin-form-wrap{background:white;border-radius:var(--radius);padding:24px;border:1px solid var(--light-gray);margin-bottom:20px}
-.admin-form-wrap h3{font-size:1rem;color:var(--navy);margin-bottom:16px}
-/* Image upload */
-.img-upload-box{border:2px dashed var(--light-gray);border-radius:var(--radius-sm);padding:20px;text-align:center;cursor:pointer;transition:var(--transition);background:var(--off-white);position:relative}
-.img-upload-box:hover{border-color:var(--blue);background:var(--light-blue)}
-.img-upload-box input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
-.img-upload-box i{font-size:2rem;color:var(--gray);margin-bottom:8px}
-.img-upload-box p{font-size:0.82rem;color:var(--gray)}
-.img-preview{width:80px;height:80px;border-radius:10px;object-fit:cover;border:2px solid var(--light-gray);margin-top:8px}
-/* TOAST */
-.toast{position:fixed;bottom:80px;right:24px;background:var(--navy);color:white;padding:12px 18px;border-radius:var(--radius-sm);font-size:0.86rem;z-index:5000;transform:translateY(100px);opacity:0;transition:var(--transition);max-width:300px}
-.toast.show{transform:translateY(0);opacity:1}
-.toast.success{background:var(--success)}
-.toast.error{background:var(--danger)}
-/* MODAL */
-.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:4500;align-items:center;justify-content:center;padding:20px}
-.modal-bg.open{display:flex}
-.modal-box{background:white;border-radius:var(--radius);padding:28px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow-lg)}
-.modal-box h3{font-size:1.1rem;color:var(--navy);margin-bottom:18px}
-.modal-close{float:right;background:none;border:none;font-size:1.3rem;cursor:pointer;color:var(--gray);margin-top:-4px}
+.page.ac{display:block}
+.ph{background:linear-gradient(135deg,var(--navy),#1a3a6e);padding:56px 0;text-align:center;padding-top:120px}
+.st{display:inline-block;background:rgba(46,196,169,.2);color:var(--mint);padding:4px 14px;border-radius:50px;font-size:.76rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px}
+.sh{text-align:center;margin-bottom:48px}
+.sh .st2{display:inline-block;background:var(--lmint);color:var(--mint);padding:4px 14px;border-radius:50px;font-size:.76rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px}
+.sh h2{font-size:clamp(1.7rem,3.5vw,2.5rem);color:var(--navy);margin-bottom:12px}
+.sh p{color:var(--gray);max-width:540px;margin:0 auto;line-height:1.7}
+
+/* HERO */
+.hero{min-height:100vh;background:linear-gradient(135deg,var(--navy),#0d3575 50%,#1a5cad);display:flex;align-items:center;padding-top:110px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;opacity:.04;background-image:repeating-linear-gradient(0deg,transparent,transparent 40px,#fff 40px,#fff 41px),repeating-linear-gradient(90deg,transparent,transparent 40px,#fff 40px,#fff 41px)}
+.hc{position:relative;z-index:2;max-width:620px}
+.hbadge{display:inline-flex;align-items:center;gap:8px;background:rgba(46,196,169,.18);border:1px solid rgba(46,196,169,.4);color:var(--mint);padding:5px 14px;border-radius:50px;font-size:.77rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:18px}
+.hero h1{font-size:clamp(2rem,5vw,3.6rem);color:#fff;margin-bottom:18px;line-height:1.1}
+.hero h1 span{color:var(--mint)}
+.hero>div>div>p{font-size:1.05rem;color:rgba(255,255,255,.75);margin-bottom:32px;line-height:1.7}
+.ha{display:flex;gap:14px;flex-wrap:wrap}
+.hstats{display:flex;gap:28px;margin-top:44px;flex-wrap:wrap}
+.hstat .num{font-family:Georgia,serif;font-size:1.9rem;color:#fff;font-weight:700}
+.hstat .lbl{font-size:.76rem;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:1px}
+
+/* SERVICES */
+.sbg{background:var(--offwhite)}
+.sgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:22px}
+.scard{background:#fff;border-radius:var(--r);overflow:hidden;border:1px solid var(--lgray);transition:var(--tr)}
+.scard:hover{transform:translateY(-5px);box-shadow:var(--shlg)}
+.simg{height:170px;background:var(--lblue);display:flex;align-items:center;justify-content:center;font-size:3.5rem;position:relative;overflow:hidden}
+.simg img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.sbody{padding:22px}
+.sico{width:48px;height:48px;border-radius:11px;background:var(--lblue);display:flex;align-items:center;justify-content:center;font-size:1.3rem;margin-bottom:12px;transition:var(--tr);color:var(--blue)}
+.scard:hover .sico{background:linear-gradient(135deg,var(--blue),var(--sky));color:#fff}
+.sbody h3{font-size:1rem;color:var(--navy);margin-bottom:7px}
+.sbody p{color:var(--gray);font-size:.86rem;line-height:1.6}
+
+/* DOCTORS */
+.dgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:22px}
+.dcard{background:#fff;border-radius:var(--r);overflow:hidden;border:1px solid var(--lgray);transition:var(--tr)}
+.dcard:hover{transform:translateY(-5px);box-shadow:var(--shlg)}
+.dimg{height:210px;background:linear-gradient(135deg,var(--lblue),var(--lmint));display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.dimg img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.dimg .dph{font-size:4rem;color:var(--blue);position:relative;z-index:1}
+.dinfo{padding:18px}
+.dinfo h3{font-size:.97rem;color:var(--navy);margin-bottom:3px}
+.dsp{color:var(--mint);font-size:.81rem;font-weight:600;margin-bottom:8px}
+.dinfo p{color:var(--gray);font-size:.83rem;line-height:1.5;margin-bottom:10px}
+.dsoc{display:flex;gap:7px}
+.dsoc a{width:28px;height:28px;border-radius:7px;background:var(--lblue);display:flex;align-items:center;justify-content:center;color:var(--blue);font-size:.78rem;transition:var(--tr)}
+.dsoc a:hover{background:var(--blue);color:#fff}
+
+/* TESTIMONIALS */
+.tbg{background:linear-gradient(135deg,var(--navy),#1a3a6e)}
+.tbg .sh h2{color:#fff}
+.tbg .sh p{color:rgba(255,255,255,.6)}
+.tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:22px}
+.tcard{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:var(--r);padding:24px}
+.tstars{color:#f6c344;font-size:.88rem;margin-bottom:12px}
+.ttxt{color:rgba(255,255,255,.85);font-size:.92rem;line-height:1.7;margin-bottom:18px;font-style:italic}
+.tauth{display:flex;align-items:center;gap:10px}
+.tav{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--mint));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:.95rem;flex-shrink:0;overflow:hidden}
+.tav img{width:100%;height:100%;object-fit:cover}
+.tname{font-weight:600;color:#fff;font-size:.88rem}
+.trole{color:rgba(255,255,255,.5);font-size:.76rem}
+
+/* ABOUT */
+.agrid{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
+.aimg{border-radius:var(--r);height:400px;background:linear-gradient(135deg,var(--lblue),var(--lmint));display:flex;align-items:center;justify-content:center;font-size:7rem;position:relative;overflow:hidden}
+.aimg img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.abadge{position:absolute;bottom:-18px;right:-18px;background:#fff;border-radius:var(--r);padding:18px;box-shadow:var(--shlg);text-align:center}
+.abadge .num{font-family:Georgia,serif;font-size:2rem;color:var(--blue);font-weight:700}
+.abadge .lbl{font-size:.72rem;color:var(--gray);text-transform:uppercase;letter-spacing:1px}
+.acnt h2{font-size:clamp(1.6rem,3vw,2.2rem);color:var(--navy);margin-bottom:14px}
+.acnt p{color:var(--gray);line-height:1.8;margin-bottom:14px;font-size:.95rem}
+.afeat{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:24px 0}
+.af{display:flex;align-items:flex-start;gap:10px}
+.afi{width:32px;height:32px;border-radius:7px;background:var(--lmint);color:var(--mint);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.85rem}
+.af h4{font-size:.88rem;color:var(--navy);margin-bottom:1px}
+.af p{font-size:.8rem;color:var(--gray)}
+
+/* CTA */
+.cta{background:linear-gradient(135deg,var(--mint),#26b09a);padding:56px 0;text-align:center}
+.cta h2{font-size:clamp(1.7rem,3.5vw,2.4rem);color:#fff;margin-bottom:10px}
+.cta p{color:rgba(255,255,255,.85);max-width:480px;margin:0 auto 24px;font-size:.95rem}
+.cta-a{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+
+/* APPT */
+.apbg{background:var(--offwhite)}
+.apwrap{display:grid;grid-template-columns:1fr 1.5fr;gap:44px;align-items:start}
+.apinfo h2{font-size:clamp(1.5rem,2.5vw,2rem);color:var(--navy);margin-bottom:14px}
+.apinfo p{color:var(--gray);line-height:1.7;margin-bottom:24px;font-size:.92rem}
+.apf{display:flex;flex-direction:column;gap:12px}
+.apfi{display:flex;align-items:center;gap:12px;padding:12px 16px;background:#fff;border-radius:var(--rs);border:1px solid var(--lgray)}
+.apfi i{color:var(--mint);font-size:1.1rem;width:22px;text-align:center}
+.apfi span{font-size:.88rem}
+.fc{background:#fff;border-radius:var(--r);padding:28px;box-shadow:var(--sh)}
+.ftit{font-size:1.1rem;color:var(--navy);margin-bottom:20px}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.fg{display:flex;flex-direction:column;gap:5px}
+.fg.full{grid-column:1/-1}
+.fg label{font-size:.82rem;font-weight:600;color:var(--text)}
+.fg input,.fg select,.fg textarea{padding:10px 13px;border:1.5px solid var(--lgray);border-radius:var(--rs);font-family:inherit;font-size:.88rem;color:var(--text);transition:var(--tr);background:#fff;outline:none}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,92,173,.1)}
+.fg textarea{resize:vertical;min-height:85px}
+.fmsg{padding:11px 14px;border-radius:var(--rs);font-size:.86rem;margin-bottom:12px;display:none}
+.fmsg.ok{background:#f0fff4;color:var(--green);border:1px solid #c6f6d5;display:block}
+.fmsg.err{background:#fff5f5;color:var(--red);border:1px solid #fed7d7;display:block}
+
+/* CONTACT */
+.cgrid{display:grid;grid-template-columns:1fr 1.4fr;gap:44px}
+.ci{display:flex;align-items:flex-start;gap:14px;margin-bottom:14px}
+.cii{width:44px;height:44px;border-radius:11px;background:var(--lblue);color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:1.05rem;flex-shrink:0}
+.ciinfo strong{font-size:.9rem;color:var(--navy)}
+.ciinfo p{color:var(--gray);font-size:.85rem;margin-top:2px}
+.map{border-radius:var(--r);overflow:hidden;height:190px;margin-top:14px}
+.map iframe{width:100%;height:100%;border:none}
+.wabtn{display:inline-flex;align-items:center;gap:9px;padding:12px 22px;background:#25d366;color:#fff;border-radius:var(--rs);font-weight:600;font-size:.92rem;transition:var(--tr);margin-top:14px}
+.wabtn:hover{background:#128c7e;transform:translateY(-2px)}
+
+/* GALLERY */
+.ggrid{display:grid;grid-template-columns:repeat(4,1fr);gap:13px}
+.gi{border-radius:var(--rs);overflow:hidden;aspect-ratio:1;background:var(--lblue);display:flex;align-items:center;justify-content:center;font-size:2.8rem;cursor:pointer;transition:var(--tr);position:relative}
+.gi img{width:100%;height:100%;object-fit:cover;transition:var(--tr)}
+.gi:hover img{transform:scale(1.05)}
+.gi:first-child{grid-column:span 2;grid-row:span 2;font-size:5rem}
+.gov{position:absolute;inset:0;background:rgba(10,37,88,.5);opacity:0;transition:var(--tr);display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.4rem}
+.gi:hover .gov{opacity:1}
+
+/* FOOTER */
+footer{background:var(--navy);color:rgba(255,255,255,.75)}
+.ftop{padding:56px 0 36px;display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:36px}
+.fbrand p{font-size:.86rem;line-height:1.7;margin:12px 0 18px}
+.fsoc{display:flex;gap:9px}
+.fsoc a{width:34px;height:34px;border-radius:7px;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.7);transition:var(--tr)}
+.fsoc a:hover{background:var(--blue);color:#fff}
+.fcol h4{color:#fff;font-size:.97rem;margin-bottom:14px}
+.fcol ul{list-style:none;display:flex;flex-direction:column;gap:7px}
+.fcol ul li a{font-size:.86rem;color:rgba(255,255,255,.6);transition:var(--tr)}
+.fcol ul li a:hover{color:var(--mint)}
+.fbot{border-top:1px solid rgba(255,255,255,.1);padding:18px 0;display:flex;align-items:center;justify-content:space-between;font-size:.8rem}
+
+/* WHATSAPP FLOAT */
+.waf{position:fixed;bottom:22px;right:22px;z-index:900}
+.waf a{width:54px;height:54px;background:#25d366;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.5rem;box-shadow:0 4px 18px rgba(37,211,102,.5);transition:var(--tr)}
+.waf a:hover{transform:scale(1.1)}
+
+/* ADMIN */
+.alo{display:none;position:fixed;inset:0;background:linear-gradient(135deg,var(--navy),#1a3a6e);z-index:3000;align-items:center;justify-content:center}
+.alc{background:#fff;border-radius:var(--r);padding:36px 32px;width:100%;max-width:370px;box-shadow:var(--shlg)}
+.ado{display:none;position:fixed;inset:0;z-index:2000;background:var(--offwhite)}
+.ado.ac{display:flex}
+.asb{width:245px;background:var(--navy);color:#fff;display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto}
+.asblogo{padding:18px;border-bottom:1px solid rgba(255,255,255,.1);display:flex;align-items:center;gap:10px}
+.asblogo .li{width:34px;height:34px;background:linear-gradient(135deg,var(--blue),var(--mint));border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.95rem;flex-shrink:0}
+.asblogo .ln{font-family:Georgia,serif;font-size:.95rem;color:#fff;line-height:1.1}
+.asblogo .ls{font-size:.62rem;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:1px}
+.anav{padding:10px 0;flex:1}
+.ani{display:flex;align-items:center;gap:11px;padding:11px 18px;color:rgba(255,255,255,.65);cursor:pointer;transition:var(--tr);font-size:.86rem;border-left:3px solid transparent}
+.ani:hover{color:#fff;background:rgba(255,255,255,.07)}
+.ani.ac{color:#fff;background:rgba(59,157,224,.2);border-left-color:var(--sky)}
+.ani i{width:17px;text-align:center}
+.amain{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.atop{height:58px;background:#fff;border-bottom:1px solid var(--lgray);display:flex;align-items:center;justify-content:space-between;padding:0 22px;flex-shrink:0}
+.atop h2{font-size:1rem;color:var(--navy)}
+.acont{flex:1;overflow-y:auto;padding:22px}
+.asec{display:none}
+.asec.ac{display:block}
+.scards{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:22px}
+.sc{background:#fff;border-radius:var(--r);padding:16px;border:1px solid var(--lgray)}
+.sc .si{width:40px;height:40px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1rem;margin-bottom:9px}
+.sc .sn{font-family:Georgia,serif;font-size:1.7rem;color:var(--navy)}
+.sc .sl{font-size:.78rem;color:var(--gray)}
+.sc.bl .si{background:var(--lblue);color:var(--blue)}
+.sc.mn .si{background:var(--lmint);color:var(--mint)}
+.sc.or .si{background:#fff7ed;color:#ea580c}
+.sc.pu .si{background:#faf5ff;color:#7c3aed}
+.atw{background:#fff;border-radius:var(--r);border:1px solid var(--lgray);overflow:hidden;margin-bottom:18px}
+.ath{padding:13px 17px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--lgray)}
+.ath h3{font-size:.92rem;color:var(--navy)}
+.at{width:100%;border-collapse:collapse}
+.at th{padding:9px 13px;text-align:left;font-size:.75rem;font-weight:600;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--lgray);background:var(--offwhite)}
+.at td{padding:9px 13px;font-size:.84rem;color:var(--text);border-bottom:1px solid var(--lgray);vertical-align:middle}
+.at tr:last-child td{border-bottom:none}
+.at tr:hover td{background:var(--offwhite)}
+.badge{display:inline-block;padding:2px 9px;border-radius:50px;font-size:.71rem;font-weight:600}
+.bok{background:#f0fff4;color:var(--green)}
+.bwa{background:#fffbeb;color:var(--yellow)}
+.bno{background:#fff5f5;color:var(--red)}
+.bbl{background:var(--lblue);color:var(--blue)}
+.afw{background:#fff;border-radius:var(--r);padding:22px;border:1px solid var(--lgray);margin-bottom:18px}
+.afw h3{font-size:.95rem;color:var(--navy);margin-bottom:14px}
+.iub{border:2px dashed var(--lgray);border-radius:var(--rs);padding:18px;text-align:center;cursor:pointer;transition:var(--tr);background:var(--offwhite);position:relative;margin-top:4px}
+.iub:hover{border-color:var(--blue);background:var(--lblue)}
+.iub input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.iub i{font-size:1.8rem;color:var(--gray);margin-bottom:6px;display:block}
+.iub p{font-size:.79rem;color:var(--gray)}
+.iprev{width:72px;height:72px;border-radius:9px;object-fit:cover;border:2px solid var(--lgray);margin:8px auto 0;display:none}
+.toast{position:fixed;bottom:80px;right:22px;background:var(--navy);color:#fff;padding:11px 17px;border-radius:var(--rs);font-size:.84rem;z-index:5000;transform:translateY(100px);opacity:0;transition:var(--tr);max-width:280px}
+.toast.sh{transform:translateY(0);opacity:1}
+.toast.ok{background:var(--green)}
+.toast.er{background:var(--red)}
+
 /* RESPONSIVE */
-@media(max-width:1024px){.footer-top{grid-template-columns:1fr 1fr}.stat-cards{grid-template-columns:1fr 1fr}}
+@media(max-width:1024px){.ftop{grid-template-columns:1fr 1fr}.scards{grid-template-columns:1fr 1fr}}
 @media(max-width:768px){
-  .nav-links,.nav-cta{display:none}
-  .hamburger{display:flex}
-  .nav-links.open{display:flex;flex-direction:column;position:absolute;top:70px;left:0;right:0;background:white;padding:16px;border-bottom:1px solid var(--light-gray);gap:4px;z-index:999}
-  .nav-cta.open{display:flex;padding:0 16px 16px;background:white;position:absolute;top:calc(70px + 200px);left:0;right:0;z-index:999;border-bottom:1px solid var(--light-gray)}
-  .about-grid,.appointment-wrap,.contact-grid{grid-template-columns:1fr}
-  .gallery-grid{grid-template-columns:repeat(2,1fr)}
-  .gallery-item:first-child{grid-column:span 1;grid-row:span 1}
-  .footer-top{grid-template-columns:1fr}
-  .footer-bottom{flex-direction:column;gap:10px;text-align:center}
-  .form-grid{grid-template-columns:1fr}
-  .admin-sidebar{width:210px}
-  .stat-cards{grid-template-columns:1fr 1fr}
-  .hero{padding-top:140px}
+  .nl,.nc{display:none}
+  .hbg{display:flex}
+  .nl.op{display:flex;flex-direction:column;position:absolute;top:66px;left:0;right:0;background:#fff;padding:14px;border-bottom:1px solid var(--lgray);gap:3px;z-index:999}
+  .nc.op{display:flex;padding:0 14px 14px;background:#fff;position:absolute;top:calc(66px + 230px);left:0;right:0;z-index:998;border-bottom:1px solid var(--lgray)}
+  .agrid,.apwrap,.cgrid{grid-template-columns:1fr}
+  .ggrid{grid-template-columns:repeat(2,1fr)}
+  .gi:first-child{grid-column:span 1;grid-row:span 1}
+  .ftop{grid-template-columns:1fr}
+  .fbot{flex-direction:column;gap:8px;text-align:center}
+  .fgrid{grid-template-columns:1fr}
+  .asb{width:200px}
+  .scards{grid-template-columns:1fr 1fr}
+  .hero{padding-top:130px}
+  .afeat{grid-template-columns:1fr}
 }
-@media(max-width:480px){.stat-cards{grid-template-columns:1fr}.gallery-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:480px){.scards{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 
-<div id="page-loader">
-  <div style="width:80px;height:80px;background:white;border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:3rem;animation:pulse 1.2s ease-in-out infinite">❤️</div>
-  <p>Loading...</p>
-</div>
+<div id="loader"><div class="hb">❤️</div><p>Loving Heart Hospital</p></div>
 <div class="toast" id="toast"></div>
-<div class="whatsapp-float"><a href="https://wa.me/2348136393150" target="_blank"><i class="fab fa-whatsapp"></i></a></div>
+<div class="waf"><a href="https://wa.me/2348136393150" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i></a></div>
 
-<!-- NAVBAR -->
-<nav id="navbar">
-  <div class="container nav-inner">
-    <a class="nav-logo" href="javascript:void(0)" onclick="navigate('home')">
-      <div style="width:40px;height:40px;background:linear-gradient(135deg,#1a5cad,#2ec4a9);border-radius:10px;display:flex;align-items:center;justify-content:center;color:white;font-size:1.2rem;flex-shrink:0"><i class="fas fa-heartbeat"></i></div>
-      <div><div class="logo-name">Loving Heart</div><div class="logo-sub">Hospital</div></div>
-    </a>
-    <div class="nav-links" id="navLinks">
-      <a href="javascript:void(0)" class="active" onclick="navigate('home')">Home</a>
-      <a href="javascript:void(0)" onclick="navigate('about')">About</a>
-      <a href="javascript:void(0)" onclick="navigate('services')">Services</a>
-      <a href="javascript:void(0)" onclick="navigate('doctors')">Doctors</a>
-      <a href="javascript:void(0)" onclick="navigate('gallery-page')">Gallery</a>
-      <a href="javascript:void(0)" onclick="navigate('contact')">Contact</a>
-    </div>
-    <div class="nav-cta" id="navCta">
-      <a href="tel:08136393150" class="btn btn-outline btn-sm"><i class="fas fa-phone"></i> 08136393150</a>
-      <a href="javascript:void(0)" class="btn btn-primary btn-sm" onclick="navigate('appointment')"><i class="fas fa-calendar-plus"></i> Book Appointment</a>
-    </div>
-    <div class="hamburger" id="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+<!-- NAV -->
+<nav id="nav">
+ <div class="con ni">
+  <div class="nlogo" onclick="go('home')">
+   <div class="li"><i class="fas fa-heartbeat"></i></div>
+   <div><div class="ln">Loving Heart</div><div class="ls">Hospital</div></div>
   </div>
+  <div class="nl" id="nl">
+   <a class="ac" onclick="go('home')">Home</a>
+   <a onclick="go('about')">About</a>
+   <a onclick="go('services')">Services</a>
+   <a onclick="go('doctors')">Doctors</a>
+   <a onclick="go('gallery')">Gallery</a>
+   <a onclick="go('contact')">Contact</a>
+  </div>
+  <div class="nc" id="nc">
+   <a href="tel:08136393150" class="btn bo bsm"><i class="fas fa-phone"></i> 08136393150</a>
+   <button class="btn bp bsm" onclick="go('appointment')"><i class="fas fa-calendar-plus"></i> Book Appointment</button>
+  </div>
+  <div class="hbg" id="hbg" onclick="tmenu()"><span></span><span></span><span></span></div>
+ </div>
 </nav>
 
-<div class="emergency-banner">🚨 <strong>24/7 Emergency:</strong> Call us now at <a href="tel:08136393150">08136393150</a> | Available round the clock for emergencies</div>
+<div class="ebanner">🚨 <strong>24/7 Emergency:</strong> Call <a href="tel:08136393150">08136393150</a> | Available round the clock</div>
 
-<!-- ======= HOME ======= -->
-<div id="home" class="page active">
-  <section class="hero">
-    <div class="container">
-      <div class="hero-content">
-        <div class="hero-badge"><i class="fas fa-award"></i> Accredited Medical Center</div>
-        <h1 id="hero-headline">Your Health Is Our<br><span id="hero-span">Loving Priority</span></h1>
-        <p id="hero-subtext">World-class healthcare delivered with warmth and compassion. From routine checkups to complex surgeries — we are committed to your complete wellbeing.</p>
-        <div class="hero-actions">
-          <a href="javascript:void(0)" class="btn btn-mint" onclick="navigate('appointment')"><i class="fas fa-calendar-plus"></i> Book Appointment</a>
-          <a href="javascript:void(0)" class="btn btn-outline-white" onclick="navigate('services')"><i class="fas fa-stethoscope"></i> Our Services</a>
-        </div>
-        <div class="hero-stats">
-          <div class="hero-stat"><div class="num">15+</div><div class="label">Years of Care</div></div>
-          <div class="hero-stat"><div class="num">50+</div><div class="label">Specialists</div></div>
-          <div class="hero-stat"><div class="num">20K+</div><div class="label">Patients Served</div></div>
-          <div class="hero-stat"><div class="num">24/7</div><div class="label">Emergency</div></div>
-        </div>
-      </div>
+<!-- HOME -->
+<div id="home" class="page ac">
+ <section class="hero">
+  <div class="con">
+   <div class="hc">
+    <div class="hbadge"><i class="fas fa-award"></i> Accredited Medical Center</div>
+    <h1 id="hh">Your Health Is Our<br><span id="hhs">Loving Priority</span></h1>
+    <p id="hsp">World-class healthcare delivered with warmth and compassion. From routine checkups to complex surgeries — we are committed to your complete wellbeing.</p>
+    <div class="ha">
+     <button class="btn bm" onclick="go('appointment')"><i class="fas fa-calendar-plus"></i> Book Appointment</button>
+     <button class="btn bow" onclick="go('services')"><i class="fas fa-stethoscope"></i> Our Services</button>
     </div>
-  </section>
-
-  <section class="services">
-    <div class="container">
-      <div class="section-header"><span class="section-tag">Our Services</span><h2>Comprehensive Healthcare Services</h2><p>From preventive care to complex procedures, a full spectrum of medical services.</p></div>
-      <div class="services-grid" id="home-services-grid"></div>
-      <div style="text-align:center;margin-top:32px"><a href="javascript:void(0)" class="btn btn-primary" onclick="navigate('services')">View All Services <i class="fas fa-arrow-right"></i></a></div>
+    <div class="hstats">
+     <div class="hstat"><div class="num">15+</div><div class="lbl">Years of Care</div></div>
+     <div class="hstat"><div class="num">50+</div><div class="lbl">Specialists</div></div>
+     <div class="hstat"><div class="num">20K+</div><div class="lbl">Patients Served</div></div>
+     <div class="hstat"><div class="num">24/7</div><div class="lbl">Emergency</div></div>
     </div>
-  </section>
+   </div>
+  </div>
+ </section>
 
-  <section style="padding:80px 0">
-    <div class="container">
-      <div class="about-grid">
-        <div class="about-img-wrap" style="position:relative">
-          <div class="about-img-main">
-            <span class="placeholder-icon" id="about-placeholder">🏥</span>
-            <img id="about-img-display" src="" alt="Hospital" style="display:none">
-          </div>
-          <div class="about-badge"><div class="num">15+</div><div class="label">Years of Excellence</div></div>
-        </div>
-        <div class="about-content">
-          <span class="section-tag">About Us</span>
-          <h2 id="about-title">A Legacy of Compassionate Healthcare</h2>
-          <p id="about-text1">Founded with a vision to provide accessible, high-quality healthcare to all, Loving Heart Hospital has been a beacon of health and hope in our community for over 15 years.</p>
-          <p id="about-text2">Our state-of-the-art facility is equipped with the latest medical technology, staffed by board-certified physicians, and driven by one core belief — every patient deserves love and respect.</p>
-          <div class="about-features">
-            <div class="about-feature"><div class="about-feature-icon"><i class="fas fa-check"></i></div><div><h4>Modern Equipment</h4><p>Latest medical technology</p></div></div>
-            <div class="about-feature"><div class="about-feature-icon"><i class="fas fa-check"></i></div><div><h4>Expert Doctors</h4><p>Board-certified specialists</p></div></div>
-            <div class="about-feature"><div class="about-feature-icon"><i class="fas fa-check"></i></div><div><h4>24/7 Emergency</h4><p>Round-the-clock care</p></div></div>
-            <div class="about-feature"><div class="about-feature-icon"><i class="fas fa-check"></i></div><div><h4>Patient-Centred</h4><p>Personalized treatment</p></div></div>
-          </div>
-          <a href="javascript:void(0)" class="btn btn-primary" onclick="navigate('about')">Learn More <i class="fas fa-arrow-right"></i></a>
-        </div>
-      </div>
+ <section class="sbg" style="padding:72px 0">
+  <div class="con">
+   <div class="sh"><div class="st2">Our Services</div><h2>Comprehensive Healthcare Services</h2><p>From preventive care to complex procedures — a full spectrum of medical services.</p></div>
+   <div class="sgrid" id="hsg"></div>
+   <div style="text-align:center;margin-top:28px"><button class="btn bp" onclick="go('services')">View All Services <i class="fas fa-arrow-right"></i></button></div>
+  </div>
+ </section>
+
+ <section style="padding:72px 0">
+  <div class="con">
+   <div class="agrid">
+    <div style="position:relative">
+     <div class="aimg" id="aimg1"><span id="aph1">🏥</span><img id="aid1" style="display:none" src="" alt="Hospital"></div>
+     <div class="abadge"><div class="num">15+</div><div class="lbl">Years Excellence</div></div>
     </div>
-  </section>
-
-  <section class="services">
-    <div class="container">
-      <div class="section-header"><span class="section-tag">Our Doctors</span><h2>Meet Our Specialists</h2><p>Our team of experienced, compassionate doctors dedicated to your highest standard of care.</p></div>
-      <div class="doctors-grid" id="home-doctors-grid"></div>
-      <div style="text-align:center;margin-top:32px"><a href="javascript:void(0)" class="btn btn-primary" onclick="navigate('doctors')">Meet All Doctors <i class="fas fa-arrow-right"></i></a></div>
+    <div class="acnt">
+     <div class="st2">About Us</div>
+     <h2 id="atit">A Legacy of Compassionate Healthcare</h2>
+     <p id="at1">Founded with a vision to provide accessible, high-quality healthcare to all, Loving Heart Hospital has been a beacon of health and hope in our community for over 15 years.</p>
+     <p id="at2">Our state-of-the-art facility is equipped with the latest medical technology, staffed by board-certified physicians, and driven by one core belief — every patient deserves love and respect.</p>
+     <div class="afeat">
+      <div class="af"><div class="afi"><i class="fas fa-check"></i></div><div><h4>Modern Equipment</h4><p>Latest medical tech</p></div></div>
+      <div class="af"><div class="afi"><i class="fas fa-check"></i></div><div><h4>Expert Doctors</h4><p>Board-certified specialists</p></div></div>
+      <div class="af"><div class="afi"><i class="fas fa-check"></i></div><div><h4>24/7 Emergency</h4><p>Round-the-clock care</p></div></div>
+      <div class="af"><div class="afi"><i class="fas fa-check"></i></div><div><h4>Patient-Centred</h4><p>Personalized treatment</p></div></div>
+     </div>
+     <button class="btn bp" onclick="go('about')">Learn More <i class="fas fa-arrow-right"></i></button>
     </div>
-  </section>
+   </div>
+  </div>
+ </section>
 
-  <section class="testimonials">
-    <div class="container">
-      <div class="section-header"><span class="section-tag">Patient Stories</span><h2>What Our Patients Say</h2><p>Real stories from real patients who found healing and hope at Loving Heart Hospital.</p></div>
-      <div class="testimonials-grid" id="testimonials-grid"></div>
-    </div>
-  </section>
+ <section class="sbg" style="padding:72px 0">
+  <div class="con">
+   <div class="sh"><div class="st2">Our Doctors</div><h2>Meet Our Specialists</h2><p>Experienced, compassionate doctors dedicated to your highest standard of care.</p></div>
+   <div class="dgrid" id="hdg"></div>
+   <div style="text-align:center;margin-top:28px"><button class="btn bp" onclick="go('doctors')">Meet All Doctors <i class="fas fa-arrow-right"></i></button></div>
+  </div>
+ </section>
 
-  <section class="cta">
-    <div class="container"><div class="cta-inner">
-      <h2>Ready to Experience World-Class Care?</h2>
-      <p>Book your appointment today and take the first step towards better health.</p>
-      <div class="cta-actions">
-        <a href="javascript:void(0)" class="btn btn-white" onclick="navigate('appointment')"><i class="fas fa-calendar-plus"></i> Book Appointment</a>
-        <a href="tel:08136393150" class="btn btn-outline-white"><i class="fas fa-phone"></i> Call 08136393150</a>
-      </div>
-    </div></div>
-  </section>
+ <section class="tbg" style="padding:72px 0">
+  <div class="con">
+   <div class="sh"><div class="st">Patient Stories</div><h2>What Our Patients Say</h2><p>Real stories from real patients who found healing at Loving Heart Hospital.</p></div>
+   <div class="tgrid" id="tg"></div>
+  </div>
+ </section>
+
+ <section class="cta">
+  <div class="con">
+   <h2>Ready to Experience World-Class Care?</h2>
+   <p>Book your appointment today and take the first step towards better health.</p>
+   <div class="cta-a">
+    <button class="btn bw" onclick="go('appointment')"><i class="fas fa-calendar-plus"></i> Book Appointment</button>
+    <a href="tel:08136393150" class="btn bow"><i class="fas fa-phone"></i> Call 08136393150</a>
+   </div>
+  </div>
+ </section>
 </div>
 
-<!-- ======= ABOUT ======= -->
+<!-- ABOUT -->
 <div id="about" class="page">
-  <div class="page-hero">
-    <div class="container">
-      <span class="section-tag" style="background:rgba(46,196,169,0.2);color:var(--mint)">About Us</span>
-      <h1 style="color:white;font-size:clamp(2rem,4vw,3rem);margin-top:10px">Our Story of Healing</h1>
-      <p style="color:rgba(255,255,255,0.7);max-width:560px;margin:14px auto">15 years of compassionate care, innovation, and service to our community.</p>
+ <div class="ph"><div class="con"><div class="st">About Us</div><h1 style="color:#fff;font-size:clamp(1.9rem,4vw,2.9rem);margin-top:8px">Our Story of Healing</h1><p style="color:rgba(255,255,255,.7);max-width:520px;margin:12px auto">15 years of compassionate care, innovation, and service to our community.</p></div></div>
+ <section style="padding:66px 0">
+  <div class="con">
+   <div class="agrid">
+    <div style="position:relative">
+     <div class="aimg" id="aimg2"><span id="aph2">🏥</span><img id="aid2" style="display:none" src="" alt="About"></div>
+     <div class="abadge"><div class="num">2009</div><div class="lbl">Founded</div></div>
     </div>
+    <div>
+     <div class="st2">Our History</div>
+     <h2 id="hstit" style="color:var(--navy);margin:10px 0 12px">Built on a Foundation of Love</h2>
+     <p id="ht1" style="color:var(--gray);line-height:1.8;margin-bottom:10px;font-size:.95rem">Loving Heart Hospital was established in 2009 with a single operating theatre and a team of five dedicated professionals. Today, we are a 200-bed multi-specialty hospital serving thousands annually.</p>
+     <p id="ht2" style="color:var(--gray);line-height:1.8;font-size:.95rem">Over the years we have expanded facilities, brought in internationally trained specialists, and adopted the latest technologies — all while maintaining the compassionate care that defines us.</p>
+    </div>
+   </div>
   </div>
-  <section style="padding:70px 0">
-    <div class="container">
-      <div class="about-grid">
-        <div style="position:relative">
-          <div class="about-img-main">
-            <span class="placeholder-icon" id="about2-placeholder">🏥</span>
-            <img id="about2-img-display" src="" alt="Hospital" style="display:none">
-          </div>
-          <div class="about-badge"><div class="num">2009</div><div class="label">Founded</div></div>
-        </div>
-        <div>
-          <span class="section-tag">Our History</span>
-          <h2 id="history-title" style="color:var(--navy);margin:10px 0 14px">Built on a Foundation of Love</h2>
-          <p id="history-text1" style="color:var(--gray);line-height:1.8;margin-bottom:12px">Loving Heart Hospital was established in 2009 with a single operating theatre and a team of five dedicated healthcare professionals. Today, we are a 200-bed multi-specialty hospital serving thousands of patients annually.</p>
-          <p id="history-text2" style="color:var(--gray);line-height:1.8">Over the years, we have expanded our facilities, brought in internationally trained specialists, and adopted the latest medical technologies — all while maintaining the personal, compassionate care that defines our identity.</p>
-        </div>
-      </div>
+ </section>
+ <section style="background:var(--offwhite);padding:66px 0">
+  <div class="con">
+   <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+    <div style="background:#fff;border-radius:var(--r);padding:28px;border:1px solid var(--lgray)">
+     <div style="width:48px;height:48px;background:var(--lblue);border-radius:11px;display:flex;align-items:center;justify-content:center;color:var(--blue);font-size:1.3rem;margin-bottom:14px"><i class="fas fa-bullseye"></i></div>
+     <h3 style="color:var(--navy);margin-bottom:9px">Our Mission</h3>
+     <p id="mist" style="color:var(--gray);line-height:1.8;font-size:.92rem">To deliver accessible, compassionate, and technologically advanced healthcare to every individual — treating not just the body, but the whole person — with love, dignity, and respect.</p>
     </div>
-  </section>
-  <section style="background:var(--off-white);padding:70px 0">
-    <div class="container">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:28px">
-        <div style="background:white;border-radius:var(--radius);padding:32px;border:1px solid var(--light-gray)">
-          <div style="width:52px;height:52px;background:var(--light-blue);border-radius:12px;display:flex;align-items:center;justify-content:center;color:var(--blue);font-size:1.4rem;margin-bottom:16px"><i class="fas fa-bullseye"></i></div>
-          <h3 style="color:var(--navy);margin-bottom:10px">Our Mission</h3>
-          <p id="mission-text" style="color:var(--gray);line-height:1.8">To deliver accessible, compassionate, and technologically advanced healthcare to every individual — treating not just the body, but the whole person — with love, dignity, and respect.</p>
-        </div>
-        <div style="background:white;border-radius:var(--radius);padding:32px;border:1px solid var(--light-gray)">
-          <div style="width:52px;height:52px;background:var(--light-mint);border-radius:12px;display:flex;align-items:center;justify-content:center;color:var(--mint);font-size:1.4rem;margin-bottom:16px"><i class="fas fa-eye"></i></div>
-          <h3 style="color:var(--navy);margin-bottom:10px">Our Vision</h3>
-          <p id="vision-text" style="color:var(--gray);line-height:1.8">To become West Africa's leading healthcare institution — recognized for clinical excellence, patient satisfaction, and pioneering medical research that improves lives across the continent.</p>
-        </div>
-      </div>
+    <div style="background:#fff;border-radius:var(--r);padding:28px;border:1px solid var(--lgray)">
+     <div style="width:48px;height:48px;background:var(--lmint);border-radius:11px;display:flex;align-items:center;justify-content:center;color:var(--mint);font-size:1.3rem;margin-bottom:14px"><i class="fas fa-eye"></i></div>
+     <h3 style="color:var(--navy);margin-bottom:9px">Our Vision</h3>
+     <p id="vist" style="color:var(--gray);line-height:1.8;font-size:.92rem">To become West Africa's leading healthcare institution — recognized for clinical excellence, patient satisfaction, and pioneering medical research that improves lives across the continent.</p>
     </div>
-  </section>
+   </div>
+  </div>
+ </section>
 </div>
 
-<!-- ======= SERVICES ======= -->
+<!-- SERVICES -->
 <div id="services" class="page">
-  <div class="page-hero"><div class="container">
-    <span class="section-tag" style="background:rgba(46,196,169,0.2);color:var(--mint)">Our Services</span>
-    <h1 style="color:white;font-size:clamp(2rem,4vw,3rem);margin-top:10px">World-Class Medical Services</h1>
-    <p style="color:rgba(255,255,255,0.7);max-width:560px;margin:14px auto">Comprehensive healthcare solutions for every medical need.</p>
-  </div></div>
-  <section class="services" style="padding:70px 0">
-    <div class="container"><div class="services-grid" id="full-services-grid"></div></div>
-  </section>
+ <div class="ph"><div class="con"><div class="st">Our Services</div><h1 style="color:#fff;font-size:clamp(1.9rem,4vw,2.9rem);margin-top:8px">World-Class Medical Services</h1><p style="color:rgba(255,255,255,.7);max-width:520px;margin:12px auto">Comprehensive healthcare solutions for every medical need.</p></div></div>
+ <section class="sbg" style="padding:66px 0"><div class="con"><div class="sgrid" id="fsg"></div></div></section>
 </div>
 
-<!-- ======= DOCTORS ======= -->
+<!-- DOCTORS -->
 <div id="doctors" class="page">
-  <div class="page-hero"><div class="container">
-    <span class="section-tag" style="background:rgba(46,196,169,0.2);color:var(--mint)">Medical Staff</span>
-    <h1 style="color:white;font-size:clamp(2rem,4vw,3rem);margin-top:10px">Our Expert Doctors</h1>
-    <p style="color:rgba(255,255,255,0.7);max-width:560px;margin:14px auto">Board-certified specialists committed to your health and wellbeing.</p>
-  </div></div>
-  <section style="padding:70px 0">
-    <div class="container"><div class="doctors-grid" id="full-doctors-grid"></div></div>
-  </section>
+ <div class="ph"><div class="con"><div class="st">Medical Staff</div><h1 style="color:#fff;font-size:clamp(1.9rem,4vw,2.9rem);margin-top:8px">Our Expert Doctors</h1><p style="color:rgba(255,255,255,.7);max-width:520px;margin:12px auto">Board-certified specialists committed to your health.</p></div></div>
+ <section style="padding:66px 0"><div class="con"><div class="dgrid" id="fdg"></div></div></section>
 </div>
 
-<!-- ======= GALLERY ======= -->
-<div id="gallery-page" class="page">
-  <div class="page-hero"><div class="container">
-    <span class="section-tag" style="background:rgba(46,196,169,0.2);color:var(--mint)">Gallery</span>
-    <h1 style="color:white;font-size:clamp(2rem,4vw,3rem);margin-top:10px">Hospital Gallery</h1>
-    <p style="color:rgba(255,255,255,0.7);max-width:560px;margin:14px auto">A glimpse into our world-class facilities.</p>
-  </div></div>
-  <section style="padding:70px 0;background:var(--off-white)">
-    <div class="container">
-      <div class="gallery-grid" id="pub-gallery-grid">
-        <div class="gallery-item"><div class="gallery-overlay"><i class="fas fa-search-plus"></i></div><span style="font-size:3rem">🏥</span></div>
-        <div class="gallery-item"><div class="gallery-overlay"><i class="fas fa-search-plus"></i></div><span style="font-size:3rem">🧪</span></div>
-        <div class="gallery-item"><div class="gallery-overlay"><i class="fas fa-search-plus"></i></div><span style="font-size:3rem">💊</span></div>
-        <div class="gallery-item"><div class="gallery-overlay"><i class="fas fa-search-plus"></i></div><span style="font-size:3rem">🚑</span></div>
-        <div class="gallery-item"><div class="gallery-overlay"><i class="fas fa-search-plus"></i></div><span style="font-size:3rem">🩺</span></div>
-        <div class="gallery-item"><div class="gallery-overlay"><i class="fas fa-search-plus"></i></div><span style="font-size:3rem">🏋️</span></div>
-      </div>
-    </div>
-  </section>
+<!-- GALLERY -->
+<div id="gallery" class="page">
+ <div class="ph"><div class="con"><div class="st">Gallery</div><h1 style="color:#fff;font-size:clamp(1.9rem,4vw,2.9rem);margin-top:8px">Hospital Gallery</h1><p style="color:rgba(255,255,255,.7);max-width:520px;margin:12px auto">A glimpse into our world-class facilities.</p></div></div>
+ <section style="padding:66px 0;background:var(--offwhite)"><div class="con"><div class="ggrid" id="pgg">
+  <div class="gi"><div class="gov"><i class="fas fa-search-plus"></i></div>🏥</div>
+  <div class="gi"><div class="gov"><i class="fas fa-search-plus"></i></div>🧪</div>
+  <div class="gi"><div class="gov"><i class="fas fa-search-plus"></i></div>💊</div>
+  <div class="gi"><div class="gov"><i class="fas fa-search-plus"></i></div>🚑</div>
+  <div class="gi"><div class="gov"><i class="fas fa-search-plus"></i></div>🩺</div>
+  <div class="gi"><div class="gov"><i class="fas fa-search-plus"></i></div>🏥</div>
+ </div></div></section>
 </div>
 
-<!-- ======= APPOINTMENT ======= -->
+<!-- APPOINTMENT -->
 <div id="appointment" class="page">
-  <div class="page-hero"><div class="container">
-    <span class="section-tag" style="background:rgba(46,196,169,0.2);color:var(--mint)">Appointments</span>
-    <h1 style="color:white;font-size:clamp(2rem,4vw,3rem);margin-top:10px">Book an Appointment</h1>
-    <p style="color:rgba(255,255,255,0.7);max-width:560px;margin:14px auto">Schedule your visit. We'll confirm within 24 hours.</p>
-  </div></div>
-  <section class="appt-section" style="padding:70px 0">
-    <div class="container">
-      <div class="appointment-wrap">
-        <div class="appointment-info">
-          <h2>Schedule Your Visit</h2>
-          <p>Booking is simple and convenient. Fill out the form and our team will get back to you promptly.</p>
-          <div class="appt-features">
-            <div class="appt-feature"><i class="fas fa-clock"></i><span>Mon–Sat: 7:00 AM – 9:00 PM</span></div>
-            <div class="appt-feature"><i class="fas fa-ambulance"></i><span>Emergency: 24 hours, 7 days</span></div>
-            <div class="appt-feature"><i class="fas fa-phone"></i><span>Helpline: 08136393150</span></div>
-            <div class="appt-feature"><i class="fas fa-check-circle"></i><span>Confirmation within 24 hours</span></div>
-          </div>
-        </div>
-        <div class="form-card">
-          <h3 class="form-title">Patient Appointment Form</h3>
-          <div class="form-msg" id="appt-feedback"></div>
-          <div class="form-grid">
-            <div class="form-group"><label>Full Name *</label><input type="text" id="appt-name" placeholder="Your full name"></div>
-            <div class="form-group"><label>Phone Number *</label><input type="tel" id="appt-phone" placeholder="08XXXXXXXXX"></div>
-            <div class="form-group"><label>Email Address</label><input type="email" id="appt-email" placeholder="your@email.com"></div>
-            <div class="form-group"><label>Department *</label>
-              <select id="appt-dept">
-                <option value="">Select department</option>
-                <option>General Consultation</option><option>Laboratory</option>
-                <option>Pharmacy</option><option>Maternity</option>
-                <option>Surgery</option><option>Emergency Care</option>
-                <option>Cardiology</option><option>Paediatrics</option>
-              </select>
-            </div>
-            <div class="form-group"><label>Preferred Doctor</label><input type="text" id="appt-doctor" placeholder="Doctor's name (optional)"></div>
-            <div class="form-group"><label>Preferred Date *</label><input type="date" id="appt-date"></div>
-            <div class="form-group"><label>Preferred Time *</label><input type="time" id="appt-time"></div>
-            <div class="form-group full"><label>Message / Symptoms</label><textarea id="appt-notes" placeholder="Briefly describe your symptoms..."></textarea></div>
-          </div>
-          <button class="btn btn-primary" id="appt-submit-btn" style="width:100%;justify-content:center;margin-top:10px" onclick="submitAppointment()"><i class="fas fa-calendar-check"></i> Confirm Appointment</button>
-        </div>
+ <div class="ph"><div class="con"><div class="st">Appointments</div><h1 style="color:#fff;font-size:clamp(1.9rem,4vw,2.9rem);margin-top:8px">Book an Appointment</h1><p style="color:rgba(255,255,255,.7);max-width:520px;margin:12px auto">Schedule your visit. We'll confirm within 24 hours.</p></div></div>
+ <section class="apbg" style="padding:66px 0">
+  <div class="con">
+   <div class="apwrap">
+    <div class="apinfo">
+     <h2>Schedule Your Visit</h2>
+     <p>Fill out the form and our team will contact you promptly to confirm your appointment.</p>
+     <div class="apf">
+      <div class="apfi"><i class="fas fa-clock"></i><span>Mon–Sat: 7:00 AM – 9:00 PM</span></div>
+      <div class="apfi"><i class="fas fa-ambulance"></i><span>Emergency: 24 hours, 7 days</span></div>
+      <div class="apfi"><i class="fas fa-phone"></i><span>Helpline: 08136393150</span></div>
+      <div class="apfi"><i class="fas fa-check-circle"></i><span>Confirmation within 24 hours</span></div>
+     </div>
+    </div>
+    <div class="fc">
+     <h3 class="ftit">Patient Appointment Form</h3>
+     <div class="fmsg" id="afb"></div>
+     <div class="fgrid">
+      <div class="fg"><label>Full Name *</label><input id="an" placeholder="Your full name" type="text"></div>
+      <div class="fg"><label>Phone Number *</label><input id="aph" placeholder="08XXXXXXXXX" type="tel"></div>
+      <div class="fg"><label>Email Address</label><input id="ae" placeholder="your@email.com" type="email"></div>
+      <div class="fg"><label>Department *</label>
+       <select id="ad">
+        <option value="">Select department</option>
+        <option>General Consultation</option><option>Laboratory</option>
+        <option>Pharmacy</option><option>Maternity</option>
+        <option>Surgery</option><option>Emergency Care</option>
+        <option>Cardiology</option><option>Paediatrics</option>
+       </select>
       </div>
+      <div class="fg"><label>Preferred Doctor</label><input id="adr" placeholder="Doctor's name (optional)" type="text"></div>
+      <div class="fg"><label>Preferred Date *</label><input id="adt" type="date"></div>
+      <div class="fg"><label>Preferred Time *</label><input id="atm" type="time"></div>
+      <div class="fg full"><label>Message / Symptoms</label><textarea id="ano" placeholder="Describe your symptoms or reason for visit..."></textarea></div>
+     </div>
+     <button class="btn bp" id="asb2" style="width:100%;justify-content:center;margin-top:10px" onclick="submitAppt()"><i class="fas fa-calendar-check"></i> Confirm Appointment</button>
     </div>
-  </section>
-</div>
-
-<!-- ======= CONTACT ======= -->
-<div id="contact" class="page">
-  <div class="page-hero"><div class="container">
-    <span class="section-tag" style="background:rgba(46,196,169,0.2);color:var(--mint)">Contact</span>
-    <h1 style="color:white;font-size:clamp(2rem,4vw,3rem);margin-top:10px">Get In Touch</h1>
-    <p style="color:rgba(255,255,255,0.7);max-width:560px;margin:14px auto">Reach us by phone, email, or visit us in person.</p>
-  </div></div>
-  <section style="padding:70px 0">
-    <div class="container">
-      <div class="contact-grid">
-        <div>
-          <span class="section-tag">Contact Info</span>
-          <h2 style="color:var(--navy);margin:10px 0 14px">We're Here For You</h2>
-          <p style="color:var(--gray);line-height:1.7;margin-bottom:24px">Our team is ready to help with any question.</p>
-          <div class="contact-item"><div class="contact-item-icon"><i class="fas fa-map-marker-alt"></i></div><div><strong>Address</strong><p id="contact-address-display" style="color:var(--gray);font-size:0.88rem;margin-top:2px">123 Healthcare Avenue, Lagos, Nigeria</p></div></div>
-          <div class="contact-item"><div class="contact-item-icon"><i class="fas fa-phone"></i></div><div><strong>Phone</strong><p style="color:var(--gray);font-size:0.88rem;margin-top:2px"><a href="tel:08136393150">08136393150</a></p></div></div>
-          <div class="contact-item"><div class="contact-item-icon"><i class="fas fa-envelope"></i></div><div><strong>Email</strong><p id="contact-email-display" style="color:var(--gray);font-size:0.88rem;margin-top:2px">info@lovinghearthospital.com</p></div></div>
-          <div class="contact-item"><div class="contact-item-icon"><i class="fas fa-clock"></i></div><div><strong>Hours</strong><p style="color:var(--gray);font-size:0.88rem;margin-top:2px">Mon–Sat: 7AM–9PM | Emergency: 24/7</p></div></div>
-          <a href="https://wa.me/2348136393150" class="whatsapp-btn" target="_blank"><i class="fab fa-whatsapp" style="font-size:1.3rem"></i> Chat on WhatsApp</a>
-          <div class="map-container"><iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d253682.45!2d3.1191!3d6.5244!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x103b8b2ae68280c1%3A0xdc9e87a367c3d9cb!2sLagos!5e0!3m2!1sen!2sng" allowfullscreen loading="lazy"></iframe></div>
-        </div>
-        <div class="form-card" style="align-self:start">
-          <h3 class="form-title">Send Us a Message</h3>
-          <div class="form-msg" id="contact-feedback"></div>
-          <div style="display:flex;flex-direction:column;gap:14px">
-            <div class="form-group"><label>Full Name *</label><input type="text" id="contact-name" placeholder="Your full name"></div>
-            <div class="form-group"><label>Email *</label><input type="email" id="contact-email" placeholder="your@email.com"></div>
-            <div class="form-group"><label>Phone</label><input type="tel" id="contact-phone" placeholder="08XXXXXXXXX"></div>
-            <div class="form-group"><label>Subject</label><input type="text" id="contact-subject" placeholder="How can we help?"></div>
-            <div class="form-group"><label>Message *</label><textarea id="contact-msg" rows="4" placeholder="Tell us more..."></textarea></div>
-            <button class="btn btn-primary" id="contact-submit-btn" style="justify-content:center" onclick="submitContact()"><i class="fas fa-paper-plane"></i> Send Message</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-</div>
-
-<!-- ======= FOOTER ======= -->
-<footer id="main-footer">
-  <div class="container">
-    <div class="footer-top">
-      <div class="footer-brand">
-        <div style="display:flex;align-items:center;gap:10px">
-          <div style="width:44px;height:44px;background:linear-gradient(135deg,#1a5cad,#2ec4a9);border-radius:10px;display:flex;align-items:center;justify-content:center;color:white;font-size:1.3rem"><i class="fas fa-heartbeat"></i></div>
-          <span style="font-family:'Playfair Display',serif;font-size:1.1rem;color:white">Loving Heart Hospital</span>
-        </div>
-        <p>Quality healthcare with compassion. Serving our community with love, skill, and dedication since 2009.</p>
-        <div class="footer-socials">
-          <a href="javascript:void(0)"><i class="fab fa-facebook-f"></i></a>
-          <a href="javascript:void(0)"><i class="fab fa-twitter"></i></a>
-          <a href="javascript:void(0)"><i class="fab fa-instagram"></i></a>
-          <a href="https://wa.me/2348136393150"><i class="fab fa-whatsapp"></i></a>
-        </div>
-      </div>
-      <div class="footer-col"><h4>Quick Links</h4><ul>
-        <li><a href="javascript:void(0)" onclick="navigate('home')">Home</a></li>
-        <li><a href="javascript:void(0)" onclick="navigate('about')">About Us</a></li>
-        <li><a href="javascript:void(0)" onclick="navigate('services')">Services</a></li>
-        <li><a href="javascript:void(0)" onclick="navigate('doctors')">Doctors</a></li>
-        <li><a href="javascript:void(0)" onclick="navigate('appointment')">Book Appointment</a></li>
-      </ul></div>
-      <div class="footer-col"><h4>Our Services</h4><ul>
-        <li><a href="javascript:void(0)">General Consultation</a></li>
-        <li><a href="javascript:void(0)">Laboratory</a></li>
-        <li><a href="javascript:void(0)">Pharmacy</a></li>
-        <li><a href="javascript:void(0)">Maternity</a></li>
-        <li><a href="javascript:void(0)">Surgery</a></li>
-        <li><a href="javascript:void(0)">Emergency Care</a></li>
-      </ul></div>
-      <div class="footer-col"><h4>Contact</h4><ul>
-        <li><a href="javascript:void(0)">123 Healthcare Avenue, Lagos</a></li>
-        <li><a href="tel:08136393150">08136393150</a></li>
-        <li><a href="mailto:info@lovinghearthospital.com">info@lovinghearthospital.com</a></li>
-        <li><a href="javascript:void(0)">Mon–Sat: 7AM–9PM</a></li>
-      </ul></div>
-    </div>
-    <div class="footer-bottom">
-      <span>© 2025 Loving Heart Hospital. All rights reserved.</span>
-      <span>Designed with ❤️ for better healthcare</span>
-    </div>
+   </div>
   </div>
+ </section>
+</div>
+
+<!-- CONTACT -->
+<div id="contact" class="page">
+ <div class="ph"><div class="con"><div class="st">Contact</div><h1 style="color:#fff;font-size:clamp(1.9rem,4vw,2.9rem);margin-top:8px">Get In Touch</h1><p style="color:rgba(255,255,255,.7);max-width:520px;margin:12px auto">Reach us by phone, email, or visit us in person.</p></div></div>
+ <section style="padding:66px 0">
+  <div class="con">
+   <div class="cgrid">
+    <div>
+     <div class="st2">Contact Info</div>
+     <h2 style="color:var(--navy);margin:10px 0 12px">We're Here For You</h2>
+     <p style="color:var(--gray);margin-bottom:22px;font-size:.92rem">Our team is ready to help with any question.</p>
+     <div class="ci"><div class="cii"><i class="fas fa-map-marker-alt"></i></div><div class="ciinfo"><strong>Address</strong><p id="cadd">123 Healthcare Avenue, Lagos, Nigeria</p></div></div>
+     <div class="ci"><div class="cii"><i class="fas fa-phone"></i></div><div class="ciinfo"><strong>Phone</strong><p><a href="tel:08136393150">08136393150</a></p></div></div>
+     <div class="ci"><div class="cii"><i class="fas fa-envelope"></i></div><div class="ciinfo"><strong>Email</strong><p id="ceml">info@lovinghearthospital.com</p></div></div>
+     <div class="ci"><div class="cii"><i class="fas fa-clock"></i></div><div class="ciinfo"><strong>Hours</strong><p>Mon–Sat: 7AM–9PM | Emergency: 24/7</p></div></div>
+     <a href="https://wa.me/2348136393150" class="wabtn" target="_blank" rel="noopener"><i class="fab fa-whatsapp" style="font-size:1.2rem"></i> Chat on WhatsApp</a>
+     <div class="map"><iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d253682!2d3.1191!3d6.5244!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x103b8b2ae68280c1%3A0xdc9e87a367c3d9cb!2sLagos!5e0!3m2!1sen!2sng" allowfullscreen loading="lazy"></iframe></div>
+    </div>
+    <div class="fc" style="align-self:start">
+     <h3 class="ftit">Send Us a Message</h3>
+     <div class="fmsg" id="cfb"></div>
+     <div style="display:flex;flex-direction:column;gap:13px">
+      <div class="fg"><label>Full Name *</label><input id="cn" placeholder="Your full name" type="text"></div>
+      <div class="fg"><label>Email *</label><input id="cem" placeholder="your@email.com" type="email"></div>
+      <div class="fg"><label>Phone</label><input id="cph" placeholder="08XXXXXXXXX" type="tel"></div>
+      <div class="fg"><label>Subject</label><input id="csub" placeholder="How can we help?" type="text"></div>
+      <div class="fg"><label>Message *</label><textarea id="cmsg" rows="4" placeholder="Tell us more..."></textarea></div>
+      <button class="btn bp" id="csb" style="justify-content:center" onclick="submitContact()"><i class="fas fa-paper-plane"></i> Send Message</button>
+     </div>
+    </div>
+   </div>
+  </div>
+ </section>
+</div>
+
+<!-- FOOTER -->
+<footer id="mf">
+ <div class="con">
+  <div class="ftop">
+   <div class="fbrand">
+    <div style="display:flex;align-items:center;gap:10px">
+     <div style="width:40px;height:40px;background:linear-gradient(135deg,var(--blue),var(--mint));border-radius:9px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.1rem"><i class="fas fa-heartbeat"></i></div>
+     <span style="font-family:Georgia,serif;font-size:1.1rem;color:#fff">Loving Heart Hospital</span>
+    </div>
+    <p>Quality healthcare with compassion. Serving our community with love and dedication since 2009.</p>
+    <div class="fsoc">
+     <a href="#"><i class="fab fa-facebook-f"></i></a>
+     <a href="#"><i class="fab fa-twitter"></i></a>
+     <a href="#"><i class="fab fa-instagram"></i></a>
+     <a href="https://wa.me/2348136393150"><i class="fab fa-whatsapp"></i></a>
+    </div>
+   </div>
+   <div class="fcol"><h4>Quick Links</h4><ul>
+    <li><a onclick="go('home')">Home</a></li>
+    <li><a onclick="go('about')">About Us</a></li>
+    <li><a onclick="go('services')">Services</a></li>
+    <li><a onclick="go('doctors')">Doctors</a></li>
+    <li><a onclick="go('appointment')">Book Appointment</a></li>
+   </ul></div>
+   <div class="fcol"><h4>Services</h4><ul>
+    <li><a>General Consultation</a></li><li><a>Laboratory</a></li>
+    <li><a>Pharmacy</a></li><li><a>Maternity</a></li>
+    <li><a>Surgery</a></li><li><a>Emergency Care</a></li>
+   </ul></div>
+   <div class="fcol"><h4>Contact</h4><ul>
+    <li><a>123 Healthcare Ave, Lagos</a></li>
+    <li><a href="tel:08136393150">08136393150</a></li>
+    <li><a href="mailto:info@lovinghearthospital.com">info@lovinghearthospital.com</a></li>
+    <li><a>Mon–Sat: 7AM–9PM</a></li>
+   </ul></div>
+  </div>
+  <div class="fbot"><span>© 2025 Loving Heart Hospital. All rights reserved.</span><span>Made with ❤️</span></div>
+ </div>
 </footer>
 
-<!-- ======= ADMIN LOGIN ======= -->
-<div class="admin-login" id="adminLogin" style="display:none">
-  <div class="login-card">
-    <div style="text-align:center;margin-bottom:20px">
-      <div style="width:70px;height:70px;background:linear-gradient(135deg,#1a5cad,#2ec4a9);border-radius:14px;display:flex;align-items:center;justify-content:center;color:white;font-size:2rem;margin:0 auto 10px">❤️</div>
-      <h2 style="font-size:1.4rem;color:var(--navy)">Admin Login</h2>
-      <p style="color:var(--gray);font-size:0.88rem;margin-top:4px">Loving Heart Hospital — Secure Access</p>
-    </div>
-    <div style="display:flex;flex-direction:column;gap:14px">
-      <div class="form-group"><label>Email</label><input type="email" id="admin-email" placeholder="admin@hospital.com"></div>
-      <div class="form-group"><label>Password</label><input type="password" id="admin-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter') adminLogin()"></div>
-      <div class="form-msg" id="login-error"></div>
-      <button class="btn btn-primary" style="justify-content:center" onclick="adminLogin()"><i class="fas fa-sign-in-alt"></i> Sign In</button>
-      <p style="text-align:center;font-size:0.82rem;color:var(--gray);cursor:pointer;margin-top:4px" onclick="document.getElementById('adminLogin').style.display='none'">← Back to Website</p>
-    </div>
+<!-- ADMIN LOGIN -->
+<div class="alo" id="alo">
+ <div class="alc">
+  <div style="text-align:center;margin-bottom:20px">
+   <div style="width:60px;height:60px;background:linear-gradient(135deg,var(--blue),var(--mint));border-radius:14px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.8rem;margin:0 auto 10px">❤️</div>
+   <h2 style="font-size:1.3rem;color:var(--navy)">Admin Login</h2>
+   <p style="color:var(--gray);font-size:.86rem;margin-top:3px">Loving Heart Hospital</p>
   </div>
+  <div style="display:flex;flex-direction:column;gap:13px">
+   <div class="fg"><label>Email</label><input type="email" id="lei" placeholder="admin@hospital.com"></div>
+   <div class="fg"><label>Password</label><input type="password" id="lpi" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
+   <div class="fmsg" id="lerr"></div>
+   <button class="btn bp" style="justify-content:center" onclick="doLogin()"><i class="fas fa-sign-in-alt"></i> Sign In</button>
+   <p style="text-align:center;font-size:.8rem;color:var(--gray);cursor:pointer" onclick="closeLogin()">← Back to Website</p>
+  </div>
+ </div>
 </div>
 
-<!-- ======= ADMIN DASHBOARD ======= -->
-<div class="admin-overlay" id="adminDashboard">
-  <div class="admin-sidebar">
-    <div class="admin-logo">
-      <div style="width:36px;height:36px;background:linear-gradient(135deg,#1a5cad,#2ec4a9);border-radius:8px;display:flex;align-items:center;justify-content:center;color:white;font-size:1rem;flex-shrink:0"><i class="fas fa-heartbeat"></i></div>
-      <div><div class="logo-name">Loving Heart</div><div class="logo-sub">Admin Panel</div></div>
-    </div>
-    <nav class="admin-nav">
-      <div class="admin-nav-item active" onclick="showSec('dashboard',this)"><i class="fas fa-th-large"></i> Dashboard</div>
-      <div class="admin-nav-item" onclick="showSec('appts',this)"><i class="fas fa-calendar-check"></i> Appointments</div>
-      <div class="admin-nav-item" onclick="showSec('adoctors',this)"><i class="fas fa-user-md"></i> Doctors</div>
-      <div class="admin-nav-item" onclick="showSec('aservices',this)"><i class="fas fa-stethoscope"></i> Services</div>
-      <div class="admin-nav-item" onclick="showSec('agallery',this)"><i class="fas fa-images"></i> Gallery</div>
-      <div class="admin-nav-item" onclick="showSec('atests',this)"><i class="fas fa-star"></i> Testimonials</div>
-      <div class="admin-nav-item" onclick="showSec('amessages',this)"><i class="fas fa-envelope"></i> Messages</div>
-      <div class="admin-nav-item" onclick="showSec('acontent',this)"><i class="fas fa-edit"></i> Site Content</div>
-      <div class="admin-nav-item" style="color:#fc8181;margin-top:16px" onclick="adminLogout()"><i class="fas fa-sign-out-alt"></i> Logout</div>
-    </nav>
+<!-- ADMIN DASHBOARD -->
+<div class="ado" id="ado">
+ <div class="asb">
+  <div class="asblogo">
+   <div class="li"><i class="fas fa-heartbeat"></i></div>
+   <div><div class="ln">Loving Heart</div><div class="ls">Admin Panel</div></div>
   </div>
-  <div class="admin-main">
-    <div class="admin-topbar">
-      <h2 id="admin-page-title">Dashboard</h2>
-      <div style="display:flex;align-items:center;gap:10px">
-        <span style="font-size:0.82rem;color:var(--gray)" id="admin-user-email"></span>
-        <div style="width:34px;height:34px;background:var(--light-blue);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--blue)"><i class="fas fa-user"></i></div>
-      </div>
-    </div>
-    <div class="admin-content">
-
-      <!-- DASHBOARD -->
-      <div class="admin-section active" id="section-dashboard">
-        <div class="stat-cards">
-          <div class="stat-card blue"><div class="stat-icon"><i class="fas fa-calendar-check"></i></div><div class="stat-num" id="stat-appts">0</div><div class="stat-label">Appointments</div></div>
-          <div class="stat-card mint"><div class="stat-icon"><i class="fas fa-user-md"></i></div><div class="stat-num" id="stat-docs">0</div><div class="stat-label">Doctors</div></div>
-          <div class="stat-card orange"><div class="stat-icon"><i class="fas fa-stethoscope"></i></div><div class="stat-num" id="stat-svcs">0</div><div class="stat-label">Services</div></div>
-          <div class="stat-card purple"><div class="stat-icon"><i class="fas fa-envelope"></i></div><div class="stat-num" id="stat-msgs">0</div><div class="stat-label">Messages</div></div>
-        </div>
-        <div class="admin-table-wrap">
-          <div class="admin-table-header"><h3>Recent Appointments</h3><button class="btn btn-primary btn-sm" onclick="showSec('appts')">View All</button></div>
-          <div style="overflow-x:auto"><table class="admin-table"><thead><tr><th>Patient</th><th>Phone</th><th>Dept</th><th>Date</th><th>Status</th></tr></thead><tbody id="recent-appts-body"></tbody></table></div>
-        </div>
-      </div>
-
-      <!-- APPOINTMENTS -->
-      <div class="admin-section" id="section-appts">
-        <div class="admin-table-wrap">
-          <div class="admin-table-header"><h3>All Appointments</h3></div>
-          <div style="overflow-x:auto"><table class="admin-table"><thead><tr><th>Patient</th><th>Phone</th><th>Email</th><th>Dept</th><th>Doctor</th><th>Date</th><th>Time</th><th>Status</th><th>Actions</th></tr></thead><tbody id="all-appts-body"></tbody></table></div>
-        </div>
-      </div>
-
-      <!-- DOCTORS -->
-      <div class="admin-section" id="section-adoctors">
-        <div class="admin-form-wrap">
-          <h3 id="doctor-form-title">Add New Doctor</h3>
-          <div class="form-grid">
-            <div class="form-group"><label>Full Name *</label><input type="text" id="doc-name" placeholder="Dr. Full Name"></div>
-            <div class="form-group"><label>Specialization *</label><input type="text" id="doc-spec" placeholder="e.g. Cardiologist"></div>
-            <div class="form-group full"><label>Biography</label><textarea id="doc-bio" placeholder="Short biography..." style="min-height:80px"></textarea></div>
-            <div class="form-group full">
-              <label>Doctor Photo</label>
-              <div class="img-upload-box" id="doc-photo-box">
-                <input type="file" accept="image/*" onchange="previewImg(this,'doc-photo-preview','doc-photo-data')">
-                <i class="fas fa-camera"></i>
-                <p>Click to upload photo</p>
-                <img id="doc-photo-preview" class="img-preview" style="display:none;margin:8px auto 0">
-              </div>
-              <input type="hidden" id="doc-photo-data">
-              <div style="margin-top:8px"><label style="font-size:0.78rem;color:var(--gray)">Or paste image URL:</label><input type="url" id="doc-photo-url" placeholder="https://..." style="margin-top:4px"></div>
-            </div>
-          </div>
-          <input type="hidden" id="doc-edit-id">
-          <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
-            <button class="btn btn-primary" onclick="saveDoctor()"><i class="fas fa-save"></i> Save Doctor</button>
-            <button class="btn btn-outline btn-sm" onclick="clearDoctorForm()">Clear</button>
-          </div>
-        </div>
-        <div class="admin-table-wrap">
-          <div class="admin-table-header"><h3>Doctors List (<span id="docs-count">0</span>)</h3></div>
-          <div style="overflow-x:auto"><table class="admin-table"><thead><tr><th>Photo</th><th>Name</th><th>Specialization</th><th>Bio</th><th>Actions</th></tr></thead><tbody id="admin-docs-body"></tbody></table></div>
-        </div>
-      </div>
-
-      <!-- SERVICES -->
-      <div class="admin-section" id="section-aservices">
-        <div class="admin-form-wrap">
-          <h3 id="service-form-title">Add New Service</h3>
-          <div class="form-grid">
-            <div class="form-group"><label>Service Name *</label><input type="text" id="svc-name" placeholder="e.g. Cardiology"></div>
-            <div class="form-group"><label>Icon (FA class)</label><input type="text" id="svc-icon" placeholder="fas fa-heart"></div>
-            <div class="form-group full"><label>Description</label><textarea id="svc-desc" placeholder="Service description..." style="min-height:80px"></textarea></div>
-            <div class="form-group full">
-              <label>Service Image</label>
-              <div class="img-upload-box">
-                <input type="file" accept="image/*" onchange="previewImg(this,'svc-img-preview','svc-img-data')">
-                <i class="fas fa-image"></i><p>Click to upload image</p>
-                <img id="svc-img-preview" class="img-preview" style="display:none;margin:8px auto 0">
-              </div>
-              <input type="hidden" id="svc-img-data">
-              <div style="margin-top:8px"><label style="font-size:0.78rem;color:var(--gray)">Or paste image URL:</label><input type="url" id="svc-img-url" placeholder="https://..." style="margin-top:4px"></div>
-            </div>
-          </div>
-          <input type="hidden" id="svc-edit-id">
-          <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
-            <button class="btn btn-primary" onclick="saveService()"><i class="fas fa-save"></i> Save Service</button>
-            <button class="btn btn-outline btn-sm" onclick="clearServiceForm()">Clear</button>
-          </div>
-        </div>
-        <div class="admin-table-wrap">
-          <div class="admin-table-header"><h3>Services List (<span id="svcs-count">0</span>)</h3></div>
-          <div style="overflow-x:auto"><table class="admin-table"><thead><tr><th>Image</th><th>Name</th><th>Icon</th><th>Description</th><th>Actions</th></tr></thead><tbody id="admin-svcs-body"></tbody></table></div>
-        </div>
-      </div>
-
-      <!-- GALLERY -->
-      <div class="admin-section" id="section-agallery">
-        <div class="admin-form-wrap">
-          <h3>Upload Gallery Image</h3>
-          <div style="display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap">
-            <div style="flex:1;min-width:200px">
-              <div class="img-upload-box">
-                <input type="file" accept="image/*" onchange="previewImg(this,'gal-preview','gal-img-data')">
-                <i class="fas fa-upload"></i><p>Click to upload</p>
-                <img id="gal-preview" class="img-preview" style="display:none;margin:8px auto 0">
-              </div>
-              <input type="hidden" id="gal-img-data">
-            </div>
-            <div style="flex:1;min-width:200px">
-              <div class="form-group"><label>Or Image URL</label><input type="url" id="gallery-url" placeholder="https://..."></div>
-              <div class="form-group" style="margin-top:10px"><label>Caption</label><input type="text" id="gallery-caption" placeholder="Image caption"></div>
-              <button class="btn btn-primary" style="margin-top:10px;width:100%;justify-content:center" onclick="saveGalleryImage()"><i class="fas fa-plus"></i> Add Image</button>
-            </div>
-          </div>
-        </div>
-        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px" id="admin-gallery-grid"></div>
-      </div>
-
-      <!-- TESTIMONIALS -->
-      <div class="admin-section" id="section-atests">
-        <div class="admin-form-wrap">
-          <h3 id="test-form-title">Add Testimonial</h3>
-          <div class="form-grid">
-            <div class="form-group"><label>Patient Name *</label><input type="text" id="test-name" placeholder="Patient name"></div>
-            <div class="form-group"><label>Rating (1-5)</label><input type="number" id="test-rating" min="1" max="5" value="5"></div>
-            <div class="form-group full"><label>Testimonial Text *</label><textarea id="test-text" placeholder="Patient's testimonial..." style="min-height:90px"></textarea></div>
-            <div class="form-group full">
-              <label>Patient Photo (optional)</label>
-              <div class="img-upload-box">
-                <input type="file" accept="image/*" onchange="previewImg(this,'test-photo-preview','test-photo-data')">
-                <i class="fas fa-user-circle"></i><p>Click to upload photo</p>
-                <img id="test-photo-preview" class="img-preview" style="display:none;margin:8px auto 0;border-radius:50%">
-              </div>
-              <input type="hidden" id="test-photo-data">
-            </div>
-          </div>
-          <input type="hidden" id="test-edit-id">
-          <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
-            <button class="btn btn-primary" onclick="saveTestimonial()"><i class="fas fa-save"></i> Save</button>
-            <button class="btn btn-outline btn-sm" onclick="clearTestForm()">Clear</button>
-          </div>
-        </div>
-        <div class="admin-table-wrap">
-          <div class="admin-table-header"><h3>Testimonials List</h3></div>
-          <div style="overflow-x:auto"><table class="admin-table"><thead><tr><th>Photo</th><th>Name</th><th>Rating</th><th>Text</th><th>Actions</th></tr></thead><tbody id="admin-tests-body"></tbody></table></div>
-        </div>
-      </div>
-
-      <!-- MESSAGES -->
-      <div class="admin-section" id="section-amessages">
-        <div class="admin-table-wrap">
-          <div class="admin-table-header"><h3>Contact Messages</h3></div>
-          <div style="overflow-x:auto"><table class="admin-table"><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Subject</th><th>Message</th><th>Date</th><th>Del</th></tr></thead><tbody id="admin-msgs-body"></tbody></table></div>
-        </div>
-      </div>
-
-      <!-- SITE CONTENT -->
-      <div class="admin-section" id="section-acontent">
-        <div class="admin-form-wrap">
-          <h3>Hero Section</h3>
-          <div style="display:flex;flex-direction:column;gap:12px">
-            <div class="form-group"><label>Hero Main Headline</label><input type="text" id="c-hero-headline" placeholder="Your Health Is Our Loving Priority"></div>
-            <div class="form-group"><label>Hero Highlight Word (coloured)</label><input type="text" id="c-hero-span" placeholder="Loving Priority"></div>
-            <div class="form-group"><label>Hero Sub-text</label><textarea id="c-hero-sub" style="min-height:70px" placeholder="World-class healthcare..."></textarea></div>
-            <button class="btn btn-primary btn-sm" style="align-self:start" onclick="saveHeroContent()"><i class="fas fa-save"></i> Save Hero</button>
-          </div>
-        </div>
-        <div class="admin-form-wrap">
-          <h3>About Section</h3>
-          <div style="display:flex;flex-direction:column;gap:12px">
-            <div class="form-group"><label>About Title</label><input type="text" id="c-about-title" placeholder="A Legacy of Compassionate Healthcare"></div>
-            <div class="form-group"><label>About Paragraph 1</label><textarea id="c-about-text1" style="min-height:70px"></textarea></div>
-            <div class="form-group"><label>About Paragraph 2</label><textarea id="c-about-text2" style="min-height:70px"></textarea></div>
-            <div class="form-group">
-              <label>About Section Image</label>
-              <div class="img-upload-box">
-                <input type="file" accept="image/*" onchange="previewImg(this,'about-img-preview','about-img-data')">
-                <i class="fas fa-hospital"></i><p>Upload hospital photo</p>
-                <img id="about-img-preview" class="img-preview" style="display:none;margin:8px auto 0">
-              </div>
-              <input type="hidden" id="about-img-data">
-            </div>
-            <button class="btn btn-primary btn-sm" style="align-self:start" onclick="saveAboutContent()"><i class="fas fa-save"></i> Save About</button>
-          </div>
-        </div>
-        <div class="admin-form-wrap">
-          <h3>Mission & Vision</h3>
-          <div style="display:flex;flex-direction:column;gap:12px">
-            <div class="form-group"><label>Mission Text</label><textarea id="c-mission" style="min-height:80px"></textarea></div>
-            <div class="form-group"><label>Vision Text</label><textarea id="c-vision" style="min-height:80px"></textarea></div>
-            <button class="btn btn-primary btn-sm" style="align-self:start" onclick="saveMissionVision()"><i class="fas fa-save"></i> Save Mission & Vision</button>
-          </div>
-        </div>
-        <div class="admin-form-wrap">
-          <h3>Contact Details</h3>
-          <div style="display:flex;flex-direction:column;gap:12px">
-            <div class="form-group"><label>Address</label><input type="text" id="c-address"></div>
-            <div class="form-group"><label>Email</label><input type="email" id="c-email"></div>
-            <button class="btn btn-primary btn-sm" style="align-self:start" onclick="saveContactContent()"><i class="fas fa-save"></i> Save Contact</button>
-          </div>
-        </div>
-      </div>
-
-    </div>
+  <nav class="anav">
+   <div class="ani ac" onclick="sec('dash',this)"><i class="fas fa-th-large"></i> Dashboard</div>
+   <div class="ani" onclick="sec('appts',this)"><i class="fas fa-calendar-check"></i> Appointments</div>
+   <div class="ani" onclick="sec('docs',this)"><i class="fas fa-user-md"></i> Doctors</div>
+   <div class="ani" onclick="sec('svcs',this)"><i class="fas fa-stethoscope"></i> Services</div>
+   <div class="ani" onclick="sec('gal',this)"><i class="fas fa-images"></i> Gallery</div>
+   <div class="ani" onclick="sec('tsts',this)"><i class="fas fa-star"></i> Testimonials</div>
+   <div class="ani" onclick="sec('msgs',this)"><i class="fas fa-envelope"></i> Messages</div>
+   <div class="ani" onclick="sec('cont',this)"><i class="fas fa-edit"></i> Site Content</div>
+   <div class="ani" style="color:#fc8181;margin-top:14px" onclick="doLogout()"><i class="fas fa-sign-out-alt"></i> Logout</div>
+  </nav>
+ </div>
+ <div class="amain">
+  <div class="atop">
+   <h2 id="apt">Dashboard</h2>
+   <span style="font-size:.8rem;color:var(--gray)" id="aue"></span>
   </div>
+  <div class="acont">
+
+   <!-- DASHBOARD -->
+   <div class="asec ac" id="s-dash">
+    <div class="scards">
+     <div class="sc bl"><div class="si"><i class="fas fa-calendar-check"></i></div><div class="sn" id="stap">0</div><div class="sl">Appointments</div></div>
+     <div class="sc mn"><div class="si"><i class="fas fa-user-md"></i></div><div class="sn" id="stdc">0</div><div class="sl">Doctors</div></div>
+     <div class="sc or"><div class="si"><i class="fas fa-stethoscope"></i></div><div class="sn" id="stsv">0</div><div class="sl">Services</div></div>
+     <div class="sc pu"><div class="si"><i class="fas fa-envelope"></i></div><div class="sn" id="stmg">0</div><div class="sl">Messages</div></div>
+    </div>
+    <div class="atw"><div class="ath"><h3>Recent Appointments</h3><button class="btn bp bsm" onclick="sec('appts')">View All</button></div>
+    <div style="overflow-x:auto"><table class="at"><thead><tr><th>Patient</th><th>Phone</th><th>Dept</th><th>Date</th><th>Status</th></tr></thead><tbody id="rap"></tbody></table></div></div>
+   </div>
+
+   <!-- APPOINTMENTS -->
+   <div class="asec" id="s-appts">
+    <div class="atw"><div class="ath"><h3>All Appointments</h3></div>
+    <div style="overflow-x:auto"><table class="at"><thead><tr><th>Patient</th><th>Phone</th><th>Email</th><th>Dept</th><th>Doctor</th><th>Date</th><th>Time</th><th>Status</th><th>Actions</th></tr></thead><tbody id="aap"></tbody></table></div></div>
+   </div>
+
+   <!-- DOCTORS -->
+   <div class="asec" id="s-docs">
+    <div class="afw">
+     <h3 id="dft">Add New Doctor</h3>
+     <div class="fgrid">
+      <div class="fg"><label>Full Name *</label><input type="text" id="dn" placeholder="Dr. Full Name"></div>
+      <div class="fg"><label>Specialization *</label><input type="text" id="dsp" placeholder="e.g. Cardiologist"></div>
+      <div class="fg full"><label>Biography</label><textarea id="db" placeholder="Short biography..." style="min-height:75px"></textarea></div>
+      <div class="fg full">
+       <label>Doctor Photo</label>
+       <div class="iub"><input type="file" accept="image/*" onchange="prevImg(this,'dpp','dpd')"><i class="fas fa-camera"></i><p>Click to upload photo</p><img id="dpp" class="iprev" style="border-radius:50%"></div>
+       <input type="hidden" id="dpd">
+       <input type="url" id="dpu" placeholder="Or paste image URL: https://..." style="margin-top:6px;padding:8px 11px;border:1.5px solid var(--lgray);border-radius:var(--rs);width:100%;font-family:inherit;font-size:.85rem">
+      </div>
+     </div>
+     <input type="hidden" id="dei">
+     <div style="margin-top:13px;display:flex;gap:9px;flex-wrap:wrap">
+      <button class="btn bp bsm" onclick="saveDoc()"><i class="fas fa-save"></i> Save Doctor</button>
+      <button class="btn bo bsm" onclick="clrDoc()">Clear</button>
+     </div>
+    </div>
+    <div class="atw"><div class="ath"><h3>Doctors (<span id="dct">0</span>)</h3></div>
+    <div style="overflow-x:auto"><table class="at"><thead><tr><th>Photo</th><th>Name</th><th>Specialization</th><th>Bio</th><th>Actions</th></tr></thead><tbody id="adb"></tbody></table></div></div>
+   </div>
+
+   <!-- SERVICES -->
+   <div class="asec" id="s-svcs">
+    <div class="afw">
+     <h3 id="sft">Add New Service</h3>
+     <div class="fgrid">
+      <div class="fg"><label>Service Name *</label><input type="text" id="svn" placeholder="e.g. Cardiology"></div>
+      <div class="fg"><label>FA Icon Class</label><input type="text" id="svi" placeholder="fas fa-heart"></div>
+      <div class="fg full"><label>Description</label><textarea id="svd" placeholder="Service description..." style="min-height:75px"></textarea></div>
+      <div class="fg full">
+       <label>Service Image</label>
+       <div class="iub"><input type="file" accept="image/*" onchange="prevImg(this,'svip','svid')"><i class="fas fa-image"></i><p>Click to upload image</p><img id="svip" class="iprev"></div>
+       <input type="hidden" id="svid">
+       <input type="url" id="sviu" placeholder="Or paste image URL: https://..." style="margin-top:6px;padding:8px 11px;border:1.5px solid var(--lgray);border-radius:var(--rs);width:100%;font-family:inherit;font-size:.85rem">
+      </div>
+     </div>
+     <input type="hidden" id="svei">
+     <div style="margin-top:13px;display:flex;gap:9px;flex-wrap:wrap">
+      <button class="btn bp bsm" onclick="saveSvc()"><i class="fas fa-save"></i> Save Service</button>
+      <button class="btn bo bsm" onclick="clrSvc()">Clear</button>
+     </div>
+    </div>
+    <div class="atw"><div class="ath"><h3>Services (<span id="sct">0</span>)</h3></div>
+    <div style="overflow-x:auto"><table class="at"><thead><tr><th>Img</th><th>Name</th><th>Icon</th><th>Description</th><th>Actions</th></tr></thead><tbody id="asb3"></tbody></table></div></div>
+   </div>
+
+   <!-- GALLERY -->
+   <div class="asec" id="s-gal">
+    <div class="afw">
+     <h3>Upload Gallery Image</h3>
+     <div style="display:flex;gap:14px;flex-wrap:wrap">
+      <div style="flex:1;min-width:200px">
+       <div class="iub"><input type="file" accept="image/*" onchange="prevImg(this,'gip','gid')"><i class="fas fa-upload"></i><p>Click to upload</p><img id="gip" class="iprev"></div>
+       <input type="hidden" id="gid">
+      </div>
+      <div style="flex:1;min-width:200px">
+       <div class="fg"><label>Or Image URL</label><input type="url" id="gurl" placeholder="https://..."></div>
+       <div class="fg" style="margin-top:9px"><label>Caption</label><input type="text" id="gcap" placeholder="Image caption"></div>
+       <button class="btn bp bsm" style="margin-top:9px;width:100%;justify-content:center" onclick="saveGal()"><i class="fas fa-plus"></i> Add Image</button>
+      </div>
+     </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px" id="agg"></div>
+   </div>
+
+   <!-- TESTIMONIALS -->
+   <div class="asec" id="s-tsts">
+    <div class="afw">
+     <h3 id="tft">Add Testimonial</h3>
+     <div class="fgrid">
+      <div class="fg"><label>Patient Name *</label><input type="text" id="tn" placeholder="Patient name"></div>
+      <div class="fg"><label>Rating (1-5)</label><input type="number" id="tr" min="1" max="5" value="5"></div>
+      <div class="fg full"><label>Testimonial Text *</label><textarea id="tt" placeholder="Patient's testimonial..." style="min-height:85px"></textarea></div>
+      <div class="fg full">
+       <label>Patient Photo (optional)</label>
+       <div class="iub"><input type="file" accept="image/*" onchange="prevImg(this,'tpp','tpd')"><i class="fas fa-user-circle"></i><p>Click to upload photo</p><img id="tpp" class="iprev" style="border-radius:50%"></div>
+       <input type="hidden" id="tpd">
+      </div>
+     </div>
+     <input type="hidden" id="tei">
+     <div style="margin-top:13px;display:flex;gap:9px;flex-wrap:wrap">
+      <button class="btn bp bsm" onclick="saveTst()"><i class="fas fa-save"></i> Save</button>
+      <button class="btn bo bsm" onclick="clrTst()">Clear</button>
+     </div>
+    </div>
+    <div class="atw"><div class="ath"><h3>Testimonials</h3></div>
+    <div style="overflow-x:auto"><table class="at"><thead><tr><th>Photo</th><th>Name</th><th>Rating</th><th>Text</th><th>Actions</th></tr></thead><tbody id="atb"></tbody></table></div></div>
+   </div>
+
+   <!-- MESSAGES -->
+   <div class="asec" id="s-msgs">
+    <div class="atw"><div class="ath"><h3>Contact Messages</h3></div>
+    <div style="overflow-x:auto"><table class="at"><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Subject</th><th>Message</th><th>Date</th><th></th></tr></thead><tbody id="amb"></tbody></table></div></div>
+   </div>
+
+   <!-- SITE CONTENT -->
+   <div class="asec" id="s-cont">
+    <div class="afw"><h3>Hero Section</h3>
+     <div style="display:flex;flex-direction:column;gap:11px">
+      <div class="fg"><label>Main Headline</label><input type="text" id="chh" placeholder="Your Health Is Our Loving Priority"></div>
+      <div class="fg"><label>Highlight Span (coloured text)</label><input type="text" id="chs" placeholder="Loving Priority"></div>
+      <div class="fg"><label>Sub-text</label><textarea id="chst" style="min-height:68px" placeholder="World-class healthcare..."></textarea></div>
+      <button class="btn bp bsm" style="align-self:start" onclick="saveHero()"><i class="fas fa-save"></i> Save Hero</button>
+     </div>
+    </div>
+    <div class="afw"><h3>About Section</h3>
+     <div style="display:flex;flex-direction:column;gap:11px">
+      <div class="fg"><label>About Title</label><input type="text" id="cat" placeholder="A Legacy of Compassionate Healthcare"></div>
+      <div class="fg"><label>Paragraph 1</label><textarea id="cap1" style="min-height:68px"></textarea></div>
+      <div class="fg"><label>Paragraph 2</label><textarea id="cap2" style="min-height:68px"></textarea></div>
+      <div class="fg"><label>About Image</label>
+       <div class="iub"><input type="file" accept="image/*" onchange="prevImg(this,'abip','abid')"><i class="fas fa-hospital"></i><p>Upload hospital photo</p><img id="abip" class="iprev"></div>
+       <input type="hidden" id="abid">
+      </div>
+      <button class="btn bp bsm" style="align-self:start" onclick="saveAbout()"><i class="fas fa-save"></i> Save About</button>
+     </div>
+    </div>
+    <div class="afw"><h3>Mission & Vision</h3>
+     <div style="display:flex;flex-direction:column;gap:11px">
+      <div class="fg"><label>Mission Text</label><textarea id="cmt" style="min-height:78px"></textarea></div>
+      <div class="fg"><label>Vision Text</label><textarea id="cvt" style="min-height:78px"></textarea></div>
+      <button class="btn bp bsm" style="align-self:start" onclick="saveMV()"><i class="fas fa-save"></i> Save Mission & Vision</button>
+     </div>
+    </div>
+    <div class="afw"><h3>Contact Details</h3>
+     <div style="display:flex;flex-direction:column;gap:11px">
+      <div class="fg"><label>Address</label><input type="text" id="cadd2"></div>
+      <div class="fg"><label>Email</label><input type="email" id="ceml2"></div>
+      <button class="btn bp bsm" style="align-self:start" onclick="saveCont()"><i class="fas fa-save"></i> Save Contact</button>
+     </div>
+    </div>
+   </div>
+
+  </div>
+ </div>
 </div>
 
-<!-- Admin Access Button -->
-<div style="position:fixed;bottom:24px;left:24px;z-index:800">
-  <button onclick="document.getElementById('adminLogin').style.display='flex'" title="Admin" style="width:42px;height:42px;border-radius:50%;background:var(--navy);color:white;border:none;cursor:pointer;font-size:0.9rem;opacity:0.4;transition:opacity .3s" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.4"><i class="fas fa-lock"></i></button>
+<!-- ADMIN BUTTON -->
+<div style="position:fixed;bottom:22px;left:22px;z-index:800">
+ <button onclick="openLogin()" style="width:40px;height:40px;border-radius:50%;background:var(--navy);color:#fff;border:none;cursor:pointer;font-size:.85rem;opacity:0.35;transition:opacity .3s" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.35"><i class="fas fa-lock"></i></button>
 </div>
 
-<!-- ======= FIREBASE ======= -->
+<!-- FONT AWESOME (deferred) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" media="print" onload="this.media='all'">
+
+<!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script>
-// IMMEDIATELY hide loader the moment JS runs
-(function(){ setTimeout(function(){ var l=document.getElementById('page-loader'); if(l) l.classList.add('hidden'); },500); })();
+// ---- FIREBASE ----
+firebase.initializeApp({apiKey:"AIzaSyBB5f8kF480v1tP70B367yGmNtbzF7vivg",authDomain:"lovinghearthospital-fb865.firebaseapp.com",projectId:"lovinghearthospital-fb865",storageBucket:"lovinghearthospital-fb865.firebasestorage.app",messagingSenderId:"922733242379",appId:"1:922733242379:web:0c5cfc2eac51e51503ff0e"});
+var db=firebase.firestore(), auth=firebase.auth(), PID='lovinghearthospital-fb865', AK='AIzaSyBB5f8kF480v1tP70B367yGmNtbzF7vivg';
 
-firebase.initializeApp({
-  apiKey:"AIzaSyBB5f8kF480v1tP70B367yGmNtbzF7vivg",
-  authDomain:"lovinghearthospital-fb865.firebaseapp.com",
-  projectId:"lovinghearthospital-fb865",
-  storageBucket:"lovinghearthospital-fb865.firebasestorage.app",
-  messagingSenderId:"922733242379",
-  appId:"1:922733242379:web:0c5cfc2eac51e51503ff0e"
-});
-var db = firebase.firestore();
-var auth = firebase.auth();
-var PROJECT_ID = 'lovinghearthospital-fb865';
-var API_KEY = 'AIzaSyBB5f8kF480v1tP70B367yGmNtbzF7vivg';
-
-// ===== DEFAULTS =====
-var defaultServices = [
-  {name:"General Consultation",icon:"fas fa-stethoscope",desc:"Comprehensive primary care consultations with experienced physicians for all ages.",img:""},
+// ---- DEFAULTS ----
+var DS=[
+  {name:"General Consultation",icon:"fas fa-stethoscope",desc:"Comprehensive primary care consultations with experienced physicians for all ages and health conditions.",img:""},
   {name:"Laboratory",icon:"fas fa-flask",desc:"State-of-the-art diagnostic laboratory offering a full range of tests with quick, accurate results.",img:""},
   {name:"Pharmacy",icon:"fas fa-pills",desc:"In-house pharmacy stocked with a wide range of medications, managed by certified pharmacists.",img:""},
-  {name:"Maternity",icon:"fas fa-baby",desc:"Complete maternal care from antenatal to postnatal, with experienced midwives and obstetricians.",img:""},
+  {name:"Maternity",icon:"fas fa-baby",desc:"Complete maternal care from antenatal to postnatal with experienced midwives and obstetricians.",img:""},
   {name:"Surgery",icon:"fas fa-syringe",desc:"Advanced surgical services including minimally invasive procedures by board-certified surgeons.",img:""},
-  {name:"Emergency Care",icon:"fas fa-ambulance",desc:"24/7 emergency unit equipped to handle all critical medical situations with rapid response teams.",img:""}
+  {name:"Emergency Care",icon:"fas fa-ambulance",desc:"24/7 emergency unit to handle all critical medical situations with rapid response teams.",img:""}
 ];
-var defaultDoctors = [
+var DD=[
   {name:"Dr. Adaeze Nwosu",spec:"Cardiologist",bio:"Board-certified cardiologist with 12 years of experience in interventional cardiology.",photo:""},
   {name:"Dr. Femi Okafor",spec:"General Surgeon",bio:"Expert general and laparoscopic surgeon with over 15 years performing complex procedures.",photo:""},
-  {name:"Dr. Ngozi Eze",spec:"Obstetrician & Gynaecologist",bio:"Dedicated to maternal health and women\'s wellness with a compassionate approach.",photo:""},
-  {name:"Dr. Kola Adeyemi",spec:"Paediatrician",bio:"Specialist in child health and development, providing caring and thorough paediatric services.",photo:""}
+  {name:"Dr. Ngozi Eze",spec:"Obstetrician & Gynaecologist",bio:"Dedicated to maternal health and women's wellness with a compassionate approach.",photo:""},
+  {name:"Dr. Kola Adeyemi",spec:"Paediatrician",bio:"Specialist in child health and development, providing caring paediatric services.",photo:""}
 ];
-var defaultTestimonials = [
+var DT=[
   {name:"Mrs. Amaka Obi",rating:5,text:"The doctors here are so caring and professional. Loving Heart truly lives up to its name!",photo:""},
-  {name:"Mr. Bola Fashola",rating:5,text:"Excellent service from the moment I walked in. The facility was clean and my treatment was world-class.",photo:""},
+  {name:"Mr. Bola Fashola",rating:5,text:"Excellent service from the moment I walked in. The facility was clean and treatment was world-class.",photo:""},
   {name:"Miss Chioma Eze",rating:5,text:"I delivered my baby here and the maternity team was absolutely wonderful. Thank you!",photo:""}
 ];
 
-// ===== STATE =====
-window._services=[]; window._doctors=[]; window._testimonials=[];
-window._appointments=[]; window._messages=[]; window._gallery=[];
+// ---- STATE ----
+var _s=[],_d=[],_t=[],_a=[],_m=[],_g=[];
 
-// ===== IMAGE HELPERS =====
-function previewImg(input, previewId, dataId){
-  var file = input.files[0];
-  if(!file) return;
-  var reader = new FileReader();
-  reader.onload = function(e){
-    var prev = document.getElementById(previewId);
-    var data = document.getElementById(dataId);
-    if(prev){ prev.src = e.target.result; prev.style.display='block'; }
-    if(data){ data.value = e.target.result; }
-  };
-  reader.readAsDataURL(file);
+// ---- RENDER ----
+function rSvc(s){
+  var im=s.img?'<div class="simg"><img src="'+s.img+'" alt="'+s.name+'" onerror="this.style.display='none'"></div>':'<div class="simg" style="font-size:3rem;color:var(--blue)"><i class="'+(s.icon||'fas fa-heartbeat')+'"></i></div>';
+  return'<div class="scard">'+im+'<div class="sbody"><div class="sico"><i class="'+(s.icon||'fas fa-heartbeat')+'"></i></div><h3>'+s.name+'</h3><p>'+s.desc+'</p></div></div>';
 }
-function getImgValue(dataId, urlId){
-  var d = document.getElementById(dataId);
-  var u = urlId ? document.getElementById(urlId) : null;
-  if(d && d.value) return d.value;
-  if(u && u.value) return u.value;
-  return '';
+function rDoc(d){
+  var ic=d.photo?'<img src="'+d.photo+'" alt="'+d.name+'" onerror="this.style.display='none';this.nextSibling.style.display='flex'">'+'<div class="dph" style="display:none"><i class="fas fa-user-md"></i></div>':'<div class="dph"><i class="fas fa-user-md"></i></div>';
+  return'<div class="dcard"><div class="dimg">'+ic+'</div><div class="dinfo"><h3>'+d.name+'</h3><div class="dsp">'+d.spec+'</div><p>'+d.bio+'</p><div class="dsoc"><a href="#"><i class="fab fa-linkedin"></i></a><a href="#"><i class="fab fa-twitter"></i></a></div></div></div>';
 }
-
-// ===== RENDER =====
-function renderServiceCard(s){
-  var imgHtml = s.img
-    ? '<div class="service-img"><img src="'+s.img+'" alt="'+s.name+'" onerror="this.style.display='none'"></div>'
-    : '<div class="service-img" style="font-size:3.5rem;color:var(--blue)"><i class="'+(s.icon||'fas fa-heartbeat')+'"></i></div>';
-  return '<div class="service-card">'+imgHtml+'<div class="service-body"><div class="service-icon-wrap"><i class="'+(s.icon||'fas fa-heartbeat')+'" style="color:var(--blue)"></i></div><h3>'+s.name+'</h3><p>'+s.desc+'</p></div></div>';
+function rTst(t){
+  var s=''; for(var i=0;i<Math.min(5,t.rating||5);i++)s+='⭐';
+  var av=t.photo?'<div class="tav"><img src="'+t.photo+'" alt="'+t.name+'"></div>':'<div class="tav">'+((t.name||'P')[0])+'</div>';
+  return'<div class="tcard"><div class="tstars">'+s+'</div><p class="ttxt">"'+t.text+'"</p><div class="tauth">'+av+'<div><div class="tname">'+t.name+'</div><div class="trole">Patient</div></div></div></div>';
 }
-function renderDoctorCard(d){
-  var imgContent = d.photo
-    ? '<img src="'+d.photo+'" alt="'+d.name+'" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">'
-      + '<div style="display:none;align-items:center;justify-content:center;width:100%;height:100%;font-size:4rem;color:var(--blue)"><i class="fas fa-user-md"></i></div>'
-    : '<i class="fas fa-user-md" style="font-size:4rem;color:var(--blue)"></i>';
-  return '<div class="doctor-card"><div class="doctor-img">'+imgContent+'</div>'
-    +'<div class="doctor-info"><h3>'+d.name+'</h3><div class="doctor-specialty">'+d.spec+'</div>'
-    +'<p>'+d.bio+'</p>'
-    +'<div class="doctor-socials"><a href="javascript:void(0)"><i class="fab fa-linkedin"></i></a><a href="javascript:void(0)"><i class="fab fa-twitter"></i></a></div>'
-    +'</div></div>';
+function rAll(){
+  var sh=_s.map(rSvc).join('');
+  ['hsg','fsg'].forEach(function(id){var e=document.getElementById(id);if(e)e.innerHTML=sh;});
+  var dh=_d.map(rDoc).join('');
+  ['hdg','fdg'].forEach(function(id){var e=document.getElementById(id);if(e)e.innerHTML=dh;});
+  var tg=document.getElementById('tg'); if(tg)tg.innerHTML=_t.map(rTst).join('');
 }
-function renderTestimonialCard(t){
-  var stars = '';
-  for(var i=0;i<Math.min(5,Math.max(1,t.rating||5));i++) stars+='⭐';
-  var avatarHtml = t.photo
-    ? '<div class="testimonial-avatar"><img src="'+t.photo+'" alt="'+t.name+'"></div>'
-    : '<div class="testimonial-avatar">'+((t.name||'P')[0])+'</div>';
-  return '<div class="testimonial-card"><div class="testimonial-stars">'+stars+'</div>'
-    +'<p class="testimonial-text">"'+t.text+'"</p>'
-    +'<div class="testimonial-author">'+avatarHtml
-    +'<div><div class="testimonial-name">'+t.name+'</div><div class="testimonial-role">Patient</div></div>'
-    +'</div></div>';
-}
-
-function renderServices(){
-  var h = window._services.map(renderServiceCard).join('');
-  var g1=document.getElementById('home-services-grid'); if(g1) g1.innerHTML=h;
-  var g2=document.getElementById('full-services-grid'); if(g2) g2.innerHTML=h;
-}
-function renderDoctors(){
-  var h = window._doctors.map(renderDoctorCard).join('');
-  var g1=document.getElementById('home-doctors-grid'); if(g1) g1.innerHTML=h;
-  var g2=document.getElementById('full-doctors-grid'); if(g2) g2.innerHTML=h;
-}
-function renderTestimonials(){
-  var g=document.getElementById('testimonials-grid');
-  if(g) g.innerHTML=window._testimonials.map(renderTestimonialCard).join('');
-}
-function renderGallery(){
-  var g=document.getElementById('pub-gallery-grid');
-  if(!g||window._gallery.length===0) return;
-  g.innerHTML=window._gallery.map(function(img,i){
-    return '<div class="gallery-item'+(i===0?' first-item':'')+'"><div class="gallery-overlay"><i class="fas fa-search-plus"></i></div>'
-      +(img.url?'<img src="'+img.url+'" alt="'+( img.caption||'')+'">'
-      :'<span style="font-size:3rem">🏥</span>')+'</div>';
+function rGallery(){
+  var g=document.getElementById('pgg');
+  if(!g||!_g.length)return;
+  g.innerHTML=_g.map(function(x,i){
+    return'<div class="gi'+(i===0?' first':'')+'"><div class="gov"><i class="fas fa-search-plus"></i></div>'+(x.url?'<img src="'+x.url+'" alt="'+(x.caption||'')+'">':'<span style="font-size:3rem">🏥</span>')+'</div>';
   }).join('');
 }
-function renderAppointments(){
-  document.getElementById('stat-appts').textContent=window._appointments.length;
-  var recent=window._appointments.slice(0,5);
-  var rb=document.getElementById('recent-appts-body');
-  if(rb) rb.innerHTML=recent.map(function(a){
-    return '<tr><td>'+a.name+'</td><td>'+a.phone+'</td><td>'+a.dept+'</td><td>'+a.date+'</td>'
-      +'<td><span class="badge badge-'+(a.status==='approved'?'success':a.status==='cancelled'?'danger':'warning')+'">'+( a.status||'pending')+'</span></td></tr>';
-  }).join('');
-  var ab=document.getElementById('all-appts-body');
-  if(ab) ab.innerHTML=window._appointments.map(function(a){
-    return '<tr><td>'+a.name+'</td><td>'+a.phone+'</td><td>'+(a.email||'')+'</td><td>'+a.dept+'</td>'
-      +'<td>'+(a.doctor||'—')+'</td><td>'+a.date+'</td><td>'+a.time+'</td>'
-      +'<td><span class="badge badge-'+(a.status==='approved'?'success':a.status==='cancelled'?'danger':'warning')+'">'+( a.status||'pending')+'</span></td>'
-      +'<td style="white-space:nowrap">'
-      +'<button class="btn btn-success btn-sm" onclick="updateApptStatus(''+a.id+'','approved')">✓</button> '
-      +'<button class="btn btn-danger btn-sm" onclick="updateApptStatus(''+a.id+'','cancelled')">✗</button>'
-      +'</td></tr>';
+function rAdminAppts(){
+  document.getElementById('stap').textContent=_a.length;
+  var rb=document.getElementById('rap');
+  if(rb)rb.innerHTML=_a.slice(0,5).map(function(x){return'<tr><td>'+x.name+'</td><td>'+x.phone+'</td><td>'+x.dept+'</td><td>'+x.date+'</td><td><span class="badge '+(x.status==='approved'?'bok':x.status==='cancelled'?'bno':'bwa')+'">'+( x.status||'pending')+'</span></td></tr>';}).join('');
+  var ab=document.getElementById('aap');
+  if(ab)ab.innerHTML=_a.map(function(x){return'<tr><td>'+x.name+'</td><td>'+x.phone+'</td><td>'+(x.email||'')+'</td><td>'+x.dept+'</td><td>'+(x.doctor||'-')+'</td><td>'+x.date+'</td><td>'+x.time+'</td><td><span class="badge '+(x.status==='approved'?'bok':x.status==='cancelled'?'bno':'bwa')+'">'+( x.status||'pending')+'</span></td><td style="white-space:nowrap"><button class="btn bsu bsm" onclick="updAppt(''+x.id+'','approved')">✓</button> <button class="btn bd bsm" onclick="updAppt(''+x.id+'','cancelled')">✗</button></td></tr>';}).join('');
+}
+function rAdminMsgs(){
+  document.getElementById('stmg').textContent=_m.length;
+  var b=document.getElementById('amb');
+  if(b)b.innerHTML=_m.map(function(x){return'<tr><td>'+x.name+'</td><td>'+x.email+'</td><td>'+(x.phone||'')+'</td><td>'+(x.subject||'')+'</td><td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+x.message+'</td><td>'+(x.createdAt&&x.createdAt.toDate?x.createdAt.toDate().toLocaleDateString():'')+'</td><td><button class="btn bd bsm" onclick="delMsg(''+x.id+'')"><i class="fas fa-trash"></i></button></td></tr>';}).join('');
+}
+function rAdminDocs(){
+  document.getElementById('stdc').textContent=_d.length;
+  var c=document.getElementById('dct');if(c)c.textContent=_d.length;
+  var b=document.getElementById('adb');
+  if(b)b.innerHTML=_d.map(function(x){
+    var th=x.photo?'<img src="'+x.photo+'" style="width:34px;height:34px;border-radius:50%;object-fit:cover">':'<div style="width:34px;height:34px;border-radius:50%;background:var(--lblue);display:flex;align-items:center;justify-content:center;color:var(--blue)"><i class="fas fa-user-md"></i></div>';
+    return'<tr><td>'+th+'</td><td>'+x.name+'</td><td>'+x.spec+'</td><td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(x.bio||'')+'</td><td style="white-space:nowrap"><button class="btn bo bsm" onclick="editDoc(''+x.id+'')"><i class="fas fa-edit"></i> Edit</button> <button class="btn bd bsm" onclick="delDoc(''+x.id+'')"><i class="fas fa-trash"></i></button></td></tr>';
   }).join('');
 }
-function renderMessages(){
-  document.getElementById('stat-msgs').textContent=window._messages.length;
-  var b=document.getElementById('admin-msgs-body');
-  if(b) b.innerHTML=window._messages.map(function(m){
-    return '<tr><td>'+m.name+'</td><td>'+m.email+'</td><td>'+(m.phone||'')+'</td>'
-      +'<td>'+(m.subject||'')+'</td><td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+m.message+'</td>'
-      +'<td>'+(m.createdAt&&m.createdAt.toDate?m.createdAt.toDate().toLocaleDateString():'N/A')+'</td>'
-      +'<td><button class="btn btn-danger btn-sm" onclick="deleteMessage(''+m.id+'')"><i class="fas fa-trash"></i></button></td></tr>';
+function rAdminSvcs(){
+  document.getElementById('stsv').textContent=_s.length;
+  var c=document.getElementById('sct');if(c)c.textContent=_s.length;
+  var b=document.getElementById('asb3');
+  if(b)b.innerHTML=_s.map(function(x){
+    var th=x.img?'<img src="'+x.img+'" style="width:42px;height:34px;border-radius:6px;object-fit:cover">':'<div style="width:42px;height:34px;border-radius:6px;background:var(--lblue);display:flex;align-items:center;justify-content:center;color:var(--blue)"><i class="'+(x.icon||'fas fa-heartbeat')+'"></i></div>';
+    return'<tr><td>'+th+'</td><td>'+x.name+'</td><td style="font-size:.78rem;color:var(--gray)">'+(x.icon||'')+'</td><td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(x.desc||'')+'</td><td style="white-space:nowrap"><button class="btn bo bsm" onclick="editSvc(''+x.id+'')"><i class="fas fa-edit"></i> Edit</button> <button class="btn bd bsm" onclick="delSvc(''+x.id+'')"><i class="fas fa-trash"></i></button></td></tr>';
   }).join('');
 }
-function renderAdminDoctors(){
-  document.getElementById('stat-docs').textContent=window._doctors.length;
-  var cnt=document.getElementById('docs-count'); if(cnt) cnt.textContent=window._doctors.length;
-  var b=document.getElementById('admin-docs-body');
-  if(b) b.innerHTML=window._doctors.map(function(d){
-    var thumb=d.photo?'<img src="'+d.photo+'" style="width:36px;height:36px;border-radius:8px;object-fit:cover">':'<div style="width:36px;height:36px;border-radius:8px;background:var(--light-blue);display:flex;align-items:center;justify-content:center;color:var(--blue)"><i class="fas fa-user-md"></i></div>';
-    return '<tr><td>'+thumb+'</td><td>'+d.name+'</td><td>'+d.spec+'</td>'
-      +'<td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(d.bio||'')+'</td>'
-      +'<td style="white-space:nowrap">'
-      +'<button class="btn btn-outline btn-sm" onclick="editDoctor(''+d.id+'')"><i class="fas fa-edit"></i> Edit</button> '
-      +'<button class="btn btn-danger btn-sm" onclick="deleteDoctor(''+d.id+'')"><i class="fas fa-trash"></i></button>'
-      +'</td></tr>';
+function rAdminTsts(){
+  var b=document.getElementById('atb');
+  if(b)b.innerHTML=_t.map(function(x){
+    var s='';for(var i=0;i<(x.rating||5);i++)s+='⭐';
+    var av=x.photo?'<img src="'+x.photo+'" style="width:34px;height:34px;border-radius:50%;object-fit:cover">':'<div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--mint));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700">'+((x.name||'P')[0])+'</div>';
+    return'<tr><td>'+av+'</td><td>'+x.name+'</td><td>'+s+'</td><td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(x.text||'')+'</td><td style="white-space:nowrap"><button class="btn bo bsm" onclick="editTst(''+x.id+'')"><i class="fas fa-edit"></i> Edit</button> <button class="btn bd bsm" onclick="delTst(''+x.id+'')"><i class="fas fa-trash"></i></button></td></tr>';
   }).join('');
 }
-function renderAdminServices(){
-  document.getElementById('stat-svcs').textContent=window._services.length;
-  var cnt=document.getElementById('svcs-count'); if(cnt) cnt.textContent=window._services.length;
-  var b=document.getElementById('admin-svcs-body');
-  if(b) b.innerHTML=window._services.map(function(s){
-    var thumb=s.img?'<img src="'+s.img+'" style="width:44px;height:36px;border-radius:6px;object-fit:cover">':'<div style="width:44px;height:36px;border-radius:6px;background:var(--light-blue);display:flex;align-items:center;justify-content:center;color:var(--blue);font-size:1.1rem"><i class="'+(s.icon||'fas fa-heartbeat')+'"></i></div>';
-    return '<tr><td>'+thumb+'</td><td>'+s.name+'</td><td><i class="'+(s.icon||'')+'" style="margin-right:4px"></i><span style="font-size:0.78rem;color:var(--gray)">'+(s.icon||'')+'</span></td>'
-      +'<td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(s.desc||'')+'</td>'
-      +'<td style="white-space:nowrap">'
-      +'<button class="btn btn-outline btn-sm" onclick="editService(''+s.id+'')"><i class="fas fa-edit"></i> Edit</button> '
-      +'<button class="btn btn-danger btn-sm" onclick="deleteService(''+s.id+'')"><i class="fas fa-trash"></i></button>'
-      +'</td></tr>';
-  }).join('');
-}
-function renderAdminTestimonials(){
-  var b=document.getElementById('admin-tests-body');
-  if(b) b.innerHTML=window._testimonials.map(function(t){
-    var thumb=t.photo?'<img src="'+t.photo+'" style="width:36px;height:36px;border-radius:50%;object-fit:cover">':'<div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--mint));display:flex;align-items:center;justify-content:center;color:white;font-weight:700">'+((t.name||'P')[0])+'</div>';
-    var stars=''; for(var i=0;i<(t.rating||5);i++) stars+='⭐';
-    return '<tr><td>'+thumb+'</td><td>'+t.name+'</td><td>'+stars+'</td>'
-      +'<td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(t.text||'')+'</td>'
-      +'<td style="white-space:nowrap">'
-      +'<button class="btn btn-outline btn-sm" onclick="editTestimonial(''+t.id+'')"><i class="fas fa-edit"></i> Edit</button> '
-      +'<button class="btn btn-danger btn-sm" onclick="deleteTestimonial(''+t.id+'')"><i class="fas fa-trash"></i></button>'
-      +'</td></tr>';
-  }).join('');
-}
-function renderAdminGallery(){
-  var g=document.getElementById('admin-gallery-grid');
-  if(g) g.innerHTML=window._gallery.map(function(img){
-    return '<div style="border-radius:var(--radius-sm);overflow:hidden;position:relative;aspect-ratio:1;background:var(--light-blue)">'
-      +(img.url?'<img src="'+img.url+'" style="width:100%;height:100%;object-fit:cover">':'<div style="display:flex;align-items:center;justify-content:center;height:100%;font-size:2rem">🖼️</div>')
-      +'<div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.65);color:white;padding:5px 8px;font-size:0.72rem;display:flex;justify-content:space-between;align-items:center">'
-      +'<span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100px">'+(img.caption||'Image')+'</span>'
-      +'<button onclick="deleteGalleryImage(''+img.id+'')" style="background:none;border:none;color:white;cursor:pointer"><i class="fas fa-trash"></i></button>'
-      +'</div></div>';
+function rAdminGal(){
+  var g=document.getElementById('agg');
+  if(g)g.innerHTML=_g.map(function(x){
+    return'<div style="border-radius:var(--rs);overflow:hidden;position:relative;aspect-ratio:1;background:var(--lblue)">'+(x.url?'<img src="'+x.url+'" style="width:100%;height:100%;object-fit:cover">':'<div style="height:100%;display:flex;align-items:center;justify-content:center;font-size:2rem">🖼️</div>')+'<div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.6);color:#fff;padding:4px 7px;font-size:.7rem;display:flex;justify-content:space-between;align-items:center"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:90px">'+(x.caption||'Image')+'</span><button onclick="delGal(''+x.id+'')" style="background:none;border:none;color:#fff;cursor:pointer"><i class="fas fa-trash"></i></button></div></div>';
   }).join('');
 }
 
-// ===== SEED & LOAD =====
-async function seedCol(col, data){
-  try {
-    var snap=await db.collection(col).limit(1).get();
-    if(snap.empty){
-      var batch=db.batch();
-      data.forEach(function(item){ batch.set(db.collection(col).doc(),item); });
-      await batch.commit();
-    }
-  } catch(e){ console.warn('Seed',col,e.message); }
+// ---- SEED & LOAD ----
+async function seed(col,data){
+  try{var s=await db.collection(col).limit(1).get();if(s.empty){var b=db.batch();data.forEach(function(d){b.set(db.collection(col).doc(),d);});await b.commit();}}catch(e){}
 }
-async function loadServices(){
-  await seedCol('services',defaultServices);
-  try{ var s=await db.collection('services').get(); window._services=s.docs.map(function(d){return Object.assign({id:d.id},d.data());}); }catch(e){}
-  if(!window._services.length) window._services=defaultServices.map(function(s,i){return Object.assign({id:'d'+i},s);});
-  renderServices(); renderAdminServices();
+async function load(){
+  await seed('services',DS); await seed('doctors',DD); await seed('testimonials',DT);
+  try{var s=await db.collection('services').get();_s=s.docs.map(function(d){return Object.assign({id:d.id},d.data());});}catch(e){_s=DS.map(function(x,i){return Object.assign({id:'d'+i},x);});}
+  if(!_s.length)_s=DS.map(function(x,i){return Object.assign({id:'d'+i},x);});
+  try{var d=await db.collection('doctors').get();_d=d.docs.map(function(d){return Object.assign({id:d.id},d.data());});}catch(e){_d=DD.map(function(x,i){return Object.assign({id:'d'+i},x);});}
+  if(!_d.length)_d=DD.map(function(x,i){return Object.assign({id:'d'+i},x);});
+  try{var t=await db.collection('testimonials').get();_t=t.docs.map(function(d){return Object.assign({id:d.id},d.data());});}catch(e){_t=DT.map(function(x,i){return Object.assign({id:'d'+i},x);});}
+  if(!_t.length)_t=DT.map(function(x,i){return Object.assign({id:'d'+i},x);});
+  try{var g=await db.collection('gallery').get();_g=g.docs.map(function(d){return Object.assign({id:d.id},d.data());});}catch(e){_g=[];}
+  rAll(); rGallery();
 }
-async function loadDoctors(){
-  await seedCol('doctors',defaultDoctors);
-  try{ var s=await db.collection('doctors').get(); window._doctors=s.docs.map(function(d){return Object.assign({id:d.id},d.data());}); }catch(e){}
-  if(!window._doctors.length) window._doctors=defaultDoctors.map(function(d,i){return Object.assign({id:'d'+i},d);});
-  renderDoctors(); renderAdminDoctors();
+async function loadAdmin(){
+  try{var a=await db.collection('appointments').orderBy('createdAt','desc').get();_a=a.docs.map(function(d){return Object.assign({id:d.id},d.data());});}catch(e){_a=[];}
+  try{var m=await db.collection('messages').orderBy('createdAt','desc').get();_m=m.docs.map(function(d){return Object.assign({id:d.id},d.data());});}catch(e){_m=[];}
+  rAdminAppts(); rAdminMsgs(); rAdminDocs(); rAdminSvcs(); rAdminTsts(); rAdminGal();
 }
-async function loadTestimonials(){
-  await seedCol('testimonials',defaultTestimonials);
-  try{ var s=await db.collection('testimonials').get(); window._testimonials=s.docs.map(function(d){return Object.assign({id:d.id},d.data());}); }catch(e){}
-  if(!window._testimonials.length) window._testimonials=defaultTestimonials.map(function(t,i){return Object.assign({id:'d'+i},t);});
-  renderTestimonials(); renderAdminTestimonials();
-}
-async function loadAppointments(){
-  try{ var s=await db.collection('appointments').orderBy('createdAt','desc').get(); window._appointments=s.docs.map(function(d){return Object.assign({id:d.id},d.data());}); }catch(e){window._appointments=[];}
-  renderAppointments();
-}
-async function loadMessages(){
-  try{ var s=await db.collection('messages').orderBy('createdAt','desc').get(); window._messages=s.docs.map(function(d){return Object.assign({id:d.id},d.data());}); }catch(e){window._messages=[];}
-  renderMessages();
-}
-async function loadGallery(){
-  try{ var s=await db.collection('gallery').get(); window._gallery=s.docs.map(function(d){return Object.assign({id:d.id},d.data());}); }catch(e){window._gallery=[];}
-  renderAdminGallery(); renderGallery();
-}
-async function loadAllAdminData(){
-  await Promise.all([loadServices(),loadDoctors(),loadTestimonials(),loadAppointments(),loadMessages(),loadGallery()]);
-}
-// INIT
-loadServices(); loadDoctors(); loadTestimonials(); loadGallery();
+load();
 
-// ===== REST FALLBACK WRITE =====
-async function restWrite(collection, data){
-  var url='https://firestore.googleapis.com/v1/projects/'+PROJECT_ID+'/databases/(default)/documents/'+collection+'?key='+API_KEY;
-  var fields={};
-  Object.keys(data).forEach(function(k){ fields[k]={stringValue:String(data[k]||'')}; });
-  var res=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({fields:fields})});
-  return res.ok;
+// ---- REST FALLBACK ----
+async function restAdd(col,data){
+  var f={};Object.keys(data).forEach(function(k){f[k]={stringValue:String(data[k]||'')};});
+  var r=await fetch('https://firestore.googleapis.com/v1/projects/'+PID+'/databases/(default)/documents/'+col+'?key='+AK,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({fields:f})});
+  return r.ok;
 }
 
-// ===== APPOINTMENT SUBMIT =====
-window.submitAppointment = async function(){
-  var fb=document.getElementById('appt-feedback');
-  var btn=document.getElementById('appt-submit-btn');
-  var name=(document.getElementById('appt-name').value||'').trim();
-  var phone=(document.getElementById('appt-phone').value||'').trim();
-  var dept=(document.getElementById('appt-dept').value||'').trim();
-  var date=(document.getElementById('appt-date').value||'').trim();
-  var time=(document.getElementById('appt-time').value||'').trim();
-  if(!name||!phone||!dept||!date||!time){
-    fb.className='form-msg error'; fb.textContent='⚠ Please fill: Name, Phone, Department, Date and Time.'; return;
-  }
-  btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Submitting...';
-  fb.className='form-msg'; fb.textContent='';
-  var data={name:name,phone:phone,email:(document.getElementById('appt-email').value||'').trim(),
-    dept:dept,doctor:(document.getElementById('appt-doctor').value||'').trim(),
-    date:date,time:time,notes:(document.getElementById('appt-notes').value||'').trim(),
-    status:'pending',createdAt:new Date().toISOString()};
+// ---- APPOINTMENT ----
+window.submitAppt=async function(){
+  var fb=document.getElementById('afb'),btn=document.getElementById('asb2');
+  var n=V('an'),p=V('aph'),dp=V('ad'),dt=V('adt'),tm=V('atm');
+  if(!n||!p||!dp||!dt||!tm){show(fb,'err','⚠ Please fill: Name, Phone, Department, Date and Time.');return;}
+  btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Submitting...';
+  var data={name:n,phone:p,email:V('ae'),dept:dp,doctor:V('adr'),date:dt,time:tm,notes:V('ano'),status:'pending',createdAt:new Date().toISOString()};
   var ok=false;
-  try{ await db.collection('appointments').add(Object.assign({},data,{createdAt:firebase.firestore.FieldValue.serverTimestamp()})); ok=true; }
-  catch(e){ try{ ok=await restWrite('appointments',data); }catch(e2){} }
-  if(ok){
-    fb.className='form-msg success'; fb.textContent='✓ Appointment booked! We will confirm within 24 hours.';
-    ['appt-name','appt-phone','appt-email','appt-doctor','appt-date','appt-time','appt-notes'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
-    document.getElementById('appt-dept').value='';
-  } else {
-    fb.className='form-msg error'; fb.textContent='✗ Could not submit. Please call 08136393150 directly.';
-  }
-  btn.disabled=false; btn.innerHTML='<i class="fas fa-calendar-check"></i> Confirm Appointment';
+  try{await db.collection('appointments').add(Object.assign({},data,{createdAt:firebase.firestore.FieldValue.serverTimestamp()}));ok=true;}
+  catch(e){try{ok=await restAdd('appointments',data);}catch(e2){}}
+  if(ok){show(fb,'ok','✓ Appointment booked! We will confirm within 24 hours.');['an','aph','ae','adr','adt','atm','ano'].forEach(function(i){var e=document.getElementById(i);if(e)e.value='';});document.getElementById('ad').value='';}
+  else show(fb,'err','✗ Could not submit. Please call 08136393150 directly.');
+  btn.disabled=false;btn.innerHTML='<i class="fas fa-calendar-check"></i> Confirm Appointment';
   fb.scrollIntoView({behavior:'smooth',block:'nearest'});
 };
 
-// ===== CONTACT SUBMIT =====
-window.submitContact = async function(){
-  var fb=document.getElementById('contact-feedback');
-  var btn=document.getElementById('contact-submit-btn');
-  var name=(document.getElementById('contact-name').value||'').trim();
-  var email=(document.getElementById('contact-email').value||'').trim();
-  var message=(document.getElementById('contact-msg').value||'').trim();
-  if(!name||!email||!message){ fb.className='form-msg error'; fb.textContent='⚠ Please fill name, email and message.'; return; }
-  btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Sending...';
-  var data={name:name,email:email,phone:(document.getElementById('contact-phone').value||'').trim(),
-    subject:(document.getElementById('contact-subject').value||'').trim(),message:message,createdAt:new Date().toISOString()};
+// ---- CONTACT ----
+window.submitContact=async function(){
+  var fb=document.getElementById('cfb'),btn=document.getElementById('csb');
+  var n=V('cn'),e=V('cem'),m=V('cmsg');
+  if(!n||!e||!m){show(fb,'err','⚠ Please fill name, email and message.');return;}
+  btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Sending...';
+  var data={name:n,email:e,phone:V('cph'),subject:V('csub'),message:m,createdAt:new Date().toISOString()};
   var ok=false;
-  try{ await db.collection('messages').add(Object.assign({},data,{createdAt:firebase.firestore.FieldValue.serverTimestamp()})); ok=true; }
-  catch(e){ try{ ok=await restWrite('messages',data); }catch(e2){} }
-  if(ok){
-    fb.className='form-msg success'; fb.textContent='✓ Message sent! We will get back to you soon.';
-    ['contact-name','contact-email','contact-phone','contact-subject','contact-msg'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
-  } else { fb.className='form-msg error'; fb.textContent='✗ Could not send. Please call 08136393150.'; }
-  btn.disabled=false; btn.innerHTML='<i class="fas fa-paper-plane"></i> Send Message';
+  try{await db.collection('messages').add(Object.assign({},data,{createdAt:firebase.firestore.FieldValue.serverTimestamp()}));ok=true;}
+  catch(e2){try{ok=await restAdd('messages',data);}catch(e3){}}
+  if(ok){show(fb,'ok','✓ Message sent! We will get back to you soon.');['cn','cem','cph','csub','cmsg'].forEach(function(i){var e=document.getElementById(i);if(e)e.value='';});}
+  else show(fb,'err','✗ Could not send. Please call 08136393150.');
+  btn.disabled=false;btn.innerHTML='<i class="fas fa-paper-plane"></i> Send Message';
 };
 
-// ===== AUTH =====
-window.adminLogin = async function(){
-  var email=document.getElementById('admin-email').value;
-  var pass=document.getElementById('admin-pass').value;
-  var err=document.getElementById('login-error');
-  err.className='form-msg'; err.textContent='';
-  try{ await auth.signInWithEmailAndPassword(email,pass); }
-  catch(e){ err.className='form-msg error'; err.textContent='Invalid credentials. Please try again.'; }
+// ---- AUTH ----
+window.doLogin=async function(){
+  var e=document.getElementById('lei').value,p=document.getElementById('lpi').value,er=document.getElementById('lerr');
+  er.className='fmsg';er.textContent='';
+  try{await auth.signInWithEmailAndPassword(e,p);}
+  catch(x){show(er,'err','Invalid credentials. Please try again.');}
 };
-window.adminLogout = async function(){ await auth.signOut(); document.getElementById('adminDashboard').classList.remove('active'); showToast('Logged out'); };
-auth.onAuthStateChanged(function(user){
-  if(user){
-    document.getElementById('adminLogin').style.display='none';
-    document.getElementById('adminDashboard').classList.add('active');
-    document.getElementById('admin-user-email').textContent=user.email;
-    loadAllAdminData();
-  } else { document.getElementById('adminDashboard').classList.remove('active'); }
+window.doLogout=async function(){await auth.signOut();document.getElementById('ado').classList.remove('ac');toast('Logged out');};
+window.openLogin=function(){document.getElementById('alo').style.display='flex';};
+window.closeLogin=function(){document.getElementById('alo').style.display='none';};
+auth.onAuthStateChanged(function(u){
+  if(u){document.getElementById('alo').style.display='none';document.getElementById('ado').classList.add('ac');document.getElementById('aue').textContent=u.email;loadAdmin();}
+  else document.getElementById('ado').classList.remove('ac');
 });
 
-// ===== APPOINTMENTS CRUD =====
-window.updateApptStatus = async function(id,status){
-  if(id.startsWith('d')){ showToast('Cannot update demo data','error'); return; }
-  try{ await db.collection('appointments').doc(id).update({status:status}); }catch(e){}
-  var a=window._appointments.find(function(x){return x.id===id;}); if(a) a.status=status;
-  renderAppointments(); showToast('Appointment '+status,'success');
+// ---- APPT STATUS ----
+window.updAppt=async function(id,st){
+  if(id.startsWith('d')){toast('Cannot update demo data','er');return;}
+  try{await db.collection('appointments').doc(id).update({status:st});}catch(e){}
+  var x=_a.find(function(a){return a.id===id;});if(x)x.status=st;
+  rAdminAppts();toast('Appointment '+st,'ok');
 };
 
-// ===== DOCTORS CRUD =====
-window.saveDoctor = async function(){
-  var name=document.getElementById('doc-name').value.trim();
-  var spec=document.getElementById('doc-spec').value.trim();
-  var bio=document.getElementById('doc-bio').value.trim();
-  var photo=getImgValue('doc-photo-data','doc-photo-url');
-  var editId=document.getElementById('doc-edit-id').value;
-  if(!name||!spec){ showToast('Name and specialization required','error'); return; }
-  var data={name:name,spec:spec,bio:bio,photo:photo};
+// ---- DOCTORS CRUD ----
+window.saveDoc=async function(){
+  var n=V('dn'),sp=V('dsp'),b=V('db'),ph=document.getElementById('dpd').value||V('dpu'),ei=V('dei');
+  if(!n||!sp){toast('Name and specialization required','er');return;}
+  var data={name:n,spec:sp,bio:b,photo:ph};
   try{
-    if(editId&&!editId.startsWith('d')){
-      await db.collection('doctors').doc(editId).update(data);
-      var idx=window._doctors.findIndex(function(d){return d.id===editId;});
-      if(idx>-1) window._doctors[idx]=Object.assign({},window._doctors[idx],data);
-    } else {
-      var ref=await db.collection('doctors').add(data);
-      window._doctors.push(Object.assign({id:ref.id},data));
-    }
-    clearDoctorForm(); renderDoctors(); renderAdminDoctors(); showToast('Doctor saved','success');
-  } catch(e){ showToast('Error: '+e.message,'error'); }
+    if(ei&&!ei.startsWith('d')){await db.collection('doctors').doc(ei).update(data);var i=_d.findIndex(function(x){return x.id===ei;});if(i>-1)_d[i]=Object.assign({},_d[i],data);}
+    else{var r=await db.collection('doctors').add(data);_d.push(Object.assign({id:r.id},data));}
+    clrDoc();rAll();rAdminDocs();toast('Doctor saved','ok');
+  }catch(e){toast('Error: '+e.message,'er');}
 };
-window.editDoctor = function(id){
-  var d=window._doctors.find(function(x){return x.id===id;});
-  if(!d) return;
-  document.getElementById('doc-name').value=d.name||'';
-  document.getElementById('doc-spec').value=d.spec||'';
-  document.getElementById('doc-bio').value=d.bio||'';
-  document.getElementById('doc-photo-url').value=d.photo||'';
-  document.getElementById('doc-photo-data').value='';
-  var prev=document.getElementById('doc-photo-preview');
-  if(prev&&d.photo){ prev.src=d.photo; prev.style.display='block'; } else if(prev){ prev.style.display='none'; }
-  document.getElementById('doc-edit-id').value=id;
-  document.getElementById('doctor-form-title').textContent='Edit Doctor';
-  document.getElementById('section-adoctors').scrollIntoView({behavior:'smooth'});
-  showToast('Editing: '+d.name);
+window.editDoc=function(id){
+  var x=_d.find(function(d){return d.id===id;});if(!x)return;
+  set('dn',x.name);set('dsp',x.spec);set('db',x.bio);set('dpu',x.photo);set('dpd','');set('dei',id);
+  var p=document.getElementById('dpp');if(p&&x.photo){p.src=x.photo;p.style.display='block';}else if(p)p.style.display='none';
+  document.getElementById('dft').textContent='Edit Doctor';
+  document.getElementById('s-docs').scrollIntoView({behavior:'smooth'});
+  toast('Editing: '+x.name);
 };
-window.deleteDoctor = async function(id){
-  if(!confirm('Delete this doctor?')) return;
-  if(!id.startsWith('d')){ try{ await db.collection('doctors').doc(id).delete(); }catch(e){} }
-  window._doctors=window._doctors.filter(function(d){return d.id!==id;});
-  renderDoctors(); renderAdminDoctors(); showToast('Doctor deleted');
+window.delDoc=async function(id){
+  if(!confirm('Delete this doctor?'))return;
+  if(!id.startsWith('d'))try{await db.collection('doctors').doc(id).delete();}catch(e){}
+  _d=_d.filter(function(x){return x.id!==id;});rAll();rAdminDocs();toast('Doctor deleted');
 };
-window.clearDoctorForm = function(){
-  ['doc-name','doc-spec','doc-bio','doc-photo-url','doc-photo-data','doc-edit-id'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
-  var prev=document.getElementById('doc-photo-preview'); if(prev){prev.style.display='none';}
-  document.getElementById('doctor-form-title').textContent='Add New Doctor';
+window.clrDoc=function(){
+  ['dn','dsp','db','dpu','dpd','dei'].forEach(function(i){set(i,'');});
+  var p=document.getElementById('dpp');if(p)p.style.display='none';
+  document.getElementById('dft').textContent='Add New Doctor';
 };
 
-// ===== SERVICES CRUD =====
-window.saveService = async function(){
-  var name=document.getElementById('svc-name').value.trim();
-  var icon=document.getElementById('svc-icon').value.trim();
-  var desc=document.getElementById('svc-desc').value.trim();
-  var img=getImgValue('svc-img-data','svc-img-url');
-  var editId=document.getElementById('svc-edit-id').value;
-  if(!name){ showToast('Service name required','error'); return; }
-  var data={name:name,icon:icon,desc:desc,img:img};
+// ---- SERVICES CRUD ----
+window.saveSvc=async function(){
+  var n=V('svn'),ic=V('svi'),d=V('svd'),im=document.getElementById('svid').value||V('sviu'),ei=V('svei');
+  if(!n){toast('Service name required','er');return;}
+  var data={name:n,icon:ic,desc:d,img:im};
   try{
-    if(editId&&!editId.startsWith('d')){
-      await db.collection('services').doc(editId).update(data);
-      var idx=window._services.findIndex(function(s){return s.id===editId;});
-      if(idx>-1) window._services[idx]=Object.assign({},window._services[idx],data);
-    } else {
-      var ref=await db.collection('services').add(data);
-      window._services.push(Object.assign({id:ref.id},data));
-    }
-    clearServiceForm(); renderServices(); renderAdminServices(); showToast('Service saved','success');
-  } catch(e){ showToast('Error: '+e.message,'error'); }
+    if(ei&&!ei.startsWith('d')){await db.collection('services').doc(ei).update(data);var i=_s.findIndex(function(x){return x.id===ei;});if(i>-1)_s[i]=Object.assign({},_s[i],data);}
+    else{var r=await db.collection('services').add(data);_s.push(Object.assign({id:r.id},data));}
+    clrSvc();rAll();rAdminSvcs();toast('Service saved','ok');
+  }catch(e){toast('Error: '+e.message,'er');}
 };
-window.editService = function(id){
-  var s=window._services.find(function(x){return x.id===id;});
-  if(!s) return;
-  document.getElementById('svc-name').value=s.name||'';
-  document.getElementById('svc-icon').value=s.icon||'';
-  document.getElementById('svc-desc').value=s.desc||'';
-  document.getElementById('svc-img-url').value=s.img||'';
-  document.getElementById('svc-img-data').value='';
-  var prev=document.getElementById('svc-img-preview');
-  if(prev&&s.img){ prev.src=s.img; prev.style.display='block'; } else if(prev){ prev.style.display='none'; }
-  document.getElementById('svc-edit-id').value=id;
-  document.getElementById('service-form-title').textContent='Edit Service';
-  document.getElementById('section-aservices').scrollIntoView({behavior:'smooth'});
-  showToast('Editing: '+s.name);
+window.editSvc=function(id){
+  var x=_s.find(function(s){return s.id===id;});if(!x)return;
+  set('svn',x.name);set('svi',x.icon);set('svd',x.desc);set('sviu',x.img);set('svid','');set('svei',id);
+  var p=document.getElementById('svip');if(p&&x.img){p.src=x.img;p.style.display='block';}else if(p)p.style.display='none';
+  document.getElementById('sft').textContent='Edit Service';
+  document.getElementById('s-svcs').scrollIntoView({behavior:'smooth'});
+  toast('Editing: '+x.name);
 };
-window.deleteService = async function(id){
-  if(!confirm('Delete this service?')) return;
-  if(!id.startsWith('d')){ try{ await db.collection('services').doc(id).delete(); }catch(e){} }
-  window._services=window._services.filter(function(s){return s.id!==id;});
-  renderServices(); renderAdminServices(); showToast('Service deleted');
+window.delSvc=async function(id){
+  if(!confirm('Delete this service?'))return;
+  if(!id.startsWith('d'))try{await db.collection('services').doc(id).delete();}catch(e){}
+  _s=_s.filter(function(x){return x.id!==id;});rAll();rAdminSvcs();toast('Service deleted');
 };
-window.clearServiceForm = function(){
-  ['svc-name','svc-icon','svc-desc','svc-img-url','svc-img-data','svc-edit-id'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
-  var prev=document.getElementById('svc-img-preview'); if(prev){prev.style.display='none';}
-  document.getElementById('service-form-title').textContent='Add New Service';
+window.clrSvc=function(){
+  ['svn','svi','svd','sviu','svid','svei'].forEach(function(i){set(i,'');});
+  var p=document.getElementById('svip');if(p)p.style.display='none';
+  document.getElementById('sft').textContent='Add New Service';
 };
 
-// ===== TESTIMONIALS CRUD =====
-window.saveTestimonial = async function(){
-  var name=document.getElementById('test-name').value.trim();
-  var text=document.getElementById('test-text').value.trim();
-  var rating=parseInt(document.getElementById('test-rating').value)||5;
-  var photo=getImgValue('test-photo-data',null);
-  var editId=document.getElementById('test-edit-id').value;
-  if(!name||!text){ showToast('Name and text required','error'); return; }
-  var data={name:name,text:text,rating:rating,photo:photo};
+// ---- TESTIMONIALS CRUD ----
+window.saveTst=async function(){
+  var n=V('tn'),t=V('tt'),r=parseInt(V('tr'))||5,ph=document.getElementById('tpd').value,ei=V('tei');
+  if(!n||!t){toast('Name and text required','er');return;}
+  var data={name:n,text:t,rating:r,photo:ph};
   try{
-    if(editId&&!editId.startsWith('d')){
-      await db.collection('testimonials').doc(editId).update(data);
-      var idx=window._testimonials.findIndex(function(t){return t.id===editId;});
-      if(idx>-1) window._testimonials[idx]=Object.assign({},window._testimonials[idx],data);
-    } else {
-      var ref=await db.collection('testimonials').add(data);
-      window._testimonials.push(Object.assign({id:ref.id},data));
-    }
-    clearTestForm(); renderTestimonials(); renderAdminTestimonials(); showToast('Testimonial saved','success');
-  } catch(e){ showToast('Error: '+e.message,'error'); }
+    if(ei&&!ei.startsWith('d')){await db.collection('testimonials').doc(ei).update(data);var i=_t.findIndex(function(x){return x.id===ei;});if(i>-1)_t[i]=Object.assign({},_t[i],data);}
+    else{var rf=await db.collection('testimonials').add(data);_t.push(Object.assign({id:rf.id},data));}
+    clrTst();rAll();rAdminTsts();toast('Testimonial saved','ok');
+  }catch(e){toast('Error: '+e.message,'er');}
 };
-window.editTestimonial = function(id){
-  var t=window._testimonials.find(function(x){return x.id===id;});
-  if(!t) return;
-  document.getElementById('test-name').value=t.name||'';
-  document.getElementById('test-text').value=t.text||'';
-  document.getElementById('test-rating').value=t.rating||5;
-  document.getElementById('test-photo-data').value=t.photo||'';
-  var prev=document.getElementById('test-photo-preview');
-  if(prev&&t.photo){ prev.src=t.photo; prev.style.display='block'; } else if(prev){ prev.style.display='none'; }
-  document.getElementById('test-edit-id').value=id;
-  document.getElementById('test-form-title').textContent='Edit Testimonial';
-  document.getElementById('section-atests').scrollIntoView({behavior:'smooth'});
-  showToast('Editing: '+t.name);
+window.editTst=function(id){
+  var x=_t.find(function(t){return t.id===id;});if(!x)return;
+  set('tn',x.name);set('tt',x.text);set('tr',x.rating||5);set('tpd',x.photo||'');set('tei',id);
+  var p=document.getElementById('tpp');if(p&&x.photo){p.src=x.photo;p.style.display='block';}else if(p)p.style.display='none';
+  document.getElementById('tft').textContent='Edit Testimonial';
+  document.getElementById('s-tsts').scrollIntoView({behavior:'smooth'});
+  toast('Editing: '+x.name);
 };
-window.deleteTestimonial = async function(id){
-  if(!confirm('Delete this testimonial?')) return;
-  if(!id.startsWith('d')){ try{ await db.collection('testimonials').doc(id).delete(); }catch(e){} }
-  window._testimonials=window._testimonials.filter(function(t){return t.id!==id;});
-  renderTestimonials(); renderAdminTestimonials(); showToast('Testimonial deleted');
+window.delTst=async function(id){
+  if(!confirm('Delete this testimonial?'))return;
+  if(!id.startsWith('d'))try{await db.collection('testimonials').doc(id).delete();}catch(e){}
+  _t=_t.filter(function(x){return x.id!==id;});rAll();rAdminTsts();toast('Testimonial deleted');
 };
-window.clearTestForm = function(){
-  ['test-name','test-text','test-photo-data','test-edit-id'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
-  document.getElementById('test-rating').value=5;
-  var prev=document.getElementById('test-photo-preview'); if(prev){prev.style.display='none';}
-  document.getElementById('test-form-title').textContent='Add Testimonial';
+window.clrTst=function(){
+  ['tn','tt','tpd','tei'].forEach(function(i){set(i,'');});
+  set('tr',5);
+  var p=document.getElementById('tpp');if(p)p.style.display='none';
+  document.getElementById('tft').textContent='Add Testimonial';
 };
 
-// ===== GALLERY =====
-window.saveGalleryImage = async function(){
-  var url=getImgValue('gal-img-data','gallery-url');
-  var caption=(document.getElementById('gallery-caption').value||'').trim();
-  if(!url){ showToast('Please upload an image or enter a URL','error'); return; }
+// ---- GALLERY ----
+window.saveGal=async function(){
+  var u=document.getElementById('gid').value||V('gurl'),c=V('gcap');
+  if(!u){toast('Upload an image or enter a URL','er');return;}
   try{
-    var ref=await db.collection('gallery').add({url:url,caption:caption});
-    window._gallery.push({id:ref.id,url:url,caption:caption});
-    document.getElementById('gallery-url').value=''; document.getElementById('gallery-caption').value='';
-    document.getElementById('gal-img-data').value='';
-    var prev=document.getElementById('gal-preview'); if(prev){prev.style.display='none';}
-    renderAdminGallery(); renderGallery(); showToast('Image added','success');
-  } catch(e){ showToast('Error: '+e.message,'error'); }
+    var r=await db.collection('gallery').add({url:u,caption:c});
+    _g.push({id:r.id,url:u,caption:c});
+    set('gurl','');set('gcap','');set('gid','');
+    var p=document.getElementById('gip');if(p)p.style.display='none';
+    rAdminGal();rGallery();toast('Image added','ok');
+  }catch(e){toast('Error: '+e.message,'er');}
 };
-window.deleteGalleryImage = async function(id){
-  if(!confirm('Delete this image?')) return;
-  try{ await db.collection('gallery').doc(id).delete(); }catch(e){}
-  window._gallery=window._gallery.filter(function(g){return g.id!==id;});
-  renderAdminGallery(); renderGallery(); showToast('Image deleted');
+window.delGal=async function(id){
+  if(!confirm('Delete this image?'))return;
+  try{await db.collection('gallery').doc(id).delete();}catch(e){}
+  _g=_g.filter(function(x){return x.id!==id;});rAdminGal();rGallery();toast('Image deleted');
 };
 
-// ===== MESSAGES =====
-window.deleteMessage = async function(id){
-  if(!confirm('Delete this message?')) return;
-  try{ await db.collection('messages').doc(id).delete(); }catch(e){}
-  window._messages=window._messages.filter(function(m){return m.id!==id;});
-  renderMessages(); showToast('Deleted');
+// ---- MESSAGES ----
+window.delMsg=async function(id){
+  if(!confirm('Delete?'))return;
+  try{await db.collection('messages').doc(id).delete();}catch(e){}
+  _m=_m.filter(function(x){return x.id!==id;});rAdminMsgs();toast('Deleted');
 };
 
-// ===== SITE CONTENT =====
-window.saveHeroContent = function(){
-  var h=document.getElementById('c-hero-headline').value.trim();
-  var sp=document.getElementById('c-hero-span').value.trim();
-  var sub=document.getElementById('c-hero-sub').value.trim();
-  if(h){ var el=document.getElementById('hero-headline'); if(el) el.childNodes[0].textContent=h+' '; }
-  if(sp){ var sel=document.getElementById('hero-span'); if(sel) sel.textContent=sp; }
-  if(sub){ var pel=document.getElementById('hero-subtext'); if(pel) pel.textContent=sub; }
-  showToast('Hero content updated','success');
+// ---- SITE CONTENT ----
+window.saveHero=function(){
+  var h=V('chh'),s=V('chs'),st=V('chst');
+  if(h){var e=document.getElementById('hh');if(e){e.childNodes[0].textContent=h+' ';}}
+  if(s){var sp=document.getElementById('hhs');if(sp)sp.textContent=s;}
+  if(st){var p=document.getElementById('hsp');if(p)p.textContent=st;}
+  toast('Hero updated','ok');
 };
-window.saveAboutContent = function(){
-  var title=document.getElementById('c-about-title').value.trim();
-  var t1=document.getElementById('c-about-text1').value.trim();
-  var t2=document.getElementById('c-about-text2').value.trim();
-  var imgData=document.getElementById('about-img-data').value;
-  if(title){['about-title'].forEach(function(id){var el=document.getElementById(id);if(el)el.textContent=title;});}
-  if(t1){['about-text1'].forEach(function(id){var el=document.getElementById(id);if(el)el.textContent=t1;});}
-  if(t2){['about-text2'].forEach(function(id){var el=document.getElementById(id);if(el)el.textContent=t2;});}
-  if(imgData){
-    ['about-img-display','about2-img-display'].forEach(function(id){
-      var el=document.getElementById(id); if(el){el.src=imgData;el.style.display='block';}
-    });
-    ['about-placeholder','about2-placeholder'].forEach(function(id){
-      var el=document.getElementById(id); if(el) el.style.display='none';
-    });
+window.saveAbout=function(){
+  var t=V('cat'),p1=V('cap1'),p2=V('cap2'),im=document.getElementById('abid').value;
+  if(t){['atit'].forEach(function(i){var e=document.getElementById(i);if(e)e.textContent=t;});}
+  if(p1){['at1'].forEach(function(i){var e=document.getElementById(i);if(e)e.textContent=p1;});}
+  if(p2){['at2'].forEach(function(i){var e=document.getElementById(i);if(e)e.textContent=p2;});}
+  if(im){
+    ['aid1','aid2'].forEach(function(i){var e=document.getElementById(i);if(e){e.src=im;e.style.display='block';}});
+    ['aph1','aph2'].forEach(function(i){var e=document.getElementById(i);if(e)e.style.display='none';});
   }
-  showToast('About section updated','success');
+  toast('About updated','ok');
 };
-window.saveMissionVision = function(){
-  var m=document.getElementById('c-mission').value.trim();
-  var v=document.getElementById('c-vision').value.trim();
-  if(m){ var mel=document.getElementById('mission-text'); if(mel) mel.textContent=m; }
-  if(v){ var vel=document.getElementById('vision-text'); if(vel) vel.textContent=v; }
-  showToast('Mission & Vision updated','success');
+window.saveMV=function(){
+  var m=V('cmt'),v=V('cvt');
+  if(m){var e=document.getElementById('mist');if(e)e.textContent=m;}
+  if(v){var e2=document.getElementById('vist');if(e2)e2.textContent=v;}
+  toast('Mission & Vision updated','ok');
 };
-window.saveContactContent = function(){
-  var addr=document.getElementById('c-address').value.trim();
-  var email=document.getElementById('c-email').value.trim();
-  if(addr){ var el=document.getElementById('contact-address-display'); if(el) el.textContent=addr; }
-  if(email){ var el2=document.getElementById('contact-email-display'); if(el2) el2.textContent=email; }
-  showToast('Contact details updated','success');
+window.saveCont=function(){
+  var a=V('cadd2'),e=V('ceml2');
+  if(a){var el=document.getElementById('cadd');if(el)el.textContent=a;}
+  if(e){var el2=document.getElementById('ceml');if(el2)el2.textContent=e;}
+  toast('Contact updated','ok');
 };
 
-// ===== NAVIGATION =====
-function navigate(page){
-  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
-  var target=document.getElementById(page);
-  if(target) target.classList.add('active');
-  document.querySelectorAll('.nav-links a').forEach(function(a){
-    a.classList.remove('active');
+// ---- IMAGE PREVIEW ----
+window.prevImg=function(input,prevId,dataId){
+  var file=input.files[0];if(!file)return;
+  var r=new FileReader();
+  r.onload=function(e){
+    var p=document.getElementById(prevId);if(p){p.src=e.target.result;p.style.display='block';}
+    var d=document.getElementById(dataId);if(d)d.value=e.target.result;
+  };
+  r.readAsDataURL(file);
+};
+
+// ---- NAV ----
+window.go=function(page){
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('ac');});
+  var t=document.getElementById(page);if(t)t.classList.add('ac');
+  document.querySelectorAll('.nl a').forEach(function(a){
+    a.classList.remove('ac');
     var oc=a.getAttribute('onclick')||'';
-    if(oc.indexOf("'"+page+"'")!==-1) a.classList.add('active');
+    if(oc.indexOf("'"+page+"'")!==-1)a.classList.add('ac');
   });
   window.scrollTo(0,0);
-  closeMenu();
-}
-function toggleMenu(){
-  document.getElementById('navLinks').classList.toggle('open');
-  document.getElementById('navCta').classList.toggle('open');
-}
-function closeMenu(){
-  document.getElementById('navLinks').classList.remove('open');
-  document.getElementById('navCta').classList.remove('open');
-}
-function showSec(name, el){
-  document.querySelectorAll('.admin-section').forEach(function(s){s.classList.remove('active');});
-  var sec=document.getElementById('section-'+name); if(sec) sec.classList.add('active');
-  document.querySelectorAll('.admin-nav-item').forEach(function(i){i.classList.remove('active');});
-  if(el) el.classList.add('active');
-  var titles={dashboard:'Dashboard',appts:'Appointments',adoctors:'Manage Doctors',aservices:'Manage Services',agallery:'Gallery',atests:'Testimonials',amessages:'Messages',acontent:'Site Content'};
-  document.getElementById('admin-page-title').textContent=titles[name]||name;
-}
-function showToast(msg,type){
+  cmenu();
+};
+function tmenu(){document.getElementById('nl').classList.toggle('op');document.getElementById('nc').classList.toggle('op');}
+function cmenu(){document.getElementById('nl').classList.remove('op');document.getElementById('nc').classList.remove('op');}
+window.sec=function(name,el){
+  document.querySelectorAll('.asec').forEach(function(s){s.classList.remove('ac');});
+  var s=document.getElementById('s-'+name);if(s)s.classList.add('ac');
+  document.querySelectorAll('.ani').forEach(function(i){i.classList.remove('ac');});
+  if(el)el.classList.add('ac');
+  var t={dash:'Dashboard',appts:'Appointments',docs:'Manage Doctors',svcs:'Manage Services',gal:'Gallery',tsts:'Testimonials',msgs:'Messages',cont:'Site Content'};
+  document.getElementById('apt').textContent=t[name]||name;
+};
+window.scroll&&window.addEventListener('scroll',function(){var n=document.getElementById('nav');if(window.scrollY>50)n.classList.add('sc');else n.classList.remove('sc');});
+
+// ---- HELPERS ----
+function V(id){var e=document.getElementById(id);return e?(e.value||'').trim():'';}
+function set(id,v){var e=document.getElementById(id);if(e)e.value=v;}
+function show(el,cls,msg){el.className='fmsg '+cls;el.textContent=msg;}
+function toast(msg,type){
   var t=document.getElementById('toast');
-  t.textContent=msg; t.className='toast show'+(type?' '+type:'');
-  setTimeout(function(){ t.classList.remove('show'); },3000);
+  t.textContent=msg;t.className='toast sh'+(type?' '+type:'');
+  setTimeout(function(){t.classList.remove('sh');},3000);
 }
-// Navbar scroll
-window.addEventListener('scroll',function(){
-  var nb=document.getElementById('navbar');
-  if(window.scrollY>50) nb.classList.add('scrolled'); else nb.classList.remove('scrolled');
-});
-// Page loader - never gets stuck
-function hideLoader(){
-  var loader=document.getElementById('page-loader');
-  if(loader) loader.classList.add('hidden');
-}
-if(document.readyState==='loading'){
-  document.addEventListener('DOMContentLoaded',function(){ setTimeout(hideLoader,300); });
-} else { setTimeout(hideLoader,300); }
-setTimeout(hideLoader,2000);
-// Keyboard shortcut
-document.addEventListener('keydown',function(e){
-  if(e.ctrlKey&&e.shiftKey&&e.key==='A') document.getElementById('adminLogin').style.display='flex';
-});
+document.addEventListener('keydown',function(e){if(e.ctrlKey&&e.shiftKey&&e.key==='A')openLogin();});
 </script>
 </body>
 </html>
