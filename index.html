@@ -4,1167 +4,1405 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Loving Heart Hospital</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-:root{--navy:#0a2558;--blue:#1a5cad;--mint:#2ec4a9;--lmint:#e8f9f6;--lblue:#eaf2fb;--gray:#64748b;--lgray:#e2ecf5;--text:#1e2d45;--red:#e53e3e;--green:#38a169;--yellow:#d69e2e;--r:14px;--rs:8px}
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Segoe UI',sans-serif;color:var(--text);background:#fff;overflow-x:hidden}
-h1,h2,h3,h4{font-family:Georgia,serif;line-height:1.2}
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --blue:#1a5cad;--mint:#2ec4a9;--navy:#0a2558;
+  --lgray:#e8eef5;--gray:#64748b;--offwhite:#f4f8fc;
+  --red:#dc2626;--green:#16a34a;
+}
+body{font-family:Segoe UI,Arial,sans-serif;color:#1e2d45;background:#fff}
 a{text-decoration:none;color:inherit}
 img{max-width:100%;display:block}
-.con{max-width:1180px;margin:0 auto;padding:0 20px}
-.page{display:none}.page.on{display:block}
-#home{display:block}
 
-/* LOADER */
-#ldr{position:fixed;inset:0;background:var(--navy);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;transition:opacity .5s}
-#ldr.off{opacity:0;pointer-events:none}
-#ldr span{font-size:3.5rem;animation:hb .9s infinite}
-#ldr p{color:rgba(255,255,255,.8);font-family:sans-serif}
-@keyframes hb{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
-
-/* NAV */
-#nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(255,255,255,.97);border-bottom:1px solid var(--lgray)}
-.ni{display:flex;align-items:center;justify-content:space-between;height:64px}
-.logo{display:flex;align-items:center;gap:10px;cursor:pointer}
-.logo .ic{width:40px;height:40px;background:linear-gradient(135deg,var(--blue),var(--mint));border-radius:9px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.2rem}
-.logo .nm{font-family:Georgia,serif;font-size:.97rem;font-weight:700;color:var(--navy)}
-.logo .sub{font-size:.6rem;color:var(--gray);text-transform:uppercase;letter-spacing:1px}
-.nlinks{display:flex;gap:4px}
-.nlinks a{padding:7px 12px;border-radius:7px;font-size:.87rem;color:var(--gray);cursor:pointer;transition:background .2s,color .2s}
-.nlinks a:hover,.nlinks a.on{color:var(--blue);background:var(--lblue)}
-.nbts{display:flex;gap:8px;align-items:center}
-.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 17px;border-radius:var(--rs);font-size:.87rem;font-weight:600;cursor:pointer;border:none;font-family:inherit;transition:transform .2s,box-shadow .2s}
-.bp{background:linear-gradient(135deg,var(--blue),#3b9de0);color:#fff;box-shadow:0 3px 12px rgba(26,92,173,.3)}
-.bp:hover{transform:translateY(-2px)}
-.bm{background:linear-gradient(135deg,var(--mint),#26b09a);color:#fff}
-.bm:hover{transform:translateY(-2px)}
-.bo{background:transparent;color:var(--blue);border:2px solid var(--blue)}
-.bo:hover{background:var(--blue);color:#fff}
-.bw{background:#fff;color:var(--mint);font-weight:700}
-.bow{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.6)}
-.bow:hover{background:rgba(255,255,255,.15)}
-.bd{background:var(--red);color:#fff}
-.bsuc{background:var(--green);color:#fff}
-.sm{padding:6px 12px;font-size:.78rem}
+/* ===NAV=== */
+#nav{position:fixed;top:0;left:0;right:0;background:#fff;border-bottom:1px solid var(--lgray);z-index:999;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.nw{max-width:1200px;margin:0 auto;padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:65px}
+.nlogo{display:flex;align-items:center;gap:10px;cursor:pointer}
+.nlogo .ico{width:42px;height:42px;border-radius:10px;background:linear-gradient(135deg,var(--blue),var(--mint));display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.3rem;flex-shrink:0}
+.nlogo .txt .n{font-family:Georgia,serif;font-size:1rem;font-weight:700;color:var(--navy)}
+.nlogo .txt .s{font-size:.6rem;color:var(--gray);text-transform:uppercase;letter-spacing:1px}
+.nlinks{display:flex;gap:2px}
+.nlinks a{padding:7px 13px;border-radius:7px;font-size:.88rem;color:var(--gray);cursor:pointer;transition:.2s}
+.nlinks a:hover,.nlinks a.act{color:var(--blue);background:#eaf2fb}
+.nbtns{display:flex;gap:8px;align-items:center}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:8px;font-size:.88rem;font-weight:600;cursor:pointer;border:none;font-family:inherit;transition:.2s}
+.btnp{background:linear-gradient(135deg,var(--blue),#3b9de0);color:#fff;box-shadow:0 3px 12px rgba(26,92,173,.3)}
+.btnp:hover{transform:translateY(-1px);box-shadow:0 5px 18px rgba(26,92,173,.4)}
+.btnm{background:linear-gradient(135deg,var(--mint),#26b09a);color:#fff}
+.btnm:hover{transform:translateY(-1px)}
+.btno{background:transparent;color:var(--blue);border:2px solid var(--blue)}
+.btno:hover{background:var(--blue);color:#fff}
+.btnw{background:#fff;color:var(--mint);font-weight:700}
+.btnow{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.6)}
+.btnow:hover{background:rgba(255,255,255,.15)}
+.btnd{background:var(--red);color:#fff}
+.btng{background:var(--green);color:#fff}
+.btnsm{padding:6px 12px;font-size:.78rem}
 .hbg{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px}
 .hbg span{display:block;width:22px;height:2px;background:var(--navy);border-radius:2px}
 
-/* BANNER */
-.bnr{background:linear-gradient(90deg,var(--red),#c53030);color:#fff;text-align:center;padding:8px;font-size:.82rem;position:relative;top:64px;z-index:900}
-.bnr a{color:#fff;font-weight:700;text-decoration:underline}
+/* ===BANNER=== */
+.banner{background:linear-gradient(90deg,#dc2626,#b91c1c);color:#fff;text-align:center;padding:9px 20px;font-size:.83rem;position:fixed;top:65px;left:0;right:0;z-index:998}
+.banner a{color:#fff;font-weight:700;text-decoration:underline}
 
-/* HERO */
-.hero{min-height:100vh;background:linear-gradient(135deg,var(--navy),#0d3575,var(--blue));display:flex;align-items:center;padding-top:100px}
-.hero h1{font-size:clamp(2rem,5vw,3.5rem);color:#fff;margin-bottom:16px}
-.hero h1 span{color:var(--mint)}
-.hero>div>p{font-size:1rem;color:rgba(255,255,255,.75);margin-bottom:28px;line-height:1.7;max-width:580px}
-.ha{display:flex;gap:12px;flex-wrap:wrap}
-.hst{display:flex;gap:24px;margin-top:40px;flex-wrap:wrap}
-.hst .n{font-family:Georgia,serif;font-size:1.8rem;color:#fff;font-weight:700}
-.hst .l{font-size:.74rem;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:1px}
-.hbdg{display:inline-flex;align-items:center;gap:7px;background:rgba(46,196,169,.18);border:1px solid rgba(46,196,169,.4);color:var(--mint);padding:5px 13px;border-radius:50px;font-size:.75rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:16px}
+/* ===PAGES=== */
+.pg{display:none;padding-top:100px}
+.pg.show{display:block}
+#pg-home{display:block}
 
-/* SECTIONS */
-section{padding:68px 0}
-.bg2{background:#f7fafd}
-.sh{text-align:center;margin-bottom:44px}
-.sh .tg{display:inline-block;background:var(--lmint);color:var(--mint);padding:3px 13px;border-radius:50px;font-size:.74rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
-.sh h2{font-size:clamp(1.6rem,3.5vw,2.3rem);color:var(--navy);margin-bottom:10px}
-.sh p{color:var(--gray);max-width:520px;margin:0 auto;line-height:1.7;font-size:.93rem}
-.ph{background:linear-gradient(135deg,var(--navy),#1a3a6e);padding:50px 0;text-align:center;padding-top:115px}
-.ph .tg{display:inline-block;background:rgba(46,196,169,.2);color:var(--mint);padding:3px 13px;border-radius:50px;font-size:.74rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+/* ===HERO=== */
+.hero{min-height:100vh;background:linear-gradient(135deg,var(--navy) 0%,#0d3370 50%,var(--blue) 100%);display:flex;align-items:center;padding:80px 0 60px}
+.hw{max-width:1200px;margin:0 auto;padding:0 20px}
+.hbadge{display:inline-flex;align-items:center;gap:7px;background:rgba(46,196,169,.18);border:1px solid rgba(46,196,169,.4);color:var(--mint);padding:5px 14px;border-radius:50px;font-size:.76rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:18px}
+.hero h1{font-family:Georgia,serif;font-size:clamp(2rem,5vw,3.5rem);color:#fff;margin-bottom:16px;line-height:1.15}
+.hero h1 em{color:var(--mint);font-style:normal}
+.hero .sub{font-size:1rem;color:rgba(255,255,255,.76);margin-bottom:30px;line-height:1.7;max-width:560px}
+.hbtns{display:flex;gap:12px;flex-wrap:wrap}
+.hstats{display:flex;gap:30px;margin-top:44px;flex-wrap:wrap}
+.hstat .num{font-family:Georgia,serif;font-size:1.9rem;color:#fff;font-weight:700}
+.hstat .lbl{font-size:.72rem;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:1px}
 
-/* SERVICE CARDS */
-.sgrd{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
-.sc{background:#fff;border-radius:var(--r);overflow:hidden;border:1px solid var(--lgray);transition:transform .25s,box-shadow .25s}
-.sc:hover{transform:translateY(-5px);box-shadow:0 10px 40px rgba(10,37,88,.13)}
-.sci{height:160px;background:var(--lblue);display:flex;align-items:center;justify-content:center;font-size:3rem;position:relative;overflow:hidden}
-.sci img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.scb{padding:20px}
-.scic{width:46px;height:46px;border-radius:10px;background:var(--lblue);display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:var(--blue);margin-bottom:10px;transition:background .25s,color .25s}
-.sc:hover .scic{background:linear-gradient(135deg,var(--blue),#3b9de0);color:#fff}
-.scb h3{font-size:.97rem;color:var(--navy);margin-bottom:6px}
-.scb p{color:var(--gray);font-size:.84rem;line-height:1.6}
+/* ===SECTIONS=== */
+.sec{padding:70px 0}
+.secbg{background:var(--offwhite)}
+.wrap{max-width:1200px;margin:0 auto;padding:0 20px}
+.shead{text-align:center;margin-bottom:46px}
+.stag{display:inline-block;background:#e8f9f6;color:var(--mint);padding:3px 13px;border-radius:50px;font-size:.74rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+.shead h2{font-family:Georgia,serif;font-size:clamp(1.6rem,3.5vw,2.3rem);color:var(--navy);margin-bottom:10px}
+.shead p{color:var(--gray);max-width:520px;margin:0 auto;line-height:1.7;font-size:.93rem}
+.pghero{background:linear-gradient(135deg,var(--navy),#1a3a6e);padding:56px 0 40px;text-align:center}
+.pghero .stag{background:rgba(46,196,169,.2)}
+.pghero h1{font-family:Georgia,serif;color:#fff;font-size:clamp(1.8rem,4vw,2.7rem);margin-top:8px}
+.pghero p{color:rgba(255,255,255,.7);margin-top:8px;font-size:.92rem}
 
-/* DOCTOR CARDS */
-.dgrd{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:20px}
-.dc{background:#fff;border-radius:var(--r);overflow:hidden;border:1px solid var(--lgray);transition:transform .25s,box-shadow .25s}
-.dc:hover{transform:translateY(-5px);box-shadow:0 10px 40px rgba(10,37,88,.13)}
-.dci{height:200px;background:linear-gradient(135deg,var(--lblue),var(--lmint));display:flex;align-items:center;justify-content:center;font-size:4rem;color:var(--blue);position:relative;overflow:hidden}
-.dci img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.dcb{padding:16px}
-.dcb h3{font-size:.95rem;color:var(--navy);margin-bottom:3px}
-.dsp{color:var(--mint);font-size:.8rem;font-weight:600;margin-bottom:7px}
-.dcb p{color:var(--gray);font-size:.82rem;line-height:1.5;margin-bottom:10px}
+/* ===SERVICE CARDS=== */
+.sgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:22px}
+.scard{background:#fff;border-radius:14px;overflow:hidden;border:1px solid var(--lgray);transition:.25s}
+.scard:hover{transform:translateY(-5px);box-shadow:0 10px 40px rgba(10,37,88,.12)}
+.scard-img{height:160px;background:var(--offwhite);display:flex;align-items:center;justify-content:center;font-size:3.5rem;position:relative;overflow:hidden}
+.scard-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.scard-body{padding:20px}
+.scard-ico{width:46px;height:46px;border-radius:10px;background:#eaf2fb;color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:1.2rem;margin-bottom:11px;transition:.25s}
+.scard:hover .scard-ico{background:linear-gradient(135deg,var(--blue),#3b9de0);color:#fff}
+.scard-body h3{font-family:Georgia,serif;font-size:.97rem;color:var(--navy);margin-bottom:6px}
+.scard-body p{color:var(--gray);font-size:.84rem;line-height:1.6}
 
-/* TESTIMONIALS */
-.tbg{background:linear-gradient(135deg,var(--navy),#1a3a6e)}
-.tbg .sh h2{color:#fff}
-.tbg .sh p{color:rgba(255,255,255,.6)}
-.tgrd{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
-.tc{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:var(--r);padding:22px}
-.tst{color:#f6c344;font-size:.86rem;margin-bottom:10px}
-.ttx{color:rgba(255,255,255,.85);font-size:.9rem;line-height:1.7;margin-bottom:16px;font-style:italic}
-.tau{display:flex;align-items:center;gap:9px}
-.tav{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--mint));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;flex-shrink:0;overflow:hidden}
+/* ===DOCTOR CARDS=== */
+.dgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:22px}
+.dcard{background:#fff;border-radius:14px;overflow:hidden;border:1px solid var(--lgray);transition:.25s}
+.dcard:hover{transform:translateY(-5px);box-shadow:0 10px 40px rgba(10,37,88,.12)}
+.dcard-img{height:200px;background:linear-gradient(135deg,#eaf2fb,#e8f9f6);display:flex;align-items:center;justify-content:center;font-size:4rem;color:var(--blue);position:relative;overflow:hidden}
+.dcard-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.dcard-body{padding:16px}
+.dcard-body h3{font-family:Georgia,serif;font-size:.94rem;color:var(--navy);margin-bottom:3px}
+.dcard-spec{color:var(--mint);font-size:.79rem;font-weight:600;margin-bottom:7px}
+.dcard-body p{color:var(--gray);font-size:.82rem;line-height:1.5;margin-bottom:10px}
+
+/* ===TESTIMONIALS=== */
+.testbg{background:linear-gradient(135deg,var(--navy),#1a3a6e)}
+.testbg .shead h2{color:#fff}
+.testbg .shead p{color:rgba(255,255,255,.6)}
+.tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
+.tcard{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:22px}
+.tstars{color:#fbbf24;font-size:.86rem;margin-bottom:10px}
+.ttext{color:rgba(255,255,255,.85);font-size:.9rem;line-height:1.7;font-style:italic;margin-bottom:16px}
+.tauthor{display:flex;align-items:center;gap:10px}
+.tav{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--mint));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;flex-shrink:0;overflow:hidden;font-size:1rem}
 .tav img{width:100%;height:100%;object-fit:cover}
-.tnm{font-weight:600;color:#fff;font-size:.86rem}
-.trl{color:rgba(255,255,255,.5);font-size:.74rem}
+.tname{font-weight:600;color:#fff;font-size:.86rem}
+.trole{color:rgba(255,255,255,.5);font-size:.73rem}
 
-/* ABOUT */
-.agrd{display:grid;grid-template-columns:1fr 1fr;gap:52px;align-items:center}
-.aimg{border-radius:var(--r);height:380px;background:linear-gradient(135deg,var(--lblue),var(--lmint));display:flex;align-items:center;justify-content:center;font-size:6rem;position:relative;overflow:hidden}
-.aimg img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.abg{position:absolute;bottom:-16px;right:-16px;background:#fff;border-radius:var(--r);padding:16px 20px;box-shadow:0 10px 40px rgba(10,37,88,.14);text-align:center}
-.abg .n{font-family:Georgia,serif;font-size:2rem;color:var(--blue);font-weight:700}
-.abg .l{font-size:.7rem;color:var(--gray);text-transform:uppercase;letter-spacing:1px}
-.act h2{font-size:clamp(1.5rem,3vw,2.1rem);color:var(--navy);margin-bottom:12px}
-.act p{color:var(--gray);line-height:1.8;margin-bottom:12px;font-size:.93rem}
-.afl{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:20px 0}
-.af{display:flex;align-items:flex-start;gap:9px}
-.afi{width:30px;height:30px;border-radius:7px;background:var(--lmint);color:var(--mint);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.82rem}
-.af h4{font-size:.85rem;color:var(--navy)}
-.af p{font-size:.78rem;color:var(--gray)}
+/* ===ABOUT GRID=== */
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:52px;align-items:center}
+.about-img{border-radius:14px;height:380px;background:linear-gradient(135deg,#eaf2fb,#e8f9f6);display:flex;align-items:center;justify-content:center;font-size:6rem;position:relative;overflow:hidden}
+.about-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.about-badge{position:absolute;bottom:-14px;right:-14px;background:#fff;border-radius:14px;padding:16px 20px;box-shadow:0 8px 32px rgba(10,37,88,.14);text-align:center}
+.about-badge .n{font-family:Georgia,serif;font-size:1.9rem;color:var(--blue);font-weight:700}
+.about-badge .l{font-size:.69rem;color:var(--gray);text-transform:uppercase;letter-spacing:1px}
+.about-text h2{font-family:Georgia,serif;font-size:clamp(1.5rem,3vw,2.1rem);color:var(--navy);margin-bottom:12px}
+.about-text p{color:var(--gray);line-height:1.8;margin-bottom:12px;font-size:.93rem}
+.afeats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:20px 0}
+.afeat{display:flex;align-items:flex-start;gap:9px}
+.afeat-ico{width:30px;height:30px;border-radius:7px;background:#e8f9f6;color:var(--mint);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.82rem}
+.afeat h4{font-size:.85rem;color:var(--navy)}
+.afeat p{font-size:.78rem;color:var(--gray)}
 
-/* CTA */
-.cta{background:linear-gradient(135deg,var(--mint),#26b09a);padding:52px 0;text-align:center}
-.cta h2{font-size:clamp(1.6rem,3.5vw,2.3rem);color:#fff;margin-bottom:8px}
-.cta p{color:rgba(255,255,255,.85);max-width:460px;margin:0 auto 22px;font-size:.93rem}
-.cta-a{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+/* ===CTA=== */
+.cta{background:linear-gradient(135deg,var(--mint),#26b09a);padding:56px 0;text-align:center}
+.cta h2{font-family:Georgia,serif;color:#fff;font-size:clamp(1.6rem,3.5vw,2.3rem);margin-bottom:8px}
+.cta p{color:rgba(255,255,255,.85);max-width:460px;margin:0 auto 22px;font-size:.92rem}
+.cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
 
-/* APPOINTMENT */
-.apw{display:grid;grid-template-columns:1fr 1.5fr;gap:40px;align-items:start}
-.apinf h2{font-size:clamp(1.4rem,2.5vw,1.9rem);color:var(--navy);margin-bottom:12px}
-.apinf p{color:var(--gray);line-height:1.7;margin-bottom:22px;font-size:.9rem}
-.apft{display:flex;flex-direction:column;gap:11px}
-.apfi{display:flex;align-items:center;gap:11px;padding:11px 14px;background:#fff;border-radius:var(--rs);border:1px solid var(--lgray)}
-.apfi i{color:var(--mint);width:20px;text-align:center}
-.apfi span{font-size:.86rem}
-.fc{background:#fff;border-radius:var(--r);padding:26px;box-shadow:0 4px 24px rgba(10,37,88,.09)}
-.ft{font-size:1.05rem;color:var(--navy);margin-bottom:18px}
-.fg{display:grid;grid-template-columns:1fr 1fr;gap:13px}
-.fi{display:flex;flex-direction:column;gap:4px}
-.fi.fw{grid-column:1/-1}
-.fi label{font-size:.8rem;font-weight:600;color:var(--text)}
-.fi input,.fi select,.fi textarea{padding:9px 12px;border:1.5px solid var(--lgray);border-radius:var(--rs);font-family:inherit;font-size:.87rem;color:var(--text);outline:none;transition:border-color .2s}
-.fi input:focus,.fi select:focus,.fi textarea:focus{border-color:var(--blue)}
-.fi textarea{resize:vertical;min-height:80px}
-.fm{padding:10px 14px;border-radius:var(--rs);font-size:.84rem;display:none;margin-bottom:11px}
-.fm.ok{background:#f0fff4;color:var(--green);border:1px solid #c6f6d5;display:block}
-.fm.er{background:#fff5f5;color:var(--red);border:1px solid #fed7d7;display:block}
+/* ===FORMS=== */
+.appt-wrap{display:grid;grid-template-columns:1fr 1.6fr;gap:40px;align-items:start}
+.appt-info h2{font-family:Georgia,serif;font-size:clamp(1.4rem,2.5vw,1.9rem);color:var(--navy);margin-bottom:12px}
+.appt-info p{color:var(--gray);line-height:1.7;margin-bottom:22px;font-size:.91rem}
+.appt-feats{display:flex;flex-direction:column;gap:10px}
+.apft{display:flex;align-items:center;gap:11px;padding:11px 15px;background:#fff;border-radius:8px;border:1px solid var(--lgray)}
+.apft i{color:var(--mint);width:20px;text-align:center;font-size:.95rem}
+.apft span{font-size:.87rem}
+.fcard{background:#fff;border-radius:14px;padding:28px;box-shadow:0 4px 24px rgba(10,37,88,.08)}
+.ftitle{font-family:Georgia,serif;font-size:1.05rem;color:var(--navy);margin-bottom:18px}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.frow{display:flex;flex-direction:column;gap:4px}
+.frow.full{grid-column:1/-1}
+.frow label{font-size:.79rem;font-weight:600;color:#374151}
+.frow input,.frow select,.frow textarea{padding:9px 12px;border:1.5px solid var(--lgray);border-radius:8px;font-family:inherit;font-size:.88rem;color:#1e2d45;outline:none;transition:.2s;background:#fff}
+.frow input:focus,.frow select:focus,.frow textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,92,173,.1)}
+.frow textarea{resize:vertical;min-height:80px}
+.fmsg{padding:10px 14px;border-radius:8px;font-size:.84rem;margin-bottom:12px;display:none}
+.fmsg.ok{background:#f0fdf4;color:var(--green);border:1px solid #bbf7d0;display:block}
+.fmsg.er{background:#fef2f2;color:var(--red);border:1px solid #fecaca;display:block}
 
-/* CONTACT */
-.cgrd{display:grid;grid-template-columns:1fr 1.4fr;gap:40px}
-.ci{display:flex;align-items:flex-start;gap:13px;margin-bottom:13px}
-.cii{width:42px;height:42px;border-radius:10px;background:var(--lblue);color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
-.ci strong{font-size:.87rem;color:var(--navy)}
+/* ===CONTACT=== */
+.contact-grid{display:grid;grid-template-columns:1fr 1.4fr;gap:40px}
+.ci{display:flex;align-items:flex-start;gap:13px;margin-bottom:14px}
+.ci-ico{width:44px;height:44px;border-radius:11px;background:#eaf2fb;color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+.ci strong{font-size:.88rem;color:var(--navy);display:block}
 .ci p{color:var(--gray);font-size:.84rem;margin-top:2px}
-.mpcon{border-radius:var(--r);overflow:hidden;height:185px;margin-top:13px}
-.mpcon iframe{width:100%;height:100%;border:none}
-.wab{display:inline-flex;align-items:center;gap:8px;padding:11px 20px;background:#25d366;color:#fff;border-radius:var(--rs);font-weight:600;font-size:.9rem;transition:background .2s;margin-top:13px}
-.wab:hover{background:#128c7e}
+.mapbox{border-radius:14px;overflow:hidden;height:190px;margin-top:14px}
+.mapbox iframe{width:100%;height:100%;border:none}
+.wabtn{display:inline-flex;align-items:center;gap:8px;padding:11px 20px;background:#16a34a;color:#fff;border-radius:8px;font-weight:600;font-size:.9rem;margin-top:14px;transition:.2s}
+.wabtn:hover{background:#15803d}
 
-/* GALLERY */
-.ggrd{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-.gi{border-radius:var(--rs);overflow:hidden;aspect-ratio:1;background:var(--lblue);display:flex;align-items:center;justify-content:center;font-size:2.8rem;cursor:pointer;position:relative}
-.gi:first-child{grid-column:span 2;grid-row:span 2;font-size:5rem}
-.gi img{width:100%;height:100%;object-fit:cover}
-.gov{position:absolute;inset:0;background:rgba(10,37,88,.5);opacity:0;transition:opacity .2s;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.3rem}
-.gi:hover .gov{opacity:1}
+/* ===GALLERY=== */
+.ggrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.gitem{border-radius:8px;overflow:hidden;aspect-ratio:1;background:#eaf2fb;position:relative;cursor:pointer}
+.gitem:first-child{grid-column:span 2;grid-row:span 2}
+.gitem img{width:100%;height:100%;object-fit:cover;transition:.3s}
+.gitem:hover img{transform:scale(1.05)}
+.gitem .ov{position:absolute;inset:0;background:rgba(10,37,88,.45);opacity:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.3rem;transition:.2s}
+.gitem:hover .ov{opacity:1}
+.gitem .ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:3rem}
+.gitem:first-child .ph{font-size:5rem}
 
-/* FOOTER */
-footer{background:var(--navy);color:rgba(255,255,255,.7)}
-.ftp{padding:52px 0 32px;display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:32px}
-.fbr p{font-size:.85rem;line-height:1.7;margin:10px 0 16px}
-.fsc{display:flex;gap:8px}
-.fsc a{width:32px;height:32px;border-radius:7px;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.7);transition:background .2s}
-.fsc a:hover{background:var(--blue);color:#fff}
-.fcl h4{color:#fff;font-size:.93rem;margin-bottom:12px}
-.fcl ul{list-style:none;display:flex;flex-direction:column;gap:6px}
-.fcl ul li a{font-size:.84rem;color:rgba(255,255,255,.6);cursor:pointer;transition:color .2s}
-.fcl ul li a:hover{color:var(--mint)}
-.fbt{border-top:1px solid rgba(255,255,255,.1);padding:16px 0;display:flex;align-items:center;justify-content:space-between;font-size:.78rem}
-.waf{position:fixed;bottom:20px;right:20px;z-index:900}
-.waf a{width:52px;height:52px;background:#25d366;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.5rem;box-shadow:0 4px 18px rgba(37,211,102,.5);transition:transform .2s}
-.waf a:hover{transform:scale(1.1)}
+/* ===FOOTER=== */
+footer{background:var(--navy);color:rgba(255,255,255,.72)}
+.ftop{padding:52px 0 34px;display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:34px}
+.fbrand p{font-size:.85rem;line-height:1.7;margin:10px 0 16px}
+.fsoc{display:flex;gap:8px}
+.fsoc a{width:32px;height:32px;border-radius:7px;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.7);font-size:.85rem;transition:.2s}
+.fsoc a:hover{background:var(--blue);color:#fff}
+.fcol h4{color:#fff;font-size:.93rem;margin-bottom:12px}
+.fcol ul{list-style:none;display:flex;flex-direction:column;gap:6px}
+.fcol ul li a{font-size:.84rem;color:rgba(255,255,255,.6);cursor:pointer;transition:.2s}
+.fcol ul li a:hover{color:var(--mint)}
+.fbot{border-top:1px solid rgba(255,255,255,.1);padding:16px 0;display:flex;align-items:center;justify-content:space-between;font-size:.79rem;flex-wrap:wrap;gap:8px}
+.wafloat{position:fixed;bottom:22px;right:22px;z-index:900}
+.wafloat a{width:52px;height:52px;background:#16a34a;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.5rem;box-shadow:0 4px 18px rgba(22,163,74,.5);transition:.2s}
+.wafloat a:hover{transform:scale(1.1)}
 
-/* ADMIN */
-.adlo{display:none;position:fixed;inset:0;background:linear-gradient(135deg,var(--navy),#1a3a6e);z-index:3000;align-items:center;justify-content:center}
-.adlc{background:#fff;border-radius:var(--r);padding:34px 30px;width:100%;max-width:360px}
-.adb{display:none;position:fixed;inset:0;z-index:2000;background:#f7fafd}
-.adb.on{display:flex}
-.asb{width:240px;background:var(--navy);color:#fff;display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto}
-.aslg{padding:17px;border-bottom:1px solid rgba(255,255,255,.1);display:flex;align-items:center;gap:9px}
-.aslg .ic{width:32px;height:32px;background:linear-gradient(135deg,var(--blue),var(--mint));border-radius:7px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.9rem}
-.aslg .nm{font-family:Georgia,serif;font-size:.92rem;color:#fff}
-.aslg .sub{font-size:.6rem;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:1px}
-.anv{padding:9px 0;flex:1}
-.ani{display:flex;align-items:center;gap:10px;padding:10px 16px;color:rgba(255,255,255,.65);cursor:pointer;font-size:.84rem;border-left:3px solid transparent;transition:background .2s,color .2s}
-.ani:hover{color:#fff;background:rgba(255,255,255,.07)}
-.ani.on{color:#fff;background:rgba(59,157,224,.2);border-left-color:#3b9de0}
-.ani i{width:16px;text-align:center}
-.amn{flex:1;display:flex;flex-direction:column;overflow:hidden}
-.atp{height:56px;background:#fff;border-bottom:1px solid var(--lgray);display:flex;align-items:center;justify-content:space-between;padding:0 20px;flex-shrink:0}
-.atp h2{font-size:.97rem;color:var(--navy)}
-.acnt{flex:1;overflow-y:auto;padding:20px}
-.asec{display:none}
-.asec.on{display:block}
-.stc{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
-.stcd{background:#fff;border-radius:var(--r);padding:15px;border:1px solid var(--lgray)}
-.stcd .si{width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.95rem;margin-bottom:8px}
-.stcd .sn{font-family:Georgia,serif;font-size:1.6rem;color:var(--navy)}
-.stcd .sl{font-size:.76rem;color:var(--gray)}
-.stcd.bl .si{background:var(--lblue);color:var(--blue)}
-.stcd.mn .si{background:var(--lmint);color:var(--mint)}
-.stcd.or .si{background:#fff7ed;color:#ea580c}
-.stcd.pu .si{background:#faf5ff;color:#7c3aed}
-.atbw{background:#fff;border-radius:var(--r);border:1px solid var(--lgray);overflow:hidden;margin-bottom:16px}
-.atbh{padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--lgray)}
-.atbh h3{font-size:.9rem;color:var(--navy)}
-.tbl{width:100%;border-collapse:collapse}
-.tbl th{padding:8px 12px;text-align:left;font-size:.73rem;font-weight:600;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--lgray);background:#f7fafd}
-.tbl td{padding:8px 12px;font-size:.83rem;border-bottom:1px solid var(--lgray);vertical-align:middle}
-.tbl tr:last-child td{border-bottom:none}
-.tbl tr:hover td{background:#f7fafd}
+/* ===ADMIN=== */
+.adlog{display:none;position:fixed;inset:0;background:linear-gradient(135deg,var(--navy),#1a3a6e);z-index:3000;align-items:center;justify-content:center}
+.adlog-card{background:#fff;border-radius:14px;padding:34px 30px;width:100%;max-width:360px}
+.admain{display:none;position:fixed;inset:0;z-index:2000;background:#f4f8fc}
+.admain.show{display:flex}
+.adside{width:240px;background:var(--navy);color:#fff;display:flex;flex-direction:column;overflow-y:auto;flex-shrink:0}
+.adside-logo{padding:18px;border-bottom:1px solid rgba(255,255,255,.1);display:flex;align-items:center;gap:9px}
+.adside-logo .ico{width:34px;height:34px;background:linear-gradient(135deg,var(--blue),var(--mint));border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.95rem;flex-shrink:0}
+.adside-logo .n{font-family:Georgia,serif;font-size:.93rem;color:#fff}
+.adside-logo .s{font-size:.59rem;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:1px}
+.adnav{padding:8px 0;flex:1}
+.adnav a{display:flex;align-items:center;gap:10px;padding:10px 16px;color:rgba(255,255,255,.65);cursor:pointer;font-size:.84rem;border-left:3px solid transparent;transition:.2s}
+.adnav a:hover{color:#fff;background:rgba(255,255,255,.07)}
+.adnav a.act{color:#fff;background:rgba(59,157,224,.2);border-left-color:#3b9de0}
+.adnav a i{width:16px;text-align:center}
+.adcontent{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.adtop{height:56px;background:#fff;border-bottom:1px solid var(--lgray);display:flex;align-items:center;justify-content:space-between;padding:0 20px;flex-shrink:0}
+.adtop h2{font-family:Georgia,serif;font-size:.97rem;color:var(--navy)}
+.adscroll{flex:1;overflow-y:auto;padding:20px}
+.adsec{display:none}
+.adsec.show{display:block}
+.statgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+.statcard{background:#fff;border-radius:12px;padding:16px;border:1px solid var(--lgray)}
+.statcard .si{width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.95rem;margin-bottom:8px}
+.statcard .sn{font-family:Georgia,serif;font-size:1.6rem;color:var(--navy)}
+.statcard .sl{font-size:.75rem;color:var(--gray)}
+.statcard.bl .si{background:#eaf2fb;color:var(--blue)}
+.statcard.mn .si{background:#e8f9f6;color:var(--mint)}
+.statcard.or .si{background:#fff7ed;color:#ea580c}
+.statcard.pu .si{background:#faf5ff;color:#7c3aed}
+.adtable-wrap{background:#fff;border-radius:12px;border:1px solid var(--lgray);overflow:hidden;margin-bottom:18px}
+.adtable-head{padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--lgray)}
+.adtable-head h3{font-size:.9rem;color:var(--navy)}
+.adtable{width:100%;border-collapse:collapse}
+.adtable th{padding:8px 12px;text-align:left;font-size:.72rem;font-weight:600;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--lgray);background:#f4f8fc}
+.adtable td{padding:8px 12px;font-size:.83rem;border-bottom:1px solid var(--lgray);vertical-align:middle}
+.adtable tr:last-child td{border-bottom:none}
+.adtable tr:hover td{background:#f4f8fc}
 .bdg{display:inline-block;padding:2px 8px;border-radius:50px;font-size:.7rem;font-weight:600}
-.bok{background:#f0fff4;color:var(--green)}
-.bwa{background:#fffbeb;color:var(--yellow)}
-.bno{background:#fff5f5;color:var(--red)}
-.afw{background:#fff;border-radius:var(--r);padding:20px;border:1px solid var(--lgray);margin-bottom:16px}
-.afw h3{font-size:.92rem;color:var(--navy);margin-bottom:13px}
-.iub{border:2px dashed var(--lgray);border-radius:var(--rs);padding:16px;text-align:center;cursor:pointer;background:#f7fafd;position:relative;margin-top:4px}
-.iub:hover{border-color:var(--blue);background:var(--lblue)}
-.iub input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
-.iub i{font-size:1.6rem;color:var(--gray);display:block;margin-bottom:5px}
-.iub p{font-size:.77rem;color:var(--gray)}
-.ipv{width:68px;height:68px;border-radius:8px;object-fit:cover;border:2px solid var(--lgray);margin:7px auto 0;display:none}
-.tst{position:fixed;bottom:76px;right:20px;background:var(--navy);color:#fff;padding:10px 16px;border-radius:var(--rs);font-size:.83rem;z-index:5000;transform:translateY(100px);opacity:0;transition:transform .3s,opacity .3s;max-width:270px}
-.tst.on{transform:translateY(0);opacity:1}
-.tst.ok{background:var(--green)}
-.tst.er{background:var(--red)}
+.bok{background:#f0fdf4;color:var(--green)}
+.bwt{background:#fffbeb;color:#b45309}
+.bno{background:#fef2f2;color:var(--red)}
+.adform{background:#fff;border-radius:12px;padding:20px;border:1px solid var(--lgray);margin-bottom:18px}
+.adform h3{font-size:.92rem;color:var(--navy);margin-bottom:13px;font-family:Georgia,serif}
+.upload-box{border:2px dashed var(--lgray);border-radius:8px;padding:16px;text-align:center;cursor:pointer;background:#f4f8fc;position:relative;margin-top:4px;transition:.2s}
+.upload-box:hover{border-color:var(--blue);background:#eaf2fb}
+.upload-box input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.upload-box i{font-size:1.6rem;color:var(--gray);display:block;margin-bottom:5px}
+.upload-box p{font-size:.76rem;color:var(--gray)}
+.prev-img{width:66px;height:66px;border-radius:8px;object-fit:cover;border:2px solid var(--lgray);margin:7px auto 0;display:none}
+.toast{position:fixed;bottom:80px;right:20px;background:var(--navy);color:#fff;padding:10px 16px;border-radius:8px;font-size:.83rem;z-index:5000;transform:translateY(100px);opacity:0;transition:.3s;max-width:260px;pointer-events:none}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.ok{background:var(--green)}
+.toast.er{background:var(--red)}
 
-@media(max-width:1024px){.ftp{grid-template-columns:1fr 1fr}.stc{grid-template-columns:1fr 1fr}}
-@media(max-width:768px){
-  .nlinks,.nbts{display:none}
-  .hbg{display:flex}
-  .nlinks.on{display:flex;flex-direction:column;position:absolute;top:64px;left:0;right:0;background:#fff;padding:13px;border-bottom:1px solid var(--lgray);gap:3px;z-index:999}
-  .nbts.on{display:flex;padding:0 13px 13px;background:#fff;position:absolute;top:calc(64px + 220px);left:0;right:0;z-index:998;border-bottom:1px solid var(--lgray)}
-  .agrd,.apw,.cgrd{grid-template-columns:1fr}
-  .ggrd{grid-template-columns:repeat(2,1fr)}
-  .gi:first-child{grid-column:span 1;grid-row:span 1}
-  .ftp{grid-template-columns:1fr}
-  .fbt{flex-direction:column;gap:7px;text-align:center}
-  .fg{grid-template-columns:1fr}
-  .asb{width:195px}
-  .stc{grid-template-columns:1fr 1fr}
-  .hero{padding-top:120px}
-  .afl{grid-template-columns:1fr}
+@media(max-width:1024px){
+  .ftop{grid-template-columns:1fr 1fr}
+  .statgrid{grid-template-columns:1fr 1fr}
 }
-@media(max-width:480px){.stc{grid-template-columns:1fr}}
+@media(max-width:768px){
+  .nlinks,.nbtns{display:none}
+  .hbg{display:flex}
+  .nlinks.open,.nbtns.open{display:flex}
+  .nlinks.open{flex-direction:column;position:fixed;top:65px;left:0;right:0;background:#fff;padding:12px;border-bottom:1px solid var(--lgray);z-index:997;gap:2px}
+  .nbtns.open{flex-direction:column;position:fixed;top:calc(65px + 215px);left:0;right:0;background:#fff;padding:0 12px 12px;z-index:996;border-bottom:1px solid var(--lgray)}
+  .about-grid,.appt-wrap,.contact-grid{grid-template-columns:1fr}
+  .ggrid{grid-template-columns:repeat(2,1fr)}
+  .gitem:first-child{grid-column:span 1;grid-row:span 1}
+  .ftop{grid-template-columns:1fr}
+  .fbot{flex-direction:column;text-align:center}
+  .fgrid{grid-template-columns:1fr}
+  .adside{width:200px}
+  .statgrid{grid-template-columns:1fr 1fr}
+  .afeats{display:none}
+  .hero{padding-top:110px;min-height:auto;padding-bottom:50px}
+  .pghero{padding-top:80px}
+  .pg{padding-top:130px}
+  .afeats{display:flex}
+}
+@media(max-width:480px){
+  .statgrid{grid-template-columns:1fr}
+  .hstats{gap:18px}
+}
 </style>
 </head>
 <body>
 
-<div id="ldr"><span>❤️</span><p>Loving Heart Hospital</p></div>
-<div class="tst" id="tst"></div>
-<div class="waf"><a href="https://wa.me/2348136393150" target="_blank" rel="noopener">&#9742;</a></div>
+<div class="toast" id="toast"></div>
+<div class="wafloat"><a href="https://wa.me/2348136393150" target="_blank"><i class="fab fa-whatsapp"></i></a></div>
 
+<!-- NAV -->
 <nav id="nav">
- <div class="con ni">
-  <div class="logo" onclick="go('home')">
-   <div class="ic">+</div>
-   <div><div class="nm">Loving Heart</div><div class="sub">Hospital</div></div>
+  <div class="nw">
+    <div class="nlogo" onclick="goTo('home')">
+      <div class="ico"><i class="fas fa-heartbeat"></i></div>
+      <div class="txt"><div class="n">Loving Heart</div><div class="s">Hospital</div></div>
+    </div>
+    <div class="nlinks" id="nlinks">
+      <a class="act" onclick="goTo('home')">Home</a>
+      <a onclick="goTo('about')">About</a>
+      <a onclick="goTo('services')">Services</a>
+      <a onclick="goTo('doctors')">Doctors</a>
+      <a onclick="goTo('gallery')">Gallery</a>
+      <a onclick="goTo('contact')">Contact</a>
+    </div>
+    <div class="nbtns" id="nbtns">
+      <a href="tel:08136393150" class="btn btno btnsm"><i class="fas fa-phone"></i> 08136393150</a>
+      <button class="btn btnp btnsm" onclick="goTo('appointment')"><i class="fas fa-calendar-plus"></i> Book Appointment</button>
+    </div>
+    <div class="hbg" id="hbg" onclick="toggleMenu()"><span></span><span></span><span></span></div>
   </div>
-  <div class="nlinks" id="nlinks">
-   <a class="on" onclick="go('home')">Home</a>
-   <a onclick="go('about')">About</a>
-   <a onclick="go('services')">Services</a>
-   <a onclick="go('doctors')">Doctors</a>
-   <a onclick="go('gallery')">Gallery</a>
-   <a onclick="go('contact')">Contact</a>
-  </div>
-  <div class="nbts" id="nbts">
-   <a href="tel:08136393150" class="btn bo sm">&#128222; 08136393150</a>
-   <button class="btn bp sm" onclick="go('appointment')">Book Appointment</button>
-  </div>
-  <div class="hbg" onclick="tmenu()"><span></span><span></span><span></span></div>
- </div>
 </nav>
 
-<div class="bnr">&#128680; <strong>24/7 Emergency:</strong> Call <a href="tel:08136393150">08136393150</a> | Available round the clock</div>
-
-<!-- HOME -->
-<div id="home" class="page on">
- <section class="hero">
-  <div class="con">
-   <div class="hbdg">&#9733; Accredited Medical Center</div>
-   <h1>Your Health Is Our<br><span id="hhs">Loving Priority</span></h1>
-   <p id="hsp">World-class healthcare delivered with warmth and compassion. From routine checkups to complex surgeries — we are committed to your complete wellbeing.</p>
-   <div class="ha">
-    <button class="btn bm" onclick="go('appointment')">Book Appointment</button>
-    <button class="btn bow" onclick="go('services')">Our Services</button>
-   </div>
-   <div class="hst">
-    <div><div class="n">15+</div><div class="l">Years of Care</div></div>
-    <div><div class="n">50+</div><div class="l">Specialists</div></div>
-    <div><div class="n">20K+</div><div class="l">Patients Served</div></div>
-    <div><div class="n">24/7</div><div class="l">Emergency</div></div>
-   </div>
-  </div>
- </section>
-
- <section class="bg2">
-  <div class="con">
-   <div class="sh"><div class="tg">Our Services</div><h2>Comprehensive Healthcare Services</h2><p>From preventive care to complex procedures — a full spectrum of medical services.</p></div>
-   <div class="sgrd" id="hsg"></div>
-   <div style="text-align:center;margin-top:26px"><button class="btn bp" onclick="go('services')">View All Services &#8594;</button></div>
-  </div>
- </section>
-
- <section>
-  <div class="con">
-   <div class="agrd">
-    <div style="position:relative">
-     <div class="aimg" id="aimg"><span id="aiph">&#127973;</span><img id="aim" style="display:none" src="" alt="Hospital"></div>
-     <div class="abg"><div class="n">15+</div><div class="l">Years Excellence</div></div>
-    </div>
-    <div class="act">
-     <div class="tg" style="display:inline-block;background:var(--lmint);color:var(--mint);padding:3px 13px;border-radius:50px;font-size:.74rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">About Us</div>
-     <h2 id="atit">A Legacy of Compassionate Healthcare</h2>
-     <p id="at1">Founded in 2009, Loving Heart Hospital has been a beacon of health and hope in our community for over 15 years — growing from a small clinic to a 200-bed multi-specialty hospital.</p>
-     <p id="at2">Our state-of-the-art facility is equipped with the latest medical technology, staffed by board-certified physicians, driven by one belief — every patient deserves love and respect.</p>
-     <div class="afl">
-      <div class="af"><div class="afi">&#10003;</div><div><h4>Modern Equipment</h4><p>Latest medical tech</p></div></div>
-      <div class="af"><div class="afi">&#10003;</div><div><h4>Expert Doctors</h4><p>Board-certified</p></div></div>
-      <div class="af"><div class="afi">&#10003;</div><div><h4>24/7 Emergency</h4><p>Always available</p></div></div>
-      <div class="af"><div class="afi">&#10003;</div><div><h4>Patient-Centred</h4><p>Personalised care</p></div></div>
-     </div>
-     <button class="btn bp" onclick="go('about')">Learn More &#8594;</button>
-    </div>
-   </div>
-  </div>
- </section>
-
- <section class="bg2">
-  <div class="con">
-   <div class="sh"><div class="tg">Our Doctors</div><h2>Meet Our Specialists</h2><p>Experienced, compassionate doctors dedicated to your highest standard of care.</p></div>
-   <div class="dgrd" id="hdg"></div>
-   <div style="text-align:center;margin-top:26px"><button class="btn bp" onclick="go('doctors')">Meet All Doctors &#8594;</button></div>
-  </div>
- </section>
-
- <section class="tbg">
-  <div class="con">
-   <div class="sh"><div class="tg">Patient Stories</div><h2 style="color:#fff">What Our Patients Say</h2><p>Real stories from real patients who found healing at Loving Heart Hospital.</p></div>
-   <div class="tgrd" id="tgrd"></div>
-  </div>
- </section>
-
- <section class="cta">
-  <div class="con">
-   <h2>Ready to Experience World-Class Care?</h2>
-   <p>Book your appointment today and take the first step towards better health.</p>
-   <div class="cta-a">
-    <button class="btn bw" onclick="go('appointment')">Book Appointment</button>
-    <a href="tel:08136393150" class="btn bow">Call 08136393150</a>
-   </div>
-  </div>
- </section>
+<div class="banner">
+  <i class="fas fa-exclamation-triangle"></i> <strong>24/7 Emergency:</strong> Call <a href="tel:08136393150">08136393150</a> | Cashier Agbara, Ogun State
 </div>
 
-<!-- ABOUT -->
-<div id="about" class="page">
- <div class="ph"><div class="con"><div class="tg">About Us</div><h1 style="color:#fff;font-size:clamp(1.8rem,4vw,2.8rem);margin-top:7px">Our Story of Healing</h1><p style="color:rgba(255,255,255,.7);max-width:500px;margin:10px auto;font-size:.92rem">15 years of compassionate care, innovation, and service.</p></div></div>
- <section>
-  <div class="con">
-   <div class="agrd">
-    <div style="position:relative">
-     <div class="aimg" id="aimg2"><span>&#127973;</span><img id="aim2" style="display:none" src="" alt="About"></div>
-     <div class="abg"><div class="n">2009</div><div class="l">Founded</div></div>
-    </div>
-    <div>
-     <h2 id="hstit" style="color:var(--navy);margin-bottom:12px">Built on a Foundation of Love</h2>
-     <p id="ht1" style="color:var(--gray);line-height:1.8;margin-bottom:10px;font-size:.93rem">Loving Heart Hospital was established in 2009 with a single operating theatre and a team of five dedicated professionals. Today, we are a 200-bed multi-specialty hospital.</p>
-     <p id="ht2" style="color:var(--gray);line-height:1.8;font-size:.93rem">We have expanded facilities, brought in internationally trained specialists, and adopted the latest technologies — all while maintaining the compassionate care that defines us.</p>
-    </div>
-   </div>
-  </div>
- </section>
- <section class="bg2">
-  <div class="con" style="display:grid;grid-template-columns:1fr 1fr;gap:22px">
-   <div style="background:#fff;border-radius:var(--r);padding:26px;border:1px solid var(--lgray)">
-    <div style="width:44px;height:44px;background:var(--lblue);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--blue);font-size:1.2rem;margin-bottom:13px">&#9678;</div>
-    <h3 style="color:var(--navy);margin-bottom:8px">Our Mission</h3>
-    <p id="mist" style="color:var(--gray);line-height:1.8;font-size:.9rem">To deliver accessible, compassionate, and technologically advanced healthcare to every individual — treating the whole person with love, dignity, and respect.</p>
-   </div>
-   <div style="background:#fff;border-radius:var(--r);padding:26px;border:1px solid var(--lgray)">
-    <div style="width:44px;height:44px;background:var(--lmint);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--mint);font-size:1.2rem;margin-bottom:13px">&#9673;</div>
-    <h3 style="color:var(--navy);margin-bottom:8px">Our Vision</h3>
-    <p id="vist" style="color:var(--gray);line-height:1.8;font-size:.9rem">To become West Africa's leading healthcare institution — recognized for clinical excellence, patient satisfaction, and pioneering medical research across the continent.</p>
-   </div>
-  </div>
- </section>
-</div>
-
-<!-- SERVICES -->
-<div id="services" class="page">
- <div class="ph"><div class="con"><div class="tg">Services</div><h1 style="color:#fff;font-size:clamp(1.8rem,4vw,2.8rem);margin-top:7px">World-Class Medical Services</h1></div></div>
- <section class="bg2"><div class="con"><div class="sgrd" id="fsg"></div></div></section>
-</div>
-
-<!-- DOCTORS -->
-<div id="doctors" class="page">
- <div class="ph"><div class="con"><div class="tg">Doctors</div><h1 style="color:#fff;font-size:clamp(1.8rem,4vw,2.8rem);margin-top:7px">Our Expert Doctors</h1></div></div>
- <section><div class="con"><div class="dgrd" id="fdg"></div></div></section>
-</div>
-
-<!-- GALLERY -->
-<div id="gallery" class="page">
- <div class="ph"><div class="con"><div class="tg">Gallery</div><h1 style="color:#fff;font-size:clamp(1.8rem,4vw,2.8rem);margin-top:7px">Hospital Gallery</h1></div></div>
- <section class="bg2"><div class="con"><div class="ggrd" id="pgg">
-  <div class="gi"><div class="gov">+</div>&#127973;</div>
-  <div class="gi"><div class="gov">+</div>&#129514;</div>
-  <div class="gi"><div class="gov">+</div>&#128138;</div>
-  <div class="gi"><div class="gov">+</div>&#128657;</div>
-  <div class="gi"><div class="gov">+</div>&#129658;</div>
-  <div class="gi"><div class="gov">+</div>&#127973;</div>
- </div></div></section>
-</div>
-
-<!-- APPOINTMENT -->
-<div id="appointment" class="page">
- <div class="ph"><div class="con"><div class="tg">Appointment</div><h1 style="color:#fff;font-size:clamp(1.8rem,4vw,2.8rem);margin-top:7px">Book an Appointment</h1><p style="color:rgba(255,255,255,.7);max-width:500px;margin:10px auto;font-size:.92rem">Schedule your visit. We will confirm within 24 hours.</p></div></div>
- <section class="bg2">
-  <div class="con">
-   <div class="apw">
-    <div class="apinf">
-     <h2>Schedule Your Visit</h2>
-     <p>Fill the form and our team will contact you promptly to confirm your appointment.</p>
-     <div class="apft">
-      <div class="apfi"><i>&#9200;</i><span>Mon-Sat: 7:00 AM - 9:00 PM</span></div>
-      <div class="apfi"><i>&#128657;</i><span>Emergency: 24 hours, 7 days</span></div>
-      <div class="apfi"><i>&#128222;</i><span>Helpline: 08136393150</span></div>
-      <div class="apfi"><i>&#10003;</i><span>Confirmation within 24 hours</span></div>
-     </div>
-    </div>
-    <div class="fc">
-     <div class="ft">Patient Appointment Form</div>
-     <div class="fm" id="afb"></div>
-     <div class="fg">
-      <div class="fi"><label>Full Name *</label><input id="an" placeholder="Your full name" type="text"></div>
-      <div class="fi"><label>Phone Number *</label><input id="aph" placeholder="08XXXXXXXXX" type="tel"></div>
-      <div class="fi"><label>Email Address</label><input id="ae" placeholder="your@email.com" type="email"></div>
-      <div class="fi"><label>Department *</label>
-       <select id="adp">
-        <option value="">Select department</option>
-        <option>General Consultation</option><option>Laboratory</option>
-        <option>Pharmacy</option><option>Maternity</option>
-        <option>Surgery</option><option>Emergency Care</option>
-        <option>Cardiology</option><option>Paediatrics</option>
-       </select>
+<!-- HOME PAGE -->
+<div id="pg-home" class="pg show">
+  <section class="hero">
+    <div class="hw">
+      <div class="hbadge"><i class="fas fa-award"></i> Accredited Medical Center</div>
+      <h1>Your Health Is Our<br><em id="hspan">Loving Priority</em></h1>
+      <p class="sub" id="hsubtext">World-class healthcare delivered with warmth and compassion. From routine checkups to complex surgeries — committed to your complete wellbeing.</p>
+      <div class="hbtns">
+        <button class="btn btnm" onclick="goTo('appointment')"><i class="fas fa-calendar-plus"></i> Book Appointment</button>
+        <button class="btn btnow" onclick="goTo('services')"><i class="fas fa-stethoscope"></i> Our Services</button>
       </div>
-      <div class="fi"><label>Preferred Doctor</label><input id="adr" placeholder="Doctor name (optional)" type="text"></div>
-      <div class="fi"><label>Preferred Date *</label><input id="adt" type="date"></div>
-      <div class="fi"><label>Preferred Time *</label><input id="atm" type="time"></div>
-      <div class="fi fw"><label>Message / Symptoms</label><textarea id="ano" placeholder="Describe your symptoms..."></textarea></div>
-     </div>
-     <button class="btn bp" id="asbt" style="width:100%;justify-content:center;margin-top:10px" onclick="subAppt()">Confirm Appointment</button>
+      <div class="hstats">
+        <div class="hstat"><div class="num">15+</div><div class="lbl">Years of Care</div></div>
+        <div class="hstat"><div class="num">50+</div><div class="lbl">Specialists</div></div>
+        <div class="hstat"><div class="num">20K+</div><div class="lbl">Patients Served</div></div>
+        <div class="hstat"><div class="num">24/7</div><div class="lbl">Emergency</div></div>
+      </div>
     </div>
-   </div>
-  </div>
- </section>
+  </section>
+
+  <section class="sec secbg">
+    <div class="wrap">
+      <div class="shead"><div class="stag">Our Services</div><h2>Comprehensive Healthcare Services</h2><p>From preventive care to complex procedures — a full spectrum of medical services for your family.</p></div>
+      <div class="sgrid" id="home-svc-grid"></div>
+      <div style="text-align:center;margin-top:28px"><button class="btn btnp" onclick="goTo('services')">View All Services <i class="fas fa-arrow-right"></i></button></div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="wrap">
+      <div class="about-grid">
+        <div style="position:relative">
+          <div class="about-img" id="about-img-el"><span id="about-img-ph" style="font-size:6rem">🏥</span><img id="about-img-src" src="" alt="" style="display:none"></div>
+          <div class="about-badge"><div class="n">15+</div><div class="l">Years Excellence</div></div>
+        </div>
+        <div class="about-text">
+          <div class="stag">About Us</div>
+          <h2 id="about-title">A Legacy of Compassionate Healthcare</h2>
+          <p id="about-p1">Founded with a vision to provide accessible, high-quality healthcare to all, Loving Heart Hospital has been a beacon of health and hope in our community for over 15 years.</p>
+          <p id="about-p2">Our state-of-the-art facility is equipped with the latest medical technology, staffed by board-certified physicians — every patient deserves love and respect.</p>
+          <div class="afeats">
+            <div class="afeat"><div class="afeat-ico"><i class="fas fa-check"></i></div><div><h4>Modern Equipment</h4><p>Latest medical tech</p></div></div>
+            <div class="afeat"><div class="afeat-ico"><i class="fas fa-check"></i></div><div><h4>Expert Doctors</h4><p>Board-certified</p></div></div>
+            <div class="afeat"><div class="afeat-ico"><i class="fas fa-check"></i></div><div><h4>24/7 Emergency</h4><p>Always available</p></div></div>
+            <div class="afeat"><div class="afeat-ico"><i class="fas fa-check"></i></div><div><h4>Patient-Centred</h4><p>Personalised care</p></div></div>
+          </div>
+          <button class="btn btnp" onclick="goTo('about')">Learn More <i class="fas fa-arrow-right"></i></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec secbg">
+    <div class="wrap">
+      <div class="shead"><div class="stag">Our Doctors</div><h2>Meet Our Specialists</h2><p>Experienced, compassionate doctors dedicated to delivering the highest standard of care.</p></div>
+      <div class="dgrid" id="home-doc-grid"></div>
+      <div style="text-align:center;margin-top:28px"><button class="btn btnp" onclick="goTo('doctors')">Meet All Doctors <i class="fas fa-arrow-right"></i></button></div>
+    </div>
+  </section>
+
+  <section class="sec testbg">
+    <div class="wrap">
+      <div class="shead"><div class="stag">Patient Stories</div><h2>What Our Patients Say</h2><p>Real stories from real patients who found healing and hope at Loving Heart Hospital.</p></div>
+      <div class="tgrid" id="home-test-grid"></div>
+    </div>
+  </section>
+
+  <section class="cta">
+    <div class="wrap">
+      <h2>Ready to Experience World-Class Care?</h2>
+      <p>Book your appointment today and take the first step towards better health.</p>
+      <div class="cta-btns">
+        <button class="btn btnw" onclick="goTo('appointment')"><i class="fas fa-calendar-plus"></i> Book Appointment</button>
+        <a href="tel:08136393150" class="btn btnow"><i class="fas fa-phone"></i> Call 08136393150</a>
+      </div>
+    </div>
+  </section>
 </div>
 
-<!-- CONTACT -->
-<div id="contact" class="page">
- <div class="ph"><div class="con"><div class="tg">Contact</div><h1 style="color:#fff;font-size:clamp(1.8rem,4vw,2.8rem);margin-top:7px">Get In Touch</h1></div></div>
- <section>
-  <div class="con">
-   <div class="cgrd">
-    <div>
-     <h2 style="color:var(--navy);margin-bottom:18px">We are Here For You</h2>
-     <div class="ci"><div class="cii">&#128205;</div><div><strong>Address</strong><p id="cadd">123 Healthcare Avenue, Lagos, Nigeria</p></div></div>
-     <div class="ci"><div class="cii">&#128222;</div><div><strong>Phone</strong><p><a href="tel:08136393150">08136393150</a></p></div></div>
-     <div class="ci"><div class="cii">&#9993;</div><div><strong>Email</strong><p id="ceml">info@lovinghearthospital.com</p></div></div>
-     <div class="ci"><div class="cii">&#9200;</div><div><strong>Hours</strong><p>Mon-Sat: 7AM-9PM | Emergency: 24/7</p></div></div>
-     <a href="https://wa.me/2348136393150" class="wab" target="_blank" rel="noopener">WhatsApp Us</a>
-     <div class="mpcon"><iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d253682!2d3.1191!3d6.5244!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x103b8b2ae68280c1%3A0xdc9e87a367c3d9cb!2sLagos!5e0!3m2!1sen!2sng" allowfullscreen loading="lazy"></iframe></div>
+<!-- ABOUT PAGE -->
+<div id="pg-about" class="pg">
+  <div class="pghero"><div class="wrap"><div class="stag">About Us</div><h1>Our Story of Healing</h1><p>15 years of compassionate care, innovation, and service to our community.</p></div></div>
+  <section class="sec">
+    <div class="wrap">
+      <div class="about-grid">
+        <div style="position:relative">
+          <div class="about-img"><span style="font-size:6rem">🏥</span><img id="about-img-src2" src="" alt="" style="display:none"></div>
+          <div class="about-badge"><div class="n">2009</div><div class="l">Founded</div></div>
+        </div>
+        <div>
+          <h2 id="hist-title" style="font-family:Georgia,serif;font-size:clamp(1.5rem,3vw,2rem);color:var(--navy);margin-bottom:12px">Built on a Foundation of Love</h2>
+          <p id="hist-p1" style="color:var(--gray);line-height:1.8;margin-bottom:10px;font-size:.93rem">Loving Heart Hospital was established in 2009 at Cashier Agbara, Ogun State. We started as a small clinic and have grown into a trusted multi-specialty hospital serving thousands of patients annually.</p>
+          <p id="hist-p2" style="color:var(--gray);line-height:1.8;font-size:.93rem">We have expanded facilities, brought in internationally trained specialists, and adopted the latest technologies — all while maintaining compassionate care that defines us.</p>
+        </div>
+      </div>
     </div>
-    <div class="fc" style="align-self:start">
-     <div class="ft">Send Us a Message</div>
-     <div class="fm" id="cfb"></div>
-     <div style="display:flex;flex-direction:column;gap:12px">
-      <div class="fi"><label>Full Name *</label><input id="cn" placeholder="Your full name" type="text"></div>
-      <div class="fi"><label>Email *</label><input id="cem" placeholder="your@email.com" type="email"></div>
-      <div class="fi"><label>Phone</label><input id="cph" placeholder="08XXXXXXXXX" type="tel"></div>
-      <div class="fi"><label>Subject</label><input id="csb2" placeholder="How can we help?" type="text"></div>
-      <div class="fi"><label>Message *</label><textarea id="cmg" rows="4" placeholder="Tell us more..."></textarea></div>
-      <button class="btn bp" id="csbt" style="justify-content:center" onclick="subContact()">Send Message</button>
-     </div>
+  </section>
+  <section class="sec secbg">
+    <div class="wrap" style="display:grid;grid-template-columns:1fr 1fr;gap:22px">
+      <div style="background:#fff;border-radius:14px;padding:28px;border:1px solid var(--lgray)">
+        <div style="width:46px;height:46px;background:#eaf2fb;border-radius:11px;display:flex;align-items:center;justify-content:center;color:var(--blue);font-size:1.2rem;margin-bottom:14px"><i class="fas fa-bullseye"></i></div>
+        <h3 style="font-family:Georgia,serif;color:var(--navy);margin-bottom:9px">Our Mission</h3>
+        <p id="mission-txt" style="color:var(--gray);line-height:1.8;font-size:.91rem">To deliver accessible, compassionate, and technologically advanced healthcare to every individual — treating the whole person with love, dignity, and respect.</p>
+      </div>
+      <div style="background:#fff;border-radius:14px;padding:28px;border:1px solid var(--lgray)">
+        <div style="width:46px;height:46px;background:#e8f9f6;border-radius:11px;display:flex;align-items:center;justify-content:center;color:var(--mint);font-size:1.2rem;margin-bottom:14px"><i class="fas fa-eye"></i></div>
+        <h3 style="font-family:Georgia,serif;color:var(--navy);margin-bottom:9px">Our Vision</h3>
+        <p id="vision-txt" style="color:var(--gray);line-height:1.8;font-size:.91rem">To become a leading healthcare institution — recognized for clinical excellence, patient satisfaction, and pioneering medical research that improves lives in Ogun State and beyond.</p>
+      </div>
     </div>
-   </div>
-  </div>
- </section>
+  </section>
 </div>
 
+<!-- SERVICES PAGE -->
+<div id="pg-services" class="pg">
+  <div class="pghero"><div class="wrap"><div class="stag">Services</div><h1>World-Class Medical Services</h1><p>Comprehensive healthcare solutions for every medical need.</p></div></div>
+  <section class="sec secbg"><div class="wrap"><div class="sgrid" id="full-svc-grid"></div></div></section>
+</div>
+
+<!-- DOCTORS PAGE -->
+<div id="pg-doctors" class="pg">
+  <div class="pghero"><div class="wrap"><div class="stag">Our Team</div><h1>Expert Doctors</h1><p>Board-certified specialists committed to your health and wellbeing.</p></div></div>
+  <section class="sec"><div class="wrap"><div class="dgrid" id="full-doc-grid"></div></div></section>
+</div>
+
+<!-- GALLERY PAGE -->
+<div id="pg-gallery" class="pg">
+  <div class="pghero"><div class="wrap"><div class="stag">Gallery</div><h1>Hospital Gallery</h1><p>A glimpse into our world-class facilities and caring environment.</p></div></div>
+  <section class="sec secbg"><div class="wrap"><div class="ggrid" id="pub-gallery">
+    <div class="gitem"><div class="ov"><i class="fas fa-search-plus"></i></div><div class="ph">🏥</div></div>
+    <div class="gitem"><div class="ov"><i class="fas fa-search-plus"></i></div><div class="ph">🧪</div></div>
+    <div class="gitem"><div class="ov"><i class="fas fa-search-plus"></i></div><div class="ph">💊</div></div>
+    <div class="gitem"><div class="ov"><i class="fas fa-search-plus"></i></div><div class="ph">🚑</div></div>
+    <div class="gitem"><div class="ov"><i class="fas fa-search-plus"></i></div><div class="ph">🩺</div></div>
+    <div class="gitem"><div class="ov"><i class="fas fa-search-plus"></i></div><div class="ph">🏥</div></div>
+  </div></div></section>
+</div>
+
+<!-- APPOINTMENT PAGE -->
+<div id="pg-appointment" class="pg">
+  <div class="pghero"><div class="wrap"><div class="stag">Book Appointment</div><h1>Schedule Your Visit</h1><p>Fill the form below. We will confirm your appointment within 24 hours.</p></div></div>
+  <section class="sec secbg">
+    <div class="wrap">
+      <div class="appt-wrap">
+        <div class="appt-info">
+          <h2>We Are Here For You</h2>
+          <p>Our team of dedicated specialists is available to attend to you. Book your slot and experience world-class care at Loving Heart Hospital, Cashier Agbara, Ogun State.</p>
+          <div class="appt-feats">
+            <div class="apft"><i class="fas fa-clock"></i><span>Mon–Sat: 7:00 AM – 9:00 PM</span></div>
+            <div class="apft"><i class="fas fa-ambulance"></i><span>Emergency: 24 Hours, 7 Days</span></div>
+            <div class="apft"><i class="fas fa-phone"></i><span>Helpline: 08136393150</span></div>
+            <div class="apft"><i class="fas fa-check-circle"></i><span>Confirmation within 24 hours</span></div>
+          </div>
+        </div>
+        <div class="fcard">
+          <div class="ftitle">Patient Appointment Form</div>
+          <div class="fmsg" id="appt-msg"></div>
+          <div class="fgrid">
+            <div class="frow"><label>Full Name *</label><input type="text" id="f-name" placeholder="Your full name"></div>
+            <div class="frow"><label>Phone Number *</label><input type="tel" id="f-phone" placeholder="08XXXXXXXXX"></div>
+            <div class="frow"><label>Email Address</label><input type="email" id="f-email" placeholder="your@email.com"></div>
+            <div class="frow"><label>Department *</label>
+              <select id="f-dept">
+                <option value="">Select department</option>
+                <option>General Consultation</option>
+                <option>Laboratory</option>
+                <option>Pharmacy</option>
+                <option>Maternity</option>
+                <option>Surgery</option>
+                <option>Emergency Care</option>
+                <option>Cardiology</option>
+                <option>Paediatrics</option>
+              </select>
+            </div>
+            <div class="frow"><label>Preferred Doctor</label><input type="text" id="f-doctor" placeholder="Doctor name (optional)"></div>
+            <div class="frow"><label>Preferred Date *</label><input type="date" id="f-date"></div>
+            <div class="frow"><label>Preferred Time *</label><input type="time" id="f-time"></div>
+            <div class="frow full"><label>Message / Symptoms</label><textarea id="f-notes" placeholder="Briefly describe your symptoms or reason for visit..."></textarea></div>
+          </div>
+          <button class="btn btnp" id="appt-btn" style="width:100%;justify-content:center;margin-top:12px" onclick="submitAppt()">
+            <i class="fas fa-calendar-check"></i> Confirm Appointment
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- CONTACT PAGE -->
+<div id="pg-contact" class="pg">
+  <div class="pghero"><div class="wrap"><div class="stag">Contact Us</div><h1>Get In Touch</h1><p>We are always available to answer your questions and attend to your needs.</p></div></div>
+  <section class="sec">
+    <div class="wrap">
+      <div class="contact-grid">
+        <div>
+          <h2 style="font-family:Georgia,serif;font-size:clamp(1.4rem,2.5vw,1.9rem);color:var(--navy);margin-bottom:18px">Visit Us Today</h2>
+          <div class="ci"><div class="ci-ico"><i class="fas fa-map-marker-alt"></i></div><div><strong>Address</strong><p id="contact-address">Cashier Agbara, Ogun State, Nigeria</p></div></div>
+          <div class="ci"><div class="ci-ico"><i class="fas fa-phone"></i></div><div><strong>Phone</strong><p><a href="tel:08136393150">08136393150</a></p></div></div>
+          <div class="ci"><div class="ci-ico"><i class="fas fa-envelope"></i></div><div><strong>Email</strong><p id="contact-email">info@lovinghearthospital.com</p></div></div>
+          <div class="ci"><div class="ci-ico"><i class="fas fa-clock"></i></div><div><strong>Working Hours</strong><p>Mon–Sat: 7AM–9PM | Emergency: 24/7</p></div></div>
+          <a href="https://wa.me/2348136393150" class="wabtn" target="_blank"><i class="fab fa-whatsapp" style="font-size:1.2rem"></i> Chat on WhatsApp</a>
+          <div class="mapbox"><iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3963.6!2d3.0825!3d6.4698!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x103b8b2ae68280c1%3A0xdc9e87a367c3d9cb!2sAgbara%2C%20Ogun%20State!5e0!3m2!1sen!2sng" allowfullscreen loading="lazy"></iframe></div>
+        </div>
+        <div class="fcard" style="align-self:start">
+          <div class="ftitle">Send Us a Message</div>
+          <div class="fmsg" id="contact-msg"></div>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div class="frow"><label>Full Name *</label><input type="text" id="c-name" placeholder="Your full name"></div>
+            <div class="frow"><label>Email *</label><input type="email" id="c-email" placeholder="your@email.com"></div>
+            <div class="frow"><label>Phone</label><input type="tel" id="c-phone" placeholder="08XXXXXXXXX"></div>
+            <div class="frow"><label>Subject</label><input type="text" id="c-subject" placeholder="How can we help?"></div>
+            <div class="frow"><label>Message *</label><textarea id="c-message" rows="4" placeholder="Tell us more..."></textarea></div>
+            <button class="btn btnp" id="contact-btn" style="justify-content:center" onclick="submitContact()"><i class="fas fa-paper-plane"></i> Send Message</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- FOOTER -->
 <footer>
- <div class="con">
-  <div class="ftp">
-   <div class="fbr">
-    <div style="display:flex;align-items:center;gap:9px">
-     <div style="width:38px;height:38px;background:linear-gradient(135deg,var(--blue),var(--mint));border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1rem">+</div>
-     <span style="font-family:Georgia,serif;font-size:1rem;color:#fff">Loving Heart Hospital</span>
+  <div class="wrap">
+    <div class="ftop">
+      <div class="fbrand">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="width:40px;height:40px;background:linear-gradient(135deg,var(--blue),var(--mint));border-radius:9px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.1rem"><i class="fas fa-heartbeat"></i></div>
+          <span style="font-family:Georgia,serif;font-size:1rem;color:#fff">Loving Heart Hospital</span>
+        </div>
+        <p>Quality healthcare with compassion. Serving Ogun State and beyond since 2009.</p>
+        <div class="fsoc">
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="https://wa.me/2348136393150"><i class="fab fa-whatsapp"></i></a>
+        </div>
+      </div>
+      <div class="fcol"><h4>Quick Links</h4><ul>
+        <li><a onclick="goTo('home')">Home</a></li>
+        <li><a onclick="goTo('about')">About Us</a></li>
+        <li><a onclick="goTo('services')">Services</a></li>
+        <li><a onclick="goTo('doctors')">Doctors</a></li>
+        <li><a onclick="goTo('appointment')">Book Appointment</a></li>
+        <li><a onclick="goTo('contact')">Contact</a></li>
+      </ul></div>
+      <div class="fcol"><h4>Services</h4><ul>
+        <li><a>General Consultation</a></li>
+        <li><a>Laboratory</a></li>
+        <li><a>Pharmacy</a></li>
+        <li><a>Maternity</a></li>
+        <li><a>Surgery</a></li>
+        <li><a>Emergency Care</a></li>
+      </ul></div>
+      <div class="fcol"><h4>Contact</h4><ul>
+        <li><a>Cashier Agbara, Ogun State</a></li>
+        <li><a href="tel:08136393150">08136393150</a></li>
+        <li><a>info@lovinghearthospital.com</a></li>
+        <li><a>Mon–Sat: 7AM–9PM</a></li>
+        <li><a>Emergency: 24/7</a></li>
+      </ul></div>
     </div>
-    <p>Quality healthcare with compassion. Serving our community since 2009.</p>
-    <div class="fsc">
-     <a href="#">f</a><a href="#">t</a><a href="#">ig</a>
-     <a href="https://wa.me/2348136393150">wa</a>
+    <div class="fbot">
+      <span>&copy; 2025 Loving Heart Hospital. All rights reserved.</span>
+      <span>Cashier Agbara, Ogun State, Nigeria</span>
     </div>
-   </div>
-   <div class="fcl"><h4>Quick Links</h4><ul>
-    <li><a onclick="go('home')">Home</a></li>
-    <li><a onclick="go('about')">About Us</a></li>
-    <li><a onclick="go('services')">Services</a></li>
-    <li><a onclick="go('doctors')">Doctors</a></li>
-    <li><a onclick="go('appointment')">Book Appointment</a></li>
-   </ul></div>
-   <div class="fcl"><h4>Services</h4><ul>
-    <li><a>General Consultation</a></li><li><a>Laboratory</a></li>
-    <li><a>Pharmacy</a></li><li><a>Maternity</a></li>
-    <li><a>Surgery</a></li><li><a>Emergency Care</a></li>
-   </ul></div>
-   <div class="fcl"><h4>Contact</h4><ul>
-    <li><a>123 Healthcare Ave, Lagos</a></li>
-    <li><a href="tel:08136393150">08136393150</a></li>
-    <li><a>info@lovinghearthospital.com</a></li>
-    <li><a>Mon-Sat: 7AM-9PM</a></li>
-   </ul></div>
   </div>
-  <div class="fbt"><span>&copy; 2025 Loving Heart Hospital. All rights reserved.</span><span>Made with love &#10084;</span></div>
- </div>
 </footer>
 
 <!-- ADMIN LOGIN -->
-<div class="adlo" id="adlo">
- <div class="adlc">
-  <div style="text-align:center;margin-bottom:18px">
-   <div style="width:56px;height:56px;background:linear-gradient(135deg,var(--blue),var(--mint));border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.6rem;margin:0 auto 9px">+</div>
-   <h2 style="font-size:1.2rem;color:var(--navy)">Admin Login</h2>
-   <p style="color:var(--gray);font-size:.84rem;margin-top:3px">Loving Heart Hospital</p>
+<div class="adlog" id="adlog">
+  <div class="adlog-card">
+    <div style="text-align:center;margin-bottom:20px">
+      <div style="width:58px;height:58px;background:linear-gradient(135deg,var(--blue),var(--mint));border-radius:14px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.7rem;margin:0 auto 10px"><i class="fas fa-heartbeat"></i></div>
+      <h2 style="font-family:Georgia,serif;font-size:1.2rem;color:var(--navy)">Admin Login</h2>
+      <p style="color:var(--gray);font-size:.83rem;margin-top:3px">Loving Heart Hospital</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="frow"><label>Email</label><input type="email" id="a-email" placeholder="admin@hospital.com"></div>
+      <div class="frow"><label>Password</label><input type="password" id="a-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
+      <div class="fmsg" id="a-err"></div>
+      <button class="btn btnp" style="justify-content:center" onclick="doLogin()"><i class="fas fa-sign-in-alt"></i> Sign In</button>
+      <p style="text-align:center;font-size:.79rem;color:var(--gray);cursor:pointer" onclick="closeLogin()">&larr; Back to Website</p>
+    </div>
   </div>
-  <div style="display:flex;flex-direction:column;gap:12px">
-   <div class="fi"><label>Email</label><input type="email" id="lei" placeholder="admin@hospital.com"></div>
-   <div class="fi"><label>Password</label><input type="password" id="lpi" placeholder="password" onkeydown="if(event.key==='Enter')doLogin()"></div>
-   <div class="fm" id="lerr"></div>
-   <button class="btn bp" style="justify-content:center" onclick="doLogin()">Sign In</button>
-   <p style="text-align:center;font-size:.79rem;color:var(--gray);cursor:pointer;margin-top:3px" onclick="closeAL()">&larr; Back to Website</p>
-  </div>
- </div>
 </div>
 
 <!-- ADMIN DASHBOARD -->
-<div class="adb" id="adb">
- <div class="asb">
-  <div class="aslg">
-   <div class="ic">+</div>
-   <div><div class="nm">Loving Heart</div><div class="sub">Admin Panel</div></div>
+<div class="admain" id="admain">
+  <div class="adside">
+    <div class="adside-logo">
+      <div class="ico"><i class="fas fa-heartbeat"></i></div>
+      <div><div class="n">Loving Heart</div><div class="s">Admin Panel</div></div>
+    </div>
+    <nav class="adnav">
+      <a class="act" onclick="showSec('dash',this)"><i class="fas fa-th-large"></i> Dashboard</a>
+      <a onclick="showSec('appts',this)"><i class="fas fa-calendar-check"></i> Appointments</a>
+      <a onclick="showSec('docs',this)"><i class="fas fa-user-md"></i> Doctors</a>
+      <a onclick="showSec('svcs',this)"><i class="fas fa-stethoscope"></i> Services</a>
+      <a onclick="showSec('gal',this)"><i class="fas fa-images"></i> Gallery</a>
+      <a onclick="showSec('tsts',this)"><i class="fas fa-star"></i> Testimonials</a>
+      <a onclick="showSec('msgs',this)"><i class="fas fa-envelope"></i> Messages</a>
+      <a onclick="showSec('content',this)"><i class="fas fa-edit"></i> Site Content</a>
+      <a style="color:#fc8181;margin-top:auto" onclick="doLogout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </nav>
   </div>
-  <nav class="anv">
-   <div class="ani on" onclick="asec('dash',this)"><i>&#9638;</i> Dashboard</div>
-   <div class="ani" onclick="asec('appts',this)"><i>&#128197;</i> Appointments</div>
-   <div class="ani" onclick="asec('docs',this)"><i>&#128104;</i> Doctors</div>
-   <div class="ani" onclick="asec('svcs',this)"><i>&#9877;</i> Services</div>
-   <div class="ani" onclick="asec('gal',this)"><i>&#128247;</i> Gallery</div>
-   <div class="ani" onclick="asec('tsts',this)"><i>&#9733;</i> Testimonials</div>
-   <div class="ani" onclick="asec('msgs',this)"><i>&#9993;</i> Messages</div>
-   <div class="ani" onclick="asec('cont',this)"><i>&#9998;</i> Site Content</div>
-   <div class="ani" style="color:#fc8181;margin-top:14px" onclick="doLogout()"><i>&#10006;</i> Logout</div>
-  </nav>
- </div>
- <div class="amn">
-  <div class="atp"><h2 id="apt">Dashboard</h2><span style="font-size:.79rem;color:var(--gray)" id="aue"></span></div>
-  <div class="acnt">
-
-   <div class="asec on" id="s-dash">
-    <div class="stc">
-     <div class="stcd bl"><div class="si">&#128197;</div><div class="sn" id="stap">0</div><div class="sl">Appointments</div></div>
-     <div class="stcd mn"><div class="si">&#128104;</div><div class="sn" id="stdc">0</div><div class="sl">Doctors</div></div>
-     <div class="stcd or"><div class="si">&#9877;</div><div class="sn" id="stsv">0</div><div class="sl">Services</div></div>
-     <div class="stcd pu"><div class="si">&#9993;</div><div class="sn" id="stmg">0</div><div class="sl">Messages</div></div>
+  <div class="adcontent">
+    <div class="adtop">
+      <h2 id="adtitle">Dashboard</h2>
+      <span id="ad-user" style="font-size:.79rem;color:var(--gray)"></span>
     </div>
-    <div class="atbw"><div class="atbh"><h3>Recent Appointments</h3><button class="btn bp sm" onclick="asec('appts')">View All</button></div>
-    <div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Patient</th><th>Phone</th><th>Dept</th><th>Date</th><th>Status</th></tr></thead><tbody id="rap"></tbody></table></div></div>
-   </div>
+    <div class="adscroll">
 
-   <div class="asec" id="s-appts">
-    <div class="atbw"><div class="atbh"><h3>All Appointments</h3></div>
-    <div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Patient</th><th>Phone</th><th>Email</th><th>Dept</th><th>Doctor</th><th>Date</th><th>Time</th><th>Status</th><th>Action</th></tr></thead><tbody id="aap"></tbody></table></div></div>
-   </div>
-
-   <div class="asec" id="s-docs">
-    <div class="afw">
-     <h3 id="dft">Add New Doctor</h3>
-     <div class="fg">
-      <div class="fi"><label>Full Name *</label><input type="text" id="dn" placeholder="Dr. Full Name"></div>
-      <div class="fi"><label>Specialization *</label><input type="text" id="dsp" placeholder="e.g. Cardiologist"></div>
-      <div class="fi fw"><label>Biography</label><textarea id="db" placeholder="Short biography..." style="min-height:70px"></textarea></div>
-      <div class="fi fw">
-       <label>Doctor Photo</label>
-       <div class="iub"><input type="file" accept="image/*" onchange="prvImg(this,'dpp','dpd')"><i>&#128247;</i><p>Click to upload photo</p><img id="dpp" class="ipv" style="border-radius:50%"></div>
-       <input type="hidden" id="dpd">
-       <input type="url" id="dpu" placeholder="Or paste photo URL: https://..." style="margin-top:6px;padding:8px 11px;border:1.5px solid var(--lgray);border-radius:var(--rs);width:100%;font-family:inherit;font-size:.84rem;outline:none">
+      <!-- DASHBOARD -->
+      <div class="adsec show" id="ad-dash">
+        <div class="statgrid">
+          <div class="statcard bl"><div class="si"><i class="fas fa-calendar-check"></i></div><div class="sn" id="st-appts">0</div><div class="sl">Appointments</div></div>
+          <div class="statcard mn"><div class="si"><i class="fas fa-user-md"></i></div><div class="sn" id="st-docs">0</div><div class="sl">Doctors</div></div>
+          <div class="statcard or"><div class="si"><i class="fas fa-stethoscope"></i></div><div class="sn" id="st-svcs">0</div><div class="sl">Services</div></div>
+          <div class="statcard pu"><div class="si"><i class="fas fa-envelope"></i></div><div class="sn" id="st-msgs">0</div><div class="sl">Messages</div></div>
+        </div>
+        <div class="adtable-wrap">
+          <div class="adtable-head"><h3>Recent Appointments</h3><button class="btn btnp btnsm" onclick="showSec('appts')">View All</button></div>
+          <div style="overflow-x:auto"><table class="adtable"><thead><tr><th>Patient</th><th>Phone</th><th>Dept</th><th>Date</th><th>Status</th></tr></thead><tbody id="dash-appts"></tbody></table></div>
+        </div>
       </div>
-     </div>
-     <input type="hidden" id="dei">
-     <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
-      <button class="btn bp sm" onclick="saveDoc()">Save Doctor</button>
-      <button class="btn bo sm" onclick="clrDoc()">Clear</button>
-     </div>
-    </div>
-    <div class="atbw"><div class="atbh"><h3>Doctors (<span id="dct">0</span>)</h3></div>
-    <div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Photo</th><th>Name</th><th>Spec</th><th>Bio</th><th>Actions</th></tr></thead><tbody id="adb2"></tbody></table></div></div>
-   </div>
 
-   <div class="asec" id="s-svcs">
-    <div class="afw">
-     <h3 id="sft">Add New Service</h3>
-     <div class="fg">
-      <div class="fi"><label>Service Name *</label><input type="text" id="svn" placeholder="e.g. Cardiology"></div>
-      <div class="fi"><label>Icon (FA class)</label><input type="text" id="svi" placeholder="fas fa-heart"></div>
-      <div class="fi fw"><label>Description</label><textarea id="svd" placeholder="Service description..." style="min-height:70px"></textarea></div>
-      <div class="fi fw">
-       <label>Service Image</label>
-       <div class="iub"><input type="file" accept="image/*" onchange="prvImg(this,'svip','svid')"><i>&#128247;</i><p>Click to upload image</p><img id="svip" class="ipv"></div>
-       <input type="hidden" id="svid">
-       <input type="url" id="sviu" placeholder="Or paste image URL: https://..." style="margin-top:6px;padding:8px 11px;border:1.5px solid var(--lgray);border-radius:var(--rs);width:100%;font-family:inherit;font-size:.84rem;outline:none">
+      <!-- APPOINTMENTS -->
+      <div class="adsec" id="ad-appts">
+        <div class="adtable-wrap">
+          <div class="adtable-head"><h3>All Appointments</h3></div>
+          <div style="overflow-x:auto"><table class="adtable"><thead><tr><th>Patient</th><th>Phone</th><th>Email</th><th>Dept</th><th>Doctor</th><th>Date</th><th>Time</th><th>Status</th><th>Action</th></tr></thead><tbody id="all-appts"></tbody></table></div>
+        </div>
       </div>
-     </div>
-     <input type="hidden" id="svei">
-     <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
-      <button class="btn bp sm" onclick="saveSvc()">Save Service</button>
-      <button class="btn bo sm" onclick="clrSvc()">Clear</button>
-     </div>
-    </div>
-    <div class="atbw"><div class="atbh"><h3>Services (<span id="sct">0</span>)</h3></div>
-    <div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Img</th><th>Name</th><th>Description</th><th>Actions</th></tr></thead><tbody id="asb2"></tbody></table></div></div>
-   </div>
 
-   <div class="asec" id="s-gal">
-    <div class="afw"><h3>Upload Gallery Image</h3>
-     <div style="display:flex;gap:13px;flex-wrap:wrap">
-      <div style="flex:1;min-width:180px">
-       <div class="iub"><input type="file" accept="image/*" onchange="prvImg(this,'gip','gid')"><i>&#128247;</i><p>Click to upload</p><img id="gip" class="ipv"></div>
-       <input type="hidden" id="gid">
+      <!-- DOCTORS -->
+      <div class="adsec" id="ad-docs">
+        <div class="adform">
+          <h3 id="doc-form-title">Add New Doctor</h3>
+          <div class="fgrid">
+            <div class="frow"><label>Full Name *</label><input type="text" id="d-name" placeholder="Dr. Full Name"></div>
+            <div class="frow"><label>Specialization *</label><input type="text" id="d-spec" placeholder="e.g. Cardiologist"></div>
+            <div class="frow full"><label>Biography</label><textarea id="d-bio" placeholder="Short biography..." style="min-height:70px"></textarea></div>
+            <div class="frow full">
+              <label>Photo</label>
+              <div class="upload-box"><input type="file" accept="image/*" onchange="prevImg(this,'d-prev','d-imgdata')"><i class="fas fa-camera"></i><p>Click to upload photo</p><img id="d-prev" class="prev-img" style="border-radius:50%"></div>
+              <input type="hidden" id="d-imgdata">
+              <input type="url" id="d-imgurl" placeholder="Or paste photo URL: https://..." style="margin-top:6px;padding:8px 11px;border:1.5px solid var(--lgray);border-radius:8px;width:100%;font-family:inherit;font-size:.84rem;outline:none">
+            </div>
+          </div>
+          <input type="hidden" id="d-editid">
+          <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn btnp btnsm" onclick="saveDoc()"><i class="fas fa-save"></i> Save Doctor</button>
+            <button class="btn btno btnsm" onclick="clearDoc()">Clear</button>
+          </div>
+        </div>
+        <div class="adtable-wrap">
+          <div class="adtable-head"><h3>Doctors List (<span id="doc-count">0</span>)</h3></div>
+          <div style="overflow-x:auto"><table class="adtable"><thead><tr><th>Photo</th><th>Name</th><th>Specialization</th><th>Bio</th><th>Actions</th></tr></thead><tbody id="doc-list"></tbody></table></div>
+        </div>
       </div>
-      <div style="flex:1;min-width:180px;display:flex;flex-direction:column;gap:9px">
-       <div class="fi"><label>Or Image URL</label><input type="url" id="gurl" placeholder="https://..."></div>
-       <div class="fi"><label>Caption</label><input type="text" id="gcap" placeholder="Image caption"></div>
-       <button class="btn bp sm" style="justify-content:center" onclick="saveGal()">Add Image</button>
+
+      <!-- SERVICES -->
+      <div class="adsec" id="ad-svcs">
+        <div class="adform">
+          <h3 id="svc-form-title">Add New Service</h3>
+          <div class="fgrid">
+            <div class="frow"><label>Service Name *</label><input type="text" id="s-name" placeholder="e.g. Cardiology"></div>
+            <div class="frow"><label>Icon (FA class)</label><input type="text" id="s-icon" placeholder="fas fa-heart"></div>
+            <div class="frow full"><label>Description</label><textarea id="s-desc" placeholder="Service description..." style="min-height:70px"></textarea></div>
+            <div class="frow full">
+              <label>Service Image</label>
+              <div class="upload-box"><input type="file" accept="image/*" onchange="prevImg(this,'s-prev','s-imgdata')"><i class="fas fa-image"></i><p>Click to upload image</p><img id="s-prev" class="prev-img"></div>
+              <input type="hidden" id="s-imgdata">
+              <input type="url" id="s-imgurl" placeholder="Or paste image URL: https://..." style="margin-top:6px;padding:8px 11px;border:1.5px solid var(--lgray);border-radius:8px;width:100%;font-family:inherit;font-size:.84rem;outline:none">
+            </div>
+          </div>
+          <input type="hidden" id="s-editid">
+          <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn btnp btnsm" onclick="saveSvc()"><i class="fas fa-save"></i> Save Service</button>
+            <button class="btn btno btnsm" onclick="clearSvc()">Clear</button>
+          </div>
+        </div>
+        <div class="adtable-wrap">
+          <div class="adtable-head"><h3>Services List (<span id="svc-count">0</span>)</h3></div>
+          <div style="overflow-x:auto"><table class="adtable"><thead><tr><th>Img</th><th>Name</th><th>Description</th><th>Actions</th></tr></thead><tbody id="svc-list"></tbody></table></div>
+        </div>
       </div>
-     </div>
-    </div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:11px" id="agg"></div>
-   </div>
 
-   <div class="asec" id="s-tsts">
-    <div class="afw">
-     <h3 id="tft">Add Testimonial</h3>
-     <div class="fg">
-      <div class="fi"><label>Patient Name *</label><input type="text" id="tn" placeholder="Patient name"></div>
-      <div class="fi"><label>Rating (1-5)</label><input type="number" id="tr" min="1" max="5" value="5"></div>
-      <div class="fi fw"><label>Testimonial Text *</label><textarea id="tt" placeholder="Patient testimonial..." style="min-height:80px"></textarea></div>
-      <div class="fi fw">
-       <label>Patient Photo (optional)</label>
-       <div class="iub"><input type="file" accept="image/*" onchange="prvImg(this,'tpp','tpd')"><i>&#128247;</i><p>Click to upload photo</p><img id="tpp" class="ipv" style="border-radius:50%"></div>
-       <input type="hidden" id="tpd">
+      <!-- GALLERY -->
+      <div class="adsec" id="ad-gal">
+        <div class="adform">
+          <h3>Upload Gallery Image</h3>
+          <div style="display:flex;gap:14px;flex-wrap:wrap">
+            <div style="flex:1;min-width:180px">
+              <div class="upload-box"><input type="file" accept="image/*" onchange="prevImg(this,'g-prev','g-imgdata')"><i class="fas fa-upload"></i><p>Click to upload</p><img id="g-prev" class="prev-img"></div>
+              <input type="hidden" id="g-imgdata">
+            </div>
+            <div style="flex:1;min-width:180px;display:flex;flex-direction:column;gap:9px">
+              <div class="frow"><label>Or Image URL</label><input type="url" id="g-url" placeholder="https://..."></div>
+              <div class="frow"><label>Caption</label><input type="text" id="g-caption" placeholder="Image caption"></div>
+              <button class="btn btnp btnsm" style="justify-content:center" onclick="saveGal()"><i class="fas fa-plus"></i> Add Image</button>
+            </div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:11px" id="gal-list"></div>
       </div>
-     </div>
-     <input type="hidden" id="tei">
-     <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
-      <button class="btn bp sm" onclick="saveTst()">Save</button>
-      <button class="btn bo sm" onclick="clrTst()">Clear</button>
-     </div>
-    </div>
-    <div class="atbw"><div class="atbh"><h3>Testimonials</h3></div>
-    <div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Photo</th><th>Name</th><th>Rating</th><th>Text</th><th>Actions</th></tr></thead><tbody id="atb"></tbody></table></div></div>
-   </div>
 
-   <div class="asec" id="s-msgs">
-    <div class="atbw"><div class="atbh"><h3>Contact Messages</h3></div>
-    <div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Subject</th><th>Message</th><th>Date</th><th></th></tr></thead><tbody id="amb"></tbody></table></div></div>
-   </div>
-
-   <div class="asec" id="s-cont">
-    <div class="afw"><h3>Hero Section</h3>
-     <div style="display:flex;flex-direction:column;gap:10px">
-      <div class="fi"><label>Highlight Text (green span)</label><input type="text" id="chhs" placeholder="Loving Priority"></div>
-      <div class="fi"><label>Sub-text</label><textarea id="chst" style="min-height:65px" placeholder="World-class healthcare..."></textarea></div>
-      <button class="btn bp sm" style="align-self:start" onclick="saveHero()">Save Hero</button>
-     </div>
-    </div>
-    <div class="afw"><h3>About Section</h3>
-     <div style="display:flex;flex-direction:column;gap:10px">
-      <div class="fi"><label>Title</label><input type="text" id="cat"></div>
-      <div class="fi"><label>Paragraph 1</label><textarea id="cap1" style="min-height:65px"></textarea></div>
-      <div class="fi"><label>Paragraph 2</label><textarea id="cap2" style="min-height:65px"></textarea></div>
-      <div class="fi"><label>About Image</label>
-       <div class="iub"><input type="file" accept="image/*" onchange="prvImg(this,'abip','abid')"><i>&#127973;</i><p>Upload hospital photo</p><img id="abip" class="ipv"></div>
-       <input type="hidden" id="abid">
+      <!-- TESTIMONIALS -->
+      <div class="adsec" id="ad-tsts">
+        <div class="adform">
+          <h3 id="tst-form-title">Add Testimonial</h3>
+          <div class="fgrid">
+            <div class="frow"><label>Patient Name *</label><input type="text" id="t-name" placeholder="Patient name"></div>
+            <div class="frow"><label>Rating (1–5)</label><input type="number" id="t-rating" min="1" max="5" value="5"></div>
+            <div class="frow full"><label>Testimonial Text *</label><textarea id="t-text" placeholder="Patient testimonial..." style="min-height:80px"></textarea></div>
+            <div class="frow full">
+              <label>Patient Photo (optional)</label>
+              <div class="upload-box"><input type="file" accept="image/*" onchange="prevImg(this,'t-prev','t-imgdata')"><i class="fas fa-user-circle"></i><p>Click to upload photo</p><img id="t-prev" class="prev-img" style="border-radius:50%"></div>
+              <input type="hidden" id="t-imgdata">
+            </div>
+          </div>
+          <input type="hidden" id="t-editid">
+          <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn btnp btnsm" onclick="saveTst()"><i class="fas fa-save"></i> Save</button>
+            <button class="btn btno btnsm" onclick="clearTst()">Clear</button>
+          </div>
+        </div>
+        <div class="adtable-wrap">
+          <div class="adtable-head"><h3>Testimonials List</h3></div>
+          <div style="overflow-x:auto"><table class="adtable"><thead><tr><th>Photo</th><th>Name</th><th>Rating</th><th>Text</th><th>Actions</th></tr></thead><tbody id="tst-list"></tbody></table></div>
+        </div>
       </div>
-      <button class="btn bp sm" style="align-self:start" onclick="saveAbout()">Save About</button>
-     </div>
-    </div>
-    <div class="afw"><h3>Mission and Vision</h3>
-     <div style="display:flex;flex-direction:column;gap:10px">
-      <div class="fi"><label>Mission Text</label><textarea id="cmt" style="min-height:75px"></textarea></div>
-      <div class="fi"><label>Vision Text</label><textarea id="cvt" style="min-height:75px"></textarea></div>
-      <button class="btn bp sm" style="align-self:start" onclick="saveMV()">Save</button>
-     </div>
-    </div>
-    <div class="afw"><h3>Contact Details</h3>
-     <div style="display:flex;flex-direction:column;gap:10px">
-      <div class="fi"><label>Address</label><input type="text" id="cad2"></div>
-      <div class="fi"><label>Email</label><input type="email" id="cem2"></div>
-      <button class="btn bp sm" style="align-self:start" onclick="saveCont()">Save</button>
-     </div>
-    </div>
-   </div>
 
+      <!-- MESSAGES -->
+      <div class="adsec" id="ad-msgs">
+        <div class="adtable-wrap">
+          <div class="adtable-head"><h3>Contact Messages</h3></div>
+          <div style="overflow-x:auto"><table class="adtable"><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Subject</th><th>Message</th><th>Date</th><th></th></tr></thead><tbody id="msg-list"></tbody></table></div>
+        </div>
+      </div>
+
+      <!-- SITE CONTENT -->
+      <div class="adsec" id="ad-content">
+        <div class="adform"><h3>Hero Section</h3>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div class="frow"><label>Highlight Text (coloured)</label><input type="text" id="c-hspan" placeholder="Loving Priority"></div>
+            <div class="frow"><label>Sub-text</label><textarea id="c-hsub" style="min-height:65px" placeholder="World-class healthcare..."></textarea></div>
+            <button class="btn btnp btnsm" style="align-self:start" onclick="saveHero()"><i class="fas fa-save"></i> Save Hero</button>
+          </div>
+        </div>
+        <div class="adform"><h3>About Section</h3>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div class="frow"><label>Title</label><input type="text" id="c-atitle" placeholder="A Legacy of Compassionate Healthcare"></div>
+            <div class="frow"><label>Paragraph 1</label><textarea id="c-ap1" style="min-height:65px"></textarea></div>
+            <div class="frow"><label>Paragraph 2</label><textarea id="c-ap2" style="min-height:65px"></textarea></div>
+            <div class="frow"><label>About Image</label>
+              <div class="upload-box"><input type="file" accept="image/*" onchange="prevImg(this,'ab-prev','ab-imgdata')"><i class="fas fa-hospital"></i><p>Upload hospital photo</p><img id="ab-prev" class="prev-img"></div>
+              <input type="hidden" id="ab-imgdata">
+            </div>
+            <button class="btn btnp btnsm" style="align-self:start" onclick="saveAbout()"><i class="fas fa-save"></i> Save About</button>
+          </div>
+        </div>
+        <div class="adform"><h3>Mission &amp; Vision</h3>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div class="frow"><label>Mission Text</label><textarea id="c-mission" style="min-height:75px"></textarea></div>
+            <div class="frow"><label>Vision Text</label><textarea id="c-vision" style="min-height:75px"></textarea></div>
+            <button class="btn btnp btnsm" style="align-self:start" onclick="saveMV()"><i class="fas fa-save"></i> Save</button>
+          </div>
+        </div>
+        <div class="adform"><h3>Contact Details</h3>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div class="frow"><label>Address</label><input type="text" id="c-address" value="Cashier Agbara, Ogun State, Nigeria"></div>
+            <div class="frow"><label>Email</label><input type="email" id="c-email" value="info@lovinghearthospital.com"></div>
+            <button class="btn btnp btnsm" style="align-self:start" onclick="saveContact()"><i class="fas fa-save"></i> Save</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
   </div>
- </div>
 </div>
 
-<div style="position:fixed;bottom:20px;left:20px;z-index:800">
- <button onclick="openAL()" style="width:38px;height:38px;border-radius:50%;background:var(--navy);color:#fff;border:none;cursor:pointer;opacity:.35;transition:opacity .3s" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=.35">&#128274;</button>
+<!-- Admin access button -->
+<div style="position:fixed;bottom:22px;left:22px;z-index:800">
+  <button onclick="openLogin()" title="Admin" style="width:38px;height:38px;border-radius:50%;background:var(--navy);color:#fff;border:none;cursor:pointer;opacity:.3;transition:.3s;font-size:.85rem" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=.3"><i class="fas fa-lock"></i></button>
 </div>
-
-<!-- Font Awesome loaded LAST so it never blocks anything -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" media="print" onload="this.media='all'">
 
 <script>
-// ================================================================
-// ALL NAVIGATION AND UI - works instantly, no external deps needed
-// ================================================================
-function go(p){
-  document.querySelectorAll('.page').forEach(function(x){x.classList.remove('on');});
-  var t=document.getElementById(p); if(t) t.classList.add('on');
+// ======================================================
+// DEFAULT DATA (seeded automatically on first load)
+// ======================================================
+var DEF_SVCS = [
+  {name:"General Consultation",icon:"fas fa-stethoscope",desc:"Comprehensive primary care consultations with experienced physicians for all ages and health conditions.",img:""},
+  {name:"Laboratory",icon:"fas fa-flask",desc:"State-of-the-art diagnostic laboratory offering a full range of tests with quick, accurate results.",img:""},
+  {name:"Pharmacy",icon:"fas fa-pills",desc:"In-house pharmacy stocked with a wide range of medications, managed by certified pharmacists.",img:""},
+  {name:"Maternity",icon:"fas fa-baby",desc:"Complete maternal care from antenatal to postnatal with experienced midwives and obstetricians.",img:""},
+  {name:"Surgery",icon:"fas fa-syringe",desc:"Advanced surgical services including minimally invasive procedures by board-certified surgeons.",img:""},
+  {name:"Emergency Care",icon:"fas fa-ambulance",desc:"24/7 emergency unit equipped to handle all critical medical situations with rapid response teams.",img:""}
+];
+var DEF_DOCS = [
+  {name:"Dr. Adaeze Nwosu",spec:"Cardiologist",bio:"Board-certified cardiologist with 12 years of experience in interventional cardiology.",photo:""},
+  {name:"Dr. Femi Okafor",spec:"General Surgeon",bio:"Expert laparoscopic surgeon with over 15 years performing complex procedures.",photo:""},
+  {name:"Dr. Ngozi Eze",spec:"Obstetrician & Gynaecologist",bio:"Dedicated to maternal health and women's wellness with a compassionate approach.",photo:""},
+  {name:"Dr. Kola Adeyemi",spec:"Paediatrician",bio:"Specialist in child health and development, providing caring and thorough paediatric services.",photo:""}
+];
+var DEF_TSTS = [
+  {name:"Mrs. Amaka Obi",rating:5,text:"The doctors here are so caring and professional. Loving Heart truly lives up to its name!",photo:""},
+  {name:"Mr. Bola Fashola",rating:5,text:"Excellent service from the moment I walked in. The facility was clean and treatment world-class.",photo:""},
+  {name:"Miss Chioma Eze",rating:5,text:"I delivered my baby here and the maternity team was absolutely wonderful. Thank you so much!",photo:""}
+];
+
+// ======================================================
+// APP STATE
+// ======================================================
+var DB = null, AUTH = null;
+var SVCS=[], DOCS=[], TSTS=[], APPTS=[], MSGS=[], GAL=[];
+
+// ======================================================
+// NAVIGATION — no deps, works instantly
+// ======================================================
+function goTo(page) {
+  document.querySelectorAll('.pg').forEach(function(p){ p.classList.remove('show'); });
+  var el = document.getElementById('pg-' + page);
+  if (el) el.classList.add('show');
   document.querySelectorAll('.nlinks a').forEach(function(a){
-    a.classList.remove('on');
-    if((a.getAttribute('onclick')||'').indexOf("'"+p+"'")!==-1) a.classList.add('on');
+    a.classList.remove('act');
+    if ((a.getAttribute('onclick')||'').indexOf("'"+page+"'") > -1) a.classList.add('act');
   });
   window.scrollTo(0,0);
-  document.getElementById('nlinks').classList.remove('on');
-  document.getElementById('nbts').classList.remove('on');
+  closeMobile();
 }
-function tmenu(){
-  document.getElementById('nlinks').classList.toggle('on');
-  document.getElementById('nbts').classList.toggle('on');
+function toggleMenu() {
+  document.getElementById('nlinks').classList.toggle('open');
+  document.getElementById('nbtns').classList.toggle('open');
 }
-function asec(n,el){
-  document.querySelectorAll('.asec').forEach(function(s){s.classList.remove('on');});
-  var s=document.getElementById('s-'+n); if(s) s.classList.add('on');
-  document.querySelectorAll('.ani').forEach(function(i){i.classList.remove('on');});
-  if(el) el.classList.add('on');
-  var tt={dash:'Dashboard',appts:'Appointments',docs:'Manage Doctors',svcs:'Manage Services',gal:'Gallery',tsts:'Testimonials',msgs:'Messages',cont:'Site Content'};
-  var e=document.getElementById('apt'); if(e) e.textContent=tt[n]||n;
+function closeMobile() {
+  document.getElementById('nlinks').classList.remove('open');
+  document.getElementById('nbtns').classList.remove('open');
 }
-function openAL(){document.getElementById('adlo').style.display='flex';}
-function closeAL(){document.getElementById('adlo').style.display='none';}
-function tst(msg,type){
-  var t=document.getElementById('tst');
-  t.textContent=msg; t.className='tst on'+(type?' '+type:'');
-  setTimeout(function(){t.classList.remove('on');},3000);
-}
-window.addEventListener('scroll',function(){
-  var n=document.getElementById('nav');
-  if(n){if(window.scrollY>50)n.style.boxShadow='0 2px 20px rgba(0,0,0,.1)';else n.style.boxShadow='none';}
+window.addEventListener('scroll', function(){
+  var n = document.getElementById('nav');
+  n.style.boxShadow = window.scrollY > 50 ? '0 2px 20px rgba(0,0,0,.09)' : '';
 });
-document.addEventListener('keydown',function(e){if(e.ctrlKey&&e.shiftKey&&e.key==='A')openAL();});
 
-// Image preview
-function prvImg(input,prevId,dataId){
-  var f=input.files[0]; if(!f) return;
+// ======================================================
+// ADMIN NAV
+// ======================================================
+function openLogin() { document.getElementById('adlog').style.display='flex'; }
+function closeLogin() { document.getElementById('adlog').style.display='none'; }
+function showSec(name, el) {
+  document.querySelectorAll('.adsec').forEach(function(s){ s.classList.remove('show'); });
+  var sec = document.getElementById('ad-' + name);
+  if (sec) sec.classList.add('show');
+  document.querySelectorAll('.adnav a').forEach(function(a){ a.classList.remove('act'); });
+  if (el && el.classList) el.classList.add('act');
+  var titles = {dash:'Dashboard',appts:'Appointments',docs:'Manage Doctors',svcs:'Manage Services',gal:'Gallery',tsts:'Testimonials',msgs:'Messages',content:'Site Content'};
+  document.getElementById('adtitle').textContent = titles[name] || name;
+}
+document.addEventListener('keydown', function(e){ if(e.ctrlKey && e.shiftKey && e.key==='A') openLogin(); });
+
+// ======================================================
+// TOAST
+// ======================================================
+function toast(msg, type) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (type ? ' '+type : '');
+  setTimeout(function(){ t.classList.remove('show'); }, 3000);
+}
+
+// ======================================================
+// HELPERS
+// ======================================================
+function gv(id) { var e=document.getElementById(id); return e ? (e.value||'').trim() : ''; }
+function sv(id,v) { var e=document.getElementById(id); if(e) e.value=v; }
+function showMsg(id,cls,msg) { var e=document.getElementById(id); if(e){e.className='fmsg '+cls;e.textContent=msg;} }
+function hideMsg(id) { var e=document.getElementById(id); if(e){e.className='fmsg';e.textContent='';e.style.display='none';} }
+function prevImg(input, prevId, dataId) {
+  var f=input.files[0]; if(!f)return;
   var r=new FileReader();
   r.onload=function(e){
     var p=document.getElementById(prevId); if(p){p.src=e.target.result;p.style.display='block';}
-    var d=document.getElementById(dataId); if(d) d.value=e.target.result;
+    var d=document.getElementById(dataId); if(d)d.value=e.target.result;
   };
   r.readAsDataURL(f);
 }
-function gv(id){var e=document.getElementById(id);return e?(e.value||'').trim():'';}
-function sv(id,v){var e=document.getElementById(id);if(e)e.value=v;}
-function fm(id,cls,msg){var e=document.getElementById(id);if(e){e.className='fm '+cls;e.textContent=msg;}}
+function stars(n){ var s=''; for(var i=0;i<Math.min(5,n||5);i++) s+='★'; return s; }
 
-// Hide loader - CSS animation handles it but also JS fallback
-setTimeout(function(){var l=document.getElementById('ldr');if(l)l.classList.add('off');},1500);
-
-// ================================================================
-// DEFAULT DATA
-// ================================================================
-var DS=[
-  {name:"General Consultation",icon:"fas fa-stethoscope",desc:"Comprehensive primary care consultations with experienced physicians for all ages.",img:""},
-  {name:"Laboratory",icon:"fas fa-flask",desc:"State-of-the-art diagnostic laboratory with full range of tests and quick results.",img:""},
-  {name:"Pharmacy",icon:"fas fa-pills",desc:"In-house pharmacy stocked with a wide range of medications by certified pharmacists.",img:""},
-  {name:"Maternity",icon:"fas fa-baby",desc:"Complete maternal care from antenatal to postnatal with experienced midwives.",img:""},
-  {name:"Surgery",icon:"fas fa-syringe",desc:"Advanced surgical services including minimally invasive procedures by board-certified surgeons.",img:""},
-  {name:"Emergency Care",icon:"fas fa-ambulance",desc:"24/7 emergency unit to handle all critical medical situations with rapid response.",img:""}
-];
-var DD=[
-  {name:"Dr. Adaeze Nwosu",spec:"Cardiologist",bio:"Board-certified cardiologist with 12 years experience in interventional cardiology.",photo:""},
-  {name:"Dr. Femi Okafor",spec:"General Surgeon",bio:"Expert general and laparoscopic surgeon with over 15 years performing complex procedures.",photo:""},
-  {name:"Dr. Ngozi Eze",spec:"Obstetrician",bio:"Dedicated to maternal health and women's wellness with a compassionate approach.",photo:""},
-  {name:"Dr. Kola Adeyemi",spec:"Paediatrician",bio:"Specialist in child health and development providing caring paediatric services.",photo:""}
-];
-var DT=[
-  {name:"Mrs. Amaka Obi",rating:5,text:"The doctors here are so caring and professional. Loving Heart truly lives up to its name!",photo:""},
-  {name:"Mr. Bola Fashola",rating:5,text:"Excellent service from the moment I walked in. The facility was clean and treatment world-class.",photo:""},
-  {name:"Miss Chioma Eze",rating:5,text:"I delivered my baby here and the maternity team was absolutely wonderful. Thank you!",photo:""}
-];
-
-var _s=[],_d=[],_t=[],_a=[],_m=[],_g=[];
-
-// ================================================================
-// RENDER FUNCTIONS
-// ================================================================
-function rSvc(x){
-  var im=x.img?'<div class="sci"><img src="'+x.img+'" alt="'+x.name+'" onerror="this.style.display=\'none\'"></div>':'<div class="sci" style="font-size:3rem;color:var(--blue)"><i class="'+(x.icon||'fas fa-heartbeat')+'"></i></div>';
-  return'<div class="sc">'+im+'<div class="scb"><div class="scic"><i class="'+(x.icon||'fas fa-heartbeat')+'"></i></div><h3>'+x.name+'</h3><p>'+x.desc+'</p></div></div>';
+// ======================================================
+// RENDER — PUBLIC PAGES
+// ======================================================
+function renderSvc(x) {
+  var im = x.img
+    ? '<div class="scard-img"><img src="'+x.img+'" alt="'+x.name+'" onerror="this.style.display=\'none\'"></div>'
+    : '<div class="scard-img"><i class="'+(x.icon||'fas fa-heartbeat')+'" style="font-size:3.5rem;color:var(--blue)"></i></div>';
+  return '<div class="scard">'+im+'<div class="scard-body"><div class="scard-ico"><i class="'+(x.icon||'fas fa-heartbeat')+'"></i></div><h3>'+x.name+'</h3><p>'+x.desc+'</p></div></div>';
 }
-function rDoc(x){
-  var ic=x.photo?'<img src="'+x.photo+'" alt="'+x.name+'" onerror="this.style.display=\'none\'">'+'<span style="font-size:3.5rem;color:var(--blue);display:none">&#128104;</span>':'<span style="font-size:3.5rem;color:var(--blue)">&#128104;</span>';
-  return'<div class="dc"><div class="dci">'+ic+'</div><div class="dcb"><h3>'+x.name+'</h3><div class="dsp">'+x.spec+'</div><p>'+x.bio+'</p></div></div>';
+function renderDoc(x) {
+  var ph = x.photo
+    ? '<img src="'+x.photo+'" alt="'+x.name+'" onerror="this.src=\'\';this.style.display=\'none\'">'
+    : '<i class="fas fa-user-md" style="font-size:3.5rem;color:var(--blue)"></i>';
+  return '<div class="dcard"><div class="dcard-img">'+ph+'</div><div class="dcard-body"><h3>'+x.name+'</h3><div class="dcard-spec">'+x.spec+'</div><p>'+x.bio+'</p></div></div>';
 }
-function rTst(x){
-  var s=''; for(var i=0;i<Math.min(5,x.rating||5);i++) s+='&#11088;';
-  var av=x.photo?'<div class="tav"><img src="'+x.photo+'" alt="'+x.name+'"></div>':'<div class="tav">'+((x.name||'P')[0])+'</div>';
-  return'<div class="tc"><div class="tst">'+s+'</div><p class="ttx">"'+x.text+'"</p><div class="tau">'+av+'<div><div class="tnm">'+x.name+'</div><div class="trl">Patient</div></div></div></div>';
+function renderTst(x) {
+  var av = x.photo
+    ? '<div class="tav"><img src="'+x.photo+'" alt="'+x.name+'"></div>'
+    : '<div class="tav">'+(x.name||'P')[0]+'</div>';
+  return '<div class="tcard"><div class="tstars">'+stars(x.rating)+'</div><p class="ttext">"'+x.text+'"</p><div class="tauthor">'+av+'<div><div class="tname">'+x.name+'</div><div class="trole">Patient</div></div></div></div>';
 }
-function rAll(){
-  var sh=_s.map(rSvc).join('');
-  ['hsg','fsg'].forEach(function(id){var e=document.getElementById(id);if(e)e.innerHTML=sh;});
-  var dh=_d.map(rDoc).join('');
-  ['hdg','fdg'].forEach(function(id){var e=document.getElementById(id);if(e)e.innerHTML=dh;});
-  var tg=document.getElementById('tgrd'); if(tg) tg.innerHTML=_t.map(rTst).join('');
+function renderAll() {
+  var sh = SVCS.map(renderSvc).join('');
+  ['home-svc-grid','full-svc-grid'].forEach(function(id){ var e=document.getElementById(id); if(e) e.innerHTML=sh; });
+  var dh = DOCS.map(renderDoc).join('');
+  ['home-doc-grid','full-doc-grid'].forEach(function(id){ var e=document.getElementById(id); if(e) e.innerHTML=dh; });
+  var tg = document.getElementById('home-test-grid'); if(tg) tg.innerHTML=TSTS.map(renderTst).join('');
 }
-function rGal(){
-  var g=document.getElementById('pgg');
-  if(g&&_g.length) g.innerHTML=_g.map(function(x,i){
-    return'<div class="gi'+(i===0?' fc':'')+'"><div class="gov">&#128269;</div>'+(x.url?'<img src="'+x.url+'" alt="'+(x.caption||'')+'">':'<span style="font-size:3rem">&#127973;</span>')+'</div>';
-  }).join('');
-}
-function rAdmAppts(){
-  document.getElementById('stap').textContent=_a.length;
-  var rb=document.getElementById('rap');
-  if(rb) rb.innerHTML=_a.slice(0,5).map(function(x){return'<tr><td>'+x.name+'</td><td>'+x.phone+'</td><td>'+x.dept+'</td><td>'+x.date+'</td><td><span class="bdg '+(x.status==='approved'?'bok':x.status==='cancelled'?'bno':'bwa')+'">'+( x.status||'pending')+'</span></td></tr>';}).join('');
-  var ab=document.getElementById('aap');
-  if(ab) ab.innerHTML=_a.map(function(x){return'<tr><td>'+x.name+'</td><td>'+x.phone+'</td><td>'+(x.email||'')+'</td><td>'+x.dept+'</td><td>'+(x.doctor||'-')+'</td><td>'+x.date+'</td><td>'+x.time+'</td><td><span class="bdg '+(x.status==='approved'?'bok':x.status==='cancelled'?'bno':'bwa')+'">'+( x.status||'pending')+'</span></td><td style="white-space:nowrap"><button class="btn bsuc sm" onclick="updA(\''+x.id+'\',\'approved\')">&#10003;</button> <button class="btn bd sm" onclick="updA(\''+x.id+'\',\'cancelled\')">&#10007;</button></td></tr>';}).join('');
-}
-function rAdmMsgs(){
-  document.getElementById('stmg').textContent=_m.length;
-  var b=document.getElementById('amb');
-  if(b) b.innerHTML=_m.map(function(x){return'<tr><td>'+x.name+'</td><td>'+x.email+'</td><td>'+(x.phone||'')+'</td><td>'+(x.subject||'')+'</td><td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+x.message+'</td><td>'+(x.createdAt&&x.createdAt.toDate?x.createdAt.toDate().toLocaleDateString():'')+'</td><td><button class="btn bd sm" onclick="delMsg(\''+x.id+'\')">&#128465;</button></td></tr>';}).join('');
-}
-function rAdmDocs(){
-  document.getElementById('stdc').textContent=_d.length;
-  var c=document.getElementById('dct');if(c)c.textContent=_d.length;
-  var b=document.getElementById('adb2');
-  if(b) b.innerHTML=_d.map(function(x){
-    var th=x.photo?'<img src="'+x.photo+'" style="width:32px;height:32px;border-radius:50%;object-fit:cover">':'<span style="font-size:1.4rem">&#128104;</span>';
-    return'<tr><td>'+th+'</td><td>'+x.name+'</td><td>'+x.spec+'</td><td style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(x.bio||'')+'</td><td style="white-space:nowrap"><button class="btn bo sm" onclick="editDoc(\''+x.id+'\')">&#9998; Edit</button> <button class="btn bd sm" onclick="delDoc(\''+x.id+'\')">&#128465;</button></td></tr>';
-  }).join('');
-}
-function rAdmSvcs(){
-  document.getElementById('stsv').textContent=_s.length;
-  var c=document.getElementById('sct');if(c)c.textContent=_s.length;
-  var b=document.getElementById('asb2');
-  if(b) b.innerHTML=_s.map(function(x){
-    var th=x.img?'<img src="'+x.img+'" style="width:40px;height:32px;border-radius:5px;object-fit:cover">':'<span style="font-size:1.4rem">&#9877;</span>';
-    return'<tr><td>'+th+'</td><td>'+x.name+'</td><td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(x.desc||'')+'</td><td style="white-space:nowrap"><button class="btn bo sm" onclick="editSvc(\''+x.id+'\')">&#9998; Edit</button> <button class="btn bd sm" onclick="delSvc(\''+x.id+'\')">&#128465;</button></td></tr>';
-  }).join('');
-}
-function rAdmTsts(){
-  var b=document.getElementById('atb');
-  if(b) b.innerHTML=_t.map(function(x){
-    var s='';for(var i=0;i<(x.rating||5);i++)s+='&#11088;';
-    var av=x.photo?'<img src="'+x.photo+'" style="width:32px;height:32px;border-radius:50%;object-fit:cover">':'<span style="font-size:1.4rem">&#128100;</span>';
-    return'<tr><td>'+av+'</td><td>'+x.name+'</td><td>'+s+'</td><td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(x.text||'')+'</td><td style="white-space:nowrap"><button class="btn bo sm" onclick="editTst(\''+x.id+'\')">&#9998; Edit</button> <button class="btn bd sm" onclick="delTst(\''+x.id+'\')">&#128465;</button></td></tr>';
-  }).join('');
-}
-function rAdmGal(){
-  var g=document.getElementById('agg');
-  if(g) g.innerHTML=_g.map(function(x){
-    return'<div style="border-radius:var(--rs);overflow:hidden;position:relative;aspect-ratio:1;background:var(--lblue)">'+(x.url?'<img src="'+x.url+'" style="width:100%;height:100%;object-fit:cover">':'<div style="height:100%;display:flex;align-items:center;justify-content:center;font-size:2rem">&#128247;</div>')+'<div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.65);color:#fff;padding:4px 7px;font-size:.69rem;display:flex;justify-content:space-between;align-items:center"><span>'+(x.caption||'')+'</span><button onclick="delGal(\''+x.id+'\')" style="background:none;border:none;color:#fff;cursor:pointer">&#128465;</button></div></div>';
+function renderGallery() {
+  var g = document.getElementById('pub-gallery');
+  if(!g || !GAL.length) return;
+  g.innerHTML = GAL.map(function(x,i){
+    return '<div class="gitem'+(i===0?' first':'')+'">'
+      +'<div class="ov"><i class="fas fa-search-plus"></i></div>'
+      +(x.url ? '<img src="'+x.url+'" alt="'+(x.caption||'')+'">' : '<div class="ph">🏥</div>')
+      +'</div>';
   }).join('');
 }
 
-// ================================================================
-// FIREBASE - loaded async, won't block page
-// ================================================================
-var db, auth;
+// ======================================================
+// RENDER — ADMIN TABLES
+// ======================================================
+function renderAdminAppts() {
+  document.getElementById('st-appts').textContent = APPTS.length;
+  var recent = APPTS.slice(0,5);
+  var rb = document.getElementById('dash-appts');
+  if(rb) rb.innerHTML = recent.map(function(x){
+    return '<tr><td>'+x.name+'</td><td>'+x.phone+'</td><td>'+x.dept+'</td><td>'+x.date+'</td>'
+      +'<td><span class="bdg '+(x.status==='approved'?'bok':x.status==='cancelled'?'bno':'bwt')+'">'+(x.status||'pending')+'</span></td></tr>';
+  }).join('');
+  var ab = document.getElementById('all-appts');
+  if(ab) ab.innerHTML = APPTS.map(function(x){
+    return '<tr><td>'+x.name+'</td><td>'+x.phone+'</td><td>'+(x.email||'')+'</td><td>'+x.dept+'</td>'
+      +'<td>'+(x.doctor||'—')+'</td><td>'+x.date+'</td><td>'+x.time+'</td>'
+      +'<td><span class="bdg '+(x.status==='approved'?'bok':x.status==='cancelled'?'bno':'bwt')+'">'+(x.status||'pending')+'</span></td>'
+      +'<td style="white-space:nowrap">'
+      +'<button class="btn btng btnsm" onclick="updateAppt(\''+x.id+'\',\'approved\')">✓</button> '
+      +'<button class="btn btnd btnsm" onclick="updateAppt(\''+x.id+'\',\'cancelled\')">✗</button>'
+      +'</td></tr>';
+  }).join('');
+}
+function renderAdminDocs() {
+  document.getElementById('st-docs').textContent = DOCS.length;
+  var c=document.getElementById('doc-count'); if(c) c.textContent=DOCS.length;
+  var b=document.getElementById('doc-list');
+  if(!b) return;
+  b.innerHTML = DOCS.map(function(x){
+    var th=x.photo?'<img src="'+x.photo+'" style="width:34px;height:34px;border-radius:50%;object-fit:cover">'
+      :'<i class="fas fa-user-md" style="font-size:1.4rem;color:var(--blue)"></i>';
+    return '<tr><td>'+th+'</td><td>'+x.name+'</td><td>'+x.spec+'</td>'
+      +'<td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(x.bio||'')+'</td>'
+      +'<td style="white-space:nowrap">'
+      +'<button class="btn btno btnsm" onclick="editDoc(\''+x.id+'\')"><i class="fas fa-edit"></i> Edit</button> '
+      +'<button class="btn btnd btnsm" onclick="delDoc(\''+x.id+'\')"><i class="fas fa-trash"></i></button>'
+      +'</td></tr>';
+  }).join('');
+}
+function renderAdminSvcs() {
+  document.getElementById('st-svcs').textContent = SVCS.length;
+  var c=document.getElementById('svc-count'); if(c) c.textContent=SVCS.length;
+  var b=document.getElementById('svc-list');
+  if(!b) return;
+  b.innerHTML = SVCS.map(function(x){
+    var th=x.img?'<img src="'+x.img+'" style="width:42px;height:34px;border-radius:6px;object-fit:cover">'
+      :'<i class="'+(x.icon||'fas fa-heartbeat')+'" style="font-size:1.4rem;color:var(--blue)"></i>';
+    return '<tr><td>'+th+'</td><td>'+x.name+'</td>'
+      +'<td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(x.desc||'')+'</td>'
+      +'<td style="white-space:nowrap">'
+      +'<button class="btn btno btnsm" onclick="editSvc(\''+x.id+'\')"><i class="fas fa-edit"></i> Edit</button> '
+      +'<button class="btn btnd btnsm" onclick="delSvc(\''+x.id+'\')"><i class="fas fa-trash"></i></button>'
+      +'</td></tr>';
+  }).join('');
+}
+function renderAdminTsts() {
+  var b=document.getElementById('tst-list');
+  if(!b) return;
+  b.innerHTML = TSTS.map(function(x){
+    var av=x.photo?'<img src="'+x.photo+'" style="width:34px;height:34px;border-radius:50%;object-fit:cover">'
+      :'<div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--mint));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700">'+(x.name||'P')[0]+'</div>';
+    return '<tr><td>'+av+'</td><td>'+x.name+'</td><td style="color:#fbbf24">'+stars(x.rating)+'</td>'
+      +'<td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(x.text||'')+'</td>'
+      +'<td style="white-space:nowrap">'
+      +'<button class="btn btno btnsm" onclick="editTst(\''+x.id+'\')"><i class="fas fa-edit"></i> Edit</button> '
+      +'<button class="btn btnd btnsm" onclick="delTst(\''+x.id+'\')"><i class="fas fa-trash"></i></button>'
+      +'</td></tr>';
+  }).join('');
+}
+function renderAdminMsgs() {
+  document.getElementById('st-msgs').textContent = MSGS.length;
+  var b=document.getElementById('msg-list');
+  if(!b) return;
+  b.innerHTML = MSGS.map(function(x){
+    return '<tr><td>'+x.name+'</td><td>'+(x.email||'')+'</td><td>'+(x.phone||'')+'</td>'
+      +'<td>'+(x.subject||'')+'</td>'
+      +'<td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(x.message||'')+'</td>'
+      +'<td>'+(x.createdAt&&x.createdAt.toDate?x.createdAt.toDate().toLocaleDateString():'')+'</td>'
+      +'<td><button class="btn btnd btnsm" onclick="delMsg(\''+x.id+'\')"><i class="fas fa-trash"></i></button></td>'
+      +'</tr>';
+  }).join('');
+}
+function renderAdminGal() {
+  var g=document.getElementById('gal-list');
+  if(!g) return;
+  g.innerHTML = GAL.map(function(x){
+    return '<div style="border-radius:8px;overflow:hidden;position:relative;aspect-ratio:1;background:#eaf2fb">'
+      +(x.url?'<img src="'+x.url+'" style="width:100%;height:100%;object-fit:cover">'
+        :'<div style="height:100%;display:flex;align-items:center;justify-content:center;font-size:2rem">🖼️</div>')
+      +'<div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.65);color:#fff;padding:4px 8px;font-size:.69rem;display:flex;justify-content:space-between;align-items:center">'
+      +'<span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:90px">'+(x.caption||'')+'</span>'
+      +'<button onclick="delGal(\''+x.id+'\')" style="background:none;border:none;color:#fff;cursor:pointer;font-size:.85rem"><i class="fas fa-trash"></i></button>'
+      +'</div></div>';
+  }).join('');
+}
 
-function initFB(){
-  if(typeof firebase==='undefined'){setTimeout(initFB,400);return;}
-  try{
+// ======================================================
+// LOAD DEFAULTS (no Firebase needed — show content immediately)
+// ======================================================
+function loadDefaults() {
+  SVCS = DEF_SVCS.map(function(x,i){ return Object.assign({id:'_'+i}, x); });
+  DOCS = DEF_DOCS.map(function(x,i){ return Object.assign({id:'_'+i}, x); });
+  TSTS = DEF_TSTS.map(function(x,i){ return Object.assign({id:'_'+i}, x); });
+  renderAll();
+}
+loadDefaults(); // ← runs immediately, page has content before Firebase loads
+
+// ======================================================
+// FIREBASE — starts after page is visible
+// ======================================================
+function startFirebase() {
+  if (typeof firebase === 'undefined') { setTimeout(startFirebase, 500); return; }
+  try {
     firebase.initializeApp({
-      apiKey:"AIzaSyBB5f8kF480v1tP70B367yGmNtbzF7vivg",
-      authDomain:"lovinghearthospital-fb865.firebaseapp.com",
-      projectId:"lovinghearthospital-fb865",
-      storageBucket:"lovinghearthospital-fb865.firebasestorage.app",
-      messagingSenderId:"922733242379",
-      appId:"1:922733242379:web:0c5cfc2eac51e51503ff0e"
+      apiKey: "AIzaSyBB5f8kF480v1tP70B367yGmNtbzF7vivg",
+      authDomain: "lovinghearthospital-fb865.firebaseapp.com",
+      projectId: "lovinghearthospital-fb865",
+      storageBucket: "lovinghearthospital-fb865.firebasestorage.app",
+      messagingSenderId: "922733242379",
+      appId: "1:922733242379:web:0c5cfc2eac51e51503ff0e"
     });
-    db=firebase.firestore();
-    auth=firebase.auth();
-    auth.onAuthStateChanged(function(u){
-      if(u){closeAL();document.getElementById('adb').classList.add('on');document.getElementById('aue').textContent=u.email;loadAdm();}
-      else document.getElementById('adb').classList.remove('on');
+    DB = firebase.firestore();
+    AUTH = firebase.auth();
+    AUTH.onAuthStateChanged(function(user) {
+      if (user) {
+        closeLogin();
+        document.getElementById('admain').classList.add('show');
+        document.getElementById('ad-user').textContent = user.email;
+        loadAdminData();
+      } else {
+        document.getElementById('admain').classList.remove('show');
+      }
     });
-    loadData();
-  }catch(e){console.error('Firebase error:',e);loadLocal();}
+    loadFromFirebase();
+  } catch(e) { console.log('Firebase error:', e); }
 }
 
-async function seed(col,data){
-  try{var s=await db.collection(col).limit(1).get();if(s.empty){var b=db.batch();data.forEach(function(d){b.set(db.collection(col).doc(),d);});await b.commit();}}catch(e){}
-}
-async function loadData(){
-  try{await seed('services',DS);var s=await db.collection('services').get();_s=s.docs.map(function(d){return Object.assign({id:d.id},d.data());});}catch(e){}
-  if(!_s.length)_s=DS.map(function(x,i){return Object.assign({id:'d'+i},x);});
-  try{await seed('doctors',DD);var d=await db.collection('doctors').get();_d=d.docs.map(function(x){return Object.assign({id:x.id},x.data());});}catch(e){}
-  if(!_d.length)_d=DD.map(function(x,i){return Object.assign({id:'d'+i},x);});
-  try{await seed('testimonials',DT);var t=await db.collection('testimonials').get();_t=t.docs.map(function(x){return Object.assign({id:x.id},x.data());});}catch(e){}
-  if(!_t.length)_t=DT.map(function(x,i){return Object.assign({id:'d'+i},x);});
-  try{var g=await db.collection('gallery').get();_g=g.docs.map(function(x){return Object.assign({id:x.id},x.data());});}catch(e){}
-  rAll();rGal();
-}
-function loadLocal(){
-  _s=DS.map(function(x,i){return Object.assign({id:'d'+i},x);});
-  _d=DD.map(function(x,i){return Object.assign({id:'d'+i},x);});
-  _t=DT.map(function(x,i){return Object.assign({id:'d'+i},x);});
-  rAll();
-}
-async function loadAdm(){
-  try{var a=await db.collection('appointments').orderBy('createdAt','desc').get();_a=a.docs.map(function(x){return Object.assign({id:x.id},x.data());});}catch(e){_a=[];}
-  try{var m=await db.collection('messages').orderBy('createdAt','desc').get();_m=m.docs.map(function(x){return Object.assign({id:x.id},x.data());});}catch(e){_m=[];}
-  rAdmAppts();rAdmMsgs();rAdmDocs();rAdmSvcs();rAdmTsts();rAdmGal();
+async function seedAndLoad(col, defaults) {
+  try {
+    var snap = await DB.collection(col).limit(1).get();
+    if (snap.empty) {
+      var batch = DB.batch();
+      defaults.forEach(function(item) { batch.set(DB.collection(col).doc(), item); });
+      await batch.commit();
+    }
+    var all = await DB.collection(col).get();
+    return all.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); });
+  } catch(e) { return null; }
 }
 
-// REST fallback write
-async function rWrite(col,data){
-  try{
-    var f={};Object.keys(data).forEach(function(k){f[k]={stringValue:String(data[k]||'')};});
-    var r=await fetch('https://firestore.googleapis.com/v1/projects/lovinghearthospital-fb865/databases/(default)/documents/'+col+'?key=AIzaSyBB5f8kF480v1tP70B367yGmNtbzF7vivg',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({fields:f})});
+async function loadFromFirebase() {
+  var s = await seedAndLoad('services', DEF_SVCS);
+  if (s && s.length) SVCS = s;
+  var d = await seedAndLoad('doctors', DEF_DOCS);
+  if (d && d.length) DOCS = d;
+  var t = await seedAndLoad('testimonials', DEF_TSTS);
+  if (t && t.length) TSTS = t;
+  try {
+    var g = await DB.collection('gallery').get();
+    GAL = g.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); });
+  } catch(e) {}
+  renderAll();
+  renderGallery();
+}
+
+async function loadAdminData() {
+  try {
+    var a = await DB.collection('appointments').orderBy('createdAt','desc').get();
+    APPTS = a.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); });
+  } catch(e) { APPTS=[]; }
+  try {
+    var m = await DB.collection('messages').orderBy('createdAt','desc').get();
+    MSGS = m.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); });
+  } catch(e) { MSGS=[]; }
+  renderAdminAppts();
+  renderAdminDocs();
+  renderAdminSvcs();
+  renderAdminTsts();
+  renderAdminMsgs();
+  renderAdminGal();
+}
+
+// REST API fallback write
+async function restWrite(col, data) {
+  try {
+    var f={};
+    Object.keys(data).forEach(function(k){ f[k]={stringValue:String(data[k]||'')}; });
+    var r = await fetch('https://firestore.googleapis.com/v1/projects/lovinghearthospital-fb865/databases/(default)/documents/'+col+'?key=AIzaSyBB5f8kF480v1tP70B367yGmNtbzF7vivg',
+      {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({fields:f})});
     return r.ok;
-  }catch(e){return false;}
+  } catch(e){ return false; }
 }
 
-// ================================================================
-// FORMS
-// ================================================================
-window.subAppt=async function(){
-  var n=gv('an'),p=gv('aph'),d=gv('adp'),dt=gv('adt'),tm=gv('atm');
-  if(!n||!p||!d||!dt||!tm){fm('afb','er','Please fill: Name, Phone, Department, Date and Time.');return;}
-  var btn=document.getElementById('asbt');
-  btn.disabled=true;btn.textContent='Submitting...';
-  fm('afb','','');document.getElementById('afb').style.display='none';
-  var data={name:n,phone:p,email:gv('ae'),dept:d,doctor:gv('adr'),date:dt,time:tm,notes:gv('ano'),status:'pending',createdAt:new Date().toISOString()};
+// ======================================================
+// APPOINTMENT FORM
+// ======================================================
+window.submitAppt = async function() {
+  var name=gv('f-name'), phone=gv('f-phone'), dept=gv('f-dept'), date=gv('f-date'), time=gv('f-time');
+  if(!name||!phone||!dept||!date||!time) { showMsg('appt-msg','er','Please fill in all required fields (Name, Phone, Department, Date, Time).'); return; }
+  var btn=document.getElementById('appt-btn');
+  btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Submitting...';
+  hideMsg('appt-msg');
+  var data={name:name,phone:phone,email:gv('f-email'),dept:dept,doctor:gv('f-doctor'),date:date,time:time,notes:gv('f-notes'),status:'pending',createdAt:new Date().toISOString()};
   var ok=false;
-  if(db){try{await db.collection('appointments').add(Object.assign({},data,{createdAt:firebase.firestore.FieldValue.serverTimestamp()}));ok=true;}catch(e){ok=await rWrite('appointments',data);}}
-  else ok=await rWrite('appointments',data);
+  if(DB){ try{ await DB.collection('appointments').add(Object.assign({},data,{createdAt:firebase.firestore.FieldValue.serverTimestamp()})); ok=true; } catch(e){ ok=await restWrite('appointments',data); } }
+  else { ok=await restWrite('appointments',data); }
   if(ok){
-    fm('afb','ok','Appointment booked! We will confirm within 24 hours.');
-    ['an','aph','ae','adr','adt','atm','ano'].forEach(function(i){sv(i,'');});sv('adp','');
-  }else fm('afb','er','Could not submit. Please call 08136393150 directly.');
-  btn.disabled=false;btn.textContent='Confirm Appointment';
-  document.getElementById('afb').scrollIntoView({behavior:'smooth',block:'nearest'});
-};
-
-window.subContact=async function(){
-  var n=gv('cn'),e=gv('cem'),m=gv('cmg');
-  if(!n||!e||!m){fm('cfb','er','Please fill name, email and message.');return;}
-  var btn=document.getElementById('csbt');
-  btn.disabled=true;btn.textContent='Sending...';
-  var data={name:n,email:e,phone:gv('cph'),subject:gv('csb2'),message:m,createdAt:new Date().toISOString()};
-  var ok=false;
-  if(db){try{await db.collection('messages').add(Object.assign({},data,{createdAt:firebase.firestore.FieldValue.serverTimestamp()}));ok=true;}catch(e2){ok=await rWrite('messages',data);}}
-  else ok=await rWrite('messages',data);
-  if(ok){fm('cfb','ok','Message sent! We will get back to you soon.');['cn','cem','cph','csb2','cmg'].forEach(function(i){sv(i,'');});}
-  else fm('cfb','er','Could not send. Please call 08136393150.');
-  btn.disabled=false;btn.textContent='Send Message';
-};
-
-// ================================================================
-// AUTH
-// ================================================================
-window.doLogin=async function(){
-  if(!auth){tst('Firebase not ready, please wait...','er');return;}
-  var e=document.getElementById('lei').value,p=document.getElementById('lpi').value;
-  fm('lerr','','');document.getElementById('lerr').style.display='none';
-  try{await auth.signInWithEmailAndPassword(e,p);}
-  catch(e2){fm('lerr','er','Invalid credentials. Please try again.');}
-};
-window.doLogout=async function(){if(auth)await auth.signOut();document.getElementById('adb').classList.remove('on');tst('Logged out');};
-
-// ================================================================
-// ADMIN CRUD
-// ================================================================
-window.updA=async function(id,st){
-  if(!db||id.startsWith('d')){tst('Cannot update','er');return;}
-  try{await db.collection('appointments').doc(id).update({status:st});}catch(e){}
-  var x=_a.find(function(a){return a.id===id;});if(x)x.status=st;
-  rAdmAppts();tst('Appointment '+st,'ok');
-};
-
-window.saveDoc=async function(){
-  var n=gv('dn'),sp=gv('dsp'),b=gv('db'),ph=document.getElementById('dpd').value||gv('dpu'),ei=gv('dei');
-  if(!n||!sp){tst('Name and specialization required','er');return;}
-  var data={name:n,spec:sp,bio:b,photo:ph};
-  if(!db){tst('Firebase not connected','er');return;}
-  try{
-    if(ei&&!ei.startsWith('d')){await db.collection('doctors').doc(ei).update(data);var i=_d.findIndex(function(x){return x.id===ei;});if(i>-1)_d[i]=Object.assign({},_d[i],data);}
-    else{var r=await db.collection('doctors').add(data);_d.push(Object.assign({id:r.id},data));}
-    clrDoc();rAll();rAdmDocs();tst('Doctor saved','ok');
-  }catch(e){tst('Error: '+e.message,'er');}
-};
-window.editDoc=function(id){
-  var x=_d.find(function(d){return d.id===id;});if(!x)return;
-  sv('dn',x.name);sv('dsp',x.spec);sv('db',x.bio);sv('dpu',x.photo||'');sv('dpd','');sv('dei',id);
-  var p=document.getElementById('dpp');if(p&&x.photo){p.src=x.photo;p.style.display='block';}else if(p)p.style.display='none';
-  document.getElementById('dft').textContent='Edit Doctor';
-  document.getElementById('s-docs').scrollIntoView({behavior:'smooth'});
-  tst('Editing: '+x.name);
-};
-window.delDoc=async function(id){
-  if(!confirm('Delete this doctor?'))return;
-  if(db&&!id.startsWith('d'))try{await db.collection('doctors').doc(id).delete();}catch(e){}
-  _d=_d.filter(function(x){return x.id!==id;});rAll();rAdmDocs();tst('Doctor deleted');
-};
-window.clrDoc=function(){
-  ['dn','dsp','db','dpu','dpd','dei'].forEach(function(i){sv(i,'');});
-  var p=document.getElementById('dpp');if(p)p.style.display='none';
-  document.getElementById('dft').textContent='Add New Doctor';
-};
-
-window.saveSvc=async function(){
-  var n=gv('svn'),ic=gv('svi'),d=gv('svd'),im=document.getElementById('svid').value||gv('sviu'),ei=gv('svei');
-  if(!n){tst('Service name required','er');return;}
-  var data={name:n,icon:ic,desc:d,img:im};
-  if(!db){tst('Firebase not connected','er');return;}
-  try{
-    if(ei&&!ei.startsWith('d')){await db.collection('services').doc(ei).update(data);var i=_s.findIndex(function(x){return x.id===ei;});if(i>-1)_s[i]=Object.assign({},_s[i],data);}
-    else{var r=await db.collection('services').add(data);_s.push(Object.assign({id:r.id},data));}
-    clrSvc();rAll();rAdmSvcs();tst('Service saved','ok');
-  }catch(e){tst('Error: '+e.message,'er');}
-};
-window.editSvc=function(id){
-  var x=_s.find(function(s){return s.id===id;});if(!x)return;
-  sv('svn',x.name);sv('svi',x.icon||'');sv('svd',x.desc);sv('sviu',x.img||'');sv('svid','');sv('svei',id);
-  var p=document.getElementById('svip');if(p&&x.img){p.src=x.img;p.style.display='block';}else if(p)p.style.display='none';
-  document.getElementById('sft').textContent='Edit Service';
-  document.getElementById('s-svcs').scrollIntoView({behavior:'smooth'});
-  tst('Editing: '+x.name);
-};
-window.delSvc=async function(id){
-  if(!confirm('Delete this service?'))return;
-  if(db&&!id.startsWith('d'))try{await db.collection('services').doc(id).delete();}catch(e){}
-  _s=_s.filter(function(x){return x.id!==id;});rAll();rAdmSvcs();tst('Service deleted');
-};
-window.clrSvc=function(){
-  ['svn','svi','svd','sviu','svid','svei'].forEach(function(i){sv(i,'');});
-  var p=document.getElementById('svip');if(p)p.style.display='none';
-  document.getElementById('sft').textContent='Add New Service';
-};
-
-window.saveTst=async function(){
-  var n=gv('tn'),t=gv('tt'),r=parseInt(gv('tr'))||5,ph=document.getElementById('tpd').value,ei=gv('tei');
-  if(!n||!t){tst('Name and text required','er');return;}
-  var data={name:n,text:t,rating:r,photo:ph};
-  if(!db){tst('Firebase not connected','er');return;}
-  try{
-    if(ei&&!ei.startsWith('d')){await db.collection('testimonials').doc(ei).update(data);var i=_t.findIndex(function(x){return x.id===ei;});if(i>-1)_t[i]=Object.assign({},_t[i],data);}
-    else{var rf=await db.collection('testimonials').add(data);_t.push(Object.assign({id:rf.id},data));}
-    clrTst();rAll();rAdmTsts();tst('Testimonial saved','ok');
-  }catch(e){tst('Error: '+e.message,'er');}
-};
-window.editTst=function(id){
-  var x=_t.find(function(t){return t.id===id;});if(!x)return;
-  sv('tn',x.name);sv('tt',x.text);sv('tr',x.rating||5);sv('tpd',x.photo||'');sv('tei',id);
-  var p=document.getElementById('tpp');if(p&&x.photo){p.src=x.photo;p.style.display='block';}else if(p)p.style.display='none';
-  document.getElementById('tft').textContent='Edit Testimonial';
-  document.getElementById('s-tsts').scrollIntoView({behavior:'smooth'});
-  tst('Editing: '+x.name);
-};
-window.delTst=async function(id){
-  if(!confirm('Delete this testimonial?'))return;
-  if(db&&!id.startsWith('d'))try{await db.collection('testimonials').doc(id).delete();}catch(e){}
-  _t=_t.filter(function(x){return x.id!==id;});rAll();rAdmTsts();tst('Testimonial deleted');
-};
-window.clrTst=function(){
-  ['tn','tt','tpd','tei'].forEach(function(i){sv(i,'');});sv('tr',5);
-  var p=document.getElementById('tpp');if(p)p.style.display='none';
-  document.getElementById('tft').textContent='Add Testimonial';
-};
-
-window.saveGal=async function(){
-  var u=document.getElementById('gid').value||gv('gurl'),c=gv('gcap');
-  if(!u){tst('Upload an image or enter a URL','er');return;}
-  if(!db){tst('Firebase not connected','er');return;}
-  try{
-    var r=await db.collection('gallery').add({url:u,caption:c});
-    _g.push({id:r.id,url:u,caption:c});
-    sv('gurl','');sv('gcap','');sv('gid','');
-    var p=document.getElementById('gip');if(p)p.style.display='none';
-    rAdmGal();rGal();tst('Image added','ok');
-  }catch(e){tst('Error: '+e.message,'er');}
-};
-window.delGal=async function(id){
-  if(!confirm('Delete this image?'))return;
-  if(db)try{await db.collection('gallery').doc(id).delete();}catch(e){}
-  _g=_g.filter(function(x){return x.id!==id;});rAdmGal();rGal();tst('Image deleted');
-};
-window.delMsg=async function(id){
-  if(!confirm('Delete?'))return;
-  if(db)try{await db.collection('messages').doc(id).delete();}catch(e){}
-  _m=_m.filter(function(x){return x.id!==id;});rAdmMsgs();tst('Deleted');
-};
-
-window.saveHero=function(){
-  var s=gv('chhs'),st=gv('chst');
-  if(s){var e=document.getElementById('hhs');if(e)e.textContent=s;}
-  if(st){var e2=document.getElementById('hsp');if(e2)e2.textContent=st;}
-  tst('Hero updated','ok');
-};
-window.saveAbout=function(){
-  var t=gv('cat'),p1=gv('cap1'),p2=gv('cap2'),im=document.getElementById('abid').value;
-  if(t){var e=document.getElementById('atit');if(e)e.textContent=t;}
-  if(p1){var e2=document.getElementById('at1');if(e2)e2.textContent=p1;}
-  if(p2){var e3=document.getElementById('at2');if(e3)e3.textContent=p2;}
-  if(im){
-    ['aim','aim2'].forEach(function(i){var e=document.getElementById(i);if(e){e.src=im;e.style.display='block';}});
-    ['aiph'].forEach(function(i){var e=document.getElementById(i);if(e)e.style.display='none';});
+    showMsg('appt-msg','ok','✓ Appointment booked successfully! We will confirm within 24 hours.');
+    ['f-name','f-phone','f-email','f-doctor','f-date','f-time','f-notes'].forEach(function(id){sv(id,'');});
+    sv('f-dept','');
+  } else {
+    showMsg('appt-msg','er','Could not submit. Please call 08136393150 directly.');
   }
-  tst('About updated','ok');
-};
-window.saveMV=function(){
-  var m=gv('cmt'),v=gv('cvt');
-  if(m){var e=document.getElementById('mist');if(e)e.textContent=m;}
-  if(v){var e2=document.getElementById('vist');if(e2)e2.textContent=v;}
-  tst('Mission & Vision updated','ok');
-};
-window.saveCont=function(){
-  var a=gv('cad2'),e=gv('cem2');
-  if(a){var el=document.getElementById('cadd');if(el)el.textContent=a;}
-  if(e){var el2=document.getElementById('ceml');if(el2)el2.textContent=e;}
-  tst('Contact updated','ok');
+  btn.disabled=false; btn.innerHTML='<i class="fas fa-calendar-check"></i> Confirm Appointment';
+  document.getElementById('appt-msg').scrollIntoView({behavior:'smooth',block:'nearest'});
 };
 
-// Load default data immediately without Firebase so page shows content right away
-loadLocal();
+// ======================================================
+// CONTACT FORM
+// ======================================================
+window.submitContact = async function() {
+  var name=gv('c-name'), email=gv('c-email'), msg=gv('c-message');
+  if(!name||!email||!msg) { showMsg('contact-msg','er','Please fill name, email and message.'); return; }
+  var btn=document.getElementById('contact-btn');
+  btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Sending...';
+  hideMsg('contact-msg');
+  var data={name:name,email:email,phone:gv('c-phone'),subject:gv('c-subject'),message:msg,createdAt:new Date().toISOString()};
+  var ok=false;
+  if(DB){ try{ await DB.collection('messages').add(Object.assign({},data,{createdAt:firebase.firestore.FieldValue.serverTimestamp()})); ok=true; } catch(e){ ok=await restWrite('messages',data); } }
+  else { ok=await restWrite('messages',data); }
+  if(ok){
+    showMsg('contact-msg','ok','✓ Message sent! We will get back to you soon.');
+    ['c-name','c-email','c-phone','c-subject','c-message'].forEach(function(id){sv(id,'');});
+  } else {
+    showMsg('contact-msg','er','Could not send. Please call 08136393150.');
+  }
+  btn.disabled=false; btn.innerHTML='<i class="fas fa-paper-plane"></i> Send Message';
+};
 
-// Start Firebase init (deferred scripts load async)
-setTimeout(initFB, 100);
+// ======================================================
+// AUTH
+// ======================================================
+window.doLogin = async function() {
+  if(!AUTH){toast('Please wait a moment and try again','er');return;}
+  var e=gv('a-email'), p=gv('a-pass');
+  hideMsg('a-err');
+  try{ await AUTH.signInWithEmailAndPassword(e,p); }
+  catch(err){ showMsg('a-err','er','Invalid email or password. Please try again.'); }
+};
+window.doLogout = async function() {
+  if(AUTH) await AUTH.signOut();
+  document.getElementById('admain').classList.remove('show');
+  toast('Logged out successfully');
+};
+
+// ======================================================
+// ADMIN CRUD — APPOINTMENTS
+// ======================================================
+window.updateAppt = async function(id, status) {
+  if(!DB||id.startsWith('_')){ toast('Cannot update demo data','er'); return; }
+  try{ await DB.collection('appointments').doc(id).update({status:status}); }catch(e){}
+  var a=APPTS.find(function(x){return x.id===id;}); if(a) a.status=status;
+  renderAdminAppts(); toast('Appointment '+status,'ok');
+};
+
+// ======================================================
+// ADMIN CRUD — DOCTORS
+// ======================================================
+window.saveDoc = async function() {
+  var name=gv('d-name'), spec=gv('d-spec'), bio=gv('d-bio');
+  var photo=document.getElementById('d-imgdata').value||gv('d-imgurl');
+  var eid=gv('d-editid');
+  if(!name||!spec){ toast('Name and specialization required','er'); return; }
+  if(!DB){ toast('Firebase not connected','er'); return; }
+  var data={name:name,spec:spec,bio:bio,photo:photo};
+  try{
+    if(eid&&!eid.startsWith('_')){
+      await DB.collection('doctors').doc(eid).update(data);
+      var i=DOCS.findIndex(function(x){return x.id===eid;}); if(i>-1) DOCS[i]=Object.assign({},DOCS[i],data);
+    } else {
+      var r=await DB.collection('doctors').add(data);
+      DOCS.push(Object.assign({id:r.id},data));
+    }
+    clearDoc(); renderAll(); renderAdminDocs(); toast('Doctor saved','ok');
+  } catch(e){ toast('Error: '+e.message,'er'); }
+};
+window.editDoc = function(id) {
+  var x=DOCS.find(function(d){return d.id===id;}); if(!x) return;
+  sv('d-name',x.name); sv('d-spec',x.spec); sv('d-bio',x.bio||'');
+  sv('d-imgurl',x.photo||''); sv('d-imgdata',''); sv('d-editid',id);
+  var p=document.getElementById('d-prev');
+  if(p){ if(x.photo){p.src=x.photo;p.style.display='block';}else p.style.display='none'; }
+  document.getElementById('doc-form-title').textContent='Edit Doctor';
+  document.getElementById('ad-docs').scrollIntoView({behavior:'smooth'});
+  toast('Editing: '+x.name);
+};
+window.delDoc = async function(id) {
+  if(!confirm('Delete this doctor?')) return;
+  if(DB&&!id.startsWith('_')) try{await DB.collection('doctors').doc(id).delete();}catch(e){}
+  DOCS=DOCS.filter(function(x){return x.id!==id;});
+  renderAll(); renderAdminDocs(); toast('Doctor deleted');
+};
+window.clearDoc = function() {
+  ['d-name','d-spec','d-bio','d-imgurl','d-imgdata','d-editid'].forEach(function(i){sv(i,'');});
+  var p=document.getElementById('d-prev'); if(p) p.style.display='none';
+  document.getElementById('doc-form-title').textContent='Add New Doctor';
+};
+
+// ======================================================
+// ADMIN CRUD — SERVICES
+// ======================================================
+window.saveSvc = async function() {
+  var name=gv('s-name'), icon=gv('s-icon'), desc=gv('s-desc');
+  var img=document.getElementById('s-imgdata').value||gv('s-imgurl');
+  var eid=gv('s-editid');
+  if(!name){ toast('Service name required','er'); return; }
+  if(!DB){ toast('Firebase not connected','er'); return; }
+  var data={name:name,icon:icon,desc:desc,img:img};
+  try{
+    if(eid&&!eid.startsWith('_')){
+      await DB.collection('services').doc(eid).update(data);
+      var i=SVCS.findIndex(function(x){return x.id===eid;}); if(i>-1) SVCS[i]=Object.assign({},SVCS[i],data);
+    } else {
+      var r=await DB.collection('services').add(data);
+      SVCS.push(Object.assign({id:r.id},data));
+    }
+    clearSvc(); renderAll(); renderAdminSvcs(); toast('Service saved','ok');
+  } catch(e){ toast('Error: '+e.message,'er'); }
+};
+window.editSvc = function(id) {
+  var x=SVCS.find(function(s){return s.id===id;}); if(!x) return;
+  sv('s-name',x.name); sv('s-icon',x.icon||''); sv('s-desc',x.desc||'');
+  sv('s-imgurl',x.img||''); sv('s-imgdata',''); sv('s-editid',id);
+  var p=document.getElementById('s-prev');
+  if(p){ if(x.img){p.src=x.img;p.style.display='block';}else p.style.display='none'; }
+  document.getElementById('svc-form-title').textContent='Edit Service';
+  document.getElementById('ad-svcs').scrollIntoView({behavior:'smooth'});
+  toast('Editing: '+x.name);
+};
+window.delSvc = async function(id) {
+  if(!confirm('Delete this service?')) return;
+  if(DB&&!id.startsWith('_')) try{await DB.collection('services').doc(id).delete();}catch(e){}
+  SVCS=SVCS.filter(function(x){return x.id!==id;});
+  renderAll(); renderAdminSvcs(); toast('Service deleted');
+};
+window.clearSvc = function() {
+  ['s-name','s-icon','s-desc','s-imgurl','s-imgdata','s-editid'].forEach(function(i){sv(i,'');});
+  var p=document.getElementById('s-prev'); if(p) p.style.display='none';
+  document.getElementById('svc-form-title').textContent='Add New Service';
+};
+
+// ======================================================
+// ADMIN CRUD — TESTIMONIALS
+// ======================================================
+window.saveTst = async function() {
+  var name=gv('t-name'), text=gv('t-text'), rating=parseInt(gv('t-rating'))||5;
+  var photo=document.getElementById('t-imgdata').value;
+  var eid=gv('t-editid');
+  if(!name||!text){ toast('Name and text required','er'); return; }
+  if(!DB){ toast('Firebase not connected','er'); return; }
+  var data={name:name,text:text,rating:rating,photo:photo};
+  try{
+    if(eid&&!eid.startsWith('_')){
+      await DB.collection('testimonials').doc(eid).update(data);
+      var i=TSTS.findIndex(function(x){return x.id===eid;}); if(i>-1) TSTS[i]=Object.assign({},TSTS[i],data);
+    } else {
+      var r=await DB.collection('testimonials').add(data);
+      TSTS.push(Object.assign({id:r.id},data));
+    }
+    clearTst(); renderAll(); renderAdminTsts(); toast('Testimonial saved','ok');
+  } catch(e){ toast('Error: '+e.message,'er'); }
+};
+window.editTst = function(id) {
+  var x=TSTS.find(function(t){return t.id===id;}); if(!x) return;
+  sv('t-name',x.name); sv('t-text',x.text||''); sv('t-rating',x.rating||5);
+  sv('t-imgdata',x.photo||''); sv('t-editid',id);
+  var p=document.getElementById('t-prev');
+  if(p){ if(x.photo){p.src=x.photo;p.style.display='block';}else p.style.display='none'; }
+  document.getElementById('tst-form-title').textContent='Edit Testimonial';
+  document.getElementById('ad-tsts').scrollIntoView({behavior:'smooth'});
+  toast('Editing: '+x.name);
+};
+window.delTst = async function(id) {
+  if(!confirm('Delete this testimonial?')) return;
+  if(DB&&!id.startsWith('_')) try{await DB.collection('testimonials').doc(id).delete();}catch(e){}
+  TSTS=TSTS.filter(function(x){return x.id!==id;});
+  renderAll(); renderAdminTsts(); toast('Testimonial deleted');
+};
+window.clearTst = function() {
+  ['t-name','t-text','t-imgdata','t-editid'].forEach(function(i){sv(i,'');});
+  sv('t-rating',5);
+  var p=document.getElementById('t-prev'); if(p) p.style.display='none';
+  document.getElementById('tst-form-title').textContent='Add Testimonial';
+};
+
+// ======================================================
+// ADMIN CRUD — GALLERY
+// ======================================================
+window.saveGal = async function() {
+  var url=document.getElementById('g-imgdata').value||gv('g-url'), cap=gv('g-caption');
+  if(!url){ toast('Please upload an image or enter a URL','er'); return; }
+  if(!DB){ toast('Firebase not connected','er'); return; }
+  try{
+    var r=await DB.collection('gallery').add({url:url,caption:cap});
+    GAL.push({id:r.id,url:url,caption:cap});
+    sv('g-url',''); sv('g-caption',''); sv('g-imgdata','');
+    var p=document.getElementById('g-prev'); if(p) p.style.display='none';
+    renderAdminGal(); renderGallery(); toast('Image added','ok');
+  } catch(e){ toast('Error: '+e.message,'er'); }
+};
+window.delGal = async function(id) {
+  if(!confirm('Delete this image?')) return;
+  if(DB) try{await DB.collection('gallery').doc(id).delete();}catch(e){}
+  GAL=GAL.filter(function(x){return x.id!==id;});
+  renderAdminGal(); renderGallery(); toast('Image deleted');
+};
+
+// ======================================================
+// ADMIN CRUD — MESSAGES
+// ======================================================
+window.delMsg = async function(id) {
+  if(!confirm('Delete this message?')) return;
+  if(DB) try{await DB.collection('messages').doc(id).delete();}catch(e){}
+  MSGS=MSGS.filter(function(x){return x.id!==id;});
+  renderAdminMsgs(); toast('Message deleted');
+};
+
+// ======================================================
+// SITE CONTENT
+// ======================================================
+window.saveHero = function(){
+  var sp=gv('c-hspan'), sub=gv('c-hsub');
+  if(sp){var e=document.getElementById('hspan');if(e)e.textContent=sp;}
+  if(sub){var e2=document.getElementById('hsubtext');if(e2)e2.textContent=sub;}
+  toast('Hero updated','ok');
+};
+window.saveAbout = function(){
+  var t=gv('c-atitle'),p1=gv('c-ap1'),p2=gv('c-ap2'),im=document.getElementById('ab-imgdata').value;
+  if(t){['about-title'].forEach(function(id){var e=document.getElementById(id);if(e)e.textContent=t;});}
+  if(p1){['about-p1'].forEach(function(id){var e=document.getElementById(id);if(e)e.textContent=p1;});}
+  if(p2){['about-p2'].forEach(function(id){var e=document.getElementById(id);if(e)e.textContent=p2;});}
+  if(im){
+    ['about-img-src','about-img-src2'].forEach(function(id){var e=document.getElementById(id);if(e){e.src=im;e.style.display='block';}});
+    var ph=document.getElementById('about-img-ph'); if(ph) ph.style.display='none';
+  }
+  toast('About updated','ok');
+};
+window.saveMV = function(){
+  var m=gv('c-mission'),v=gv('c-vision');
+  if(m){var e=document.getElementById('mission-txt');if(e)e.textContent=m;}
+  if(v){var e2=document.getElementById('vision-txt');if(e2)e2.textContent=v;}
+  toast('Mission & Vision updated','ok');
+};
+window.saveContact = function(){
+  var a=gv('c-address'),e=gv('c-email');
+  if(a){var el=document.getElementById('contact-address');if(el)el.textContent=a;}
+  if(e){var el2=document.getElementById('contact-email');if(el2)el2.textContent=e;}
+  toast('Contact details updated','ok');
+};
+
+// ======================================================
+// START FIREBASE after a short delay (non-blocking)
+// ======================================================
+setTimeout(startFirebase, 200);
 </script>
 
-<!-- Firebase loads AFTER everything else -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js" defer></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js" defer></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js" defer></script>
