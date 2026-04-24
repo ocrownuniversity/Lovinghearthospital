@@ -51,7 +51,8 @@ section{padding:90px 0}
 .navbar.scrolled{box-shadow:var(--shadow)}
 .nav-inner{max-width:1300px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:70px}
 .nav-logo{display:flex;align-items:center;gap:11px;cursor:pointer}
-.logo-heart{width:42px;height:42px;background:linear-gradient(135deg,var(--accent),#ff6b6b);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.logo-heart{width:48px;height:48px;border-radius:50%;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:#fff}
+.logo-heart img{width:100%;height:100%;object-fit:cover}
 .logo-txt{display:flex;flex-direction:column}
 .logo-main{font-family:var(--serif);font-size:1.05rem;font-weight:700;color:var(--primary);line-height:1.2}
 .logo-sub{font-size:.65rem;font-weight:500;color:var(--text-light);letter-spacing:1.2px;text-transform:uppercase}
@@ -116,6 +117,9 @@ section{padding:90px 0}
 /* SERVICES GRID */
 .services-bg{background:var(--bg)}
 .srv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px}
+.srv-img-wrap{width:100%;height:160px;overflow:hidden;border-radius:calc(var(--r-lg) - 2px) calc(var(--r-lg) - 2px) 0 0;margin:-34px -26px 18px -26px;width:calc(100% + 52px)}
+.srv-img{width:100%;height:100%;object-fit:cover;transition:transform .45s}
+.srv-card:hover .srv-img{transform:scale(1.07)}
 .srv-card{background:#fff;padding:34px 26px;border-radius:var(--r-lg);border:1px solid var(--border);transition:all .35s;position:relative;overflow:hidden;cursor:default}
 .srv-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--primary),var(--green));transform:scaleX(0);transition:transform .35s;transform-origin:left}
 .srv-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg)}
@@ -372,7 +376,7 @@ section{padding:90px 0}
 <nav class="navbar" id="navbar">
   <div class="nav-inner">
     <div class="nav-logo" onclick="showPage('home')">
-      <div class="logo-heart">❤</div>
+      <div class="logo-heart"><img src="https://ocrownuniversity.github.io/Loving-Heart-Hospital-/loving_heart_hospital_logo_300.webp" alt="Loving Heart Hospital Logo" onerror="this.style.display='none';this.parentNode.innerHTML='❤'"/></div>
       <div class="logo-txt">
         <span class="logo-main">Loving Heart</span>
         <span class="logo-sub">Hospital</span>
@@ -462,12 +466,12 @@ section{padding:90px 0}
         <p class="sec-desc">Comprehensive healthcare services delivered with expertise and compassion.</p>
       </div>
       <div class="srv-grid">
-        <div class="srv-card"><div class="srv-icon">🩺</div><h3>General Consultation</h3><p>Expert general practitioners available daily for all your health concerns and chronic conditions.</p></div>
-        <div class="srv-card"><div class="srv-icon">🔬</div><h3>Laboratory Services</h3><p>State-of-the-art diagnostic lab for accurate test results and timely medical reports.</p></div>
-        <div class="srv-card"><div class="srv-icon">💊</div><h3>Pharmacy</h3><p>Fully stocked pharmacy with genuine medications and professional pharmacist guidance.</p></div>
-        <div class="srv-card"><div class="srv-icon">🤱</div><h3>Maternity Care</h3><p>Safe, supportive antenatal and postnatal care for mother and child throughout pregnancy.</p></div>
-        <div class="srv-card"><div class="srv-icon">🚑</div><h3>Emergency Care</h3><p>24/7 emergency response team always ready to save lives swiftly and effectively.</p></div>
-        <div class="srv-card"><div class="srv-icon">👶</div><h3>Paediatrics</h3><p>Specialised healthcare for infants, children, and adolescents by caring paediatric specialists.</p></div>
+        <div class="srv-card"><div class="srv-img-wrap"><img src="https://images.unsplash.com/photo-1638202993928-7267aad84c31?w=500&q=80" alt="General Consultation" class="srv-img"/></div><div class="srv-icon">🩺</div><h3>General Consultation</h3><p>Expert general practitioners available daily for all your health concerns and chronic conditions.</p></div>
+        <div class="srv-card"><div class="srv-img-wrap"><img src="https://images.unsplash.com/photo-1579154204601-01588f351e67?w=500&q=80" alt="Laboratory Services" class="srv-img"/></div><div class="srv-icon">🔬</div><h3>Laboratory Services</h3><p>State-of-the-art diagnostic lab for accurate test results and timely medical reports.</p></div>
+        <div class="srv-card"><div class="srv-img-wrap"><img src="https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500&q=80" alt="Pharmacy" class="srv-img"/></div><div class="srv-icon">💊</div><h3>Pharmacy</h3><p>Fully stocked pharmacy with genuine medications and professional pharmacist guidance.</p></div>
+        <div class="srv-card"><div class="srv-img-wrap"><img src="https://images.unsplash.com/photo-1555252333-9f8e92e65df9?w=500&q=80" alt="Maternity Care" class="srv-img"/></div><div class="srv-icon">🤱</div><h3>Maternity Care</h3><p>Safe, supportive antenatal and postnatal care for mother and child throughout pregnancy.</p></div>
+        <div class="srv-card"><div class="srv-img-wrap"><img src="https://images.unsplash.com/photo-1551076805-e1869033e561?w=500&q=80" alt="Emergency Care" class="srv-img"/></div><div class="srv-icon">🚑</div><h3>Emergency Care</h3><p>24/7 emergency response team always ready to save lives swiftly and effectively.</p></div>
+        <div class="srv-card"><div class="srv-img-wrap"><img src="https://images.unsplash.com/photo-1631815588090-d4bfec5b1ccb?w=500&q=80" alt="Paediatrics" class="srv-img"/></div><div class="srv-icon">👶</div><h3>Paediatrics</h3><p>Specialised healthcare for infants, children, and adolescents by caring paediatric specialists.</p></div>
       </div>
       <div class="center"><button class="btn btn-outline" onclick="showPage('services')">View All Services</button></div>
     </div>
@@ -526,7 +530,7 @@ section{padding:90px 0}
     <div class="container">
       <div class="footer-grid">
         <div class="footer-brand">
-          <div class="f-logo"><div class="logo-heart">❤</div><div class="logo-txt"><span class="logo-main">Loving Heart</span><span class="logo-sub">Hospital</span></div></div>
+          <div class="f-logo"><div class="logo-heart"><img src="https://ocrownuniversity.github.io/Loving-Heart-Hospital-/loving_heart_hospital_logo_300.webp" alt="Logo" onerror="this.style.display='none';this.parentNode.innerHTML='❤'"/></div><div class="logo-txt"><span class="logo-main">Loving Heart</span><span class="logo-sub">Hospital</span></div></div>
           <p>Compassionate healthcare for every member of your family. Quality, accessibility, and love — that is our promise.</p>
           <div class="footer-social">
             <a href="https://wa.me/2347016169594" target="_blank">💬</a>
@@ -627,15 +631,15 @@ section{padding:90px 0}
     <div class="container">
       <div class="sec-head"><p class="label">What We Offer</p><h2 class="sec-title">Full-Spectrum Healthcare Services</h2><p class="sec-desc">From routine checkups to specialised treatments, we offer a wide range of medical services.</p></div>
       <div class="srv-grid">
-        <div class="srv-card"><div class="srv-icon">🩺</div><h3>General Consultation</h3><p>Expert general practitioners for all health concerns from minor illnesses to complex chronic conditions.</p><ul class="srv-feats"><li>Adult & paediatric consultations</li><li>Chronic disease management</li><li>Preventive care & routine checkups</li><li>Health screenings & referrals</li></ul></div>
-        <div class="srv-card"><div class="srv-icon">🔬</div><h3>Laboratory Services</h3><p>Modern diagnostic laboratory for accurate and timely test results to support clinical decisions.</p><ul class="srv-feats"><li>Full blood count & haematology</li><li>Microbiology & culture tests</li><li>Biochemistry & hormonal profiles</li><li>Malaria, HIV, hepatitis tests</li></ul></div>
-        <div class="srv-card"><div class="srv-icon">💊</div><h3>Pharmacy</h3><p>In-house pharmacy stocked with genuine medications staffed by qualified pharmacists.</p><ul class="srv-feats"><li>Prescription dispensing</li><li>Over-the-counter medications</li><li>Medication counselling</li><li>Drug interaction checks</li></ul></div>
-        <div class="srv-card"><div class="srv-icon">🤱</div><h3>Maternity & Obstetrics</h3><p>Comprehensive maternal care from conception through delivery and postnatal recovery.</p><ul class="srv-feats"><li>Antenatal care & monitoring</li><li>Safe delivery (normal & caesarean)</li><li>Postnatal care & counselling</li><li>Family planning services</li></ul></div>
-        <div class="srv-card"><div class="srv-icon">🚑</div><h3>Emergency Care</h3><p>24/7 emergency department equipped to handle all types of medical emergencies swiftly.</p><ul class="srv-feats"><li>Trauma & accident care</li><li>Resuscitation & stabilisation</li><li>Emergency surgery prep</li><li>Ambulance coordination</li></ul></div>
-        <div class="srv-card"><div class="srv-icon">👶</div><h3>Paediatrics</h3><p>Specialised healthcare services for infants, children, and adolescents by experienced specialists.</p><ul class="srv-feats"><li>Child growth monitoring</li><li>Vaccination & immunisation</li><li>Childhood illness management</li><li>Nutritional counselling</li></ul></div>
-        <div class="srv-card"><div class="srv-icon">🦷</div><h3>Dental Services</h3><p>Complete dental care for the whole family from preventive hygiene to complex restorations.</p><ul class="srv-feats"><li>Teeth cleaning & scaling</li><li>Cavity filling & extraction</li><li>Orthodontic assessments</li><li>Dental X-rays</li></ul></div>
-        <div class="srv-card"><div class="srv-icon">👁️</div><h3>Eye Care (Ophthalmology)</h3><p>Comprehensive eye examinations and vision care services for all age groups.</p><ul class="srv-feats"><li>Vision testing & refraction</li><li>Glaucoma screening</li><li>Cataract assessment</li><li>Prescription glasses referral</li></ul></div>
-        <div class="srv-card"><div class="srv-icon">🏥</div><h3>Radiology & Imaging</h3><p>Modern imaging technology including X-ray and ultrasound with quick results turnaround.</p><ul class="srv-feats"><li>Digital X-ray services</li><li>Obstetric ultrasound</li><li>Abdominal scanning</li><li>Musculoskeletal imaging</li></ul></div>
+        <div class="srv-card"><div class="srv-img-wrap"><img src="https://images.unsplash.com/photo-1638202993928-7267aad84c31?w=500&q=80" alt="General Consultation" class="srv-img"/></div><div class="srv-icon">🩺</div><h3>General Consultation</h3><p>Expert general practitioners for all health concerns from minor illnesses to complex chronic conditions.</p><ul class="srv-feats"><li>Adult & paediatric consultations</li><li>Chronic disease management</li><li>Preventive care & routine checkups</li><li>Health screenings & referrals</li></ul></div>
+        <div class="srv-card"><div class="srv-img-wrap"><img src="https://images.unsplash.com/photo-1579154204601-01588f351e67?w=500&q=80" alt="Laboratory" class="srv-img"/></div><div class="srv-icon">🔬</div><h3>Laboratory Services</h3><p>Modern diagnostic laboratory for accurate and timely test results to support clinical decisions.</p><ul class="srv-feats"><li>Full blood count & haematology</li><li>Microbiology & culture tests</li><li>Biochemistry & hormonal profiles</li><li>Malaria, HIV, hepatitis tests</li></ul></div>
+        <div class="srv-card"><div class="srv-img-wrap"><img src="https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500&q=80" alt="Pharmacy" class="srv-img"/></div><div class="srv-icon">💊</div><h3>Pharmacy</h3><p>In-house pharmacy stocked with genuine medications staffed by qualified pharmacists.</p><ul class="srv-feats"><li>Prescription dispensing</li><li>Over-the-counter medications</li><li>Medication counselling</li><li>Drug interaction checks</li></ul></div>
+        <div class="srv-card"><div class="srv-img-wrap"><img src="https://images.unsplash.com/photo-1555252333-9f8e92e65df9?w=500&q=80" alt="Maternity" class="srv-img"/></div><div class="srv-icon">🤱</div><h3>Maternity & Obstetrics</h3><p>Comprehensive maternal care from conception through delivery and postnatal recovery.</p><ul class="srv-feats"><li>Antenatal care & monitoring</li><li>Safe delivery (normal & caesarean)</li><li>Postnatal care & counselling</li><li>Family planning services</li></ul></div>
+        <div class="srv-card"><div class="srv-img-wrap"><img src="https://images.unsplash.com/photo-1551076805-e1869033e561?w=500&q=80" alt="Emergency Care" class="srv-img"/></div><div class="srv-icon">🚑</div><h3>Emergency Care</h3><p>24/7 emergency department equipped to handle all types of medical emergencies swiftly.</p><ul class="srv-feats"><li>Trauma & accident care</li><li>Resuscitation & stabilisation</li><li>Emergency surgery prep</li><li>Ambulance coordination</li></ul></div>
+        <div class="srv-card"><div class="srv-img-wrap"><img src="https://images.unsplash.com/photo-1631815588090-d4bfec5b1ccb?w=500&q=80" alt="Paediatrics" class="srv-img"/></div><div class="srv-icon">👶</div><h3>Paediatrics</h3><p>Specialised healthcare services for infants, children, and adolescents by experienced specialists.</p><ul class="srv-feats"><li>Child growth monitoring</li><li>Vaccination & immunisation</li><li>Childhood illness management</li><li>Nutritional counselling</li></ul></div>
+        <div class="srv-card"><div class="srv-img-wrap"><img src="https://images.unsplash.com/photo-1606811971618-4486d14f3f99?w=500&q=80" alt="Dental Services" class="srv-img"/></div><div class="srv-icon">🦷</div><h3>Dental Services</h3><p>Complete dental care for the whole family from preventive hygiene to complex restorations.</p><ul class="srv-feats"><li>Teeth cleaning & scaling</li><li>Cavity filling & extraction</li><li>Orthodontic assessments</li><li>Dental X-rays</li></ul></div>
+        <div class="srv-card"><div class="srv-img-wrap"><img src="https://images.unsplash.com/photo-1559757175-5700dde675bc?w=500&q=80" alt="Eye Care" class="srv-img"/></div><div class="srv-icon">👁️</div><h3>Eye Care (Ophthalmology)</h3><p>Comprehensive eye examinations and vision care services for all age groups.</p><ul class="srv-feats"><li>Vision testing & refraction</li><li>Glaucoma screening</li><li>Cataract assessment</li><li>Prescription glasses referral</li></ul></div>
+        <div class="srv-card"><div class="srv-img-wrap"><img src="https://images.unsplash.com/photo-1516069677018-378515003435?w=500&q=80" alt="Radiology" class="srv-img"/></div><div class="srv-icon">🏥</div><h3>Radiology & Imaging</h3><p>Modern imaging technology including X-ray and ultrasound with quick results turnaround.</p><ul class="srv-feats"><li>Digital X-ray services</li><li>Obstetric ultrasound</li><li>Abdominal scanning</li><li>Musculoskeletal imaging</li></ul></div>
       </div>
       <div class="center"><button class="btn btn-primary" onclick="showPage('appointment')" style="margin-right:12px">Book a Service</button><button class="btn btn-outline" onclick="showPage('contact')">Enquire About Services</button></div>
     </div>
@@ -801,7 +805,7 @@ section{padding:90px 0}
   <div style="padding-top:70px">
     <div class="portal-page">
       <div class="portal-card">
-        <div class="portal-logo-icon">❤</div>
+        <div class="portal-logo-icon" style="background:none;overflow:hidden"><img src="https://ocrownuniversity.github.io/Loving-Heart-Hospital-/loving_heart_hospital_logo_300.webp" alt="Logo" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none';this.parentNode.innerHTML='❤'"/></div>
         <div style="font-family:var(--serif);font-size:1rem;font-weight:700;color:var(--primary);margin-bottom:6px">Loving Heart Hospital</div>
         <h2>Staff Portal</h2>
         <p>This portal provides authorised staff access to the internal Hospital Management System (HMS). Click below to proceed to the secure login page.</p>
@@ -824,7 +828,7 @@ section{padding:90px 0}
     <div class="admin-login-page">
       <div class="admin-login-card">
         <div class="login-logo">
-          <div style="width:52px;height:52px;background:linear-gradient(135deg,var(--accent),#ff6b6b);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin:0 auto 10px">❤</div>
+          <div style="width:52px;height:52px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;margin:0 auto 10px"><img src="https://ocrownuniversity.github.io/Loving-Heart-Hospital-/loving_heart_hospital_logo_300.webp" alt="Logo" style="width:100%;height:100%;object-fit:cover" onerror="this.outerHTML='<div style=\'width:52px;height:52px;background:linear-gradient(135deg,var(--accent),#ff6b6b);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin:0 auto 10px\'>❤</div>'"/></div>
           <div style="font-family:var(--serif);font-size:.95rem;font-weight:700;color:var(--primary)">Loving Heart Hospital</div>
         </div>
         <h2>Admin Panel</h2>
@@ -1137,13 +1141,11 @@ document.getElementById('contactForm').addEventListener('submit', async e => {
 // =====================
 // STAFF PORTAL HMS
 // =====================
+const HMS_URL = 'https://ocrownuniversity.github.io/Loving-Heart-Hospital-/';
 function goToHMS() {
-  // TODO: Replace with your actual HMS login URL
-  const url = document.getElementById('s-hms')?.value || '';
-  if (!url || url.includes('your-hms')) {
-    alert('HMS URL not configured yet.\n\nTo configure: Go to Admin Panel → Settings → HMS URL field, and enter your Hospital Management System login URL.');
-    return;
-  }
+  // Get custom URL from settings if set, otherwise use default
+  const customUrl = document.getElementById('s-hms')?.value?.trim();
+  const url = (customUrl && !customUrl.includes('your-hms')) ? customUrl : HMS_URL;
   window.open(url, '_blank');
 }
 
@@ -1194,7 +1196,7 @@ function showAdminTab(name) {
   if(name === 'doctors') renderDocs();
   if(name === 'news') renderNews();
   if(name === 'messages') renderMsgs();
-  if(name === 'settings') loadSettings();
+  if(name === 'settings') loadSiteSettings();
 }
 
 // =====================
@@ -1419,18 +1421,63 @@ async function deleteMsg(id){
   showToast('Message deleted.');
 }
 
-// SETTINGS
-async function loadSettings() {
+// =====================
+// APPLY SETTINGS TO WEBSITE
+// =====================
+function applySettingsToSite(d) {
+  if (!d) return;
+  // Update all phone numbers
+  if (d.phone) {
+    const cleanPhone = d.phone.replace(/\s/g,'');
+    document.querySelectorAll('a[href^="tel:"]').forEach(el => el.href = 'tel:' + cleanPhone);
+    document.querySelectorAll('a[href^="https://wa.me/"]').forEach(el => el.href = 'https://wa.me/' + cleanPhone.replace('+',''));
+    // Update displayed phone text in emergency bar and footer
+    document.querySelectorAll('.e-links a[href^="tel:"], .footer-ci a[href^="tel:"], .appt-item a[href^="tel:"]').forEach(el => el.textContent = d.phone);
+    document.querySelectorAll('.cta-acts a[href^="tel:"]').forEach(el => el.innerHTML = '📞 ' + d.phone);
+  }
+  if (d.email) {
+    document.querySelectorAll('a[href^="mailto:info@"]').forEach(el => { el.href = 'mailto:' + d.email; el.textContent = d.email; });
+  }
+  if (d.address) {
+    document.querySelectorAll('.footer-ci').forEach(el => { if(el.innerHTML.includes('📍')) el.innerHTML = '📍 ' + d.address; });
+    document.querySelectorAll('.contact-card p').forEach(el => { if(el.textContent.includes('Cashier') || el.textContent.includes('Agbara')) el.textContent = d.address; });
+  }
+  if (d.hours) {
+    document.querySelectorAll('.footer-ci').forEach(el => { if(el.innerHTML.includes('OPD:')) el.innerHTML = '🕐 OPD: ' + d.hours; });
+    document.querySelectorAll('.contact-card p').forEach(el => { if(el.textContent.includes('OPD:')) el.textContent = 'OPD: ' + d.hours + ' | Emergency: 24/7'; });
+  }
+  if (d.hms) {
+    const el = document.getElementById('s-hms'); if(el) el.value = d.hms;
+  }
+}
+
+// =====================
+// LOAD SETTINGS ON PAGE LOAD (so main site always reflects saved settings)
+// =====================
+async function loadSiteSettings() {
   try {
     const snap = await db.collection('settings').doc('contact').get();
-    if(snap.exists){const d=snap.data();if(d.phone)document.getElementById('s-phone').value=d.phone;if(d.email)document.getElementById('s-email').value=d.email;if(d.address)document.getElementById('s-address').value=d.address;if(d.hours)document.getElementById('s-hours').value=d.hours;if(d.hms)document.getElementById('s-hms').value=d.hms;}
-  }catch(e){}
+    if (snap.exists) {
+      const d = snap.data();
+      applySettingsToSite(d);
+      // Also populate admin form fields if open
+      if(d.phone && document.getElementById('s-phone')) document.getElementById('s-phone').value = d.phone;
+      if(d.email && document.getElementById('s-email')) document.getElementById('s-email').value = d.email;
+      if(d.address && document.getElementById('s-address')) document.getElementById('s-address').value = d.address;
+      if(d.hours && document.getElementById('s-hours')) document.getElementById('s-hours').value = d.hours;
+      if(d.hms && document.getElementById('s-hms')) document.getElementById('s-hms').value = d.hms;
+    }
+  } catch(e) { console.log('Settings load error:', e); }
 }
+// Load settings immediately when site opens
+loadSiteSettings();
 
 document.getElementById('settingsForm').addEventListener('submit', async e=>{
   e.preventDefault();
-  await db.collection('settings').doc('contact').set({phone:document.getElementById('s-phone').value,email:document.getElementById('s-email').value,address:document.getElementById('s-address').value,hours:document.getElementById('s-hours').value,hms:document.getElementById('s-hms').value,updatedAt:new Date().toISOString()});
-  showToast('Settings saved!');
+  const d = {phone:document.getElementById('s-phone').value,email:document.getElementById('s-email').value,address:document.getElementById('s-address').value,hours:document.getElementById('s-hours').value,hms:document.getElementById('s-hms').value,updatedAt:new Date().toISOString()};
+  await db.collection('settings').doc('contact').set(d);
+  applySettingsToSite(d);
+  showToast('Settings saved and applied to website!');
 });
 
 document.getElementById('pwdForm').addEventListener('submit', async e=>{
