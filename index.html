@@ -363,10 +363,13 @@ section{padding:90px 0}
 }
 @media(max-width:768px){
   /* NAV - hamburger visible, links hidden until toggled */
-  .nav-links{display:none!important;flex-direction:column;position:fixed;top:70px;left:0;right:0;bottom:0;background:#fff;padding:20px 24px 40px;box-shadow:var(--shadow-lg);border-top:2px solid var(--border);gap:6px;overflow-y:auto;z-index:999}
+  .nav-links{display:none!important;flex-direction:column;position:fixed;top:70px;left:0;right:0;background:#fff;padding:10px 16px 24px;box-shadow:0 8px 32px rgba(0,0,0,.18);border-top:2px solid var(--border);gap:4px;overflow-y:auto;z-index:9999;max-height:calc(100vh - 70px)}
   .nav-links.open{display:flex!important}
-  .nav-links a{padding:13px 16px;display:block;border-radius:10px;font-size:1rem;border-bottom:1px solid var(--bg)}
-  .nav-book,.nav-staff{display:block;text-align:center;margin-top:8px;border-radius:50px!important;padding:13px 20px!important}
+  .nav-links li{width:100%}
+  .nav-links a{padding:14px 16px;display:block;border-radius:10px;font-size:1rem;font-weight:500;color:var(--text);border-bottom:1px solid #f0f0f0;width:100%;box-sizing:border-box}
+  .nav-links a:hover,.nav-links a.active{background:rgba(15,76,117,.08);color:var(--primary)}
+  .nav-book{background:var(--accent)!important;color:#fff!important;border-radius:50px!important;text-align:center;margin-top:4px;border-bottom:none!important}
+  .nav-staff{background:var(--primary)!important;color:#fff!important;border-radius:50px!important;text-align:center;margin-top:4px;border-bottom:none!important}
   .hamburger{display:flex!important}
   /* HERO */
   .hero{min-height:100svh;padding:90px 0 60px;align-items:flex-start}
@@ -1022,7 +1025,7 @@ section{padding:90px 0}
         </div>
         <div class="admin-card">
           <div class="admin-card-header"><h3>Recent Appointments</h3><button class="btn-admin" onclick="showAdminTab('appointments')">View All</button></div>
-          <div style="overflow-x:auto"><table class="admin-table"><thead><tr><th>Patient</th><th>Phone</th><th>Department</th><th>Date</th><th>Status</th></tr></thead><tbody id="dash-appts-body"><tr><td colspan="5" style="text-align:center;padding:28px;color:var(--text-light)">Loading...</td></tr></tbody></table></div>
+          <div id="dash-appts-body" style="display:grid;gap:10px"><div style="text-align:center;padding:20px;color:var(--text-light)">Loading...</div></div>
         </div>
         <div class="admin-card">
           <div class="admin-card-header"><h3>⚡ Quick Actions</h3></div>
@@ -1085,7 +1088,7 @@ section{padding:90px 0}
             <option value="all">All Statuses</option><option value="pending">Pending</option><option value="confirmed">Confirmed</option>
           </select>
         </div>
-        <div class="admin-card"><div style="overflow-x:auto"><table class="admin-table"><thead><tr><th>#</th><th>Patient</th><th>Phone</th><th>Department</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead><tbody id="appts-body"><tr><td colspan="7" style="text-align:center;padding:28px;color:var(--text-light)">Loading...</td></tr></tbody></table></div></div>
+        <div class="admin-card"><div id="appts-body" style="display:grid;grid-template-columns:1fr;gap:12px"><div style="text-align:center;padding:28px;color:var(--text-light)">Loading...</div></div></div>
       </div>
 
       
@@ -1140,11 +1143,8 @@ section{padding:90px 0}
         <div class="admin-topbar"><h1>🏥 Manage Services</h1><button class="btn-admin" onclick="openServiceModal()" style="background:var(--primary);color:#fff">+ Add Service</button></div>
         <p style="font-size:.85rem;color:var(--text-mid);margin-bottom:18px">Edit, delete or add services. Changes appear instantly on the website.</p>
         <div class="admin-card">
-          <div style="overflow-x:auto">
-            <table class="admin-table">
-              <thead><tr><th>Icon</th><th>Service Name</th><th>Description</th><th style="min-width:120px">Actions</th></tr></thead>
-              <tbody id="srv-body"><tr><td colspan="4" style="text-align:center;padding:28px;color:var(--text-light)">Loading...</td></tr></tbody>
-            </table>
+          <div id="srv-body" style="display:grid;grid-template-columns:1fr;gap:12px">
+            <div style="text-align:center;padding:28px;color:var(--text-light)">Loading...</div>
           </div>
         </div>
       </div>
@@ -1158,13 +1158,13 @@ section{padding:90px 0}
       <!-- News Tab -->
       <div id="atab-news" style="display:none">
         <div class="admin-topbar"><h1>News & Health Tips</h1><button class="btn-admin" onclick="openNewsModal()">+ New Post</button></div>
-        <div class="admin-card"><div style="overflow-x:auto"><table class="admin-table"><thead><tr><th>Title</th><th>Category</th><th>Date</th><th>Actions</th></tr></thead><tbody id="news-body"><tr><td colspan="4" style="text-align:center;padding:28px;color:var(--text-light)">Loading...</td></tr></tbody></table></div></div>
+        <div class="admin-card"><div id="news-body" style="display:grid;grid-template-columns:1fr;gap:12px"><div style="text-align:center;padding:28px;color:var(--text-light)">Loading...</div></div></div>
       </div>
 
       <!-- Messages Tab -->
       <div id="atab-messages" style="display:none">
         <div class="admin-topbar"><h1>Contact Messages</h1></div>
-        <div class="admin-card"><div style="overflow-x:auto"><table class="admin-table"><thead><tr><th>#</th><th>Name</th><th>Email</th><th>Subject</th><th>Date</th><th>Actions</th></tr></thead><tbody id="msgs-body"><tr><td colspan="6" style="text-align:center;padding:28px;color:var(--text-light)">Loading...</td></tr></tbody></table></div></div>
+        <div class="admin-card"><div id="msgs-body" style="display:grid;grid-template-columns:1fr;gap:12px"><div style="text-align:center;padding:28px;color:var(--text-light)">Loading...</div></div></div>
       </div>
 
       <!-- Settings Tab -->
@@ -1211,11 +1211,8 @@ section{padding:90px 0}
         <div class="admin-topbar"><h1>Manage HMO Plans</h1><button class="btn-admin" onclick="openHmoModal()">+ Add HMO Plan</button></div>
         <p style="font-size:.88rem;color:var(--text-mid);margin-bottom:18px">HMO plans added here will display on the main website. Edit or delete any plan below.</p>
         <div class="admin-card">
-          <div style="overflow-x:auto">
-            <table class="admin-table">
-              <thead><tr><th>Icon</th><th>HMO Name</th><th>Description</th><th>Actions</th></tr></thead>
-              <tbody id="hmo-body"><tr><td colspan="4" style="text-align:center;padding:28px;color:var(--text-light)">Loading...</td></tr></tbody>
-            </table>
+          <div id="hmo-body" style="display:grid;grid-template-columns:1fr;gap:12px">
+            <div style="text-align:center;padding:28px;color:var(--text-light)">Loading...</div>
           </div>
         </div>
       </div>
@@ -1322,17 +1319,19 @@ function renderHmosOnSite(hmos) {
 }
 
 function renderHmos() {
-  const tbody = document.getElementById('hmo-body');
-  tbody.innerHTML = allHmos.length ? allHmos.map(h => `
-    <tr>
-      <td style="font-size:1.5rem">${h.icon||'🏥'}</td>
-      <td><strong>${h.name}</strong></td>
-      <td style="font-size:.85rem;color:var(--text-mid)">${h.desc||'—'}</td>
-      <td style="white-space:nowrap">
-        <button class="btn-admin sec" onclick="editHmo('${h.id}')" style="padding:6px 12px;font-size:.78rem;margin-right:4px">✏️ Edit</button>
-        <button class="btn-admin danger" onclick="deleteHmo('${h.id}')" style="padding:6px 12px;font-size:.78rem">🗑 Delete</button>
-      </td>
-    </tr>`).join('') : '<tr><td colspan="4" style="text-align:center;padding:28px;color:var(--text-light)">No HMOs added yet. Default plans are showing. Click "+ Add HMO Plan" to add custom plans.</td></tr>';
+  const el = document.getElementById('hmo-body');
+  el.innerHTML = allHmos.length ? allHmos.map(h => `
+    <div style="background:var(--bg);border-radius:12px;padding:14px;display:flex;align-items:center;gap:12px;border:1px solid var(--border)">
+      <div style="font-size:2rem;width:44px;text-align:center;flex-shrink:0">${h.icon||'🏥'}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-weight:700;font-size:.92rem;margin-bottom:2px">${h.name}</div>
+        <div style="font-size:.8rem;color:var(--text-mid)">${h.desc||'—'}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">
+        <button onclick="editHmo('${h.id}')" style="background:#fff;border:1px solid var(--border);color:var(--text);padding:6px 12px;border-radius:8px;font-size:.76rem;cursor:pointer;font-family:var(--sans)">✏️ Edit</button>
+        <button onclick="deleteHmo('${h.id}')" style="background:#fee2e2;border:1px solid #fecaca;color:#b91c1c;padding:6px 12px;border-radius:8px;font-size:.76rem;cursor:pointer;font-family:var(--sans)">🗑 Delete</button>
+      </div>
+    </div>`).join('') : '<div style="text-align:center;padding:28px;color:var(--text-light)">No HMO plans added yet. Default plans are shown.<br><br><button onclick="openHmoModal()" style="background:var(--primary);color:#fff;border:none;padding:10px 20px;border-radius:50px;cursor:pointer;font-family:var(--sans)">+ Add HMO Plan</button></div>';
 }
 
 function openHmoModal(id=null) {
@@ -1497,17 +1496,19 @@ function loadServicesTab() {
 }
 
 function renderSrvTable() {
-  const tbody = document.getElementById('srv-body'); if(!tbody) return;
-  tbody.innerHTML = allServices.map((s,i) => `
-    <tr>
-      <td style="font-size:1.5rem">${s.icon||'🏥'}</td>
-      <td><strong>${s.name}</strong></td>
-      <td style="font-size:.82rem;color:var(--text-mid);max-width:200px">${(s.desc||'').slice(0,60)}...</td>
-      <td style="white-space:nowrap">
-        <button class="btn-admin sec" onclick="editService('${s.id}')" style="padding:5px 10px;font-size:.76rem;margin-right:4px">✏️ Edit</button>
-        <button class="btn-admin danger" onclick="deleteService('${s.id}')" style="padding:5px 10px;font-size:.76rem">🗑 Delete</button>
-      </td>
-    </tr>`).join('') || '<tr><td colspan="4" style="text-align:center;padding:28px;color:var(--text-light)">No services. Click "+ Add Service".</td></tr>';
+  const el = document.getElementById('srv-body'); if(!el) return;
+  el.innerHTML = allServices.length ? allServices.map(s => `
+    <div style="background:var(--bg);border-radius:12px;padding:14px;display:flex;align-items:center;gap:12px;border:1px solid var(--border)">
+      <div style="font-size:2rem;flex-shrink:0;width:44px;text-align:center">${s.icon||'🏥'}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-weight:700;font-size:.92rem;margin-bottom:3px">${s.name}</div>
+        <div style="font-size:.78rem;color:var(--text-mid)">${(s.desc||'').slice(0,70)}...</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">
+        <button onclick="editService('${s.id}')" style="background:var(--bg);border:1px solid var(--border);color:var(--text);padding:6px 12px;border-radius:8px;font-size:.76rem;cursor:pointer;font-family:var(--sans)">✏️ Edit</button>
+        <button onclick="deleteService('${s.id}')" style="background:#fee2e2;border:1px solid #fecaca;color:#b91c1c;padding:6px 12px;border-radius:8px;font-size:.76rem;cursor:pointer;font-family:var(--sans)">🗑 Delete</button>
+      </div>
+    </div>`).join('') : '<div style="text-align:center;padding:36px;color:var(--text-light)">No services yet.<br><br><button onclick="openServiceModal()" style="background:var(--primary);color:#fff;border:none;padding:10px 20px;border-radius:50px;cursor:pointer;font-family:var(--sans)">+ Add First Service</button></div>';
 }
 
 function openServiceModal(id=null) {
@@ -1654,17 +1655,19 @@ function renderHmosOnSite(hmos) {
 }
 
 function renderHmos() {
-  const tbody = document.getElementById('hmo-body');
-  tbody.innerHTML = allHmos.length ? allHmos.map(h => `
-    <tr>
-      <td style="font-size:1.5rem">${h.icon||'🏥'}</td>
-      <td><strong>${h.name}</strong></td>
-      <td style="font-size:.85rem;color:var(--text-mid)">${h.desc||'—'}</td>
-      <td style="white-space:nowrap">
-        <button class="btn-admin sec" onclick="editHmo('${h.id}')" style="padding:6px 12px;font-size:.78rem;margin-right:4px">✏️ Edit</button>
-        <button class="btn-admin danger" onclick="deleteHmo('${h.id}')" style="padding:6px 12px;font-size:.78rem">🗑 Delete</button>
-      </td>
-    </tr>`).join('') : '<tr><td colspan="4" style="text-align:center;padding:28px;color:var(--text-light)">No HMOs added yet. Default plans are showing. Click "+ Add HMO Plan" to add custom plans.</td></tr>';
+  const el = document.getElementById('hmo-body');
+  el.innerHTML = allHmos.length ? allHmos.map(h => `
+    <div style="background:var(--bg);border-radius:12px;padding:14px;display:flex;align-items:center;gap:12px;border:1px solid var(--border)">
+      <div style="font-size:2rem;width:44px;text-align:center;flex-shrink:0">${h.icon||'🏥'}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-weight:700;font-size:.92rem;margin-bottom:2px">${h.name}</div>
+        <div style="font-size:.8rem;color:var(--text-mid)">${h.desc||'—'}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">
+        <button onclick="editHmo('${h.id}')" style="background:#fff;border:1px solid var(--border);color:var(--text);padding:6px 12px;border-radius:8px;font-size:.76rem;cursor:pointer;font-family:var(--sans)">✏️ Edit</button>
+        <button onclick="deleteHmo('${h.id}')" style="background:#fee2e2;border:1px solid #fecaca;color:#b91c1c;padding:6px 12px;border-radius:8px;font-size:.76rem;cursor:pointer;font-family:var(--sans)">🗑 Delete</button>
+      </div>
+    </div>`).join('') : '<div style="text-align:center;padding:28px;color:var(--text-light)">No HMO plans added yet. Default plans are shown.<br><br><button onclick="openHmoModal()" style="background:var(--primary);color:#fff;border:none;padding:10px 20px;border-radius:50px;cursor:pointer;font-family:var(--sans)">+ Add HMO Plan</button></div>';
 }
 
 function openHmoModal(id=null) {
@@ -1829,17 +1832,19 @@ function loadServicesTab() {
 }
 
 function renderSrvTable() {
-  const tbody = document.getElementById('srv-body'); if(!tbody) return;
-  tbody.innerHTML = allServices.map((s,i) => `
-    <tr>
-      <td style="font-size:1.5rem">${s.icon||'🏥'}</td>
-      <td><strong>${s.name}</strong></td>
-      <td style="font-size:.82rem;color:var(--text-mid);max-width:200px">${(s.desc||'').slice(0,60)}...</td>
-      <td style="white-space:nowrap">
-        <button class="btn-admin sec" onclick="editService('${s.id}')" style="padding:5px 10px;font-size:.76rem;margin-right:4px">✏️ Edit</button>
-        <button class="btn-admin danger" onclick="deleteService('${s.id}')" style="padding:5px 10px;font-size:.76rem">🗑 Delete</button>
-      </td>
-    </tr>`).join('') || '<tr><td colspan="4" style="text-align:center;padding:28px;color:var(--text-light)">No services. Click "+ Add Service".</td></tr>';
+  const el = document.getElementById('srv-body'); if(!el) return;
+  el.innerHTML = allServices.length ? allServices.map(s => `
+    <div style="background:var(--bg);border-radius:12px;padding:14px;display:flex;align-items:center;gap:12px;border:1px solid var(--border)">
+      <div style="font-size:2rem;flex-shrink:0;width:44px;text-align:center">${s.icon||'🏥'}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-weight:700;font-size:.92rem;margin-bottom:3px">${s.name}</div>
+        <div style="font-size:.78rem;color:var(--text-mid)">${(s.desc||'').slice(0,70)}...</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">
+        <button onclick="editService('${s.id}')" style="background:var(--bg);border:1px solid var(--border);color:var(--text);padding:6px 12px;border-radius:8px;font-size:.76rem;cursor:pointer;font-family:var(--sans)">✏️ Edit</button>
+        <button onclick="deleteService('${s.id}')" style="background:#fee2e2;border:1px solid #fecaca;color:#b91c1c;padding:6px 12px;border-radius:8px;font-size:.76rem;cursor:pointer;font-family:var(--sans)">🗑 Delete</button>
+      </div>
+    </div>`).join('') : '<div style="text-align:center;padding:36px;color:var(--text-light)">No services yet.<br><br><button onclick="openServiceModal()" style="background:var(--primary);color:#fff;border:none;padding:10px 20px;border-radius:50px;cursor:pointer;font-family:var(--sans)">+ Add First Service</button></div>';
 }
 
 function openServiceModal(id=null) {
@@ -1986,17 +1991,19 @@ function renderHmosOnSite(hmos) {
 }
 
 function renderHmos() {
-  const tbody = document.getElementById('hmo-body');
-  tbody.innerHTML = allHmos.length ? allHmos.map(h => `
-    <tr>
-      <td style="font-size:1.5rem">${h.icon||'🏥'}</td>
-      <td><strong>${h.name}</strong></td>
-      <td style="font-size:.85rem;color:var(--text-mid)">${h.desc||'—'}</td>
-      <td style="white-space:nowrap">
-        <button class="btn-admin sec" onclick="editHmo('${h.id}')" style="padding:6px 12px;font-size:.78rem;margin-right:4px">✏️ Edit</button>
-        <button class="btn-admin danger" onclick="deleteHmo('${h.id}')" style="padding:6px 12px;font-size:.78rem">🗑 Delete</button>
-      </td>
-    </tr>`).join('') : '<tr><td colspan="4" style="text-align:center;padding:28px;color:var(--text-light)">No HMOs added yet. Default plans are showing. Click "+ Add HMO Plan" to add custom plans.</td></tr>';
+  const el = document.getElementById('hmo-body');
+  el.innerHTML = allHmos.length ? allHmos.map(h => `
+    <div style="background:var(--bg);border-radius:12px;padding:14px;display:flex;align-items:center;gap:12px;border:1px solid var(--border)">
+      <div style="font-size:2rem;width:44px;text-align:center;flex-shrink:0">${h.icon||'🏥'}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-weight:700;font-size:.92rem;margin-bottom:2px">${h.name}</div>
+        <div style="font-size:.8rem;color:var(--text-mid)">${h.desc||'—'}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">
+        <button onclick="editHmo('${h.id}')" style="background:#fff;border:1px solid var(--border);color:var(--text);padding:6px 12px;border-radius:8px;font-size:.76rem;cursor:pointer;font-family:var(--sans)">✏️ Edit</button>
+        <button onclick="deleteHmo('${h.id}')" style="background:#fee2e2;border:1px solid #fecaca;color:#b91c1c;padding:6px 12px;border-radius:8px;font-size:.76rem;cursor:pointer;font-family:var(--sans)">🗑 Delete</button>
+      </div>
+    </div>`).join('') : '<div style="text-align:center;padding:28px;color:var(--text-light)">No HMO plans added yet. Default plans are shown.<br><br><button onclick="openHmoModal()" style="background:var(--primary);color:#fff;border:none;padding:10px 20px;border-radius:50px;cursor:pointer;font-family:var(--sans)">+ Add HMO Plan</button></div>';
 }
 
 function openHmoModal(id=null) {
@@ -2161,17 +2168,19 @@ function loadServicesTab() {
 }
 
 function renderSrvTable() {
-  const tbody = document.getElementById('srv-body'); if(!tbody) return;
-  tbody.innerHTML = allServices.map((s,i) => `
-    <tr>
-      <td style="font-size:1.5rem">${s.icon||'🏥'}</td>
-      <td><strong>${s.name}</strong></td>
-      <td style="font-size:.82rem;color:var(--text-mid);max-width:200px">${(s.desc||'').slice(0,60)}...</td>
-      <td style="white-space:nowrap">
-        <button class="btn-admin sec" onclick="editService('${s.id}')" style="padding:5px 10px;font-size:.76rem;margin-right:4px">✏️ Edit</button>
-        <button class="btn-admin danger" onclick="deleteService('${s.id}')" style="padding:5px 10px;font-size:.76rem">🗑 Delete</button>
-      </td>
-    </tr>`).join('') || '<tr><td colspan="4" style="text-align:center;padding:28px;color:var(--text-light)">No services. Click "+ Add Service".</td></tr>';
+  const el = document.getElementById('srv-body'); if(!el) return;
+  el.innerHTML = allServices.length ? allServices.map(s => `
+    <div style="background:var(--bg);border-radius:12px;padding:14px;display:flex;align-items:center;gap:12px;border:1px solid var(--border)">
+      <div style="font-size:2rem;flex-shrink:0;width:44px;text-align:center">${s.icon||'🏥'}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-weight:700;font-size:.92rem;margin-bottom:3px">${s.name}</div>
+        <div style="font-size:.78rem;color:var(--text-mid)">${(s.desc||'').slice(0,70)}...</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">
+        <button onclick="editService('${s.id}')" style="background:var(--bg);border:1px solid var(--border);color:var(--text);padding:6px 12px;border-radius:8px;font-size:.76rem;cursor:pointer;font-family:var(--sans)">✏️ Edit</button>
+        <button onclick="deleteService('${s.id}')" style="background:#fee2e2;border:1px solid #fecaca;color:#b91c1c;padding:6px 12px;border-radius:8px;font-size:.76rem;cursor:pointer;font-family:var(--sans)">🗑 Delete</button>
+      </div>
+    </div>`).join('') : '<div style="text-align:center;padding:36px;color:var(--text-light)">No services yet.<br><br><button onclick="openServiceModal()" style="background:var(--primary);color:#fff;border:none;padding:10px 20px;border-radius:50px;cursor:pointer;font-family:var(--sans)">+ Add First Service</button></div>';
 }
 
 function openServiceModal(id=null) {
@@ -2834,17 +2843,19 @@ function renderHmosOnSite(hmos) {
 }
 
 function renderHmos() {
-  const tbody = document.getElementById('hmo-body');
-  tbody.innerHTML = allHmos.length ? allHmos.map(h => `
-    <tr>
-      <td style="font-size:1.5rem">${h.icon||'🏥'}</td>
-      <td><strong>${h.name}</strong></td>
-      <td style="font-size:.85rem;color:var(--text-mid)">${h.desc||'—'}</td>
-      <td style="white-space:nowrap">
-        <button class="btn-admin sec" onclick="editHmo('${h.id}')" style="padding:6px 12px;font-size:.78rem;margin-right:4px">✏️ Edit</button>
-        <button class="btn-admin danger" onclick="deleteHmo('${h.id}')" style="padding:6px 12px;font-size:.78rem">🗑 Delete</button>
-      </td>
-    </tr>`).join('') : '<tr><td colspan="4" style="text-align:center;padding:28px;color:var(--text-light)">No HMOs added yet. Default plans are showing. Click "+ Add HMO Plan" to add custom plans.</td></tr>';
+  const el = document.getElementById('hmo-body');
+  el.innerHTML = allHmos.length ? allHmos.map(h => `
+    <div style="background:var(--bg);border-radius:12px;padding:14px;display:flex;align-items:center;gap:12px;border:1px solid var(--border)">
+      <div style="font-size:2rem;width:44px;text-align:center;flex-shrink:0">${h.icon||'🏥'}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-weight:700;font-size:.92rem;margin-bottom:2px">${h.name}</div>
+        <div style="font-size:.8rem;color:var(--text-mid)">${h.desc||'—'}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">
+        <button onclick="editHmo('${h.id}')" style="background:#fff;border:1px solid var(--border);color:var(--text);padding:6px 12px;border-radius:8px;font-size:.76rem;cursor:pointer;font-family:var(--sans)">✏️ Edit</button>
+        <button onclick="deleteHmo('${h.id}')" style="background:#fee2e2;border:1px solid #fecaca;color:#b91c1c;padding:6px 12px;border-radius:8px;font-size:.76rem;cursor:pointer;font-family:var(--sans)">🗑 Delete</button>
+      </div>
+    </div>`).join('') : '<div style="text-align:center;padding:28px;color:var(--text-light)">No HMO plans added yet. Default plans are shown.<br><br><button onclick="openHmoModal()" style="background:var(--primary);color:#fff;border:none;padding:10px 20px;border-radius:50px;cursor:pointer;font-family:var(--sans)">+ Add HMO Plan</button></div>';
 }
 
 function openHmoModal(id=null) {
@@ -3009,17 +3020,19 @@ function loadServicesTab() {
 }
 
 function renderSrvTable() {
-  const tbody = document.getElementById('srv-body'); if(!tbody) return;
-  tbody.innerHTML = allServices.map((s,i) => `
-    <tr>
-      <td style="font-size:1.5rem">${s.icon||'🏥'}</td>
-      <td><strong>${s.name}</strong></td>
-      <td style="font-size:.82rem;color:var(--text-mid);max-width:200px">${(s.desc||'').slice(0,60)}...</td>
-      <td style="white-space:nowrap">
-        <button class="btn-admin sec" onclick="editService('${s.id}')" style="padding:5px 10px;font-size:.76rem;margin-right:4px">✏️ Edit</button>
-        <button class="btn-admin danger" onclick="deleteService('${s.id}')" style="padding:5px 10px;font-size:.76rem">🗑 Delete</button>
-      </td>
-    </tr>`).join('') || '<tr><td colspan="4" style="text-align:center;padding:28px;color:var(--text-light)">No services. Click "+ Add Service".</td></tr>';
+  const el = document.getElementById('srv-body'); if(!el) return;
+  el.innerHTML = allServices.length ? allServices.map(s => `
+    <div style="background:var(--bg);border-radius:12px;padding:14px;display:flex;align-items:center;gap:12px;border:1px solid var(--border)">
+      <div style="font-size:2rem;flex-shrink:0;width:44px;text-align:center">${s.icon||'🏥'}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-weight:700;font-size:.92rem;margin-bottom:3px">${s.name}</div>
+        <div style="font-size:.78rem;color:var(--text-mid)">${(s.desc||'').slice(0,70)}...</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">
+        <button onclick="editService('${s.id}')" style="background:var(--bg);border:1px solid var(--border);color:var(--text);padding:6px 12px;border-radius:8px;font-size:.76rem;cursor:pointer;font-family:var(--sans)">✏️ Edit</button>
+        <button onclick="deleteService('${s.id}')" style="background:#fee2e2;border:1px solid #fecaca;color:#b91c1c;padding:6px 12px;border-radius:8px;font-size:.76rem;cursor:pointer;font-family:var(--sans)">🗑 Delete</button>
+      </div>
+    </div>`).join('') : '<div style="text-align:center;padding:36px;color:var(--text-light)">No services yet.<br><br><button onclick="openServiceModal()" style="background:var(--primary);color:#fff;border:none;padding:10px 20px;border-radius:50px;cursor:pointer;font-family:var(--sans)">+ Add First Service</button></div>';
 }
 
 function openServiceModal(id=null) {
