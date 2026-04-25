@@ -16,12 +16,12 @@
   --serif:'Playfair Display',Georgia,serif;--sans:'DM Sans',sans-serif;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{font-family:var(--sans);color:var(--text);background:var(--white);line-height:1.7;overflow-x:hidden}
+html{scroll-behavior:smooth;overflow-x:hidden;width:100%}
+body{font-family:var(--sans);color:var(--text);background:var(--white);line-height:1.7;overflow-x:hidden;width:100%;max-width:100vw}
 a{text-decoration:none;color:inherit;transition:all .3s}
-img{max-width:100%;display:block}
+img{max-width:100%;display:block;height:auto}
 ul{list-style:none}
-.container{max-width:1200px;margin:0 auto;padding:0 24px}
+.container{max-width:1200px;margin:0 auto;padding:0 24px;box-sizing:border-box;width:100%}
 section{padding:90px 0}
 
 /* PAGE SYSTEM */
@@ -47,23 +47,23 @@ section{padding:90px 0}
 .center{text-align:center;margin-top:44px}
 
 /* NAV */
-.navbar{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-bottom:1px solid rgba(226,232,240,.6);transition:all .3s}
+.navbar{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-bottom:1px solid rgba(226,232,240,.6);transition:all .3s;width:100%;box-sizing:border-box}
 .navbar.scrolled{box-shadow:var(--shadow)}
-.nav-inner{max-width:1300px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:70px}
+.nav-inner{max-width:1300px;margin:0 auto;padding:0 16px;display:flex;align-items:center;justify-content:space-between;height:70px;width:100%;box-sizing:border-box}
 .nav-logo{display:flex;align-items:center;gap:11px;cursor:pointer}
 .logo-heart{width:52px;height:52px;border-radius:50%;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.15)}
 .logo-heart img{width:100%;height:100%;object-fit:cover}
 .logo-txt{display:flex;flex-direction:column}
-.logo-main{font-family:var(--serif);font-size:1.05rem;font-weight:700;color:var(--primary);line-height:1.2}
+.logo-main{font-family:var(--serif);font-size:1rem;font-weight:700;color:var(--primary);line-height:1.2;white-space:nowrap}
 .logo-sub{font-size:.65rem;font-weight:500;color:var(--text-light);letter-spacing:1.2px;text-transform:uppercase}
-.nav-links{display:flex;align-items:center;gap:2px}
+.nav-links{align-items:center;gap:2px;flex-wrap:nowrap}
 .nav-links a{font-size:.85rem;font-weight:500;color:var(--text-mid);padding:8px 13px;border-radius:8px;cursor:pointer}
 .nav-links a:hover,.nav-links a.active{color:var(--primary);background:rgba(15,76,117,.07)}
 .nav-book{background:var(--accent)!important;color:#fff!important;border-radius:50px!important;padding:8px 20px!important;font-weight:600!important}
 .nav-book:hover{background:#c1121f!important}
 .nav-staff{background:var(--primary)!important;color:#fff!important;border-radius:50px!important;padding:8px 20px!important;font-weight:600!important}
 .nav-staff:hover{background:var(--primary-light)!important}
-.hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:6px}
+.hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:6px;z-index:1001}
 .hamburger span{display:block;width:24px;height:2px;background:var(--primary);border-radius:2px;transition:all .3s}
 
 /* HERO */
@@ -71,12 +71,12 @@ section{padding:90px 0}
 .hero-bg{position:absolute;inset:0;overflow:hidden}
 .hero-bg img{width:100%;height:100%;object-fit:cover}
 .hero-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(10,30,60,.9) 0%,rgba(15,76,117,.75) 50%,rgba(10,30,60,.65) 100%)}
-.hero-content{position:relative;z-index:2;padding:0 24px;max-width:700px;margin:0 auto;color:#fff;width:100%}
+.hero-content{position:relative;z-index:2;padding:0 20px;max-width:700px;margin:0 auto;color:#fff;width:100%;box-sizing:border-box}
 .hero-badge{display:inline-block;background:rgba(255,255,255,.13);backdrop-filter:blur(8px);color:#fff;padding:8px 18px;border-radius:50px;font-size:.82rem;font-weight:500;margin-bottom:24px;border:1px solid rgba(255,255,255,.22)}
-.hero h1{font-family:var(--serif);font-size:clamp(2.8rem,6vw,4.8rem);font-weight:700;line-height:1.15;margin-bottom:22px}
+.hero h1{font-family:var(--serif);font-size:clamp(2rem,7vw,4.8rem);font-weight:700;line-height:1.15;margin-bottom:22px}
 .hero h1 span{color:#f4a261}
 .hero-sub{font-size:1.05rem;line-height:1.85;color:rgba(255,255,255,.88);margin-bottom:38px;max-width:540px}
-.hero-actions{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:52px}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:44px}
 .hero-stats{display:flex;gap:36px;flex-wrap:wrap;padding-top:28px;border-top:1px solid rgba(255,255,255,.18)}
 .stat strong{display:block;font-size:1.75rem;font-weight:700;font-family:var(--serif);color:#f4a261}
 .stat span{font-size:.78rem;color:rgba(255,255,255,.7);text-transform:uppercase;letter-spacing:1px}
@@ -335,11 +335,14 @@ section{padding:90px 0}
 @keyframes spin{to{transform:rotate(360deg)}}
 
 /* RESPONSIVE */
+/* ===== TABLET ===== */
 @media(max-width:1050px){
   .doc-grid{grid-template-columns:repeat(3,1fr)}
   .vals-grid{grid-template-columns:repeat(2,1fr)}
   .admin-stats{grid-template-columns:repeat(2,1fr)}
-  .footer-grid{grid-template-columns:1fr 1fr}
+  .footer-grid{grid-template-columns:1fr 1fr;gap:32px}
+  .srv-grid{grid-template-columns:repeat(2,1fr)}
+  #hmoGrid{grid-template-columns:repeat(3,1fr)!important}
 }
 @media(max-width:860px){
   .intro-grid,.why-grid,.about-grid,.appt-grid,.contact-grid{grid-template-columns:1fr;gap:36px}
@@ -347,26 +350,98 @@ section{padding:90px 0}
   .doc-grid{grid-template-columns:repeat(2,1fr)}
   .mvv-grid{grid-template-columns:1fr}
   .cta-inner{flex-direction:column;text-align:center}
-  .why-img,.intro-img{height:320px}
-  .intro-badge{right:0}
-  .appt-grid .appt-info{position:static}
+  .why-img,.intro-img{height:300px}
+  .intro-badge{right:0;bottom:-12px}
   .admin-sidebar{display:none}
   .admin-main{margin-left:0}
+  #hmoGrid{grid-template-columns:repeat(2,1fr)!important}
 }
-@media(max-width:640px){
-  .nav-links{display:none;flex-direction:column;position:absolute;top:70px;left:0;right:0;background:#fff;padding:14px 20px 20px;box-shadow:var(--shadow-lg);border-top:1px solid var(--border);gap:3px}
-  .nav-links.open{display:flex}
-  .nav-links a{padding:10px 14px;display:block;border-radius:8px}
-  .hamburger{display:flex}
-  .srv-grid,.news-grid{grid-template-columns:1fr}
-  .doc-grid{grid-template-columns:repeat(2,1fr)}
-  .vals-grid{grid-template-columns:1fr}
+/* ===== MOBILE ===== */
+@media(min-width:769px){
+  .nav-links{display:flex!important}
+  .hamburger{display:none!important}
+}
+@media(max-width:768px){
+  /* NAV - hamburger visible, links hidden until toggled */
+  .nav-links{display:none!important;flex-direction:column;position:fixed;top:70px;left:0;right:0;bottom:0;background:#fff;padding:20px 24px 40px;box-shadow:var(--shadow-lg);border-top:2px solid var(--border);gap:6px;overflow-y:auto;z-index:999}
+  .nav-links.open{display:flex!important}
+  .nav-links a{padding:13px 16px;display:block;border-radius:10px;font-size:1rem;border-bottom:1px solid var(--bg)}
+  .nav-book,.nav-staff{display:block;text-align:center;margin-top:8px;border-radius:50px!important;padding:13px 20px!important}
+  .hamburger{display:flex!important}
+  /* HERO */
+  .hero{min-height:100svh;padding:90px 0 60px;align-items:flex-start}
+  .hero-content{padding:0 18px}
+  .hero h1{font-size:clamp(2rem,8vw,3rem)}
+  .hero-sub{font-size:.92rem}
+  .hero-actions{flex-direction:column;gap:10px}
+  .hero-actions .btn{width:100%;justify-content:center;padding:14px 20px}
+  .hero-badge{font-size:.78rem;padding:7px 14px}
+  .hero-stats{gap:16px;flex-wrap:wrap}
+  .stat strong{font-size:1.4rem}
+  /* SECTIONS */
+  section{padding:60px 0}
+  .container{padding:0 16px}
+  .sec-title{font-size:clamp(1.5rem,5vw,2rem)}
+  /* GRIDS */
+  .srv-grid,.news-grid,.doc-grid{grid-template-columns:1fr}
+  .mvv-grid,.vals-grid{grid-template-columns:1fr}
   .footer-grid{grid-template-columns:1fr;gap:28px}
   .form-row{grid-template-columns:1fr}
-  .appt-form,.contact-form-card{padding:26px 18px}
-  .admin-login-card{padding:32px 22px}
+  #hmoGrid{grid-template-columns:repeat(2,1fr)!important;gap:12px!important}
+  /* CARDS */
+  .appt-form,.contact-form-card{padding:24px 16px}
+  .admin-login-card{padding:32px 20px}
+  .portal-card{padding:36px 22px}
+  /* EMERGENCY BAR */
+  .emergency-inner{flex-direction:column;gap:10px;text-align:center;padding:16px}
+  .e-links{justify-content:center}
+  /* CTA */
+  .cta-inner{flex-direction:column;text-align:center;gap:20px}
+  .cta-acts{justify-content:center;flex-wrap:wrap}
+  /* PAGE HERO */
+  .page-hero{padding:110px 0 50px}
+  .page-hero h1{font-size:clamp(1.6rem,6vw,2.2rem)}
+  /* INTRO BADGE */
+  .intro-badge{position:static;margin-top:16px;border-left:4px solid var(--accent)}
+  /* WHY */
+  .why-img,.intro-img,.about-img{height:260px}
+  /* ADMIN */
   .admin-stats{grid-template-columns:1fr 1fr}
-  .hero-stats{gap:20px}
+  .admin-main{padding:16px 14px}
+  .admin-topbar h1{font-size:1.2rem}
+  /* FOOTER */
+  .footer{padding:44px 0 0}
+  .footer-bottom{flex-direction:column;text-align:center;gap:8px;font-size:.78rem}
+  /* DOC GRID mobile */
+  .doc-grid{grid-template-columns:1fr}
+  /* NEWS */
+  .news-grid{grid-template-columns:1fr}
+}
+@media(max-width:400px){
+  .hero h1{font-size:1.9rem}
+  #hmoGrid{grid-template-columns:1fr!important}
+  .hero-stats .stat{min-width:80px}
+  .admin-stats{grid-template-columns:1fr}
+}
+
+/* ===== MOBILE ADMIN ===== */
+.abn-item{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:8px 4px;cursor:pointer;color:rgba(255,255,255,.55);font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.4px;transition:all .2s;border:none;background:none;font-family:var(--sans);flex:1}
+.abn-item.active,.abn-item:hover{color:#fff;background:rgba(255,255,255,.1)}
+.abn-icon{font-size:1.3rem;line-height:1;display:block}
+@media(max-width:768px){
+  .admin-sidebar{position:fixed!important;top:0!important;left:0!important;bottom:0!important;width:270px!important;transform:translateX(-260%)!important;transition:transform .28s ease!important;z-index:998!important;overflow-y:auto!important}
+  .admin-sidebar.open{transform:translateX(0)!important;box-shadow:6px 0 32px rgba(0,0,0,.5)!important}
+  .admin-main{margin-left:0!important;padding:68px 12px 82px!important}
+  #adminMobileTopbar{display:flex!important}
+  #adminBottomNav{display:flex!important}
+  .admin-stats{grid-template-columns:1fr 1fr!important}
+  .admin-table{font-size:.76rem}
+  .admin-table th,.admin-table td{padding:7px 5px}
+  .admin-card{padding:14px}
+  .admin-topbar{flex-wrap:wrap;gap:8px}
+  .admin-topbar h1{font-size:1.1rem}
+  .form-row{grid-template-columns:1fr!important}
+  .modal{padding:22px 16px!important}
 }
 </style>
 </head>
@@ -382,7 +457,7 @@ section{padding:90px 0}
         <span class="logo-sub">Hospital</span>
       </div>
     </div>
-    <ul class="nav-links" id="navLinks">
+    <ul class="nav-links" id="navLinks" style="display:none">
       <li><a onclick="showPage('home')" data-page="home" class="active">Home</a></li>
       <li><a onclick="showPage('about')" data-page="about">About</a></li>
       <li><a onclick="showPage('services')" data-page="services">Services</a></li>
@@ -485,7 +560,7 @@ section{padding:90px 0}
         <h2 class="sec-title">We Accept HMO Plans</h2>
         <p class="sec-desc">Loving Heart Hospital is registered with major HMO providers in Nigeria. Enjoy quality healthcare covered by your health insurance plan.</p>
       </div>
-      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-bottom:36px" id="hmoGrid">
+      <div id="hmoGrid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-bottom:36px">
         <div style="background:#fff;border:1px solid var(--border);border-radius:var(--r);padding:22px;text-align:center;box-shadow:var(--shadow);transition:all .3s" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'">
           <div style="font-size:2rem;margin-bottom:10px">🏥</div>
           <h4 style="font-size:.92rem;font-weight:700;color:var(--primary);margin-bottom:5px">NHIS</h4>
@@ -905,8 +980,16 @@ section{padding:90px 0}
 
 <!-- ========== ADMIN DASHBOARD ========== -->
 <div class="page" id="page-admin">
-  <div style="display:flex">
-    <aside class="admin-sidebar">
+  <!-- Mobile Admin Top Bar -->
+  <div id="adminMobileTopbar" style="display:none;position:fixed;top:0;left:0;right:0;height:56px;background:#0f1b2d;z-index:997;align-items:center;justify-content:space-between;padding:0 14px;box-shadow:0 2px 12px rgba(0,0,0,.4)">
+    <button onclick="toggleSidebar()" style="background:rgba(255,255,255,.12);border:none;color:#fff;font-size:.85rem;font-weight:600;cursor:pointer;padding:8px 14px;border-radius:8px;font-family:var(--sans)">☰ Menu</button>
+    <span style="color:#fff;font-family:var(--serif);font-size:.95rem;font-weight:600">⚕️ Admin Panel</span>
+    <button onclick="showPage('home')" style="background:rgba(255,255,255,.12);border:none;color:#fff;font-size:.75rem;cursor:pointer;padding:8px 10px;border-radius:8px;font-family:var(--sans)">🌐 Site</button>
+  </div>
+  <!-- Sidebar Overlay -->
+  <div id="adminOverlay" onclick="closeSidebar()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:995;backdrop-filter:blur(2px)"></div>
+  <div id="adminWrap" style="display:flex;min-height:100vh">
+    <aside class="admin-sidebar" id="adminSidebar">
       <div class="sidebar-logo">
         <div class="logo-heart" style="width:36px;height:36px"><img src="data:image/webp;base64,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" alt="Logo" style="width:100%;height:100%;object-fit:cover"/></div>
         <div class="logo-txt"><span class="logo-main" style="font-size:.9rem">Loving Heart</span><span class="logo-sub">Admin</span></div>
@@ -916,6 +999,7 @@ section{padding:90px 0}
         <a onclick="showAdminTab('appointments')" id="stab-appointments"><span class="nav-icon">📅</span> Appointments</a>
         <a onclick="showAdminTab('hero')" id="stab-hero"><span class="nav-icon">🖼️</span> Hero / Banner</a>
         <a onclick="showAdminTab('about-edit')" id="stab-about-edit"><span class="nav-icon">ℹ️</span> About Page</a>
+        <a onclick="showAdminTab('services-edit')" id="stab-services-edit"><span class="nav-icon">🏥</span> Services</a>
         <a onclick="showAdminTab('doctors')" id="stab-doctors"><span class="nav-icon">👨‍⚕️</span> Doctors</a>
         <a onclick="showAdminTab('news')" id="stab-news"><span class="nav-icon">📰</span> News & Tips</a>
         <a onclick="showAdminTab('messages')" id="stab-messages"><span class="nav-icon">✉️</span> Messages</a>
@@ -941,13 +1025,54 @@ section{padding:90px 0}
           <div style="overflow-x:auto"><table class="admin-table"><thead><tr><th>Patient</th><th>Phone</th><th>Department</th><th>Date</th><th>Status</th></tr></thead><tbody id="dash-appts-body"><tr><td colspan="5" style="text-align:center;padding:28px;color:var(--text-light)">Loading...</td></tr></tbody></table></div>
         </div>
         <div class="admin-card">
-          <div class="admin-card-header"><h3>Quick Actions</h3></div>
-          <div class="quick-acts">
-            <button class="btn-admin" onclick="showAdminTab('appointments')">📅 Appointments</button>
-            <button class="btn-admin" onclick="openDocModal()">➕ Add Doctor</button>
-            <button class="btn-admin" onclick="openNewsModal()">✍️ Post Article</button>
-            <button class="btn-admin" onclick="showAdminTab('messages')">✉️ Messages</button>
-            <button class="btn-admin sec" onclick="showAdminTab('settings')">⚙️ Settings</button>
+          <div class="admin-card-header"><h3>⚡ Quick Actions</h3></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <button class="btn-admin" onclick="showAdminTab('hero')" style="padding:13px 8px;font-size:.8rem">🖼️ Edit Hero</button>
+            <button class="btn-admin" onclick="showAdminTab('about-edit')" style="padding:13px 8px;font-size:.8rem">ℹ️ Edit About</button>
+            <button class="btn-admin" onclick="showAdminTab('services-edit')" style="padding:13px 8px;font-size:.8rem">🏥 Services</button>
+            <button class="btn-admin" onclick="showAdminTab('doctors')" style="padding:13px 8px;font-size:.8rem">👨‍⚕️ Doctors</button>
+            <button class="btn-admin" onclick="showAdminTab('news')" style="padding:13px 8px;font-size:.8rem">📰 News/Tips</button>
+            <button class="btn-admin" onclick="showAdminTab('hmo')" style="padding:13px 8px;font-size:.8rem">💊 HMO Plans</button>
+            <button class="btn-admin" onclick="showAdminTab('appointments')" style="padding:13px 8px;font-size:.8rem">📅 Appointments</button>
+            <button class="btn-admin sec" onclick="showAdminTab('settings')" style="padding:13px 8px;font-size:.8rem">⚙️ Settings</button>
+          </div>
+        </div>
+
+        <div class="admin-card" style="border-left:4px solid var(--primary)">
+          <div class="admin-card-header"><h3>📖 How to Manage the Website</h3></div>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div style="background:var(--bg);border-radius:10px;padding:14px">
+              <b style="color:var(--primary);font-size:.88rem">🖼️ Hero Banner</b>
+              <p style="font-size:.82rem;color:var(--text-mid);margin-top:5px;line-height:1.65">Tap <b>Hero / Banner</b> in the sidebar (or ☰ More on mobile). Edit the big title, subtitle, background image and statistics. Tap <b>💾 Save & Apply</b> — it updates the homepage instantly.</p>
+            </div>
+            <div style="background:var(--bg);border-radius:10px;padding:14px">
+              <b style="color:var(--primary);font-size:.88rem">🏥 Services</b>
+              <p style="font-size:.82rem;color:var(--text-mid);margin-top:5px;line-height:1.65">Tap <b>Services</b> in sidebar. See all services listed. Tap <b>✏️ Edit</b> to change name/description/image. Tap <b>🗑 Delete</b> to remove. Tap <b>+ Add Service</b> to add a new one. Live on website instantly.</p>
+            </div>
+            <div style="background:var(--bg);border-radius:10px;padding:14px">
+              <b style="color:var(--primary);font-size:.88rem">👨‍⚕️ Doctors</b>
+              <p style="font-size:.82rem;color:var(--text-mid);margin-top:5px;line-height:1.65">Tap <b>Doctors</b>. Tap <b>+ Add Doctor</b> to add (name, specialty, photo URL, bio). Tap <b>✏️ Edit</b> to update. Tap <b>🗑 Delete</b> to remove. Doctors page updates immediately.</p>
+            </div>
+            <div style="background:var(--bg);border-radius:10px;padding:14px">
+              <b style="color:var(--primary);font-size:.88rem">📰 News & Health Tips</b>
+              <p style="font-size:.82rem;color:var(--text-mid);margin-top:5px;line-height:1.65">Tap <b>News & Tips</b>. Tap <b>+ New Post</b> — enter title, category, image URL, summary. Tap <b>✏️</b> or <b>🗑</b> to edit/delete any post. Posts appear on website instantly.</p>
+            </div>
+            <div style="background:var(--bg);border-radius:10px;padding:14px">
+              <b style="color:var(--primary);font-size:.88rem">📅 Appointments</b>
+              <p style="font-size:.82rem;color:var(--text-mid);margin-top:5px;line-height:1.65">Tap <b>Appointments</b>. Tap <b>View</b> for full details, <b>✅ Confirm</b> to confirm, or call/WhatsApp the patient directly. Tap <b>🗑 Delete</b> to remove a booking.</p>
+            </div>
+            <div style="background:var(--bg);border-radius:10px;padding:14px">
+              <b style="color:var(--primary);font-size:.88rem">💊 HMO Plans</b>
+              <p style="font-size:.82rem;color:var(--text-mid);margin-top:5px;line-height:1.65">Tap <b>HMO Plans</b>. Add or delete accepted health insurance plans. They show on the HMO section of the homepage.</p>
+            </div>
+            <div style="background:var(--bg);border-radius:10px;padding:14px">
+              <b style="color:var(--primary);font-size:.88rem">⚙️ Settings</b>
+              <p style="font-size:.82rem;color:var(--text-mid);margin-top:5px;line-height:1.65">Tap <b>Settings</b> to update phone, email, address, opening hours and HMS link. Tap <b>💾 Save & Apply</b> — contact info updates everywhere on the website immediately.</p>
+            </div>
+            <div style="background:#e8f5e9;border:1px solid #a5d6a7;border-radius:10px;padding:14px">
+              <b style="color:#1b5e20;font-size:.88rem">📱 Using on Mobile Phone</b>
+              <p style="font-size:.82rem;color:#2e7d32;margin-top:5px;line-height:1.65">Use the <b>bottom bar</b> for quick access to Home, Appointments, Doctors, News. Tap <b>☰ More</b> to open the full menu for Hero, About, Services, HMO, Messages and Settings.</p>
+            </div>
           </div>
         </div>
       </div>
@@ -1007,6 +1132,21 @@ section{padding:90px 0}
           <div class="form-group"><label>💎 Values</label><textarea id="ea-values" rows="3" placeholder="What you stand for..."></textarea></div>
         </div>
         <button class="btn-admin" onclick="saveAboutSection()" style="width:100%;padding:14px;font-size:1rem;background:#065f46;color:#fff;border:none;border-radius:50px;cursor:pointer;font-family:var(--sans);font-weight:600">💾 Save About & Apply to Website</button>
+      </div>
+
+
+      <!-- SERVICES EDITOR -->
+      <div id="atab-services-edit" style="display:none">
+        <div class="admin-topbar"><h1>🏥 Manage Services</h1><button class="btn-admin" onclick="openServiceModal()" style="background:var(--primary);color:#fff">+ Add Service</button></div>
+        <p style="font-size:.85rem;color:var(--text-mid);margin-bottom:18px">Edit, delete or add services. Changes appear instantly on the website.</p>
+        <div class="admin-card">
+          <div style="overflow-x:auto">
+            <table class="admin-table">
+              <thead><tr><th>Icon</th><th>Service Name</th><th>Description</th><th style="min-width:120px">Actions</th></tr></thead>
+              <tbody id="srv-body"><tr><td colspan="4" style="text-align:center;padding:28px;color:var(--text-light)">Loading...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
       </div>
 
 <!-- Doctors Tab -->
@@ -1080,6 +1220,18 @@ section{padding:90px 0}
         </div>
       </div>
 
+      </div><!-- close admin-main -->
+    </div><!-- close adminWrap -->
+  <!-- Mobile Bottom Nav -->
+  <nav id="adminBottomNav" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#0f1b2d;border-top:1px solid rgba(255,255,255,.15);z-index:996;flex-direction:row">
+    <button class="abn-item active" id="abn-dashboard" onclick="showAdminTab('dashboard');setAbn('dashboard')"><span class="abn-icon">🏠</span>Home</button>
+    <button class="abn-item" id="abn-appointments" onclick="showAdminTab('appointments');setAbn('appointments')"><span class="abn-icon">📅</span>Appts</button>
+    <button class="abn-item" id="abn-doctors" onclick="showAdminTab('doctors');setAbn('doctors')"><span class="abn-icon">👨‍⚕️</span>Doctors</button>
+    <button class="abn-item" id="abn-news" onclick="showAdminTab('news');setAbn('news')"><span class="abn-icon">📰</span>News</button>
+    <button class="abn-item" id="abn-menu" onclick="toggleSidebar()"><span class="abn-icon">☰</span>More</button>
+  </nav>
+</div><!-- close page-admin -->
+
 <!-- MODALS -->
 <div class="modal-overlay" id="apptModal">
   <div class="modal"><button class="modal-close" onclick="closeModal('apptModal')">✕</button><h3>Appointment Details</h3><div id="apptModalContent"></div></div>
@@ -1124,6 +1276,20 @@ section{padding:90px 0}
       <div class="form-group"><label>Icon (emoji)</label><input type="text" id="hmoIcon" placeholder="e.g. 💙" maxlength="4"/></div>
       <div class="form-group"><label>Description</label><input type="text" id="hmoDesc" placeholder="e.g. Accepted for all registered members"/></div>
       <div style="display:flex;gap:12px"><button type="submit" class="btn-admin" style="flex:1;padding:12px">💾 Save</button><button type="button" class="btn-admin sec" onclick="closeModal('hmoModal')" style="flex:1;padding:12px">Cancel</button></div>
+    </form>
+  </div>
+</div>
+<div class="modal-overlay" id="serviceModal">
+  <div class="modal"><button class="modal-close" onclick="closeModal('serviceModal')">✕</button><h3 id="serviceModalTitle">Add Service</h3>
+    <form id="serviceForm">
+      <input type="hidden" id="serviceId"/>
+      <div class="form-group"><label>Service Name *</label><input type="text" id="srvName" required placeholder="e.g. General Consultation"/></div>
+      <div class="form-group"><label>Icon (emoji)</label><input type="text" id="srvIcon" placeholder="e.g. 🩺" maxlength="4"/></div>
+      <div class="form-group"><label>Short Description *</label><textarea id="srvDesc" rows="2" required placeholder="Brief description..."></textarea></div>
+      <div class="form-group"><label>Image URL</label><input type="url" id="srvImg" placeholder="https://images.unsplash.com/..." oninput="document.getElementById('srvImgPrev').src=this.value"/></div>
+      <img id="srvImgPrev" src="" style="width:100%;height:130px;object-fit:cover;border-radius:10px;margin-bottom:12px;background:#e2e8f0;display:block"/>
+      <div class="form-group"><label>Bullet Points (one per line)</label><textarea id="srvBullets" rows="4" placeholder="Blood count tests&#10;HIV & malaria tests&#10;Hormonal profiles"></textarea></div>
+      <div style="display:flex;gap:12px"><button type="submit" class="btn-admin" style="flex:1;padding:12px">💾 Save Service</button><button type="button" class="btn-admin sec" onclick="closeModal('serviceModal')" style="flex:1;padding:12px">Cancel</button></div>
     </form>
   </div>
 </div>
@@ -1294,6 +1460,173 @@ async function loadAllSavedContent() {
 }
 loadAllSavedContent();
 
+
+// ===== SERVICES MANAGEMENT =====
+let allServices = [];
+const DEFAULT_SERVICES = [
+  {id:'s1',name:'General Consultation',icon:'🩺',desc:'Expert general practitioners for all health concerns.',img:'https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=500&q=80',bullets:'Adult & paediatric consultations\nChronic disease management\nPreventive care & checkups'},
+  {id:'s2',name:'Laboratory Services',icon:'🔬',desc:'Modern diagnostic laboratory for accurate test results.',img:'https://images.unsplash.com/photo-1581595220892-b0739db3ba8c?w=500&q=80',bullets:'Full blood count & haematology\nHIV, malaria, hepatitis tests\nBiochemistry & hormonal profiles'},
+  {id:'s3',name:'Pharmacy',icon:'💊',desc:'In-house pharmacy with genuine medications.',img:'https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=500&q=80',bullets:'Prescription dispensing\nOver-the-counter medications\nMedication counselling'},
+  {id:'s4',name:'Maternity & Obstetrics',icon:'🤱',desc:'Comprehensive maternal care from conception through delivery.',img:'https://images.unsplash.com/photo-1609220136736-443140cffec6?w=500&q=80',bullets:'Antenatal care & monitoring\nSafe delivery services\nPostnatal care & counselling'},
+  {id:'s5',name:'Emergency Care',icon:'🚑',desc:'24/7 emergency department for all medical emergencies.',img:'https://images.unsplash.com/photo-1504439904031-93ded9f93e4e?w=500&q=80',bullets:'Trauma & accident care\nResuscitation & stabilisation\nAmbulance coordination'},
+  {id:'s6',name:'Paediatrics',icon:'👶',desc:'Specialised healthcare for infants and children.',img:'https://images.unsplash.com/photo-1631815588090-d4bfec5b1ccb?w=500&q=80',bullets:'Child growth monitoring\nVaccination & immunisation\nNutritional counselling'},
+  {id:'s7',name:'Dental Services',icon:'🦷',desc:'Complete dental care for the whole family.',img:'https://images.unsplash.com/photo-1606811971618-4486d14f3f99?w=500&q=80',bullets:'Teeth cleaning & scaling\nCavity filling & extraction\nDental X-rays'},
+  {id:'s8',name:'Eye Care (Ophthalmology)',icon:'👁️',desc:'Comprehensive eye examinations for all ages.',img:'https://images.unsplash.com/photo-1559757175-5700dde675bc?w=500&q=80',bullets:'Vision testing & refraction\nGlaucoma screening\nCataract assessment'},
+  {id:'s9',name:'Radiology & Imaging',icon:'🏥',desc:'Modern X-ray and ultrasound imaging.',img:'https://images.unsplash.com/photo-1516069677018-378515003435?w=500&q=80',bullets:'Digital X-ray services\nObstetric ultrasound\nAbdominal scanning'},
+];
+
+function renderServicesOnSite(list) {
+  const srvList = list.length ? list : DEFAULT_SERVICES;
+  const cardHTML = srvList.map(s => {
+    const bullets = (s.bullets||'').split('\n').filter(b=>b.trim()).map(b=>`<li>${b.trim()}</li>`).join('');
+    return `<div class="srv-card">
+      <div class="srv-img-wrap"><img class="srv-img" src="${s.img||'https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=500&q=80'}" alt="" onerror="this.src='https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=500&q=80'"/></div>
+      <div class="srv-body"><div class="srv-icon">${s.icon||'🏥'}</div><h3>${s.name}</h3><p>${s.desc||''}</p>${bullets?`<ul class="srv-feats">${bullets}</ul>`:''}</div>
+    </div>`;
+  }).join('');
+  ['homeSrvGrid','fullSrvGrid'].forEach(id=>{const g=document.getElementById(id);if(g)g.innerHTML=cardHTML;});
+}
+
+function loadServicesTab() {
+  db.collection('services').orderBy('order').get().then(snap=>{
+    allServices = snap.docs.map(d=>({id:d.id,...d.data()}));
+    if(!allServices.length) allServices = [...DEFAULT_SERVICES];
+    renderSrvTable();
+    renderServicesOnSite(allServices);
+  }).catch(()=>{allServices=[...DEFAULT_SERVICES];renderSrvTable();});
+}
+
+function renderSrvTable() {
+  const tbody = document.getElementById('srv-body'); if(!tbody) return;
+  tbody.innerHTML = allServices.map((s,i) => `
+    <tr>
+      <td style="font-size:1.5rem">${s.icon||'🏥'}</td>
+      <td><strong>${s.name}</strong></td>
+      <td style="font-size:.82rem;color:var(--text-mid);max-width:200px">${(s.desc||'').slice(0,60)}...</td>
+      <td style="white-space:nowrap">
+        <button class="btn-admin sec" onclick="editService('${s.id}')" style="padding:5px 10px;font-size:.76rem;margin-right:4px">✏️ Edit</button>
+        <button class="btn-admin danger" onclick="deleteService('${s.id}')" style="padding:5px 10px;font-size:.76rem">🗑 Delete</button>
+      </td>
+    </tr>`).join('') || '<tr><td colspan="4" style="text-align:center;padding:28px;color:var(--text-light)">No services. Click "+ Add Service".</td></tr>';
+}
+
+function openServiceModal(id=null) {
+  document.getElementById('serviceModalTitle').textContent = id ? 'Edit Service' : 'Add Service';
+  document.getElementById('serviceId').value = id||'';
+  document.getElementById('serviceForm').reset();
+  document.getElementById('srvImgPrev').src='';
+  if(id) {
+    const s = allServices.find(x=>x.id===id)||{};
+    document.getElementById('srvName').value = s.name||'';
+    document.getElementById('srvIcon').value = s.icon||'';
+    document.getElementById('srvDesc').value = s.desc||'';
+    document.getElementById('srvImg').value = s.img||'';
+    document.getElementById('srvBullets').value = s.bullets||'';
+    if(s.img) document.getElementById('srvImgPrev').src = s.img;
+  }
+  document.getElementById('serviceModal').classList.add('open');
+}
+function editService(id){openServiceModal(id);}
+
+document.getElementById('serviceForm').addEventListener('submit', async e=>{
+  e.preventDefault();
+  const id = document.getElementById('serviceId').value;
+  const data = {
+    name:document.getElementById('srvName').value,
+    icon:document.getElementById('srvIcon').value,
+    desc:document.getElementById('srvDesc').value,
+    img:document.getElementById('srvImg').value,
+    bullets:document.getElementById('srvBullets').value,
+    order: id ? (allServices.find(x=>x.id===id)||{}).order||99 : allServices.length,
+    updatedAt:new Date().toISOString()
+  };
+  if(id && !id.startsWith('s')) {
+    await db.collection('services').doc(id).set(data);
+  } else {
+    data.createdAt = new Date().toISOString();
+    const ref = await db.collection('services').add(data);
+    data.id = ref.id;
+  }
+  closeModal('serviceModal');
+  await loadServicesTab();
+  showToast(id?'Service updated on website! ✅':'Service added to website! ✅');
+});
+
+async function deleteService(id) {
+  if(!confirm('Remove this service from the website?')) return;
+  if(!id.startsWith('s')) await db.collection('services').doc(id).delete();
+  allServices = allServices.filter(x=>x.id!==id);
+  renderSrvTable(); renderServicesOnSite(allServices);
+  showToast('Service removed.');
+}
+
+// Load services on site startup
+db.collection('services').orderBy('order').get().then(snap=>{
+  const list = snap.docs.map(d=>({id:d.id,...d.data()}));
+  if(list.length) { allServices=list; renderServicesOnSite(list); }
+  else renderServicesOnSite([]);
+}).catch(()=>renderServicesOnSite([]));
+
+// ===== LOAD HERO FIELDS when tab opened =====
+function loadHeroFields() {
+  db.collection('settings').doc('hero').get().then(snap=>{
+    if(!snap.exists) return;
+    const d = snap.data();
+    const map = {badge:'eh-badge',title:'eh-title',span:'eh-span',sub:'eh-sub',img:'eh-img',s1n:'eh-s1n',s1l:'eh-s1l',s2n:'eh-s2n',s2l:'eh-s2l',s3n:'eh-s3n',s3l:'eh-s3l'};
+    Object.entries(map).forEach(([k,elId])=>{const el=document.getElementById(elId);if(el&&d[k])el.value=d[k];});
+    if(d.img){const p=document.getElementById('eh-prev');if(p)p.src=d.img;}
+  }).catch(()=>{});
+}
+
+// ===== LOAD ABOUT FIELDS when tab opened =====
+function loadAboutFields() {
+  db.collection('settings').doc('about').get().then(snap=>{
+    if(!snap.exists) return;
+    const d = snap.data();
+    ['p1','p2','p3','p4'].forEach(k=>{const el=document.getElementById('ea-'+k);if(el&&d[k])el.value=d[k];});
+    if(d.aimg){const el=document.getElementById('ea-img');if(el)el.value=d.aimg;const p=document.getElementById('ea-prev');if(p)p.src=d.aimg;}
+    if(d.mission){const el=document.getElementById('ea-mission');if(el)el.value=d.mission;}
+    if(d.vision){const el=document.getElementById('ea-vision');if(el)el.value=d.vision;}
+    if(d.values){const el=document.getElementById('ea-values');if(el)el.value=d.values;}
+  }).catch(()=>{});
+}
+
+// ===== LOAD HMO TAB =====
+function loadHmoTab() {
+  db.collection('hmos').orderBy('createdAt','desc').get().then(snap=>{
+    allHmos = snap.docs.map(d=>({id:d.id,...d.data()}));
+    renderHmos();
+  }).catch(()=>renderHmos());
+}
+
+
+// ===== MOBILE ADMIN SIDEBAR =====
+function toggleSidebar() {
+  const sb = document.getElementById('adminSidebar');
+  const ov = document.getElementById('adminOverlay');
+  if(sb) sb.classList.toggle('open');
+  if(ov) { ov.style.display = ov.style.display==='block'?'none':'block'; }
+}
+function closeSidebar() {
+  const sb = document.getElementById('adminSidebar');
+  const ov = document.getElementById('adminOverlay');
+  if(sb) sb.classList.remove('open');
+  if(ov) ov.style.display='none';
+}
+function setAbn(name) {
+  document.querySelectorAll('.abn-item').forEach(b=>b.classList.remove('active'));
+  const el = document.getElementById('abn-'+name);
+  if(el) el.classList.add('active');
+  if(window.innerWidth<=768) closeSidebar();
+}
+// Auto-show mobile elements when on admin page
+function initAdminMobile() {
+  if(window.innerWidth<=768){
+    const tb=document.getElementById('adminMobileTopbar'); if(tb) tb.style.display='flex';
+    const bn=document.getElementById('adminBottomNav'); if(bn) bn.style.display='flex';
+  }
+}
+
 </script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js">
 // ===== HMO MANAGEMENT =====
@@ -1458,6 +1791,173 @@ async function loadAllSavedContent() {
   } catch(e){}
 }
 loadAllSavedContent();
+
+
+// ===== SERVICES MANAGEMENT =====
+let allServices = [];
+const DEFAULT_SERVICES = [
+  {id:'s1',name:'General Consultation',icon:'🩺',desc:'Expert general practitioners for all health concerns.',img:'https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=500&q=80',bullets:'Adult & paediatric consultations\nChronic disease management\nPreventive care & checkups'},
+  {id:'s2',name:'Laboratory Services',icon:'🔬',desc:'Modern diagnostic laboratory for accurate test results.',img:'https://images.unsplash.com/photo-1581595220892-b0739db3ba8c?w=500&q=80',bullets:'Full blood count & haematology\nHIV, malaria, hepatitis tests\nBiochemistry & hormonal profiles'},
+  {id:'s3',name:'Pharmacy',icon:'💊',desc:'In-house pharmacy with genuine medications.',img:'https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=500&q=80',bullets:'Prescription dispensing\nOver-the-counter medications\nMedication counselling'},
+  {id:'s4',name:'Maternity & Obstetrics',icon:'🤱',desc:'Comprehensive maternal care from conception through delivery.',img:'https://images.unsplash.com/photo-1609220136736-443140cffec6?w=500&q=80',bullets:'Antenatal care & monitoring\nSafe delivery services\nPostnatal care & counselling'},
+  {id:'s5',name:'Emergency Care',icon:'🚑',desc:'24/7 emergency department for all medical emergencies.',img:'https://images.unsplash.com/photo-1504439904031-93ded9f93e4e?w=500&q=80',bullets:'Trauma & accident care\nResuscitation & stabilisation\nAmbulance coordination'},
+  {id:'s6',name:'Paediatrics',icon:'👶',desc:'Specialised healthcare for infants and children.',img:'https://images.unsplash.com/photo-1631815588090-d4bfec5b1ccb?w=500&q=80',bullets:'Child growth monitoring\nVaccination & immunisation\nNutritional counselling'},
+  {id:'s7',name:'Dental Services',icon:'🦷',desc:'Complete dental care for the whole family.',img:'https://images.unsplash.com/photo-1606811971618-4486d14f3f99?w=500&q=80',bullets:'Teeth cleaning & scaling\nCavity filling & extraction\nDental X-rays'},
+  {id:'s8',name:'Eye Care (Ophthalmology)',icon:'👁️',desc:'Comprehensive eye examinations for all ages.',img:'https://images.unsplash.com/photo-1559757175-5700dde675bc?w=500&q=80',bullets:'Vision testing & refraction\nGlaucoma screening\nCataract assessment'},
+  {id:'s9',name:'Radiology & Imaging',icon:'🏥',desc:'Modern X-ray and ultrasound imaging.',img:'https://images.unsplash.com/photo-1516069677018-378515003435?w=500&q=80',bullets:'Digital X-ray services\nObstetric ultrasound\nAbdominal scanning'},
+];
+
+function renderServicesOnSite(list) {
+  const srvList = list.length ? list : DEFAULT_SERVICES;
+  const cardHTML = srvList.map(s => {
+    const bullets = (s.bullets||'').split('\n').filter(b=>b.trim()).map(b=>`<li>${b.trim()}</li>`).join('');
+    return `<div class="srv-card">
+      <div class="srv-img-wrap"><img class="srv-img" src="${s.img||'https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=500&q=80'}" alt="" onerror="this.src='https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=500&q=80'"/></div>
+      <div class="srv-body"><div class="srv-icon">${s.icon||'🏥'}</div><h3>${s.name}</h3><p>${s.desc||''}</p>${bullets?`<ul class="srv-feats">${bullets}</ul>`:''}</div>
+    </div>`;
+  }).join('');
+  ['homeSrvGrid','fullSrvGrid'].forEach(id=>{const g=document.getElementById(id);if(g)g.innerHTML=cardHTML;});
+}
+
+function loadServicesTab() {
+  db.collection('services').orderBy('order').get().then(snap=>{
+    allServices = snap.docs.map(d=>({id:d.id,...d.data()}));
+    if(!allServices.length) allServices = [...DEFAULT_SERVICES];
+    renderSrvTable();
+    renderServicesOnSite(allServices);
+  }).catch(()=>{allServices=[...DEFAULT_SERVICES];renderSrvTable();});
+}
+
+function renderSrvTable() {
+  const tbody = document.getElementById('srv-body'); if(!tbody) return;
+  tbody.innerHTML = allServices.map((s,i) => `
+    <tr>
+      <td style="font-size:1.5rem">${s.icon||'🏥'}</td>
+      <td><strong>${s.name}</strong></td>
+      <td style="font-size:.82rem;color:var(--text-mid);max-width:200px">${(s.desc||'').slice(0,60)}...</td>
+      <td style="white-space:nowrap">
+        <button class="btn-admin sec" onclick="editService('${s.id}')" style="padding:5px 10px;font-size:.76rem;margin-right:4px">✏️ Edit</button>
+        <button class="btn-admin danger" onclick="deleteService('${s.id}')" style="padding:5px 10px;font-size:.76rem">🗑 Delete</button>
+      </td>
+    </tr>`).join('') || '<tr><td colspan="4" style="text-align:center;padding:28px;color:var(--text-light)">No services. Click "+ Add Service".</td></tr>';
+}
+
+function openServiceModal(id=null) {
+  document.getElementById('serviceModalTitle').textContent = id ? 'Edit Service' : 'Add Service';
+  document.getElementById('serviceId').value = id||'';
+  document.getElementById('serviceForm').reset();
+  document.getElementById('srvImgPrev').src='';
+  if(id) {
+    const s = allServices.find(x=>x.id===id)||{};
+    document.getElementById('srvName').value = s.name||'';
+    document.getElementById('srvIcon').value = s.icon||'';
+    document.getElementById('srvDesc').value = s.desc||'';
+    document.getElementById('srvImg').value = s.img||'';
+    document.getElementById('srvBullets').value = s.bullets||'';
+    if(s.img) document.getElementById('srvImgPrev').src = s.img;
+  }
+  document.getElementById('serviceModal').classList.add('open');
+}
+function editService(id){openServiceModal(id);}
+
+document.getElementById('serviceForm').addEventListener('submit', async e=>{
+  e.preventDefault();
+  const id = document.getElementById('serviceId').value;
+  const data = {
+    name:document.getElementById('srvName').value,
+    icon:document.getElementById('srvIcon').value,
+    desc:document.getElementById('srvDesc').value,
+    img:document.getElementById('srvImg').value,
+    bullets:document.getElementById('srvBullets').value,
+    order: id ? (allServices.find(x=>x.id===id)||{}).order||99 : allServices.length,
+    updatedAt:new Date().toISOString()
+  };
+  if(id && !id.startsWith('s')) {
+    await db.collection('services').doc(id).set(data);
+  } else {
+    data.createdAt = new Date().toISOString();
+    const ref = await db.collection('services').add(data);
+    data.id = ref.id;
+  }
+  closeModal('serviceModal');
+  await loadServicesTab();
+  showToast(id?'Service updated on website! ✅':'Service added to website! ✅');
+});
+
+async function deleteService(id) {
+  if(!confirm('Remove this service from the website?')) return;
+  if(!id.startsWith('s')) await db.collection('services').doc(id).delete();
+  allServices = allServices.filter(x=>x.id!==id);
+  renderSrvTable(); renderServicesOnSite(allServices);
+  showToast('Service removed.');
+}
+
+// Load services on site startup
+db.collection('services').orderBy('order').get().then(snap=>{
+  const list = snap.docs.map(d=>({id:d.id,...d.data()}));
+  if(list.length) { allServices=list; renderServicesOnSite(list); }
+  else renderServicesOnSite([]);
+}).catch(()=>renderServicesOnSite([]));
+
+// ===== LOAD HERO FIELDS when tab opened =====
+function loadHeroFields() {
+  db.collection('settings').doc('hero').get().then(snap=>{
+    if(!snap.exists) return;
+    const d = snap.data();
+    const map = {badge:'eh-badge',title:'eh-title',span:'eh-span',sub:'eh-sub',img:'eh-img',s1n:'eh-s1n',s1l:'eh-s1l',s2n:'eh-s2n',s2l:'eh-s2l',s3n:'eh-s3n',s3l:'eh-s3l'};
+    Object.entries(map).forEach(([k,elId])=>{const el=document.getElementById(elId);if(el&&d[k])el.value=d[k];});
+    if(d.img){const p=document.getElementById('eh-prev');if(p)p.src=d.img;}
+  }).catch(()=>{});
+}
+
+// ===== LOAD ABOUT FIELDS when tab opened =====
+function loadAboutFields() {
+  db.collection('settings').doc('about').get().then(snap=>{
+    if(!snap.exists) return;
+    const d = snap.data();
+    ['p1','p2','p3','p4'].forEach(k=>{const el=document.getElementById('ea-'+k);if(el&&d[k])el.value=d[k];});
+    if(d.aimg){const el=document.getElementById('ea-img');if(el)el.value=d.aimg;const p=document.getElementById('ea-prev');if(p)p.src=d.aimg;}
+    if(d.mission){const el=document.getElementById('ea-mission');if(el)el.value=d.mission;}
+    if(d.vision){const el=document.getElementById('ea-vision');if(el)el.value=d.vision;}
+    if(d.values){const el=document.getElementById('ea-values');if(el)el.value=d.values;}
+  }).catch(()=>{});
+}
+
+// ===== LOAD HMO TAB =====
+function loadHmoTab() {
+  db.collection('hmos').orderBy('createdAt','desc').get().then(snap=>{
+    allHmos = snap.docs.map(d=>({id:d.id,...d.data()}));
+    renderHmos();
+  }).catch(()=>renderHmos());
+}
+
+
+// ===== MOBILE ADMIN SIDEBAR =====
+function toggleSidebar() {
+  const sb = document.getElementById('adminSidebar');
+  const ov = document.getElementById('adminOverlay');
+  if(sb) sb.classList.toggle('open');
+  if(ov) { ov.style.display = ov.style.display==='block'?'none':'block'; }
+}
+function closeSidebar() {
+  const sb = document.getElementById('adminSidebar');
+  const ov = document.getElementById('adminOverlay');
+  if(sb) sb.classList.remove('open');
+  if(ov) ov.style.display='none';
+}
+function setAbn(name) {
+  document.querySelectorAll('.abn-item').forEach(b=>b.classList.remove('active'));
+  const el = document.getElementById('abn-'+name);
+  if(el) el.classList.add('active');
+  if(window.innerWidth<=768) closeSidebar();
+}
+// Auto-show mobile elements when on admin page
+function initAdminMobile() {
+  if(window.innerWidth<=768){
+    const tb=document.getElementById('adminMobileTopbar'); if(tb) tb.style.display='flex';
+    const bn=document.getElementById('adminBottomNav'); if(bn) bn.style.display='flex';
+  }
+}
 
 </script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js">
@@ -1624,6 +2124,173 @@ async function loadAllSavedContent() {
 }
 loadAllSavedContent();
 
+
+// ===== SERVICES MANAGEMENT =====
+let allServices = [];
+const DEFAULT_SERVICES = [
+  {id:'s1',name:'General Consultation',icon:'🩺',desc:'Expert general practitioners for all health concerns.',img:'https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=500&q=80',bullets:'Adult & paediatric consultations\nChronic disease management\nPreventive care & checkups'},
+  {id:'s2',name:'Laboratory Services',icon:'🔬',desc:'Modern diagnostic laboratory for accurate test results.',img:'https://images.unsplash.com/photo-1581595220892-b0739db3ba8c?w=500&q=80',bullets:'Full blood count & haematology\nHIV, malaria, hepatitis tests\nBiochemistry & hormonal profiles'},
+  {id:'s3',name:'Pharmacy',icon:'💊',desc:'In-house pharmacy with genuine medications.',img:'https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=500&q=80',bullets:'Prescription dispensing\nOver-the-counter medications\nMedication counselling'},
+  {id:'s4',name:'Maternity & Obstetrics',icon:'🤱',desc:'Comprehensive maternal care from conception through delivery.',img:'https://images.unsplash.com/photo-1609220136736-443140cffec6?w=500&q=80',bullets:'Antenatal care & monitoring\nSafe delivery services\nPostnatal care & counselling'},
+  {id:'s5',name:'Emergency Care',icon:'🚑',desc:'24/7 emergency department for all medical emergencies.',img:'https://images.unsplash.com/photo-1504439904031-93ded9f93e4e?w=500&q=80',bullets:'Trauma & accident care\nResuscitation & stabilisation\nAmbulance coordination'},
+  {id:'s6',name:'Paediatrics',icon:'👶',desc:'Specialised healthcare for infants and children.',img:'https://images.unsplash.com/photo-1631815588090-d4bfec5b1ccb?w=500&q=80',bullets:'Child growth monitoring\nVaccination & immunisation\nNutritional counselling'},
+  {id:'s7',name:'Dental Services',icon:'🦷',desc:'Complete dental care for the whole family.',img:'https://images.unsplash.com/photo-1606811971618-4486d14f3f99?w=500&q=80',bullets:'Teeth cleaning & scaling\nCavity filling & extraction\nDental X-rays'},
+  {id:'s8',name:'Eye Care (Ophthalmology)',icon:'👁️',desc:'Comprehensive eye examinations for all ages.',img:'https://images.unsplash.com/photo-1559757175-5700dde675bc?w=500&q=80',bullets:'Vision testing & refraction\nGlaucoma screening\nCataract assessment'},
+  {id:'s9',name:'Radiology & Imaging',icon:'🏥',desc:'Modern X-ray and ultrasound imaging.',img:'https://images.unsplash.com/photo-1516069677018-378515003435?w=500&q=80',bullets:'Digital X-ray services\nObstetric ultrasound\nAbdominal scanning'},
+];
+
+function renderServicesOnSite(list) {
+  const srvList = list.length ? list : DEFAULT_SERVICES;
+  const cardHTML = srvList.map(s => {
+    const bullets = (s.bullets||'').split('\n').filter(b=>b.trim()).map(b=>`<li>${b.trim()}</li>`).join('');
+    return `<div class="srv-card">
+      <div class="srv-img-wrap"><img class="srv-img" src="${s.img||'https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=500&q=80'}" alt="" onerror="this.src='https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=500&q=80'"/></div>
+      <div class="srv-body"><div class="srv-icon">${s.icon||'🏥'}</div><h3>${s.name}</h3><p>${s.desc||''}</p>${bullets?`<ul class="srv-feats">${bullets}</ul>`:''}</div>
+    </div>`;
+  }).join('');
+  ['homeSrvGrid','fullSrvGrid'].forEach(id=>{const g=document.getElementById(id);if(g)g.innerHTML=cardHTML;});
+}
+
+function loadServicesTab() {
+  db.collection('services').orderBy('order').get().then(snap=>{
+    allServices = snap.docs.map(d=>({id:d.id,...d.data()}));
+    if(!allServices.length) allServices = [...DEFAULT_SERVICES];
+    renderSrvTable();
+    renderServicesOnSite(allServices);
+  }).catch(()=>{allServices=[...DEFAULT_SERVICES];renderSrvTable();});
+}
+
+function renderSrvTable() {
+  const tbody = document.getElementById('srv-body'); if(!tbody) return;
+  tbody.innerHTML = allServices.map((s,i) => `
+    <tr>
+      <td style="font-size:1.5rem">${s.icon||'🏥'}</td>
+      <td><strong>${s.name}</strong></td>
+      <td style="font-size:.82rem;color:var(--text-mid);max-width:200px">${(s.desc||'').slice(0,60)}...</td>
+      <td style="white-space:nowrap">
+        <button class="btn-admin sec" onclick="editService('${s.id}')" style="padding:5px 10px;font-size:.76rem;margin-right:4px">✏️ Edit</button>
+        <button class="btn-admin danger" onclick="deleteService('${s.id}')" style="padding:5px 10px;font-size:.76rem">🗑 Delete</button>
+      </td>
+    </tr>`).join('') || '<tr><td colspan="4" style="text-align:center;padding:28px;color:var(--text-light)">No services. Click "+ Add Service".</td></tr>';
+}
+
+function openServiceModal(id=null) {
+  document.getElementById('serviceModalTitle').textContent = id ? 'Edit Service' : 'Add Service';
+  document.getElementById('serviceId').value = id||'';
+  document.getElementById('serviceForm').reset();
+  document.getElementById('srvImgPrev').src='';
+  if(id) {
+    const s = allServices.find(x=>x.id===id)||{};
+    document.getElementById('srvName').value = s.name||'';
+    document.getElementById('srvIcon').value = s.icon||'';
+    document.getElementById('srvDesc').value = s.desc||'';
+    document.getElementById('srvImg').value = s.img||'';
+    document.getElementById('srvBullets').value = s.bullets||'';
+    if(s.img) document.getElementById('srvImgPrev').src = s.img;
+  }
+  document.getElementById('serviceModal').classList.add('open');
+}
+function editService(id){openServiceModal(id);}
+
+document.getElementById('serviceForm').addEventListener('submit', async e=>{
+  e.preventDefault();
+  const id = document.getElementById('serviceId').value;
+  const data = {
+    name:document.getElementById('srvName').value,
+    icon:document.getElementById('srvIcon').value,
+    desc:document.getElementById('srvDesc').value,
+    img:document.getElementById('srvImg').value,
+    bullets:document.getElementById('srvBullets').value,
+    order: id ? (allServices.find(x=>x.id===id)||{}).order||99 : allServices.length,
+    updatedAt:new Date().toISOString()
+  };
+  if(id && !id.startsWith('s')) {
+    await db.collection('services').doc(id).set(data);
+  } else {
+    data.createdAt = new Date().toISOString();
+    const ref = await db.collection('services').add(data);
+    data.id = ref.id;
+  }
+  closeModal('serviceModal');
+  await loadServicesTab();
+  showToast(id?'Service updated on website! ✅':'Service added to website! ✅');
+});
+
+async function deleteService(id) {
+  if(!confirm('Remove this service from the website?')) return;
+  if(!id.startsWith('s')) await db.collection('services').doc(id).delete();
+  allServices = allServices.filter(x=>x.id!==id);
+  renderSrvTable(); renderServicesOnSite(allServices);
+  showToast('Service removed.');
+}
+
+// Load services on site startup
+db.collection('services').orderBy('order').get().then(snap=>{
+  const list = snap.docs.map(d=>({id:d.id,...d.data()}));
+  if(list.length) { allServices=list; renderServicesOnSite(list); }
+  else renderServicesOnSite([]);
+}).catch(()=>renderServicesOnSite([]));
+
+// ===== LOAD HERO FIELDS when tab opened =====
+function loadHeroFields() {
+  db.collection('settings').doc('hero').get().then(snap=>{
+    if(!snap.exists) return;
+    const d = snap.data();
+    const map = {badge:'eh-badge',title:'eh-title',span:'eh-span',sub:'eh-sub',img:'eh-img',s1n:'eh-s1n',s1l:'eh-s1l',s2n:'eh-s2n',s2l:'eh-s2l',s3n:'eh-s3n',s3l:'eh-s3l'};
+    Object.entries(map).forEach(([k,elId])=>{const el=document.getElementById(elId);if(el&&d[k])el.value=d[k];});
+    if(d.img){const p=document.getElementById('eh-prev');if(p)p.src=d.img;}
+  }).catch(()=>{});
+}
+
+// ===== LOAD ABOUT FIELDS when tab opened =====
+function loadAboutFields() {
+  db.collection('settings').doc('about').get().then(snap=>{
+    if(!snap.exists) return;
+    const d = snap.data();
+    ['p1','p2','p3','p4'].forEach(k=>{const el=document.getElementById('ea-'+k);if(el&&d[k])el.value=d[k];});
+    if(d.aimg){const el=document.getElementById('ea-img');if(el)el.value=d.aimg;const p=document.getElementById('ea-prev');if(p)p.src=d.aimg;}
+    if(d.mission){const el=document.getElementById('ea-mission');if(el)el.value=d.mission;}
+    if(d.vision){const el=document.getElementById('ea-vision');if(el)el.value=d.vision;}
+    if(d.values){const el=document.getElementById('ea-values');if(el)el.value=d.values;}
+  }).catch(()=>{});
+}
+
+// ===== LOAD HMO TAB =====
+function loadHmoTab() {
+  db.collection('hmos').orderBy('createdAt','desc').get().then(snap=>{
+    allHmos = snap.docs.map(d=>({id:d.id,...d.data()}));
+    renderHmos();
+  }).catch(()=>renderHmos());
+}
+
+
+// ===== MOBILE ADMIN SIDEBAR =====
+function toggleSidebar() {
+  const sb = document.getElementById('adminSidebar');
+  const ov = document.getElementById('adminOverlay');
+  if(sb) sb.classList.toggle('open');
+  if(ov) { ov.style.display = ov.style.display==='block'?'none':'block'; }
+}
+function closeSidebar() {
+  const sb = document.getElementById('adminSidebar');
+  const ov = document.getElementById('adminOverlay');
+  if(sb) sb.classList.remove('open');
+  if(ov) ov.style.display='none';
+}
+function setAbn(name) {
+  document.querySelectorAll('.abn-item').forEach(b=>b.classList.remove('active'));
+  const el = document.getElementById('abn-'+name);
+  if(el) el.classList.add('active');
+  if(window.innerWidth<=768) closeSidebar();
+}
+// Auto-show mobile elements when on admin page
+function initAdminMobile() {
+  if(window.innerWidth<=768){
+    const tb=document.getElementById('adminMobileTopbar'); if(tb) tb.style.display='flex';
+    const bn=document.getElementById('adminBottomNav'); if(bn) bn.style.display='flex';
+  }
+}
+
 </script>
 <script>
 // =====================
@@ -1650,13 +2317,13 @@ function showPage(name) {
   if (target) target.classList.add('active');
   currentPage = name;
   window.scrollTo(0,0);
-  document.getElementById('navLinks').classList.remove('open');
+  document.getElementById('navLinks').classList.remove('open'); document.getElementById('hamburger').innerHTML='<span></span><span></span><span></span>';
   // Update active nav
   document.querySelectorAll('.nav-links a[data-page]').forEach(a => {
     a.classList.toggle('active', a.dataset.page === name);
   });
   // Load admin data when entering admin
-  if (name === 'admin') loadAdminData();
+  if (name === 'admin') { loadAdminData(); initAdminMobile(); }
 }
 
 // =====================
@@ -1665,8 +2332,29 @@ function showPage(name) {
 window.addEventListener('scroll', () => {
   document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 40);
 });
-document.getElementById('hamburger').addEventListener('click', () => {
-  document.getElementById('navLinks').classList.toggle('open');
+// Hamburger menu toggle
+const hamburgerBtn = document.getElementById('hamburger');
+const navLinksEl = document.getElementById('navLinks');
+hamburgerBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  const isOpen = navLinksEl.classList.toggle('open');
+  hamburgerBtn.innerHTML = isOpen
+    ? '<span style="transform:rotate(45deg) translate(5px,5px);display:block;width:24px;height:2px;background:var(--primary);border-radius:2px"></span><span style="opacity:0;display:block;width:24px;height:2px;background:var(--primary);border-radius:2px"></span><span style="transform:rotate(-45deg) translate(5px,-5px);display:block;width:24px;height:2px;background:var(--primary);border-radius:2px"></span>'
+    : '<span></span><span></span><span></span>';
+});
+// Close menu when a nav link is tapped
+document.querySelectorAll('#navLinks a').forEach(a => {
+  a.addEventListener('click', () => {
+    navLinksEl.classList.remove('open');
+    hamburgerBtn.innerHTML = '<span></span><span></span><span></span>';
+  });
+});
+// Close menu when clicking outside
+document.addEventListener('click', (e) => {
+  if (!navLinksEl.contains(e.target) && !hamburgerBtn.contains(e.target)) {
+    navLinksEl.classList.remove('open');
+    hamburgerBtn.innerHTML = '<span></span><span></span><span></span>';
+  }
 });
 
 // =====================
@@ -1812,8 +2500,10 @@ function adminLogout() {
 // ADMIN TABS
 // =====================
 function showAdminTab(name) {
-  ['dashboard','appointments','doctors','news','messages','settings'].forEach(t => {
-    document.getElementById('atab-' + t).style.display = t === name ? 'block' : 'none';
+  const ALL = ['dashboard','hero','about-edit','services-edit','doctors','news','hmo','appointments','messages','settings'];
+  ALL.forEach(t => {
+    const el = document.getElementById('atab-' + t);
+    if(el) el.style.display = t === name ? 'block' : 'none';
     const sb = document.getElementById('stab-' + t);
     if(sb) sb.classList.toggle('active', t === name);
   });
@@ -1821,7 +2511,11 @@ function showAdminTab(name) {
   if(name === 'doctors') renderDocs();
   if(name === 'news') renderNews();
   if(name === 'messages') renderMsgs();
+  if(name === 'hmo') loadHmoTab();
   if(name === 'settings') loadSiteSettings();
+  if(name === 'hero') loadHeroFields();
+  if(name === 'about-edit') loadAboutFields();
+  if(name === 'services-edit') loadServicesTab();
 }
 
 // =====================
@@ -2277,6 +2971,173 @@ async function loadAllSavedContent() {
   } catch(e){}
 }
 loadAllSavedContent();
+
+
+// ===== SERVICES MANAGEMENT =====
+let allServices = [];
+const DEFAULT_SERVICES = [
+  {id:'s1',name:'General Consultation',icon:'🩺',desc:'Expert general practitioners for all health concerns.',img:'https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=500&q=80',bullets:'Adult & paediatric consultations\nChronic disease management\nPreventive care & checkups'},
+  {id:'s2',name:'Laboratory Services',icon:'🔬',desc:'Modern diagnostic laboratory for accurate test results.',img:'https://images.unsplash.com/photo-1581595220892-b0739db3ba8c?w=500&q=80',bullets:'Full blood count & haematology\nHIV, malaria, hepatitis tests\nBiochemistry & hormonal profiles'},
+  {id:'s3',name:'Pharmacy',icon:'💊',desc:'In-house pharmacy with genuine medications.',img:'https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=500&q=80',bullets:'Prescription dispensing\nOver-the-counter medications\nMedication counselling'},
+  {id:'s4',name:'Maternity & Obstetrics',icon:'🤱',desc:'Comprehensive maternal care from conception through delivery.',img:'https://images.unsplash.com/photo-1609220136736-443140cffec6?w=500&q=80',bullets:'Antenatal care & monitoring\nSafe delivery services\nPostnatal care & counselling'},
+  {id:'s5',name:'Emergency Care',icon:'🚑',desc:'24/7 emergency department for all medical emergencies.',img:'https://images.unsplash.com/photo-1504439904031-93ded9f93e4e?w=500&q=80',bullets:'Trauma & accident care\nResuscitation & stabilisation\nAmbulance coordination'},
+  {id:'s6',name:'Paediatrics',icon:'👶',desc:'Specialised healthcare for infants and children.',img:'https://images.unsplash.com/photo-1631815588090-d4bfec5b1ccb?w=500&q=80',bullets:'Child growth monitoring\nVaccination & immunisation\nNutritional counselling'},
+  {id:'s7',name:'Dental Services',icon:'🦷',desc:'Complete dental care for the whole family.',img:'https://images.unsplash.com/photo-1606811971618-4486d14f3f99?w=500&q=80',bullets:'Teeth cleaning & scaling\nCavity filling & extraction\nDental X-rays'},
+  {id:'s8',name:'Eye Care (Ophthalmology)',icon:'👁️',desc:'Comprehensive eye examinations for all ages.',img:'https://images.unsplash.com/photo-1559757175-5700dde675bc?w=500&q=80',bullets:'Vision testing & refraction\nGlaucoma screening\nCataract assessment'},
+  {id:'s9',name:'Radiology & Imaging',icon:'🏥',desc:'Modern X-ray and ultrasound imaging.',img:'https://images.unsplash.com/photo-1516069677018-378515003435?w=500&q=80',bullets:'Digital X-ray services\nObstetric ultrasound\nAbdominal scanning'},
+];
+
+function renderServicesOnSite(list) {
+  const srvList = list.length ? list : DEFAULT_SERVICES;
+  const cardHTML = srvList.map(s => {
+    const bullets = (s.bullets||'').split('\n').filter(b=>b.trim()).map(b=>`<li>${b.trim()}</li>`).join('');
+    return `<div class="srv-card">
+      <div class="srv-img-wrap"><img class="srv-img" src="${s.img||'https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=500&q=80'}" alt="" onerror="this.src='https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=500&q=80'"/></div>
+      <div class="srv-body"><div class="srv-icon">${s.icon||'🏥'}</div><h3>${s.name}</h3><p>${s.desc||''}</p>${bullets?`<ul class="srv-feats">${bullets}</ul>`:''}</div>
+    </div>`;
+  }).join('');
+  ['homeSrvGrid','fullSrvGrid'].forEach(id=>{const g=document.getElementById(id);if(g)g.innerHTML=cardHTML;});
+}
+
+function loadServicesTab() {
+  db.collection('services').orderBy('order').get().then(snap=>{
+    allServices = snap.docs.map(d=>({id:d.id,...d.data()}));
+    if(!allServices.length) allServices = [...DEFAULT_SERVICES];
+    renderSrvTable();
+    renderServicesOnSite(allServices);
+  }).catch(()=>{allServices=[...DEFAULT_SERVICES];renderSrvTable();});
+}
+
+function renderSrvTable() {
+  const tbody = document.getElementById('srv-body'); if(!tbody) return;
+  tbody.innerHTML = allServices.map((s,i) => `
+    <tr>
+      <td style="font-size:1.5rem">${s.icon||'🏥'}</td>
+      <td><strong>${s.name}</strong></td>
+      <td style="font-size:.82rem;color:var(--text-mid);max-width:200px">${(s.desc||'').slice(0,60)}...</td>
+      <td style="white-space:nowrap">
+        <button class="btn-admin sec" onclick="editService('${s.id}')" style="padding:5px 10px;font-size:.76rem;margin-right:4px">✏️ Edit</button>
+        <button class="btn-admin danger" onclick="deleteService('${s.id}')" style="padding:5px 10px;font-size:.76rem">🗑 Delete</button>
+      </td>
+    </tr>`).join('') || '<tr><td colspan="4" style="text-align:center;padding:28px;color:var(--text-light)">No services. Click "+ Add Service".</td></tr>';
+}
+
+function openServiceModal(id=null) {
+  document.getElementById('serviceModalTitle').textContent = id ? 'Edit Service' : 'Add Service';
+  document.getElementById('serviceId').value = id||'';
+  document.getElementById('serviceForm').reset();
+  document.getElementById('srvImgPrev').src='';
+  if(id) {
+    const s = allServices.find(x=>x.id===id)||{};
+    document.getElementById('srvName').value = s.name||'';
+    document.getElementById('srvIcon').value = s.icon||'';
+    document.getElementById('srvDesc').value = s.desc||'';
+    document.getElementById('srvImg').value = s.img||'';
+    document.getElementById('srvBullets').value = s.bullets||'';
+    if(s.img) document.getElementById('srvImgPrev').src = s.img;
+  }
+  document.getElementById('serviceModal').classList.add('open');
+}
+function editService(id){openServiceModal(id);}
+
+document.getElementById('serviceForm').addEventListener('submit', async e=>{
+  e.preventDefault();
+  const id = document.getElementById('serviceId').value;
+  const data = {
+    name:document.getElementById('srvName').value,
+    icon:document.getElementById('srvIcon').value,
+    desc:document.getElementById('srvDesc').value,
+    img:document.getElementById('srvImg').value,
+    bullets:document.getElementById('srvBullets').value,
+    order: id ? (allServices.find(x=>x.id===id)||{}).order||99 : allServices.length,
+    updatedAt:new Date().toISOString()
+  };
+  if(id && !id.startsWith('s')) {
+    await db.collection('services').doc(id).set(data);
+  } else {
+    data.createdAt = new Date().toISOString();
+    const ref = await db.collection('services').add(data);
+    data.id = ref.id;
+  }
+  closeModal('serviceModal');
+  await loadServicesTab();
+  showToast(id?'Service updated on website! ✅':'Service added to website! ✅');
+});
+
+async function deleteService(id) {
+  if(!confirm('Remove this service from the website?')) return;
+  if(!id.startsWith('s')) await db.collection('services').doc(id).delete();
+  allServices = allServices.filter(x=>x.id!==id);
+  renderSrvTable(); renderServicesOnSite(allServices);
+  showToast('Service removed.');
+}
+
+// Load services on site startup
+db.collection('services').orderBy('order').get().then(snap=>{
+  const list = snap.docs.map(d=>({id:d.id,...d.data()}));
+  if(list.length) { allServices=list; renderServicesOnSite(list); }
+  else renderServicesOnSite([]);
+}).catch(()=>renderServicesOnSite([]));
+
+// ===== LOAD HERO FIELDS when tab opened =====
+function loadHeroFields() {
+  db.collection('settings').doc('hero').get().then(snap=>{
+    if(!snap.exists) return;
+    const d = snap.data();
+    const map = {badge:'eh-badge',title:'eh-title',span:'eh-span',sub:'eh-sub',img:'eh-img',s1n:'eh-s1n',s1l:'eh-s1l',s2n:'eh-s2n',s2l:'eh-s2l',s3n:'eh-s3n',s3l:'eh-s3l'};
+    Object.entries(map).forEach(([k,elId])=>{const el=document.getElementById(elId);if(el&&d[k])el.value=d[k];});
+    if(d.img){const p=document.getElementById('eh-prev');if(p)p.src=d.img;}
+  }).catch(()=>{});
+}
+
+// ===== LOAD ABOUT FIELDS when tab opened =====
+function loadAboutFields() {
+  db.collection('settings').doc('about').get().then(snap=>{
+    if(!snap.exists) return;
+    const d = snap.data();
+    ['p1','p2','p3','p4'].forEach(k=>{const el=document.getElementById('ea-'+k);if(el&&d[k])el.value=d[k];});
+    if(d.aimg){const el=document.getElementById('ea-img');if(el)el.value=d.aimg;const p=document.getElementById('ea-prev');if(p)p.src=d.aimg;}
+    if(d.mission){const el=document.getElementById('ea-mission');if(el)el.value=d.mission;}
+    if(d.vision){const el=document.getElementById('ea-vision');if(el)el.value=d.vision;}
+    if(d.values){const el=document.getElementById('ea-values');if(el)el.value=d.values;}
+  }).catch(()=>{});
+}
+
+// ===== LOAD HMO TAB =====
+function loadHmoTab() {
+  db.collection('hmos').orderBy('createdAt','desc').get().then(snap=>{
+    allHmos = snap.docs.map(d=>({id:d.id,...d.data()}));
+    renderHmos();
+  }).catch(()=>renderHmos());
+}
+
+
+// ===== MOBILE ADMIN SIDEBAR =====
+function toggleSidebar() {
+  const sb = document.getElementById('adminSidebar');
+  const ov = document.getElementById('adminOverlay');
+  if(sb) sb.classList.toggle('open');
+  if(ov) { ov.style.display = ov.style.display==='block'?'none':'block'; }
+}
+function closeSidebar() {
+  const sb = document.getElementById('adminSidebar');
+  const ov = document.getElementById('adminOverlay');
+  if(sb) sb.classList.remove('open');
+  if(ov) ov.style.display='none';
+}
+function setAbn(name) {
+  document.querySelectorAll('.abn-item').forEach(b=>b.classList.remove('active'));
+  const el = document.getElementById('abn-'+name);
+  if(el) el.classList.add('active');
+  if(window.innerWidth<=768) closeSidebar();
+}
+// Auto-show mobile elements when on admin page
+function initAdminMobile() {
+  if(window.innerWidth<=768){
+    const tb=document.getElementById('adminMobileTopbar'); if(tb) tb.style.display='flex';
+    const bn=document.getElementById('adminBottomNav'); if(bn) bn.style.display='flex';
+  }
+}
 
 </script>
 </body>
