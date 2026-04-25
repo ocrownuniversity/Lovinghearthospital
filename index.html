@@ -795,11 +795,7 @@ section{padding:90px 0}
   <section>
     <div class="container">
       <div class="sec-head"><p class="label">Medical Team</p><h2 class="sec-title">Expert Doctors, Caring Hearts</h2><p class="sec-desc">Our physicians combine years of medical training with genuine compassion to deliver the best care.</p></div>
-      <div class="doc-grid" id="doctorsDisplay">
-        <div class="doc-card"><img src="https://images.unsplash.com/photo-1614608682850-e0d6ed316d47?w=500&q=80" class="doc-photo" alt="Dr. Adaeze Okonkwo" style="object-position:top"/><div class="doc-body"><h4>Dr. Adaeze Okonkwo</h4><span class="doc-spec">General Physician & Medical Director</span><p class="doc-bio">MBBS, FWACP. Over 16 years of clinical experience in internal medicine, primary care and hospital administration.</p></div></div>
-        <div class="doc-card"><img src="https://images.unsplash.com/photo-1559839914-17aae19cec71?w=500&q=80" class="doc-photo" alt="Dr. Emeka Nwosu" style="object-position:top"/><div class="doc-body"><h4>Dr. Emeka Nwosu</h4><span class="doc-spec">Obstetrician & Gynaecologist</span><p class="doc-bio">MBBS, FMCOG. Specialises in maternal-fetal medicine with over 12 years of compassionate care experience.</p></div></div>
-        <div class="doc-card"><img src="https://images.unsplash.com/photo-1651008376811-b90baee60c1f?w=500&q=80" class="doc-photo" alt="Dr. Fatima Bello" style="object-position:top"/><div class="doc-body"><h4>Dr. Fatima Bello</h4><span class="doc-spec">Paediatrician</span><p class="doc-bio">MBBS, FMCPaed. Dedicated to the health and development of children from newborns to adolescents.</p></div></div>
-      </div>
+      <div class="doc-grid" id="doctorsDisplay"><div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-light)"><div style="font-size:2rem;margin-bottom:12px">👨‍⚕️</div><p>Loading doctors...</p></div></div>
       <div class="center"><button class="btn btn-primary" onclick="showPage('appointment')">Book an Appointment</button></div>
     </div>
   </section>
@@ -1628,6 +1624,50 @@ function initAdminMobile() {
   }
 }
 
+
+// ═══════════════════════════════════════════
+// DOCTORS — full management
+// ═══════════════════════════════════════════
+
+function renderDoctorsOnSite(docs) {
+  const grid = document.getElementById('doctorsDisplay');
+  if (!grid) return;
+  if (!docs || docs.length === 0) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--text-light)"><div style="font-size:3rem;margin-bottom:16px">👨‍⚕️</div><h3 style="font-family:var(--serif);margin-bottom:8px;color:var(--text)">No Doctors Added Yet</h3><p style="font-size:.9rem">Doctors added from the Admin Panel will appear here.</p></div>';
+    return;
+  }
+  grid.innerHTML = docs.map(d => `
+    <div class="doc-card">
+      <img src="${d.photo||''}" class="doc-photo" alt="${d.name||''}"
+        style="object-position:top"
+        onerror="this.style.display='none';this.nextElementSibling.querySelector('.doc-avatar').style.display='flex'"
+      />
+      <div class="doc-body">
+        <div class="doc-avatar" style="display:none;width:80px;height:80px;background:linear-gradient(135deg,var(--primary),var(--green));border-radius:50%;margin:0 auto 14px;align-items:center;justify-content:center;font-size:2rem;color:#fff">👤</div>
+        <h4>${d.name||'Doctor'}</h4>
+        <span class="doc-spec">${d.specialization||''}</span>
+        <p class="doc-bio">${d.bio||''}</p>
+        ${d.qualifications ? `<p style="font-size:.76rem;color:var(--text-light);margin-top:6px">${d.qualifications}</p>` : ''}
+      </div>
+    </div>`).join('');
+}
+
+// Load doctors from Firebase when page opens
+async function loadDoctorsOnSite() {
+  try {
+    const snap = await db.collection('doctors').orderBy('createdAt','asc').get();
+    const docs = snap.docs.map(d => ({id: d.id, ...d.data()}));
+    renderDoctorsOnSite(docs);
+    return docs;
+  } catch(e) {
+    console.log('Doctors load error:', e);
+    renderDoctorsOnSite([]);
+    return [];
+  }
+}
+// Call immediately on page load
+
+
 </script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js">
 // ===== HMO MANAGEMENT =====
@@ -1964,6 +2004,50 @@ function initAdminMobile() {
   }
 }
 
+
+// ═══════════════════════════════════════════
+// DOCTORS — full management
+// ═══════════════════════════════════════════
+
+function renderDoctorsOnSite(docs) {
+  const grid = document.getElementById('doctorsDisplay');
+  if (!grid) return;
+  if (!docs || docs.length === 0) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--text-light)"><div style="font-size:3rem;margin-bottom:16px">👨‍⚕️</div><h3 style="font-family:var(--serif);margin-bottom:8px;color:var(--text)">No Doctors Added Yet</h3><p style="font-size:.9rem">Doctors added from the Admin Panel will appear here.</p></div>';
+    return;
+  }
+  grid.innerHTML = docs.map(d => `
+    <div class="doc-card">
+      <img src="${d.photo||''}" class="doc-photo" alt="${d.name||''}"
+        style="object-position:top"
+        onerror="this.style.display='none';this.nextElementSibling.querySelector('.doc-avatar').style.display='flex'"
+      />
+      <div class="doc-body">
+        <div class="doc-avatar" style="display:none;width:80px;height:80px;background:linear-gradient(135deg,var(--primary),var(--green));border-radius:50%;margin:0 auto 14px;align-items:center;justify-content:center;font-size:2rem;color:#fff">👤</div>
+        <h4>${d.name||'Doctor'}</h4>
+        <span class="doc-spec">${d.specialization||''}</span>
+        <p class="doc-bio">${d.bio||''}</p>
+        ${d.qualifications ? `<p style="font-size:.76rem;color:var(--text-light);margin-top:6px">${d.qualifications}</p>` : ''}
+      </div>
+    </div>`).join('');
+}
+
+// Load doctors from Firebase when page opens
+async function loadDoctorsOnSite() {
+  try {
+    const snap = await db.collection('doctors').orderBy('createdAt','asc').get();
+    const docs = snap.docs.map(d => ({id: d.id, ...d.data()}));
+    renderDoctorsOnSite(docs);
+    return docs;
+  } catch(e) {
+    console.log('Doctors load error:', e);
+    renderDoctorsOnSite([]);
+    return [];
+  }
+}
+// Call immediately on page load
+
+
 </script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js">
 // ===== HMO MANAGEMENT =====
@@ -2299,6 +2383,50 @@ function initAdminMobile() {
     const bn=document.getElementById('adminBottomNav'); if(bn) bn.style.display='flex';
   }
 }
+
+
+// ═══════════════════════════════════════════
+// DOCTORS — full management
+// ═══════════════════════════════════════════
+
+function renderDoctorsOnSite(docs) {
+  const grid = document.getElementById('doctorsDisplay');
+  if (!grid) return;
+  if (!docs || docs.length === 0) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--text-light)"><div style="font-size:3rem;margin-bottom:16px">👨‍⚕️</div><h3 style="font-family:var(--serif);margin-bottom:8px;color:var(--text)">No Doctors Added Yet</h3><p style="font-size:.9rem">Doctors added from the Admin Panel will appear here.</p></div>';
+    return;
+  }
+  grid.innerHTML = docs.map(d => `
+    <div class="doc-card">
+      <img src="${d.photo||''}" class="doc-photo" alt="${d.name||''}"
+        style="object-position:top"
+        onerror="this.style.display='none';this.nextElementSibling.querySelector('.doc-avatar').style.display='flex'"
+      />
+      <div class="doc-body">
+        <div class="doc-avatar" style="display:none;width:80px;height:80px;background:linear-gradient(135deg,var(--primary),var(--green));border-radius:50%;margin:0 auto 14px;align-items:center;justify-content:center;font-size:2rem;color:#fff">👤</div>
+        <h4>${d.name||'Doctor'}</h4>
+        <span class="doc-spec">${d.specialization||''}</span>
+        <p class="doc-bio">${d.bio||''}</p>
+        ${d.qualifications ? `<p style="font-size:.76rem;color:var(--text-light);margin-top:6px">${d.qualifications}</p>` : ''}
+      </div>
+    </div>`).join('');
+}
+
+// Load doctors from Firebase when page opens
+async function loadDoctorsOnSite() {
+  try {
+    const snap = await db.collection('doctors').orderBy('createdAt','asc').get();
+    const docs = snap.docs.map(d => ({id: d.id, ...d.data()}));
+    renderDoctorsOnSite(docs);
+    return docs;
+  } catch(e) {
+    console.log('Doctors load error:', e);
+    renderDoctorsOnSite([]);
+    return [];
+  }
+}
+// Call immediately on page load
+
 
 </script>
 <script>
@@ -2647,23 +2775,45 @@ function editDoc(id){openDocModal(id);}
 
 document.getElementById('docForm').addEventListener('submit', async e => {
   e.preventDefault();
+  const btn = e.submitter || e.target.querySelector('button[type=submit]');
+  if(btn){btn.textContent='Saving...';btn.disabled=true;}
   const id = document.getElementById('docId').value;
-  const data = {name:document.getElementById('docName').value,specialization:document.getElementById('docSpec').value,qualifications:document.getElementById('docQual').value,photo:document.getElementById('docPhoto').value,bio:document.getElementById('docBio').value,updatedAt:new Date().toISOString()};
-  if(id){await db.collection('doctors').doc(id).update(data);}
-  else{data.createdAt=new Date().toISOString();await db.collection('doctors').add(data);}
-  closeModal('docModal');
-  const snap=await db.collection('doctors').orderBy('createdAt','desc').get();
-  allDocs=snap.docs.map(d=>({id:d.id,...d.data()}));
-  renderDocs(); document.getElementById('ds-docs').textContent=allDocs.length;
-  showToast(id?'Doctor updated!':'Doctor added!');
+  const data = {
+    name: document.getElementById('docName').value.trim(),
+    specialization: document.getElementById('docSpec').value.trim(),
+    qualifications: document.getElementById('docQual').value.trim(),
+    photo: document.getElementById('docPhoto').value.trim(),
+    bio: document.getElementById('docBio').value.trim(),
+    updatedAt: new Date().toISOString()
+  };
+  try {
+    if(id){ await db.collection('doctors').doc(id).update(data); }
+    else { data.createdAt = new Date().toISOString(); await db.collection('doctors').add(data); }
+    closeModal('docModal');
+    // Reload all doctors and update BOTH admin list AND website
+    const snap = await db.collection('doctors').orderBy('createdAt','asc').get();
+    allDocs = snap.docs.map(d => ({id:d.id, ...d.data()}));
+    renderDocs();
+    renderDoctorsOnSite(allDocs);
+    if(document.getElementById('ds-docs')) document.getElementById('ds-docs').textContent = allDocs.length;
+    showToast(id ? '✅ Doctor updated on website!' : '✅ Doctor added to website!');
+  } catch(err) {
+    showToast('Error saving doctor. Try again.', 'err');
+    console.error(err);
+  }
+  if(btn){btn.textContent='💾 Save Doctor';btn.disabled=false;}
 });
 
 async function deleteDoc(id) {
-  if(!confirm('Remove this doctor?')) return;
-  await db.collection('doctors').doc(id).delete();
-  allDocs=allDocs.filter(x=>x.id!==id); renderDocs();
-  document.getElementById('ds-docs').textContent=allDocs.length;
-  showToast('Doctor removed.');
+  if(!confirm('Remove this doctor from the website?')) return;
+  try {
+    await db.collection('doctors').doc(id).delete();
+    allDocs = allDocs.filter(x => x.id !== id);
+    renderDocs();
+    renderDoctorsOnSite(allDocs);
+    if(document.getElementById('ds-docs')) document.getElementById('ds-docs').textContent = allDocs.length;
+    showToast('Doctor removed from website!');
+  } catch(err) { showToast('Error. Try again.','err'); }
 }
 
 // NEWS
@@ -3151,6 +3301,50 @@ function initAdminMobile() {
     const bn=document.getElementById('adminBottomNav'); if(bn) bn.style.display='flex';
   }
 }
+
+
+// ═══════════════════════════════════════════
+// DOCTORS — full management
+// ═══════════════════════════════════════════
+
+function renderDoctorsOnSite(docs) {
+  const grid = document.getElementById('doctorsDisplay');
+  if (!grid) return;
+  if (!docs || docs.length === 0) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--text-light)"><div style="font-size:3rem;margin-bottom:16px">👨‍⚕️</div><h3 style="font-family:var(--serif);margin-bottom:8px;color:var(--text)">No Doctors Added Yet</h3><p style="font-size:.9rem">Doctors added from the Admin Panel will appear here.</p></div>';
+    return;
+  }
+  grid.innerHTML = docs.map(d => `
+    <div class="doc-card">
+      <img src="${d.photo||''}" class="doc-photo" alt="${d.name||''}"
+        style="object-position:top"
+        onerror="this.style.display='none';this.nextElementSibling.querySelector('.doc-avatar').style.display='flex'"
+      />
+      <div class="doc-body">
+        <div class="doc-avatar" style="display:none;width:80px;height:80px;background:linear-gradient(135deg,var(--primary),var(--green));border-radius:50%;margin:0 auto 14px;align-items:center;justify-content:center;font-size:2rem;color:#fff">👤</div>
+        <h4>${d.name||'Doctor'}</h4>
+        <span class="doc-spec">${d.specialization||''}</span>
+        <p class="doc-bio">${d.bio||''}</p>
+        ${d.qualifications ? `<p style="font-size:.76rem;color:var(--text-light);margin-top:6px">${d.qualifications}</p>` : ''}
+      </div>
+    </div>`).join('');
+}
+
+// Load doctors from Firebase when page opens
+async function loadDoctorsOnSite() {
+  try {
+    const snap = await db.collection('doctors').orderBy('createdAt','asc').get();
+    const docs = snap.docs.map(d => ({id: d.id, ...d.data()}));
+    renderDoctorsOnSite(docs);
+    return docs;
+  } catch(e) {
+    console.log('Doctors load error:', e);
+    renderDoctorsOnSite([]);
+    return [];
+  }
+}
+// Call immediately on page load
+loadDoctorsOnSite();
 
 </script>
 </body>
