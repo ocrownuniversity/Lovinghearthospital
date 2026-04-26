@@ -1248,10 +1248,13 @@ section{padding:90px 0}
 <div class="toast" id="toast"></div>
 
 <!-- Firebase SDK -->
+
+<!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <script>
+
 // =====================
 // FIREBASE INIT
 // =====================
@@ -1272,43 +1275,37 @@ const auth = firebase.auth();
 let currentPage = 'home';
 function showPage(name) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  const target = document.getElementById('page-' + name);
-  if (target) target.classList.add('active');
+  const t = document.getElementById('page-' + name);
+  if (t) t.classList.add('active');
   currentPage = name;
-  window.scrollTo(0,0);
-  document.getElementById('navLinks').classList.remove('open'); document.getElementById('hamburger').innerHTML='<span></span><span></span><span></span>';
-  // Update active nav
-  document.querySelectorAll('.nav-links a[data-page]').forEach(a => {
-    a.classList.toggle('active', a.dataset.page === name);
-  });
-  // Load admin data when entering admin
+  window.scrollTo(0, 0);
+  document.getElementById('navLinks').classList.remove('open');
+  document.getElementById('hamburger').innerHTML = '<span></span><span></span><span></span>';
+  document.querySelectorAll('.nav-links a[data-page]').forEach(a => a.classList.toggle('active', a.dataset.page === name));
   if (name === 'admin') { loadAdminData(); initAdminMobile(); }
 }
 
 // =====================
 // NAVBAR
 // =====================
-window.addEventListener('scroll', () => {
-  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 40);
-});
-// Hamburger menu toggle
+window.addEventListener('scroll', () => document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 40));
+
 const hamburgerBtn = document.getElementById('hamburger');
 const navLinksEl = document.getElementById('navLinks');
+
 hamburgerBtn.addEventListener('click', (e) => {
   e.stopPropagation();
   const isOpen = navLinksEl.classList.toggle('open');
   hamburgerBtn.innerHTML = isOpen
-    ? '<span style="transform:rotate(45deg) translate(5px,5px);display:block;width:24px;height:2px;background:var(--primary);border-radius:2px"></span><span style="opacity:0;display:block;width:24px;height:2px;background:var(--primary);border-radius:2px"></span><span style="transform:rotate(-45deg) translate(5px,-5px);display:block;width:24px;height:2px;background:var(--primary);border-radius:2px"></span>'
+    ? '<span style="transform:rotate(45deg) translate(5px,5px);display:block;width:24px;height:2px;background:var(--primary);border-radius:2px;transition:all .3s"></span><span style="opacity:0;display:block;width:24px;height:2px;background:var(--primary);border-radius:2px"></span><span style="transform:rotate(-45deg) translate(5px,-5px);display:block;width:24px;height:2px;background:var(--primary);border-radius:2px;transition:all .3s"></span>'
     : '<span></span><span></span><span></span>';
 });
-// Close menu when a nav link is tapped
 document.querySelectorAll('#navLinks a').forEach(a => {
   a.addEventListener('click', () => {
     navLinksEl.classList.remove('open');
     hamburgerBtn.innerHTML = '<span></span><span></span><span></span>';
   });
 });
-// Close menu when clicking outside
 document.addEventListener('click', (e) => {
   if (!navLinksEl.contains(e.target) && !hamburgerBtn.contains(e.target)) {
     navLinksEl.classList.remove('open');
@@ -1317,30 +1314,22 @@ document.addEventListener('click', (e) => {
 });
 
 // =====================
-// SET MIN DATE
-// =====================
-(function(){
-  const d = new Date(); d.setDate(d.getDate()+1);
-  const v = d.toISOString().split('T')[0];
-  const el = document.getElementById('apptDate');
-  if(el) el.min = v;
-})();
-
-// =====================
 // TOAST
 // =====================
-function showToast(msg, type='ok') {
+function showToast(msg, type) {
   const t = document.getElementById('toast');
-  t.textContent = msg; t.className = `toast ${type}`;
+  t.textContent = msg;
+  t.className = 'toast' + (type === 'err' ? ' err' : '');
   setTimeout(() => t.classList.add('show'), 50);
-  setTimeout(() => t.classList.remove('show'), 3600);
+  setTimeout(() => t.classList.remove('show'), 3800);
 }
 
 // =====================
-// CLOSE MODAL
+// MODAL
 // =====================
 function closeModal(id) {
-  document.getElementById(id).classList.remove('open');
+  const el = document.getElementById(id);
+  if (el) el.classList.remove('open');
 }
 
 // =====================
@@ -1349,19 +1338,33 @@ function closeModal(id) {
 function filterNews(btn, cat) {
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  document.querySelectorAll('#newsGrid .news-card').forEach(card => {
-    card.style.display = (cat === 'all' || card.dataset.cat === cat) ? '' : 'none';
+  document.querySelectorAll('#newsGrid .news-card').forEach(c => {
+    c.style.display = (cat === 'all' || c.dataset.cat === cat) ? '' : 'none';
   });
+}
+
+// =====================
+// HMS / STAFF PORTAL
+// =====================
+const HMS_URL = 'https://ocrownuniversity.github.io/Loving-Heart-Hospital-/';
+function goToHMS() {
+  const custom = (document.getElementById('s-hms') || {}).value || '';
+  window.open(custom.startsWith('http') ? custom : HMS_URL, '_blank');
 }
 
 // =====================
 // APPOINTMENT FORM
 // =====================
-document.getElementById('appointmentForm').addEventListener('submit', async e => {
+(function () {
+  const d = new Date(); d.setDate(d.getDate() + 1);
+  const el = document.getElementById('apptDate');
+  if (el) el.min = d.toISOString().split('T')[0];
+})();
+
+document.getElementById('appointmentForm').addEventListener('submit', async function(e) {
   e.preventDefault();
   const btn = document.getElementById('apptBtn');
-  btn.innerHTML = '<span class="spinner"></span> Submitting...';
-  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Submitting...'; btn.disabled = true;
   const data = {
     name: document.getElementById('apptName').value.trim(),
     phone: document.getElementById('apptPhone').value.trim(),
@@ -1376,21 +1379,19 @@ document.getElementById('appointmentForm').addEventListener('submit', async e =>
     await db.collection('appointments').add(data);
     document.getElementById('appointmentForm').style.display = 'none';
     document.getElementById('apptSuccess').style.display = 'block';
-  } catch(err) {
+  } catch (err) {
     showToast('Error submitting. Please call us directly.', 'err');
-    btn.innerHTML = 'Submit Appointment Request';
-    btn.disabled = false;
+    btn.innerHTML = 'Submit Appointment Request'; btn.disabled = false;
   }
 });
 
 // =====================
 // CONTACT FORM
 // =====================
-document.getElementById('contactForm').addEventListener('submit', async e => {
+document.getElementById('contactForm').addEventListener('submit', async function(e) {
   e.preventDefault();
   const btn = document.getElementById('contactBtn');
-  btn.innerHTML = '<span class="spinner"></span> Sending...';
-  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Sending...'; btn.disabled = true;
   const data = {
     name: document.getElementById('cName').value.trim(),
     phone: document.getElementById('cPhone').value.trim(),
@@ -1401,212 +1402,484 @@ document.getElementById('contactForm').addEventListener('submit', async e => {
   };
   try {
     await db.collection('contacts').add(data);
-    showToast('Message sent! We\'ll respond within 24 hours.', 'ok');
+    showToast("Message sent! We'll respond within 24 hours.");
     document.getElementById('contactForm').reset();
-  } catch(err) {
+  } catch (err) {
     showToast('Error sending. Please call us.', 'err');
   }
-  btn.innerHTML = 'Send Message';
-  btn.disabled = false;
+  btn.innerHTML = 'Send Message'; btn.disabled = false;
 });
 
 // =====================
-// STAFF PORTAL HMS
+// APPLY SETTINGS TO WEBSITE
 // =====================
-const HMS_URL = 'https://ocrownuniversity.github.io/Loving-Heart-Hospital-/';
-function goToHMS() {
-  // Get custom URL from settings if set, otherwise use default
-  const customUrl = document.getElementById('s-hms')?.value?.trim();
-  const url = (customUrl && !customUrl.includes('your-hms')) ? customUrl : HMS_URL;
-  window.open(url, '_blank');
+function applySettingsToSite(d) {
+  if (!d) return;
+  if (d.phone) {
+    const clean = d.phone.replace(/\s/g, '');
+    document.querySelectorAll('a[href^="tel:"]').forEach(el => el.href = 'tel:' + clean);
+    document.querySelectorAll('a[href^="https://wa.me/"]').forEach(el => el.href = 'https://wa.me/' + clean.replace('+', ''));
+    const ep = document.getElementById('emergPhone'); if (ep) ep.textContent = '📞 ' + d.phone;
+    const fp = document.getElementById('footerPhone'); if (fp) fp.textContent = d.phone;
+    const cp = document.getElementById('contactPhone'); if (cp) cp.textContent = d.phone;
+    const ctap = document.getElementById('ctaPhone'); if (ctap) ctap.innerHTML = '📞 ' + d.phone;
+  }
+  if (d.email) {
+    const fe = document.getElementById('footerEmail'); if (fe) { fe.href = 'mailto:' + d.email; fe.textContent = d.email; }
+    const ce = document.getElementById('contactEmail'); if (ce) { ce.href = 'mailto:' + d.email; ce.textContent = d.email; }
+  }
+  if (d.address) {
+    const fa = document.getElementById('footerAddr'); if (fa) fa.innerHTML = '📍 ' + d.address;
+    const ca = document.getElementById('contactAddr'); if (ca) ca.textContent = d.address;
+  }
+  if (d.hours) {
+    const fh = document.getElementById('footerHours'); if (fh) fh.innerHTML = '🕐 OPD: ' + d.hours;
+    const ch = document.getElementById('contactHours'); if (ch) ch.textContent = 'OPD: ' + d.hours + ' | Emergency: 24/7';
+  }
+  if (d.hms) { const sh = document.getElementById('s-hms'); if (sh) sh.value = d.hms; }
 }
+
+async function loadSiteSettings() {
+  try {
+    const snap = await db.collection('settings').doc('contact').get();
+    if (snap.exists) {
+      const d = snap.data();
+      applySettingsToSite(d);
+      ['phone','email','address','hours','hms'].forEach(k => {
+        const el = document.getElementById('s-' + k); if (el && d[k]) el.value = d[k];
+      });
+    }
+  } catch (e) {}
+}
+
+// =====================
+// LOAD HERO SAVED CONTENT
+// =====================
+async function loadHeroToSite() {
+  try {
+    const snap = await db.collection('settings').doc('hero').get();
+    if (!snap.exists) return;
+    const d = snap.data();
+    const map = { heroBadge:'badge', heroSub:'sub', stat1num:'s1n', stat1lbl:'s1l', stat2num:'s2n', stat2lbl:'s2l', stat3num:'s3n', stat3lbl:'s3l' };
+    Object.entries(map).forEach(([elId, key]) => { const el = document.getElementById(elId); if (el && d[key]) el.textContent = d[key]; });
+    const ht = document.getElementById('heroTitle');
+    if (ht && d.title) ht.innerHTML = d.title + '<br><span id="heroTitleSpan" style="color:#f4a261">' + (d.span || '') + '</span>';
+    const hi = document.getElementById('heroImg'); if (hi && d.img) hi.src = d.img;
+  } catch (e) {}
+}
+
+// =====================
+// LOAD ABOUT SAVED CONTENT
+// =====================
+async function loadAboutToSite() {
+  try {
+    const snap = await db.collection('settings').doc('about').get();
+    if (!snap.exists) return;
+    const d = snap.data();
+    ['p1','p2','p3','p4'].forEach(k => {
+      const el = document.getElementById('about' + k.charAt(0).toUpperCase() + k.slice(1));
+      if (el && d[k]) el.textContent = d[k];
+    });
+    const ai = document.getElementById('aboutImg'); if (ai && d.aimg) ai.src = d.aimg;
+    const mt = document.getElementById('missionText'); if (mt && d.mission) mt.textContent = d.mission;
+    const vt = document.getElementById('visionText'); if (vt && d.vision) vt.textContent = d.vision;
+    const va = document.getElementById('valuesText'); if (va && d.values) va.textContent = d.values;
+  } catch (e) {}
+}
+
+// =====================
+// DOCTORS — WEBSITE DISPLAY
+// =====================
+function renderDoctorsOnSite(docs) {
+  const grid = document.getElementById('doctorsDisplay');
+  if (!grid) return;
+  if (!docs || docs.length === 0) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--text-light)"><div style="font-size:3rem;margin-bottom:12px">👨‍⚕️</div><h3 style="font-family:var(--serif);margin-bottom:8px">No Doctors Added Yet</h3><p>Doctors added from the Admin Panel will appear here.</p></div>';
+    return;
+  }
+  grid.innerHTML = docs.map(d => `
+    <div class="doc-card">
+      <div style="width:100%;height:260px;background:#e8edf2;overflow:hidden;position:relative">
+        ${d.photo ? `<img src="${d.photo}" style="width:100%;height:100%;object-fit:cover;object-position:top" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>` : ''}
+        <div style="display:${d.photo?'none':'flex'};width:100%;height:100%;align-items:center;justify-content:center;font-size:4rem;background:linear-gradient(135deg,#0f4c75,#2a9d8f)">👤</div>
+      </div>
+      <div class="doc-body">
+        <h4>${d.name || 'Doctor'}</h4>
+        <span class="doc-spec">${d.specialization || ''}</span>
+        <p class="doc-bio">${d.bio || ''}</p>
+        ${d.qualifications ? `<p style="font-size:.76rem;color:var(--text-light);margin-top:4px">${d.qualifications}</p>` : ''}
+      </div>
+    </div>`).join('');
+}
+
+async function loadDoctorsOnSite() {
+  try {
+    const snap = await db.collection('doctors').orderBy('createdAt', 'asc').get();
+    const docs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderDoctorsOnSite(docs);
+    return docs;
+  } catch (e) {
+    renderDoctorsOnSite([]);
+    return [];
+  }
+}
+
+// =====================
+// SERVICES — WEBSITE DISPLAY
+// =====================
+const BUILTIN_SERVICES = [
+  {id:'bs1',name:'General Consultation',icon:'🩺',desc:'Expert general practitioners for all health concerns.',img:'https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=500&q=80',bullets:'Adult & paediatric consultations\nChronic disease management\nPreventive care & checkups'},
+  {id:'bs2',name:'Laboratory Services',icon:'🔬',desc:'Modern diagnostic laboratory for accurate test results.',img:'https://images.unsplash.com/photo-1581595220892-b0739db3ba8c?w=500&q=80',bullets:'Full blood count\nHIV, malaria, hepatitis tests\nHormonal profiles'},
+  {id:'bs3',name:'Pharmacy',icon:'💊',desc:'In-house pharmacy with genuine medications.',img:'https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=500&q=80',bullets:'Prescription dispensing\nOver-the-counter medications\nMedication counselling'},
+  {id:'bs4',name:'Maternity & Obstetrics',icon:'🤱',desc:'Comprehensive maternal care from conception through delivery.',img:'https://images.unsplash.com/photo-1609220136736-443140cffec6?w=500&q=80',bullets:'Antenatal care\nSafe delivery services\nPostnatal care'},
+  {id:'bs5',name:'Emergency Care',icon:'🚑',desc:'24/7 emergency department for all medical emergencies.',img:'https://images.unsplash.com/photo-1504439904031-93ded9f93e4e?w=500&q=80',bullets:'Trauma & accident care\nResuscitation\nAmbulance coordination'},
+  {id:'bs6',name:'Paediatrics',icon:'👶',desc:'Specialised healthcare for infants and children.',img:'https://images.unsplash.com/photo-1631815588090-d4bfec5b1ccb?w=500&q=80',bullets:'Child growth monitoring\nVaccination & immunisation\nNutritional counselling'},
+  {id:'bs7',name:'Dental Services',icon:'🦷',desc:'Complete dental care for the whole family.',img:'https://images.unsplash.com/photo-1606811971618-4486d14f3f99?w=500&q=80',bullets:'Teeth cleaning & scaling\nCavity filling\nDental X-rays'},
+  {id:'bs8',name:'Eye Care',icon:'👁️',desc:'Comprehensive eye examinations for all ages.',img:'https://images.unsplash.com/photo-1559757175-5700dde675bc?w=500&q=80',bullets:'Vision testing\nGlaucoma screening\nCataract assessment'},
+  {id:'bs9',name:'Radiology & Imaging',icon:'🏥',desc:'Modern X-ray and ultrasound imaging.',img:'https://images.unsplash.com/photo-1516069677018-378515003435?w=500&q=80',bullets:'Digital X-ray\nObstetric ultrasound\nAbdominal scanning'},
+];
+
+function renderServicesOnSite(list) {
+  const toShow = (list && list.length > 0) ? list : BUILTIN_SERVICES;
+  const cardHTML = toShow.map(s => {
+    const bullets = (s.bullets || '').split('\n').filter(b => b.trim()).map(b => `<li>${b.trim()}</li>`).join('');
+    return `<div class="srv-card">
+      <div class="srv-img-wrap"><img class="srv-img" src="${s.img || 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=500&q=80'}" alt="" onerror="this.src='https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=500&q=80'"/></div>
+      <div class="srv-body"><div class="srv-icon">${s.icon || '🏥'}</div><h3>${s.name}</h3><p>${s.desc || ''}</p>${bullets ? `<ul class="srv-feats">${bullets}</ul>` : ''}</div>
+    </div>`;
+  }).join('');
+  ['homeSrvGrid','fullSrvGrid'].forEach(id => { const g = document.getElementById(id); if (g) g.innerHTML = cardHTML; });
+}
+
+async function loadServicesOnSite() {
+  try {
+    const snap = await db.collection('services').orderBy('order').get();
+    const list = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderServicesOnSite(list.length ? list : null);
+    return list;
+  } catch (e) {
+    renderServicesOnSite(null);
+    return [];
+  }
+}
+
+// =====================
+// HMO — WEBSITE DISPLAY
+// =====================
+function renderHmosOnSite(hmos) {
+  const grid = document.getElementById('hmoGrid');
+  if (!grid) return;
+  if (!hmos || hmos.length === 0) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-light)">No HMO plans added yet. Add plans from Admin Panel.</div>';
+    return;
+  }
+  grid.innerHTML = hmos.map(h => `
+    <div style="background:#fff;border:1px solid var(--border);border-radius:var(--r);padding:22px;text-align:center;box-shadow:var(--shadow);transition:all .3s" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform=''">
+      <div style="font-size:2rem;margin-bottom:10px">${h.icon || '🏥'}</div>
+      <h4 style="font-size:.92rem;font-weight:700;color:var(--primary);margin-bottom:5px">${h.name}</h4>
+      <p style="font-size:.8rem;color:var(--text-mid)">${h.desc || 'Accepted for all registered members'}</p>
+    </div>`).join('');
+}
+
+async function loadHmosOnSite() {
+  try {
+    const snap = await db.collection('hmos').orderBy('createdAt', 'asc').get();
+    const hmos = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderHmosOnSite(hmos);
+    return hmos;
+  } catch (e) {
+    renderHmosOnSite([]);
+    return [];
+  }
+}
+
+// =====================
+// NEWS — WEBSITE DISPLAY
+// =====================
+function renderNewsOnSite(news) {
+  ['homeNewsGrid','newsGrid'].forEach(gid => {
+    const g = document.getElementById(gid);
+    if (!g) return;
+    const toShow = gid === 'homeNewsGrid' ? news.slice(0, 3) : news;
+    if (!toShow.length) return;
+    g.innerHTML = toShow.map(p => `
+      <div class="news-card" data-cat="${p.category || ''}">
+        <div class="news-img"><img src="${p.image || 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=500&q=80'}" alt="" onerror="this.src='https://images.unsplash.com/photo-1540420773420-3366772f4999?w=500&q=80'"/></div>
+        <div class="news-body">
+          <span class="news-tag">${p.category || 'News'}</span>
+          <h4>${p.title || ''}</h4>
+          <p>${(p.summary || '').slice(0, 120)}...</p>
+          <span class="read-more" onclick="showPage('news')">Read More →</span>
+        </div>
+      </div>`).join('');
+  });
+}
+
+// =====================
+// LOAD EVERYTHING ON PAGE OPEN
+// =====================
+async function loadAllSiteContent() {
+  loadSiteSettings();
+  loadHeroToSite();
+  loadAboutToSite();
+  loadDoctorsOnSite();
+  loadServicesOnSite();
+  loadHmosOnSite();
+  try {
+    const snap = await db.collection('news').orderBy('createdAt', 'desc').get();
+    const news = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    if (news.length) renderNewsOnSite(news);
+  } catch (e) {}
+}
+loadAllSiteContent();
 
 // =====================
 // ADMIN AUTH
 // =====================
-auth.onAuthStateChanged(user => {
-  if (user && currentPage === 'admin-login') {
-    showPage('admin');
-  }
-});
+auth.onAuthStateChanged(user => { if (user && currentPage === 'admin-login') showPage('admin'); });
 
-document.getElementById('loginForm').addEventListener('submit', async e => {
+document.getElementById('loginForm').addEventListener('submit', async function(e) {
   e.preventDefault();
   const btn = document.getElementById('loginBtn');
   const err = document.getElementById('loginErr');
-  btn.innerHTML = '<span class="spinner"></span> Signing in...';
-  btn.disabled = true;
-  err.style.display = 'none';
+  btn.innerHTML = '<span class="spinner"></span> Signing in...'; btn.disabled = true; err.style.display = 'none';
   try {
-    await auth.signInWithEmailAndPassword(
-      document.getElementById('loginEmail').value,
-      document.getElementById('loginPassword').value
-    );
+    await auth.signInWithEmailAndPassword(document.getElementById('loginEmail').value, document.getElementById('loginPassword').value);
     showPage('admin');
-  } catch(e) {
-    err.textContent = 'Invalid email or password. Please try again.';
-    err.style.display = 'block';
+  } catch (ex) {
+    err.textContent = 'Invalid email or password. Please try again.'; err.style.display = 'block';
+    btn.innerHTML = 'Sign In'; btn.disabled = false;
   }
-  btn.innerHTML = 'Sign In';
-  btn.disabled = false;
 });
 
-function adminLogout() {
-  auth.signOut().then(() => showPage('home'));
-}
+function adminLogout() { auth.signOut().then(() => showPage('home')); }
 
 // =====================
 // ADMIN TABS
 // =====================
+const ALL_ADMIN_TABS = ['dashboard','hero','about-edit','services-edit','doctors','news','hmo','appointments','messages','settings'];
+
 function showAdminTab(name) {
-  const ALL = ['dashboard','hero','about-edit','services-edit','doctors','news','hmo','appointments','messages','settings'];
-  ALL.forEach(t => {
+  ALL_ADMIN_TABS.forEach(t => {
     const el = document.getElementById('atab-' + t);
-    if(el) el.style.display = t === name ? 'block' : 'none';
+    if (el) el.style.display = t === name ? 'block' : 'none';
     const sb = document.getElementById('stab-' + t);
-    if(sb) sb.classList.toggle('active', t === name);
+    if (sb) sb.classList.toggle('active', t === name);
   });
-  if(name === 'appointments') renderAppts();
-  if(name === 'doctors') renderDocs();
-  if(name === 'news') renderNews();
-  if(name === 'messages') renderMsgs();
-  if(name === 'hmo') loadHmoTab();
-  if(name === 'settings') 
-  if(name === 'hero') loadHeroFields();
-  if(name === 'about-edit') loadAboutFields();
-  if(name === 'services-edit') loadServicesTab();
+  if (name === 'appointments') loadAndRenderAppts();
+  if (name === 'doctors') loadAndRenderDocs();
+  if (name === 'news') loadAndRenderNews();
+  if (name === 'messages') loadAndRenderMsgs();
+  if (name === 'hmo') loadAndRenderHmos();
+  if (name === 'services-edit') loadAndRenderServices();
+  if (name === 'settings') loadSiteSettings();
+  if (name === 'hero') loadHeroFields();
+  if (name === 'about-edit') loadAboutFields();
 }
 
+function initAdminMobile() {
+  if (window.innerWidth <= 768) {
+    const tb = document.getElementById('adminMobileTopbar'); if (tb) tb.style.display = 'flex';
+    const bn = document.getElementById('adminBottomNav'); if (bn) bn.style.display = 'flex';
+  }
+}
+
+function toggleSidebar() {
+  const sb = document.getElementById('adminSidebar');
+  const ov = document.getElementById('adminOverlay');
+  if (sb) sb.classList.toggle('open');
+  if (ov) ov.style.display = ov.style.display === 'block' ? 'none' : 'block';
+}
+function closeSidebar() {
+  const sb = document.getElementById('adminSidebar'); if (sb) sb.classList.remove('open');
+  const ov = document.getElementById('adminOverlay'); if (ov) ov.style.display = 'none';
+}
+function setAbn(name) {
+  document.querySelectorAll('.abn-item').forEach(b => b.classList.remove('active'));
+  const el = document.getElementById('abn-' + name); if (el) el.classList.add('active');
+  if (window.innerWidth <= 768) closeSidebar();
+}
+document.querySelectorAll('.sidebar-nav a').forEach(a => {
+  a.addEventListener('click', () => { if (window.innerWidth <= 768) closeSidebar(); });
+});
+
 // =====================
-// ADMIN DATA
+// ADMIN DATA — shared arrays
 // =====================
-let allAppts = [], allDocs = [], allNews = [], allMsgs = [];
+let allAppts = [], allDocs = [], allNews = [], allMsgs = [], allHmos = [], allServices = [];
 
 async function loadAdminData() {
   const user = auth.currentUser;
   if (!user) { showPage('admin-login'); return; }
-  document.getElementById('adminEmail').textContent = user.email;
-  document.getElementById('settingsEmail').textContent = user.email;
+  const emailEl = document.getElementById('adminEmail'); if (emailEl) emailEl.textContent = user.email;
+  const setEl = document.getElementById('settingsEmail'); if (setEl) setEl.textContent = user.email;
   try {
-    // Appointments
     const aSnap = await db.collection('appointments').orderBy('createdAt','desc').get();
-    allAppts = aSnap.docs.map(d=>({id:d.id,...d.data()}));
-    document.getElementById('ds-appts').textContent = allAppts.length;
-    document.getElementById('ds-pending').textContent = allAppts.filter(a=>a.status==='pending').length;
-    // Render recent 5 on dashboard
-    const db5 = document.getElementById('dash-appts-body');
-    db5.innerHTML = allAppts.slice(0,5).map(a=>`<tr><td><strong>${a.name||'—'}</strong></td><td>${a.phone||'—'}</td><td>${a.department||'—'}</td><td>${a.date||'—'}</td><td><span class="badge ${a.status==='confirmed'?'confirmed':'pending'}">${a.status||'pending'}</span></td></tr>`).join('') || '<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--text-light)">No appointments yet</td></tr>';
-    // Messages
+    allAppts = aSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+    const ds1 = document.getElementById('ds-appts'); if (ds1) ds1.textContent = allAppts.length;
+    const ds2 = document.getElementById('ds-pending'); if (ds2) ds2.textContent = allAppts.filter(a => a.status === 'pending').length;
+    renderDashAppts();
+
     const mSnap = await db.collection('contacts').orderBy('createdAt','desc').get();
-    allMsgs = mSnap.docs.map(d=>({id:d.id,...d.data()}));
-    document.getElementById('ds-msgs').textContent = allMsgs.length;
-    // Doctors
-    const dSnap = await db.collection('doctors').orderBy('createdAt','desc').get();
-    allDocs = dSnap.docs.map(d=>({id:d.id,...d.data()}));
-    document.getElementById('ds-docs').textContent = allDocs.length || '8';
-    // News
+    allMsgs = mSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+    const ds3 = document.getElementById('ds-msgs'); if (ds3) ds3.textContent = allMsgs.length;
+
+    const dSnap = await db.collection('doctors').orderBy('createdAt','asc').get();
+    allDocs = dSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+    const ds4 = document.getElementById('ds-docs'); if (ds4) ds4.textContent = allDocs.length;
+    renderDoctorsOnSite(allDocs);
+
     const nSnap = await db.collection('news').orderBy('createdAt','desc').get();
-    allNews = nSnap.docs.map(d=>({id:d.id,...d.data()}));
-  } catch(e) { console.error(e); }
+    allNews = nSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+    if (allNews.length) renderNewsOnSite(allNews);
+  } catch (e) { console.error('loadAdminData error:', e); }
 }
 
-// APPOINTMENTS
-function renderAppts() {
-  const filter = document.getElementById('apptFilter')?.value || 'all';
-  const list = filter === 'all' ? allAppts : allAppts.filter(a=>(a.status||'pending')===filter);
-  const tbody = document.getElementById('appts-body');
-  tbody.innerHTML = list.length ? list.map((a,i)=>`
-    <tr>
-      <td>${i+1}</td><td><strong>${a.name||'—'}</strong></td>
-      <td><a href="tel:${a.phone}">${a.phone||'—'}</a></td>
-      <td>${a.department||'—'}</td><td>${a.date||'—'}</td>
-      <td><span class="badge ${a.status==='confirmed'?'confirmed':'pending'}">${a.status||'pending'}</span></td>
-      <td style="white-space:nowrap">
-        <button class="btn-admin sec" onclick="viewAppt('${a.id}')" style="padding:5px 10px;font-size:.76rem;margin-right:3px">View</button>
-        ${a.status!=='confirmed'?`<button class="btn-admin green" onclick="confirmAppt('${a.id}')" style="padding:5px 10px;font-size:.76rem;margin-right:3px">Confirm</button>`:''}
-        <button class="btn-admin danger" onclick="deleteAppt('${a.id}')" style="padding:5px 10px;font-size:.76rem">Delete</button>
-      </td>
-    </tr>`).join('') : '<tr><td colspan="7" style="text-align:center;padding:28px;color:var(--text-light)">No appointments found.</td></tr>';
-}
-
-function viewAppt(id) {
-  const a = allAppts.find(x=>x.id===id);
-  if(!a) return;
-  document.getElementById('apptModalContent').innerHTML = `
-    <div style="display:grid;gap:14px;margin-top:8px">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
-        <div><div style="font-size:.72rem;color:var(--text-light);font-weight:600;margin-bottom:3px">PATIENT</div><strong>${a.name}</strong></div>
-        <div><div style="font-size:.72rem;color:var(--text-light);font-weight:600;margin-bottom:3px">PHONE</div><a href="tel:${a.phone}">${a.phone||'—'}</a></div>
-        <div><div style="font-size:.72rem;color:var(--text-light);font-weight:600;margin-bottom:3px">EMAIL</div>${a.email||'—'}</div>
-        <div><div style="font-size:.72rem;color:var(--text-light);font-weight:600;margin-bottom:3px">DATE</div>${a.date||'—'}</div>
-        <div><div style="font-size:.72rem;color:var(--text-light);font-weight:600;margin-bottom:3px">DEPARTMENT</div>${a.department||'—'}</div>
-        <div><div style="font-size:.72rem;color:var(--text-light);font-weight:600;margin-bottom:3px">STATUS</div><span class="badge ${a.status==='confirmed'?'confirmed':'pending'}">${a.status||'pending'}</span></div>
+function renderDashAppts() {
+  const el = document.getElementById('dash-appts-body');
+  if (!el) return;
+  if (!allAppts.length) { el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-light)">No appointments yet</div>'; return; }
+  el.innerHTML = allAppts.slice(0, 5).map(a => `
+    <div style="background:var(--bg);border-radius:10px;padding:12px 14px;border:1px solid var(--border);border-left:4px solid ${a.status==='confirmed'?'#059669':'#d97706'}">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <div style="font-weight:700;font-size:.88rem">${a.name || '—'}</div>
+          <div style="font-size:.76rem;color:var(--text-mid)">${a.department || '—'} · ${a.date || '—'}</div>
+        </div>
+        <span style="font-size:.7rem;font-weight:700;padding:3px 9px;border-radius:50px;background:${a.status==='confirmed'?'#d1fae5':'#fff3cd'};color:${a.status==='confirmed'?'#065f46':'#856404'}">${a.status || 'pending'}</span>
       </div>
-      <div><div style="font-size:.72rem;color:var(--text-light);font-weight:600;margin-bottom:3px">MESSAGE</div><div style="background:var(--bg);padding:12px;border-radius:8px;font-size:.88rem">${a.message||'No message provided'}</div></div>
+    </div>`).join('');
+}
+
+// =====================
+// APPOINTMENTS
+// =====================
+async function loadAndRenderAppts() {
+  try {
+    const snap = await db.collection('appointments').orderBy('createdAt','desc').get();
+    allAppts = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  } catch(e) {}
+  renderAppts();
+}
+function renderAppts() {
+  const filter = (document.getElementById('apptFilter') || {}).value || 'all';
+  const list = filter === 'all' ? allAppts : allAppts.filter(a => (a.status || 'pending') === filter);
+  const el = document.getElementById('appts-body');
+  if (!el) return;
+  el.innerHTML = list.length ? list.map(a => `
+    <div style="background:var(--bg);border-radius:12px;padding:14px;border:1px solid var(--border);border-left:4px solid ${a.status==='confirmed'?'#059669':'#d97706'}">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
+        <div><div style="font-weight:700;font-size:.95rem">${a.name||'—'}</div><div style="font-size:.8rem;color:var(--text-mid);margin-top:2px">${a.department||'—'} · ${a.date||'—'}</div></div>
+        <span style="font-size:.72rem;font-weight:700;padding:4px 10px;border-radius:50px;background:${a.status==='confirmed'?'#d1fae5':'#fff3cd'};color:${a.status==='confirmed'?'#065f46':'#856404'};flex-shrink:0;margin-left:8px">${a.status||'pending'}</span>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px">
+        <a href="tel:${a.phone}" style="font-size:.82rem;color:var(--primary);font-weight:600;text-decoration:none">📞 ${a.phone||'—'}</a>
+        <a href="https://wa.me/${(a.phone||'').replace(/\D/g,'')}" target="_blank" style="font-size:.82rem;color:#059669;font-weight:600;text-decoration:none">💬 WhatsApp</a>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <button onclick="viewAppt('${a.id}')" style="background:#fff;border:1px solid var(--border);color:var(--text);padding:7px 12px;border-radius:8px;font-size:.78rem;cursor:pointer;font-family:var(--sans)">👁 View</button>
+        ${a.status!=='confirmed'?`<button onclick="confirmAppt('${a.id}')" style="background:#d1fae5;border:1px solid #a7f3d0;color:#065f46;padding:7px 12px;border-radius:8px;font-size:.78rem;cursor:pointer;font-family:var(--sans)">✅ Confirm</button>`:''}
+        <button onclick="deleteAppt('${a.id}')" style="background:#fee2e2;border:1px solid #fecaca;color:#b91c1c;padding:7px 12px;border-radius:8px;font-size:.78rem;cursor:pointer;font-family:var(--sans)">🗑 Delete</button>
+      </div>
+    </div>`).join('') : '<div style="text-align:center;padding:36px;color:var(--text-light)">No appointments found.</div>';
+}
+function viewAppt(id) {
+  const a = allAppts.find(x => x.id === id); if (!a) return;
+  document.getElementById('apptModalContent').innerHTML = `
+    <div style="display:grid;gap:12px;margin-top:8px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div><div style="font-size:.72rem;color:var(--text-light);font-weight:600;margin-bottom:3px">PATIENT</div><strong>${a.name}</strong></div>
+        <div><div style="font-size:.72rem;color:var(--text-light);font-weight:600;margin-bottom:3px">DATE</div>${a.date||'—'}</div>
+        <div><div style="font-size:.72rem;color:var(--text-light);font-weight:600;margin-bottom:3px">PHONE</div><a href="tel:${a.phone}">${a.phone||'—'}</a></div>
+        <div><div style="font-size:.72rem;color:var(--text-light);font-weight:600;margin-bottom:3px">DEPT</div>${a.department||'—'}</div>
+      </div>
+      <div><div style="font-size:.72rem;color:var(--text-light);font-weight:600;margin-bottom:3px">STATUS</div><span style="font-weight:700">${a.status||'pending'}</span></div>
+      <div><div style="font-size:.72rem;color:var(--text-light);font-weight:600;margin-bottom:3px">MESSAGE</div><div style="background:var(--bg);padding:12px;border-radius:8px;font-size:.88rem">${a.message||'No message'}</div></div>
       <div style="display:flex;gap:10px;flex-wrap:wrap">
         <a href="tel:${a.phone}" class="btn-admin" style="text-decoration:none">📞 Call</a>
-        <a href="https://wa.me/${(a.phone||'').replace(/\D/g,'')}" target="_blank" class="btn-admin green" style="text-decoration:none">💬 WhatsApp</a>
+        <a href="https://wa.me/${(a.phone||'').replace(/\D/g,'')}" target="_blank" class="btn-admin" style="text-decoration:none;background:#059669">💬 WhatsApp</a>
         ${a.status!=='confirmed'?`<button class="btn-admin" onclick="confirmAppt('${a.id}')">✅ Confirm</button>`:''}
       </div>
     </div>`;
   document.getElementById('apptModal').classList.add('open');
 }
-
 async function confirmAppt(id) {
-  await db.collection('appointments').doc(id).update({status:'confirmed'});
-  const a = allAppts.find(x=>x.id===id); if(a) a.status='confirmed';
+  await db.collection('appointments').doc(id).update({ status: 'confirmed' });
+  const a = allAppts.find(x => x.id === id); if (a) a.status = 'confirmed';
   renderAppts(); closeModal('apptModal');
-  document.getElementById('ds-pending').textContent = allAppts.filter(a=>a.status==='pending').length;
+  const dp = document.getElementById('ds-pending'); if (dp) dp.textContent = allAppts.filter(a=>a.status==='pending').length;
   showToast('Appointment confirmed!');
 }
-
 async function deleteAppt(id) {
-  if(!confirm('Delete this appointment?')) return;
+  if (!confirm('Delete this appointment?')) return;
   await db.collection('appointments').doc(id).delete();
-  allAppts = allAppts.filter(x=>x.id!==id);
+  allAppts = allAppts.filter(x => x.id !== id);
   renderAppts();
-  document.getElementById('ds-appts').textContent = allAppts.length;
-  document.getElementById('ds-pending').textContent = allAppts.filter(a=>a.status==='pending').length;
+  const da = document.getElementById('ds-appts'); if (da) da.textContent = allAppts.length;
+  const dp = document.getElementById('ds-pending'); if (dp) dp.textContent = allAppts.filter(a=>a.status==='pending').length;
   showToast('Deleted.');
 }
 
-// DOCTORS
+// =====================
+// DOCTORS ADMIN
+// =====================
+async function loadAndRenderDocs() {
+  try {
+    const snap = await db.collection('doctors').orderBy('createdAt','asc').get();
+    allDocs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  } catch(e) {}
+  renderDocs();
+}
 function renderDocs() {
   const el = document.getElementById('docs-body');
-  if(!el) return;
-  if(!allDocs.length) {
+  if (!el) return;
+  if (!allDocs.length) {
     el.innerHTML = '<div style="text-align:center;padding:40px 20px;color:var(--text-light)"><div style="font-size:3rem;margin-bottom:12px">👨‍⚕️</div><p style="margin-bottom:16px">No doctors added yet.</p><button onclick="openDocModal()" style="background:var(--primary);color:#fff;border:none;padding:11px 24px;border-radius:50px;cursor:pointer;font-family:var(--sans);font-size:.9rem;font-weight:600">+ Add First Doctor</button></div>';
     return;
   }
   el.innerHTML = allDocs.map(d => `
     <div style="background:var(--bg);border-radius:14px;padding:14px;display:flex;align-items:center;gap:14px;border:1px solid var(--border)">
-      <img src="${d.photo||''}" style="width:58px;height:58px;border-radius:50%;object-fit:cover;object-position:top;border:2px solid var(--border);flex-shrink:0;background:#e2e8f0"
-        onerror="this.style.background='#e2e8f0';this.src=''" />
+      <div style="width:58px;height:58px;border-radius:50%;overflow:hidden;flex-shrink:0;background:#e2e8f0;display:flex;align-items:center;justify-content:center;font-size:1.5rem">
+        ${d.photo ? `<img src="${d.photo}" style="width:100%;height:100%;object-fit:cover;object-position:top" onerror="this.style.display='none'"/>` : '👤'}
+      </div>
       <div style="flex:1;min-width:0;overflow:hidden">
-        <div style="font-weight:700;font-size:.92rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${d.name||''}</div>
+        <div style="font-weight:700;font-size:.92rem">${d.name||''}</div>
         <div style="font-size:.76rem;color:var(--primary);font-weight:600;margin:2px 0">${d.specialization||''}</div>
         <div style="font-size:.74rem;color:var(--text-light)">${d.qualifications||''}</div>
       </div>
       <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">
-        <button onclick="editDoc('${d.id}')" style="background:#fff;border:1.5px solid var(--border);color:var(--text);padding:7px 14px;border-radius:8px;font-size:.78rem;cursor:pointer;font-family:var(--sans);font-weight:600">✏️ Edit</button>
+        <button onclick="openDocModal('${d.id}')" style="background:#fff;border:1.5px solid var(--border);color:var(--text);padding:7px 14px;border-radius:8px;font-size:.78rem;cursor:pointer;font-family:var(--sans);font-weight:600">✏️ Edit</button>
         <button onclick="deleteDoc('${d.id}')" style="background:#fee2e2;border:1.5px solid #fecaca;color:#b91c1c;padding:7px 14px;border-radius:8px;font-size:.78rem;cursor:pointer;font-family:var(--sans);font-weight:600">🗑 Delete</button>
       </div>
     </div>`).join('');
 }
-
-function openDocModal(id=null) {
-  document.getElementById('docModalTitle').textContent = id ? 'Edit Doctor' : 'Add Doctor';
-  document.getElementById('docId').value = id||'';
-  if(id) { const d=allDocs.find(x=>x.id===id); document.getElementById('docName').value=d.name||''; document.getElementById('docSpec').value=d.specialization||''; document.getElementById('docQual').value=d.qualifications||''; document.getElementById('docPhoto').value=d.photo||''; document.getElementById('docBio').value=d.bio||''; }
-  else document.getElementById('docForm').reset();
+function openDocModal(id) {
+  const isEdit = id && id !== 'undefined';
+  document.getElementById('docModalTitle').textContent = isEdit ? 'Edit Doctor' : 'Add Doctor';
+  document.getElementById('docId').value = isEdit ? id : '';
+  const preview = document.getElementById('docPhotoPreview');
+  if (preview) preview.style.display = 'none';
+  if (isEdit) {
+    const d = allDocs.find(x => x.id === id) || {};
+    document.getElementById('docName').value = d.name || '';
+    document.getElementById('docSpec').value = d.specialization || '';
+    document.getElementById('docQual').value = d.qualifications || '';
+    document.getElementById('docPhoto').value = d.photo || '';
+    document.getElementById('docBio').value = d.bio || '';
+    if (d.photo && preview) { document.getElementById('docPhotoPreviewImg').src = d.photo; preview.style.display = 'block'; }
+  } else {
+    document.getElementById('docForm').reset();
+  }
   document.getElementById('docModal').classList.add('open');
 }
-function editDoc(id){openDocModal(id);}
-
-document.getElementById('docForm').addEventListener('submit', async e => {
+function previewDocPhoto(url) {
+  const p = document.getElementById('docPhotoPreview');
+  const img = document.getElementById('docPhotoPreviewImg');
+  if (url && url.startsWith('http')) { if(img) img.src = url; if(p) p.style.display = 'block'; }
+  else { if(p) p.style.display = 'none'; }
+}
+document.getElementById('docForm').addEventListener('submit', async function(e) {
   e.preventDefault();
-  const btn = e.submitter || e.target.querySelector('button[type=submit]');
-  if(btn){btn.textContent='Saving...';btn.disabled=true;}
   const id = document.getElementById('docId').value;
   const data = {
     name: document.getElementById('docName').value.trim(),
@@ -1616,99 +1889,279 @@ document.getElementById('docForm').addEventListener('submit', async e => {
     bio: document.getElementById('docBio').value.trim(),
     updatedAt: new Date().toISOString()
   };
+  const btn = e.target.querySelector('button[type=submit]');
+  if (btn) { btn.textContent = 'Saving...'; btn.disabled = true; }
   try {
-    if(id){ await db.collection('doctors').doc(id).update(data); }
-    else { data.createdAt = new Date().toISOString(); await db.collection('doctors').add(data); }
+    if (id) {
+      await db.collection('doctors').doc(id).update(data);
+    } else {
+      data.createdAt = new Date().toISOString();
+      await db.collection('doctors').add(data);
+    }
     closeModal('docModal');
-    // Reload all doctors and update BOTH admin list AND website
+    // Reload from Firebase fresh
     const snap = await db.collection('doctors').orderBy('createdAt','asc').get();
-    allDocs = snap.docs.map(d => ({id:d.id, ...d.data()}));
+    allDocs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     renderDocs();
     renderDoctorsOnSite(allDocs);
-    if(document.getElementById('ds-docs')) document.getElementById('ds-docs').textContent = allDocs.length;
+    const ds = document.getElementById('ds-docs'); if (ds) ds.textContent = allDocs.length;
     showToast(id ? '✅ Doctor updated on website!' : '✅ Doctor added to website!');
-  } catch(err) {
-    showToast('Error saving doctor. Try again.', 'err');
+  } catch (err) {
+    showToast('Error saving. Try again.', 'err');
     console.error(err);
   }
-  if(btn){btn.textContent='💾 Save Doctor';btn.disabled=false;}
+  if (btn) { btn.textContent = '💾 Save Doctor'; btn.disabled = false; }
 });
-
 async function deleteDoc(id) {
-  if(!confirm('Remove this doctor from the website?')) return;
+  if (!confirm('Remove this doctor from the website?')) return;
   try {
     await db.collection('doctors').doc(id).delete();
-    allDocs = allDocs.filter(x => x.id !== id);
+    const snap = await db.collection('doctors').orderBy('createdAt','asc').get();
+    allDocs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     renderDocs();
     renderDoctorsOnSite(allDocs);
-    if(document.getElementById('ds-docs')) document.getElementById('ds-docs').textContent = allDocs.length;
+    const ds = document.getElementById('ds-docs'); if (ds) ds.textContent = allDocs.length;
     showToast('Doctor removed from website!');
-  } catch(err) { showToast('Error. Try again.','err'); }
+  } catch (err) { showToast('Error. Try again.', 'err'); }
 }
 
-// NEWS
+// =====================
+// SERVICES ADMIN
+// =====================
+async function loadAndRenderServices() {
+  try {
+    const snap = await db.collection('services').orderBy('order').get();
+    allServices = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  } catch(e) { allServices = []; }
+  renderServicesAdmin();
+}
+function renderServicesAdmin() {
+  const el = document.getElementById('srv-body');
+  if (!el) return;
+  const list = allServices.length ? allServices : BUILTIN_SERVICES;
+  el.innerHTML = list.map(s => `
+    <div style="background:var(--bg);border-radius:12px;padding:14px;display:flex;align-items:center;gap:12px;border:1px solid var(--border)">
+      <div style="font-size:2rem;width:44px;text-align:center;flex-shrink:0">${s.icon||'🏥'}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-weight:700;font-size:.92rem;margin-bottom:3px">${s.name}</div>
+        <div style="font-size:.78rem;color:var(--text-mid)">${(s.desc||'').slice(0,70)}...</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">
+        <button onclick="openServiceModal('${s.id}')" style="background:#fff;border:1px solid var(--border);color:var(--text);padding:6px 12px;border-radius:8px;font-size:.76rem;cursor:pointer;font-family:var(--sans)">✏️ Edit</button>
+        <button onclick="deleteService('${s.id}')" style="background:#fee2e2;border:1px solid #fecaca;color:#b91c1c;padding:6px 12px;border-radius:8px;font-size:.76rem;cursor:pointer;font-family:var(--sans)">🗑 Delete</button>
+      </div>
+    </div>`).join('');
+}
+function openServiceModal(id) {
+  const isEdit = id && !id.startsWith('bs');
+  document.getElementById('serviceModalTitle').textContent = isEdit ? 'Edit Service' : 'Add Service';
+  document.getElementById('serviceId').value = isEdit ? id : '';
+  document.getElementById('srvImgPrev').src = '';
+  if (id) {
+    const s = allServices.find(x => x.id === id) || BUILTIN_SERVICES.find(x => x.id === id) || {};
+    document.getElementById('srvName').value = s.name || '';
+    document.getElementById('srvIcon').value = s.icon || '';
+    document.getElementById('srvDesc').value = s.desc || '';
+    document.getElementById('srvImg').value = s.img || '';
+    document.getElementById('srvBullets').value = s.bullets || '';
+    if (s.img) document.getElementById('srvImgPrev').src = s.img;
+  } else {
+    document.getElementById('serviceForm').reset();
+  }
+  document.getElementById('serviceModal').classList.add('open');
+}
+document.getElementById('serviceForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const id = document.getElementById('serviceId').value;
+  const data = {
+    name: document.getElementById('srvName').value.trim(),
+    icon: document.getElementById('srvIcon').value.trim(),
+    desc: document.getElementById('srvDesc').value.trim(),
+    img: document.getElementById('srvImg').value.trim(),
+    bullets: document.getElementById('srvBullets').value.trim(),
+    order: id ? (allServices.find(x=>x.id===id)||{}).order || 99 : allServices.length,
+    updatedAt: new Date().toISOString()
+  };
+  try {
+    if (id && !id.startsWith('bs')) {
+      await db.collection('services').doc(id).set(data);
+    } else {
+      data.createdAt = new Date().toISOString();
+      await db.collection('services').add(data);
+    }
+    closeModal('serviceModal');
+    const snap = await db.collection('services').orderBy('order').get();
+    allServices = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderServicesAdmin();
+    renderServicesOnSite(allServices);
+    showToast('✅ Service saved on website!');
+  } catch (err) { showToast('Error saving service.', 'err'); }
+});
+async function deleteService(id) {
+  if (!confirm('Remove this service?')) return;
+  if (!id.startsWith('bs')) {
+    try { await db.collection('services').doc(id).delete(); } catch(e){}
+  }
+  allServices = allServices.filter(x => x.id !== id);
+  renderServicesAdmin();
+  renderServicesOnSite(allServices.length ? allServices : null);
+  showToast('Service removed.');
+}
+
+// =====================
+// NEWS ADMIN
+// =====================
+async function loadAndRenderNews() {
+  try {
+    const snap = await db.collection('news').orderBy('createdAt','desc').get();
+    allNews = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  } catch(e) {}
+  renderNews();
+}
 function renderNews() {
-  const tbody = document.getElementById('news-body');
-  tbody.innerHTML = allNews.length ? allNews.map(p=>`
-    <tr>
-      <td><strong>${p.title}</strong><div style="font-size:.78rem;color:var(--text-light);margin-top:2px">${(p.summary||'').slice(0,60)}...</div></td>
-      <td><span class="badge tag">${p.category||'—'}</span></td>
-      <td style="font-size:.8rem">${p.createdAt?new Date(p.createdAt).toLocaleDateString():'—'}</td>
-      <td style="white-space:nowrap">
-        <button class="btn-admin sec" onclick="editNewsPost('${p.id}')" style="padding:5px 10px;font-size:.76rem;margin-right:3px">Edit</button>
-        <button class="btn-admin danger" onclick="deleteNews('${p.id}')" style="padding:5px 10px;font-size:.76rem">Delete</button>
-      </td>
-    </tr>`).join('') : '<tr><td colspan="4" style="text-align:center;padding:28px;color:var(--text-light)">No posts yet. Click "+ New Post".</td></tr>';
+  const el = document.getElementById('news-body');
+  if (!el) return;
+  el.innerHTML = allNews.length ? allNews.map(p => `
+    <div style="background:var(--bg);border-radius:12px;padding:14px;border:1px solid var(--border)">
+      <div style="font-weight:700;font-size:.9rem;margin-bottom:4px;line-height:1.4">${p.title}</div>
+      <div style="font-size:.76rem;color:var(--text-mid);margin-bottom:10px">${(p.summary||'').slice(0,80)}...</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+        <div style="display:flex;gap:8px;align-items:center">
+          <span style="background:rgba(15,76,117,.08);color:var(--primary);font-size:.72rem;font-weight:600;padding:2px 10px;border-radius:50px">${p.category||'News'}</span>
+          <span style="font-size:.74rem;color:var(--text-light)">${p.createdAt?new Date(p.createdAt).toLocaleDateString():'—'}</span>
+        </div>
+        <div style="display:flex;gap:6px">
+          <button onclick="openNewsModal('${p.id}')" style="background:#fff;border:1px solid var(--border);color:var(--text);padding:6px 12px;border-radius:8px;font-size:.76rem;cursor:pointer;font-family:var(--sans)">✏️ Edit</button>
+          <button onclick="deleteNews('${p.id}')" style="background:#fee2e2;border:1px solid #fecaca;color:#b91c1c;padding:6px 12px;border-radius:8px;font-size:.76rem;cursor:pointer;font-family:var(--sans)">🗑 Delete</button>
+        </div>
+      </div>
+    </div>`).join('') : '<div style="text-align:center;padding:36px;color:var(--text-light)">No posts yet.<br><br><button onclick="openNewsModal()" style="background:var(--primary);color:#fff;border:none;padding:10px 20px;border-radius:50px;cursor:pointer;font-family:var(--sans)">+ Write First Post</button></div>';
 }
-
-function openNewsModal(id=null) {
-  document.getElementById('newsModalTitle').textContent = id?'Edit Post':'New Post';
-  document.getElementById('newsId').value=id||'';
-  if(id){const p=allNews.find(x=>x.id===id);document.getElementById('newsTitle').value=p.title||'';document.getElementById('newsCat').value=p.category||'';document.getElementById('newsImg').value=p.image||'';document.getElementById('newsSummary').value=p.summary||'';document.getElementById('newsContent').value=p.content||'';}
-  else document.getElementById('newsForm').reset();
+function openNewsModal(id) {
+  document.getElementById('newsModalTitle').textContent = id ? 'Edit Post' : 'New Post';
+  document.getElementById('newsId').value = id || '';
+  if (id) {
+    const p = allNews.find(x => x.id === id) || {};
+    document.getElementById('newsTitle').value = p.title || '';
+    document.getElementById('newsCat').value = p.category || '';
+    document.getElementById('newsImg').value = p.image || '';
+    document.getElementById('newsSummary').value = p.summary || '';
+    document.getElementById('newsContent').value = p.content || '';
+  } else { document.getElementById('newsForm').reset(); }
   document.getElementById('newsModal').classList.add('open');
 }
-function editNewsPost(id){openNewsModal(id);}
-
-document.getElementById('newsForm').addEventListener('submit', async e => {
+document.getElementById('newsForm').addEventListener('submit', async function(e) {
   e.preventDefault();
-  const id=document.getElementById('newsId').value;
-  const data={title:document.getElementById('newsTitle').value,category:document.getElementById('newsCat').value,image:document.getElementById('newsImg').value,summary:document.getElementById('newsSummary').value,content:document.getElementById('newsContent').value,updatedAt:new Date().toISOString()};
-  if(id){await db.collection('news').doc(id).update(data);}
-  else{data.createdAt=new Date().toISOString();await db.collection('news').add(data);}
+  const id = document.getElementById('newsId').value;
+  const data = {
+    title: document.getElementById('newsTitle').value.trim(),
+    category: document.getElementById('newsCat').value,
+    image: document.getElementById('newsImg').value.trim(),
+    summary: document.getElementById('newsSummary').value.trim(),
+    content: document.getElementById('newsContent').value.trim(),
+    updatedAt: new Date().toISOString()
+  };
+  if (id) { await db.collection('news').doc(id).update(data); }
+  else { data.createdAt = new Date().toISOString(); await db.collection('news').add(data); }
   closeModal('newsModal');
-  const snap=await db.collection('news').orderBy('createdAt','desc').get();
-  allNews=snap.docs.map(d=>({id:d.id,...d.data()}));
-  renderNews(); showToast(id?'Post updated!':'Post published!');
+  const snap = await db.collection('news').orderBy('createdAt','desc').get();
+  allNews = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  renderNews();
+  renderNewsOnSite(allNews);
+  showToast(id ? '✅ Post updated on website!' : '✅ Post published on website!');
 });
-
-async function deleteNews(id){
-  if(!confirm('Delete this post?')) return;
+async function deleteNews(id) {
+  if (!confirm('Delete this post?')) return;
   await db.collection('news').doc(id).delete();
-  allNews=allNews.filter(x=>x.id!==id); renderNews(); showToast('Post deleted.');
+  allNews = allNews.filter(x => x.id !== id);
+  renderNews();
+  renderNewsOnSite(allNews);
+  showToast('Post deleted.');
 }
 
-// MESSAGES
+// =====================
+// HMO ADMIN
+// =====================
+async function loadAndRenderHmos() {
+  try {
+    const snap = await db.collection('hmos').orderBy('createdAt','asc').get();
+    allHmos = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  } catch(e) {}
+  renderHmos();
+}
+function renderHmos() {
+  const el = document.getElementById('hmo-body');
+  if (!el) return;
+  el.innerHTML = allHmos.length ? allHmos.map(h => `
+    <div style="background:var(--bg);border-radius:12px;padding:14px;display:flex;align-items:center;gap:12px;border:1px solid var(--border)">
+      <div style="font-size:2rem;width:44px;text-align:center;flex-shrink:0">${h.icon||'🏥'}</div>
+      <div style="flex:1;min-width:0"><div style="font-weight:700;font-size:.92rem;margin-bottom:2px">${h.name}</div><div style="font-size:.8rem;color:var(--text-mid)">${h.desc||'—'}</div></div>
+      <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">
+        <button onclick="openHmoModal('${h.id}')" style="background:#fff;border:1px solid var(--border);color:var(--text);padding:6px 12px;border-radius:8px;font-size:.76rem;cursor:pointer;font-family:var(--sans)">✏️ Edit</button>
+        <button onclick="deleteHmo('${h.id}')" style="background:#fee2e2;border:1px solid #fecaca;color:#b91c1c;padding:6px 12px;border-radius:8px;font-size:.76rem;cursor:pointer;font-family:var(--sans)">🗑 Delete</button>
+      </div>
+    </div>`).join('') : '<div style="text-align:center;padding:36px;color:var(--text-light)">No HMO plans yet.<br><br><button onclick="openHmoModal()" style="background:var(--primary);color:#fff;border:none;padding:10px 20px;border-radius:50px;cursor:pointer;font-family:var(--sans)">+ Add First HMO Plan</button></div>';
+}
+function openHmoModal(id) {
+  document.getElementById('hmoModalTitle').textContent = id ? 'Edit HMO Plan' : 'Add HMO Plan';
+  document.getElementById('hmoId').value = id || '';
+  if (id) { const h = allHmos.find(x => x.id === id) || {}; document.getElementById('hmoName').value = h.name||''; document.getElementById('hmoIcon').value = h.icon||''; document.getElementById('hmoDesc').value = h.desc||''; }
+  else { document.getElementById('hmoForm').reset(); }
+  document.getElementById('hmoModal').classList.add('open');
+}
+document.getElementById('hmoForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const id = document.getElementById('hmoId').value;
+  const data = { name: document.getElementById('hmoName').value.trim(), icon: document.getElementById('hmoIcon').value.trim(), desc: document.getElementById('hmoDesc').value.trim(), updatedAt: new Date().toISOString() };
+  if (id) { await db.collection('hmos').doc(id).update(data); }
+  else { data.createdAt = new Date().toISOString(); await db.collection('hmos').add(data); }
+  closeModal('hmoModal');
+  const snap = await db.collection('hmos').orderBy('createdAt','asc').get();
+  allHmos = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  renderHmos();
+  renderHmosOnSite(allHmos);
+  showToast(id ? '✅ HMO updated!' : '✅ HMO added to website!');
+});
+async function deleteHmo(id) {
+  if (!confirm('Remove this HMO plan?')) return;
+  await db.collection('hmos').doc(id).delete();
+  allHmos = allHmos.filter(x => x.id !== id);
+  renderHmos(); renderHmosOnSite(allHmos);
+  showToast('HMO removed.');
+}
+
+// =====================
+// MESSAGES ADMIN
+// =====================
+async function loadAndRenderMsgs() {
+  try {
+    const snap = await db.collection('contacts').orderBy('createdAt','desc').get();
+    allMsgs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  } catch(e) {}
+  renderMsgs();
+}
 function renderMsgs() {
-  const tbody = document.getElementById('msgs-body');
-  tbody.innerHTML = allMsgs.length ? allMsgs.map((m,i)=>`
-    <tr>
-      <td>${i+1}</td><td><strong>${m.name||'—'}</strong></td>
-      <td><a href="mailto:${m.email}">${m.email||'—'}</a></td>
-      <td style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${m.subject||'—'}</td>
-      <td style="font-size:.8rem">${m.createdAt?new Date(m.createdAt).toLocaleDateString():'—'}</td>
-      <td style="white-space:nowrap">
-        <button class="btn-admin sec" onclick="viewMsg('${m.id}')" style="padding:5px 10px;font-size:.76rem;margin-right:3px">View</button>
-        <button class="btn-admin danger" onclick="deleteMsg('${m.id}')" style="padding:5px 10px;font-size:.76rem">Delete</button>
-      </td>
-    </tr>`).join('') : '<tr><td colspan="6" style="text-align:center;padding:28px;color:var(--text-light)">No messages yet.</td></tr>';
+  const el = document.getElementById('msgs-body');
+  if (!el) return;
+  el.innerHTML = allMsgs.length ? allMsgs.map(m => `
+    <div style="background:var(--bg);border-radius:12px;padding:14px;border:1px solid var(--border)">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+        <div><div style="font-weight:700;font-size:.92rem">${m.name||'—'}</div><div style="font-size:.78rem;color:var(--primary);margin-top:1px">${m.subject||'—'}</div></div>
+        <span style="font-size:.72rem;color:var(--text-light);white-space:nowrap;margin-left:8px">${m.createdAt?new Date(m.createdAt).toLocaleDateString():'—'}</span>
+      </div>
+      <div style="font-size:.8rem;color:var(--text-mid);margin-bottom:10px">${(m.message||'').slice(0,100)}...</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button onclick="viewMsg('${m.id}')" style="background:#fff;border:1px solid var(--border);color:var(--text);padding:7px 12px;border-radius:8px;font-size:.78rem;cursor:pointer;font-family:var(--sans)">👁 View</button>
+        <a href="mailto:${m.email}" style="background:#fff;border:1px solid var(--border);color:var(--primary);padding:7px 12px;border-radius:8px;font-size:.78rem;text-decoration:none;display:inline-block">📧 Reply</a>
+        <button onclick="deleteMsg('${m.id}')" style="background:#fee2e2;border:1px solid #fecaca;color:#b91c1c;padding:7px 12px;border-radius:8px;font-size:.78rem;cursor:pointer;font-family:var(--sans)">🗑 Delete</button>
+      </div>
+    </div>`).join('') : '<div style="text-align:center;padding:36px;color:var(--text-light)">No messages yet.</div>';
 }
-
 function viewMsg(id) {
-  const m=allMsgs.find(x=>x.id===id); if(!m) return;
-  document.getElementById('msgModalContent').innerHTML=`
-    <div style="display:grid;gap:14px;margin-top:8px">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+  const m = allMsgs.find(x => x.id === id); if (!m) return;
+  document.getElementById('msgModalContent').innerHTML = `
+    <div style="display:grid;gap:12px;margin-top:8px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
         <div><div style="font-size:.72rem;color:var(--text-light);font-weight:600;margin-bottom:3px">FROM</div><strong>${m.name}</strong></div>
         <div><div style="font-size:.72rem;color:var(--text-light);font-weight:600;margin-bottom:3px">DATE</div>${m.createdAt?new Date(m.createdAt).toLocaleString():'—'}</div>
         <div><div style="font-size:.72rem;color:var(--text-light);font-weight:600;margin-bottom:3px">EMAIL</div><a href="mailto:${m.email}">${m.email}</a></div>
@@ -1720,167 +2173,27 @@ function viewMsg(id) {
     </div>`;
   document.getElementById('msgModal').classList.add('open');
 }
-
-async function deleteMsg(id){
-  if(!confirm('Delete this message?')) return;
+async function deleteMsg(id) {
+  if (!confirm('Delete this message?')) return;
   await db.collection('contacts').doc(id).delete();
-  allMsgs=allMsgs.filter(x=>x.id!==id); renderMsgs();
-  document.getElementById('ds-msgs').textContent=allMsgs.length;
+  allMsgs = allMsgs.filter(x => x.id !== id);
+  renderMsgs();
+  const ds = document.getElementById('ds-msgs'); if (ds) ds.textContent = allMsgs.length;
   showToast('Message deleted.');
 }
 
 // =====================
-// APPLY SETTINGS TO WEBSITE
+// HERO EDITOR
 // =====================
-function applySettingsToSite(d) {
-  if (!d) return;
-  // Update all phone numbers
-  if (d.phone) {
-    const cleanPhone = d.phone.replace(/\s/g,'');
-    document.querySelectorAll('a[href^="tel:"]').forEach(el => el.href = 'tel:' + cleanPhone);
-    document.querySelectorAll('a[href^="https://wa.me/"]').forEach(el => el.href = 'https://wa.me/' + cleanPhone.replace('+',''));
-    // Update displayed phone text in emergency bar and footer
-    document.querySelectorAll('.e-links a[href^="tel:"], .footer-ci a[href^="tel:"], .appt-item a[href^="tel:"]').forEach(el => el.textContent = d.phone);
-    document.querySelectorAll('.cta-acts a[href^="tel:"]').forEach(el => el.innerHTML = '📞 ' + d.phone);
-  }
-  if (d.email) {
-    document.querySelectorAll('a[href^="mailto:info@"]').forEach(el => { el.href = 'mailto:' + d.email; el.textContent = d.email; });
-  }
-  if (d.address) {
-    document.querySelectorAll('.footer-ci').forEach(el => { if(el.innerHTML.includes('📍')) el.innerHTML = '📍 ' + d.address; });
-    document.querySelectorAll('.contact-card p').forEach(el => { if(el.textContent.includes('Cashier') || el.textContent.includes('Agbara')) el.textContent = d.address; });
-  }
-  if (d.hours) {
-    document.querySelectorAll('.footer-ci').forEach(el => { if(el.innerHTML.includes('OPD:')) el.innerHTML = '🕐 OPD: ' + d.hours; });
-    document.querySelectorAll('.contact-card p').forEach(el => { if(el.textContent.includes('OPD:')) el.textContent = 'OPD: ' + d.hours + ' | Emergency: 24/7'; });
-  }
-  if (d.hms) {
-    const el = document.getElementById('s-hms'); if(el) el.value = d.hms;
-  }
+function loadHeroFields() {
+  db.collection('settings').doc('hero').get().then(snap => {
+    if (!snap.exists) return;
+    const d = snap.data();
+    const map = { badge:'eh-badge', title:'eh-title', span:'eh-span', sub:'eh-sub', img:'eh-img', s1n:'eh-s1n', s1l:'eh-s1l', s2n:'eh-s2n', s2l:'eh-s2l', s3n:'eh-s3n', s3l:'eh-s3l' };
+    Object.entries(map).forEach(([k,elId]) => { const el = document.getElementById(elId); if (el && d[k]) el.value = d[k]; });
+    if (d.img) { const p = document.getElementById('eh-prev'); if (p) p.src = d.img; }
+  }).catch(() => {});
 }
-
-// =====================
-// LOAD SETTINGS ON PAGE LOAD (so main site always reflects saved settings)
-// =====================
-async function loadSiteSettings() {
-  try {
-    const snap = await db.collection('settings').doc('contact').get();
-    if (snap.exists) {
-      const d = snap.data();
-      applySettingsToSite(d);
-      // Also populate admin form fields if open
-      if(d.phone && document.getElementById('s-phone')) document.getElementById('s-phone').value = d.phone;
-      if(d.email && document.getElementById('s-email')) document.getElementById('s-email').value = d.email;
-      if(d.address && document.getElementById('s-address')) document.getElementById('s-address').value = d.address;
-      if(d.hours && document.getElementById('s-hours')) document.getElementById('s-hours').value = d.hours;
-      if(d.hms && document.getElementById('s-hms')) document.getElementById('s-hms').value = d.hms;
-    }
-  } catch(e) { console.log('Settings load error:', e); }
-}
-// Load settings immediately when site opens
-
-
-document.getElementById('settingsForm').addEventListener('submit', async e=>{
-  e.preventDefault();
-  const d = {phone:document.getElementById('s-phone').value,email:document.getElementById('s-email').value,address:document.getElementById('s-address').value,hours:document.getElementById('s-hours').value,hms:document.getElementById('s-hms').value,updatedAt:new Date().toISOString()};
-  await db.collection('settings').doc('contact').set(d);
-  applySettingsToSite(d);
-  showToast('Settings saved and applied to website!');
-});
-
-document.getElementById('pwdForm').addEventListener('submit', async e=>{
-  e.preventDefault();
-  const np=document.getElementById('newPwd').value, cp=document.getElementById('confirmPwd').value;
-  const err=document.getElementById('pwdErr'); err.style.display='none';
-  if(np.length<8){err.textContent='Password must be at least 8 characters.';err.style.display='block';return;}
-  if(np!==cp){err.textContent='Passwords do not match.';err.style.display='block';return;}
-  try{await auth.currentUser.updatePassword(np);showToast('Password updated!');document.getElementById('pwdForm').reset();}
-  catch(e){err.textContent=e.message||'Error. Please re-login and try again.';err.style.display='block';}
-});
-
-// ===== HMO MANAGEMENT =====
-let allHmos = [];
-
-
-
-function renderHmos() {
-  const el = document.getElementById('hmo-body');
-  el.innerHTML = allHmos.length ? allHmos.map(h => `
-    <div style="background:var(--bg);border-radius:12px;padding:14px;display:flex;align-items:center;gap:12px;border:1px solid var(--border)">
-      <div style="font-size:2rem;width:44px;text-align:center;flex-shrink:0">${h.icon||'🏥'}</div>
-      <div style="flex:1;min-width:0">
-        <div style="font-weight:700;font-size:.92rem;margin-bottom:2px">${h.name}</div>
-        <div style="font-size:.8rem;color:var(--text-mid)">${h.desc||'—'}</div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">
-        <button onclick="editHmo('${h.id}')" style="background:#fff;border:1px solid var(--border);color:var(--text);padding:6px 12px;border-radius:8px;font-size:.76rem;cursor:pointer;font-family:var(--sans)">✏️ Edit</button>
-        <button onclick="deleteHmo('${h.id}')" style="background:#fee2e2;border:1px solid #fecaca;color:#b91c1c;padding:6px 12px;border-radius:8px;font-size:.76rem;cursor:pointer;font-family:var(--sans)">🗑 Delete</button>
-      </div>
-    </div>`).join('') : '<div style="text-align:center;padding:28px;color:var(--text-light)">No HMO plans added yet. Default plans are shown.<br><br><button onclick="openHmoModal()" style="background:var(--primary);color:#fff;border:none;padding:10px 20px;border-radius:50px;cursor:pointer;font-family:var(--sans)">+ Add HMO Plan</button></div>';
-}
-
-function openHmoModal(id=null) {
-  document.getElementById('hmoModalTitle').textContent = id ? 'Edit HMO Plan' : 'Add HMO Plan';
-  document.getElementById('hmoId').value = id||'';
-  if(id) { const h=allHmos.find(x=>x.id===id); document.getElementById('hmoName').value=h.name||''; document.getElementById('hmoIcon').value=h.icon||''; document.getElementById('hmoDesc').value=h.desc||''; }
-  else document.getElementById('hmoForm').reset();
-  document.getElementById('hmoModal').classList.add('open');
-}
-function editHmo(id){openHmoModal(id);}
-
-document.getElementById('hmoForm').addEventListener('submit', async e => {
-  e.preventDefault();
-  const id = document.getElementById('hmoId').value;
-  const data = {name:document.getElementById('hmoName').value,icon:document.getElementById('hmoIcon').value,desc:document.getElementById('hmoDesc').value,updatedAt:new Date().toISOString()};
-  if(id){await db.collection('hmos').doc(id).update(data);}
-  else{data.createdAt=new Date().toISOString();await db.collection('hmos').add(data);}
-  closeModal('hmoModal');
-  const snap = await db.collection('hmos').orderBy('createdAt','asc').get();
-  allHmos = snap.docs.map(d=>({id:d.id,...d.data()}));
-  renderHmos();
-  renderHmosOnSite(allHmos);
-  showToast(id?'✅ HMO updated on website!':'✅ HMO added to website!');
-});
-
-async function deleteHmo(id) {
-  if(!confirm('Remove this HMO plan from the website?')) return;
-  await db.collection('hmos').doc(id).delete();
-  allHmos = allHmos.filter(x=>x.id!==id);
-  renderHmos(); renderHmosOnSite(allHmos);
-  showToast('HMO plan removed.');
-}
-
-// Load HMOs on page load - always show on website
-
-function renderHmosOnSite(hmos) {
-  const grid = document.getElementById('hmoGrid');
-  if (!grid) return;
-  if (!hmos || hmos.length === 0) {
-    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-light)"><p style="margin-bottom:16px">No HMO plans added yet.</p><p style="font-size:.85rem">Add plans from Admin Panel → HMO Plans.</p></div>';
-    return;
-  }
-  grid.innerHTML = hmos.map(h => `
-    <div style="background:#fff;border:1px solid var(--border);border-radius:var(--r);padding:22px;text-align:center;box-shadow:var(--shadow);transition:all .3s" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform=''">
-      <div style="font-size:2rem;margin-bottom:10px">${h.icon||'🏥'}</div>
-      <h4 style="font-size:.92rem;font-weight:700;color:var(--primary);margin-bottom:5px">${h.name}</h4>
-      <p style="font-size:.8rem;color:var(--text-mid)">${h.desc||'Accepted for all registered members'}</p>
-    </div>`).join('');
-}
-
-async function loadHmosOnSite() {
-  try {
-    const snap = await db.collection('hmos').orderBy('createdAt','asc').get();
-    const hmos = snap.docs.map(d=>({id:d.id,...d.data()}));
-    allHmos = hmos;
-    renderHmosOnSite(hmos);
-  } catch(e) {
-    renderHmosOnSite([]);
-  }
-}
-loadHmosOnSite();
-
-
-// ===== HERO SECTION SAVE & LOAD =====
 function saveHeroSection() {
   const vals = {
     badge: document.getElementById('eh-badge').value,
@@ -1896,18 +2209,29 @@ function saveHeroSection() {
     s3l: document.getElementById('eh-s3l').value,
     updatedAt: new Date().toISOString()
   };
-  // Apply to live site immediately
-  const map = {heroBadge:'badge',heroSub:'sub',stat1num:'s1n',stat1lbl:'s1l',stat2num:'s2n',stat2lbl:'s2l',stat3num:'s3n',stat3lbl:'s3l'};
-  Object.entries(map).forEach(([elId,key])=>{const el=document.getElementById(elId);if(el&&vals[key])el.textContent=vals[key];});
-  const ht=document.getElementById('heroTitle');
-  if(ht&&vals.title) ht.innerHTML=vals.title+'<br><span id="heroTitleSpan" style="color:#f4a261">'+vals.span+'</span>';
-  const hi=document.getElementById('heroImg'); if(hi&&vals.img) hi.src=vals.img;
-  // Save to Firebase
+  const map = { heroBadge:'badge', heroSub:'sub', stat1num:'s1n', stat1lbl:'s1l', stat2num:'s2n', stat2lbl:'s2l', stat3num:'s3n', stat3lbl:'s3l' };
+  Object.entries(map).forEach(([elId,k]) => { const el = document.getElementById(elId); if (el && vals[k]) el.textContent = vals[k]; });
+  const ht = document.getElementById('heroTitle');
+  if (ht && vals.title) ht.innerHTML = vals.title + '<br><span id="heroTitleSpan" style="color:#f4a261">' + vals.span + '</span>';
+  const hi = document.getElementById('heroImg'); if (hi && vals.img) hi.src = vals.img;
   db.collection('settings').doc('hero').set(vals);
-  showToast('Hero section updated on website! ✅');
+  showToast('✅ Hero updated on website!');
 }
 
-// ===== ABOUT SECTION SAVE =====
+// =====================
+// ABOUT EDITOR
+// =====================
+function loadAboutFields() {
+  db.collection('settings').doc('about').get().then(snap => {
+    if (!snap.exists) return;
+    const d = snap.data();
+    ['p1','p2','p3','p4'].forEach(k => { const el = document.getElementById('ea-'+k); if (el && d[k]) el.value = d[k]; });
+    if (d.aimg) { const el = document.getElementById('ea-img'); if (el) el.value = d.aimg; const p = document.getElementById('ea-prev'); if (p) p.src = d.aimg; }
+    if (d.mission) { const el = document.getElementById('ea-mission'); if (el) el.value = d.mission; }
+    if (d.vision) { const el = document.getElementById('ea-vision'); if (el) el.value = d.vision; }
+    if (d.values) { const el = document.getElementById('ea-values'); if (el) el.value = d.values; }
+  }).catch(() => {});
+}
 function saveAboutSection() {
   const vals = {
     p1: document.getElementById('ea-p1').value,
@@ -1920,267 +2244,46 @@ function saveAboutSection() {
     values: document.getElementById('ea-values').value,
     updatedAt: new Date().toISOString()
   };
-  // Apply to live site
-  ['p1','p2','p3','p4'].forEach(k=>{const el=document.getElementById('about'+k.charAt(0).toUpperCase()+k.slice(1));if(el&&vals[k])el.textContent=vals[k];});
-  const ai=document.getElementById('aboutImg'); if(ai&&vals.aimg) ai.src=vals.aimg;
-  const mt=document.getElementById('missionText'); if(mt&&vals.mission) mt.textContent=vals.mission;
-  const vt=document.getElementById('visionText'); if(vt&&vals.vision) vt.textContent=vals.vision;
-  const va=document.getElementById('valuesText'); if(va&&vals.values) va.textContent=vals.values;
-  // Save
+  ['p1','p2','p3','p4'].forEach(k => {
+    const el = document.getElementById('about' + k.charAt(0).toUpperCase() + k.slice(1));
+    if (el && vals[k]) el.textContent = vals[k];
+  });
+  const ai = document.getElementById('aboutImg'); if (ai && vals.aimg) ai.src = vals.aimg;
+  const mt = document.getElementById('missionText'); if (mt && vals.mission) mt.textContent = vals.mission;
+  const vt = document.getElementById('visionText'); if (vt && vals.vision) vt.textContent = vals.vision;
+  const va = document.getElementById('valuesText'); if (va && vals.values) va.textContent = vals.values;
   db.collection('settings').doc('about').set(vals);
-  showToast('About page updated on website! ✅');
+  showToast('✅ About page updated!');
 }
 
-// ===== LOAD ALL SAVED CONTENT ON PAGE LOAD =====
-async function loadAllSavedContent() {
-  try {
-    // Load hero
-    const hSnap = await db.collection('settings').doc('hero').get();
-    if(hSnap.exists) {
-      const d = hSnap.data();
-      const fields = ['badge','title','span','sub','img','s1n','s1l','s2n','s2l','s3n','s3l'];
-      fields.forEach(k=>{const el=document.getElementById('eh-'+k);if(el&&d[k])el.value=d[k];});
-      // Apply to website
-      const map = {heroBadge:'badge',heroSub:'sub',stat1num:'s1n',stat1lbl:'s1l',stat2num:'s2n',stat2lbl:'s2l',stat3num:'s3n',stat3lbl:'s3l'};
-      Object.entries(map).forEach(([elId,key])=>{const el=document.getElementById(elId);if(el&&d[key])el.textContent=d[key];});
-      const ht=document.getElementById('heroTitle');
-      if(ht&&d.title) ht.innerHTML=d.title+'<br><span id="heroTitleSpan" style="color:#f4a261">'+(d.span||'')+'</span>';
-      const hi=document.getElementById('heroImg'); if(hi&&d.img) hi.src=d.img;
-      if(d.img){const prev=document.getElementById('eh-prev');if(prev)prev.src=d.img;}
-    }
-  } catch(e){}
-  try {
-    // Load about
-    const aSnap = await db.collection('settings').doc('about').get();
-    if(aSnap.exists) {
-      const d = aSnap.data();
-      ['p1','p2','p3','p4'].forEach(k=>{
-        const ef=document.getElementById('ea-'+k); if(ef&&d[k]) ef.value=d[k];
-        const el=document.getElementById('about'+k.charAt(0).toUpperCase()+k.slice(1)); if(el&&d[k]) el.textContent=d[k];
-      });
-      if(d.aimg){const ei=document.getElementById('ea-img');if(ei)ei.value=d.aimg;const ai=document.getElementById('aboutImg');if(ai)ai.src=d.aimg;const ep=document.getElementById('ea-prev');if(ep)ep.src=d.aimg;}
-      if(d.mission){const ef=document.getElementById('ea-mission');if(ef)ef.value=d.mission;const el=document.getElementById('missionText');if(el)el.textContent=d.mission;}
-      if(d.vision){const ef=document.getElementById('ea-vision');if(ef)ef.value=d.vision;const el=document.getElementById('visionText');if(el)el.textContent=d.vision;}
-      if(d.values){const ef=document.getElementById('ea-values');if(ef)ef.value=d.values;const el=document.getElementById('valuesText');if(el)el.textContent=d.values;}
-    }
-  } catch(e){}
-}
-loadAllSavedContent();
-
-
-// ===== SERVICES MANAGEMENT =====
-let allServices = [];
-const DEFAULT_SERVICES = [
-  {id:'s1',name:'General Consultation',icon:'🩺',desc:'Expert general practitioners for all health concerns.',img:'https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=500&q=80',bullets:'Adult & paediatric consultations\nChronic disease management\nPreventive care & checkups'},
-  {id:'s2',name:'Laboratory Services',icon:'🔬',desc:'Modern diagnostic laboratory for accurate test results.',img:'https://images.unsplash.com/photo-1581595220892-b0739db3ba8c?w=500&q=80',bullets:'Full blood count & haematology\nHIV, malaria, hepatitis tests\nBiochemistry & hormonal profiles'},
-  {id:'s3',name:'Pharmacy',icon:'💊',desc:'In-house pharmacy with genuine medications.',img:'https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=500&q=80',bullets:'Prescription dispensing\nOver-the-counter medications\nMedication counselling'},
-  {id:'s4',name:'Maternity & Obstetrics',icon:'🤱',desc:'Comprehensive maternal care from conception through delivery.',img:'https://images.unsplash.com/photo-1609220136736-443140cffec6?w=500&q=80',bullets:'Antenatal care & monitoring\nSafe delivery services\nPostnatal care & counselling'},
-  {id:'s5',name:'Emergency Care',icon:'🚑',desc:'24/7 emergency department for all medical emergencies.',img:'https://images.unsplash.com/photo-1504439904031-93ded9f93e4e?w=500&q=80',bullets:'Trauma & accident care\nResuscitation & stabilisation\nAmbulance coordination'},
-  {id:'s6',name:'Paediatrics',icon:'👶',desc:'Specialised healthcare for infants and children.',img:'https://images.unsplash.com/photo-1631815588090-d4bfec5b1ccb?w=500&q=80',bullets:'Child growth monitoring\nVaccination & immunisation\nNutritional counselling'},
-  {id:'s7',name:'Dental Services',icon:'🦷',desc:'Complete dental care for the whole family.',img:'https://images.unsplash.com/photo-1606811971618-4486d14f3f99?w=500&q=80',bullets:'Teeth cleaning & scaling\nCavity filling & extraction\nDental X-rays'},
-  {id:'s8',name:'Eye Care (Ophthalmology)',icon:'👁️',desc:'Comprehensive eye examinations for all ages.',img:'https://images.unsplash.com/photo-1559757175-5700dde675bc?w=500&q=80',bullets:'Vision testing & refraction\nGlaucoma screening\nCataract assessment'},
-  {id:'s9',name:'Radiology & Imaging',icon:'🏥',desc:'Modern X-ray and ultrasound imaging.',img:'https://images.unsplash.com/photo-1516069677018-378515003435?w=500&q=80',bullets:'Digital X-ray services\nObstetric ultrasound\nAbdominal scanning'},
-];
-
-function renderServicesOnSite(list) {
-  const srvList = list.length ? list : DEFAULT_SERVICES;
-  const cardHTML = srvList.map(s => {
-    const bullets = (s.bullets||'').split('\n').filter(b=>b.trim()).map(b=>`<li>${b.trim()}</li>`).join('');
-    return `<div class="srv-card">
-      <div class="srv-img-wrap"><img class="srv-img" src="${s.img||'https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=500&q=80'}" alt="" onerror="this.src='https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=500&q=80'"/></div>
-      <div class="srv-body"><div class="srv-icon">${s.icon||'🏥'}</div><h3>${s.name}</h3><p>${s.desc||''}</p>${bullets?`<ul class="srv-feats">${bullets}</ul>`:''}</div>
-    </div>`;
-  }).join('');
-  ['homeSrvGrid','fullSrvGrid'].forEach(id=>{const g=document.getElementById(id);if(g)g.innerHTML=cardHTML;});
-}
-
-function loadServicesTab() {
-  db.collection('services').orderBy('order').get().then(snap=>{
-    allServices = snap.docs.map(d=>({id:d.id,...d.data()}));
-    if(!allServices.length) allServices = [...DEFAULT_SERVICES];
-    renderSrvTable();
-    renderServicesOnSite(allServices);
-  }).catch(()=>{allServices=[...DEFAULT_SERVICES];renderSrvTable();});
-}
-
-function renderSrvTable() {
-  const el = document.getElementById('srv-body'); if(!el) return;
-  el.innerHTML = allServices.length ? allServices.map(s => `
-    <div style="background:var(--bg);border-radius:12px;padding:14px;display:flex;align-items:center;gap:12px;border:1px solid var(--border)">
-      <div style="font-size:2rem;flex-shrink:0;width:44px;text-align:center">${s.icon||'🏥'}</div>
-      <div style="flex:1;min-width:0">
-        <div style="font-weight:700;font-size:.92rem;margin-bottom:3px">${s.name}</div>
-        <div style="font-size:.78rem;color:var(--text-mid)">${(s.desc||'').slice(0,70)}...</div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">
-        <button onclick="editService('${s.id}')" style="background:var(--bg);border:1px solid var(--border);color:var(--text);padding:6px 12px;border-radius:8px;font-size:.76rem;cursor:pointer;font-family:var(--sans)">✏️ Edit</button>
-        <button onclick="deleteService('${s.id}')" style="background:#fee2e2;border:1px solid #fecaca;color:#b91c1c;padding:6px 12px;border-radius:8px;font-size:.76rem;cursor:pointer;font-family:var(--sans)">🗑 Delete</button>
-      </div>
-    </div>`).join('') : '<div style="text-align:center;padding:36px;color:var(--text-light)">No services yet.<br><br><button onclick="openServiceModal()" style="background:var(--primary);color:#fff;border:none;padding:10px 20px;border-radius:50px;cursor:pointer;font-family:var(--sans)">+ Add First Service</button></div>';
-}
-
-function openServiceModal(id=null) {
-  document.getElementById('serviceModalTitle').textContent = id ? 'Edit Service' : 'Add Service';
-  document.getElementById('serviceId').value = id||'';
-  document.getElementById('serviceForm').reset();
-  document.getElementById('srvImgPrev').src='';
-  if(id) {
-    const s = allServices.find(x=>x.id===id)||{};
-    document.getElementById('srvName').value = s.name||'';
-    document.getElementById('srvIcon').value = s.icon||'';
-    document.getElementById('srvDesc').value = s.desc||'';
-    document.getElementById('srvImg').value = s.img||'';
-    document.getElementById('srvBullets').value = s.bullets||'';
-    if(s.img) document.getElementById('srvImgPrev').src = s.img;
-  }
-  document.getElementById('serviceModal').classList.add('open');
-}
-function editService(id){openServiceModal(id);}
-
-document.getElementById('serviceForm').addEventListener('submit', async e=>{
+// =====================
+// SETTINGS
+// =====================
+document.getElementById('settingsForm').addEventListener('submit', async function(e) {
   e.preventDefault();
-  const id = document.getElementById('serviceId').value;
-  const data = {
-    name:document.getElementById('srvName').value,
-    icon:document.getElementById('srvIcon').value,
-    desc:document.getElementById('srvDesc').value,
-    img:document.getElementById('srvImg').value,
-    bullets:document.getElementById('srvBullets').value,
-    order: id ? (allServices.find(x=>x.id===id)||{}).order||99 : allServices.length,
-    updatedAt:new Date().toISOString()
+  const d = {
+    phone: document.getElementById('s-phone').value,
+    email: document.getElementById('s-email').value,
+    address: document.getElementById('s-address').value,
+    hours: document.getElementById('s-hours').value,
+    hms: document.getElementById('s-hms').value,
+    updatedAt: new Date().toISOString()
   };
-  if(id && !id.startsWith('s')) {
-    await db.collection('services').doc(id).set(data);
-  } else {
-    data.createdAt = new Date().toISOString();
-    const ref = await db.collection('services').add(data);
-    data.id = ref.id;
-  }
-  closeModal('serviceModal');
-  await loadServicesTab();
-  showToast(id?'Service updated on website! ✅':'Service added to website! ✅');
+  await db.collection('settings').doc('contact').set(d);
+  applySettingsToSite(d);
+  showToast('✅ Settings saved and applied to website!');
 });
 
-async function deleteService(id) {
-  if(!confirm('Remove this service from the website?')) return;
-  if(!id.startsWith('s')) await db.collection('services').doc(id).delete();
-  allServices = allServices.filter(x=>x.id!==id);
-  renderSrvTable(); renderServicesOnSite(allServices);
-  showToast('Service removed.');
-}
+document.getElementById('pwdForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const np = document.getElementById('newPwd').value, cp = document.getElementById('confirmPwd').value;
+  const err = document.getElementById('pwdErr'); err.style.display = 'none';
+  if (np.length < 8) { err.textContent = 'Password must be at least 8 characters.'; err.style.display = 'block'; return; }
+  if (np !== cp) { err.textContent = 'Passwords do not match.'; err.style.display = 'block'; return; }
+  try { await auth.currentUser.updatePassword(np); showToast('Password updated!'); document.getElementById('pwdForm').reset(); }
+  catch (ex) { err.textContent = ex.message || 'Error. Please re-login and try again.'; err.style.display = 'block'; }
+});
 
-// Load services on site startup
-db.collection('services').orderBy('order').get().then(snap=>{
-  const list = snap.docs.map(d=>({id:d.id,...d.data()}));
-  if(list.length) { allServices=list; renderServicesOnSite(list); }
-  else renderServicesOnSite([]);
-}).catch(()=>renderServicesOnSite([]));
-
-// ===== LOAD HERO FIELDS when tab opened =====
-function loadHeroFields() {
-  db.collection('settings').doc('hero').get().then(snap=>{
-    if(!snap.exists) return;
-    const d = snap.data();
-    const map = {badge:'eh-badge',title:'eh-title',span:'eh-span',sub:'eh-sub',img:'eh-img',s1n:'eh-s1n',s1l:'eh-s1l',s2n:'eh-s2n',s2l:'eh-s2l',s3n:'eh-s3n',s3l:'eh-s3l'};
-    Object.entries(map).forEach(([k,elId])=>{const el=document.getElementById(elId);if(el&&d[k])el.value=d[k];});
-    if(d.img){const p=document.getElementById('eh-prev');if(p)p.src=d.img;}
-  }).catch(()=>{});
-}
-
-// ===== LOAD ABOUT FIELDS when tab opened =====
-function loadAboutFields() {
-  db.collection('settings').doc('about').get().then(snap=>{
-    if(!snap.exists) return;
-    const d = snap.data();
-    ['p1','p2','p3','p4'].forEach(k=>{const el=document.getElementById('ea-'+k);if(el&&d[k])el.value=d[k];});
-    if(d.aimg){const el=document.getElementById('ea-img');if(el)el.value=d.aimg;const p=document.getElementById('ea-prev');if(p)p.src=d.aimg;}
-    if(d.mission){const el=document.getElementById('ea-mission');if(el)el.value=d.mission;}
-    if(d.vision){const el=document.getElementById('ea-vision');if(el)el.value=d.vision;}
-    if(d.values){const el=document.getElementById('ea-values');if(el)el.value=d.values;}
-  }).catch(()=>{});
-}
-
-// ===== LOAD HMO TAB =====
-function loadHmoTab() {
-  db.collection('hmos').orderBy('createdAt','desc').get().then(snap=>{
-    allHmos = snap.docs.map(d=>({id:d.id,...d.data()}));
-    renderHmos();
-  }).catch(()=>renderHmos());
-}
-
-
-// ===== MOBILE ADMIN SIDEBAR =====
-function toggleSidebar() {
-  const sb = document.getElementById('adminSidebar');
-  const ov = document.getElementById('adminOverlay');
-  if(sb) sb.classList.toggle('open');
-  if(ov) { ov.style.display = ov.style.display==='block'?'none':'block'; }
-}
-function closeSidebar() {
-  const sb = document.getElementById('adminSidebar');
-  const ov = document.getElementById('adminOverlay');
-  if(sb) sb.classList.remove('open');
-  if(ov) ov.style.display='none';
-}
-function setAbn(name) {
-  document.querySelectorAll('.abn-item').forEach(b=>b.classList.remove('active'));
-  const el = document.getElementById('abn-'+name);
-  if(el) el.classList.add('active');
-  if(window.innerWidth<=768) closeSidebar();
-}
-// Auto-show mobile elements when on admin page
-function initAdminMobile() {
-  if(window.innerWidth<=768){
-    const tb=document.getElementById('adminMobileTopbar'); if(tb) tb.style.display='flex';
-    const bn=document.getElementById('adminBottomNav'); if(bn) bn.style.display='flex';
-  }
-}
-
-
-// ═══════════════════════════════════════════
-// DOCTORS — full management
-// ═══════════════════════════════════════════
-
-function renderDoctorsOnSite(docs) {
-  const grid = document.getElementById('doctorsDisplay');
-  if (!grid) return;
-  if (!docs || docs.length === 0) {
-    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--text-light)"><div style="font-size:3rem;margin-bottom:16px">👨‍⚕️</div><h3 style="font-family:var(--serif);margin-bottom:8px;color:var(--text)">No Doctors Added Yet</h3><p style="font-size:.9rem">Doctors added from the Admin Panel will appear here.</p></div>';
-    return;
-  }
-  grid.innerHTML = docs.map(d => `
-    <div class="doc-card">
-      <img src="${d.photo||''}" class="doc-photo" alt="${d.name||''}"
-        style="object-position:top"
-        onerror="this.style.display='none';this.nextElementSibling.querySelector('.doc-avatar').style.display='flex'"
-      />
-      <div class="doc-body">
-        <div class="doc-avatar" style="display:none;width:80px;height:80px;background:linear-gradient(135deg,var(--primary),var(--green));border-radius:50%;margin:0 auto 14px;align-items:center;justify-content:center;font-size:2rem;color:#fff">👤</div>
-        <h4>${d.name||'Doctor'}</h4>
-        <span class="doc-spec">${d.specialization||''}</span>
-        <p class="doc-bio">${d.bio||''}</p>
-        ${d.qualifications ? `<p style="font-size:.76rem;color:var(--text-light);margin-top:6px">${d.qualifications}</p>` : ''}
-      </div>
-    </div>`).join('');
-}
-
-// Load doctors from Firebase when page opens
-async function loadDoctorsOnSite() {
-  try {
-    const snap = await db.collection('doctors').orderBy('createdAt','asc').get();
-    const docs = snap.docs.map(d => ({id: d.id, ...d.data()}));
-    renderDoctorsOnSite(docs);
-    return docs;
-  } catch(e) {
-    console.log('Doctors load error:', e);
-    renderDoctorsOnSite([]);
-    return [];
-  }
-}
-// Call immediately on page load
-loadDoctorsOnSite();
-
-loadSiteSettings();
 </script>
 </body>
 </html>
