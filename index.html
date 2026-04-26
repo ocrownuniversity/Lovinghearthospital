@@ -436,7 +436,6 @@ section{padding:90px 0}
   .admin-sidebar.open{transform:translateX(0)!important;box-shadow:6px 0 32px rgba(0,0,0,.5)!important}
   .admin-main{margin-left:0!important;padding:68px 12px 82px!important}
   #adminMobileTopbar{display:flex!important}
-  #adminBottomNav{display:flex!important}
   .admin-stats{grid-template-columns:1fr 1fr!important}
   .admin-table{font-size:.76rem}
   .admin-table th,.admin-table td{padding:7px 5px}
@@ -675,22 +674,22 @@ section{padding:90px 0}
 <div class="page" id="page-about">
   <section class="page-hero">
     <div class="container">
-      <h1>About Us</h1>
-      <p>Dedicated to healing every patient with love, skill, and modern medicine since our founding.</p>
+      <h1 id="aboutPageHero">About Us</h1>
+      <p id="aboutPageHeroSub">Dedicated to healing every patient with love, skill, and modern medicine since our founding.</p>
       <div class="breadcrumb"><span class="nav-link-btn" onclick="showPage('home')">Home</span><span>›</span><span>About Us</span></div>
     </div>
   </section>
   <section>
     <div class="container">
       <div class="about-grid">
-        <img src="https://images.unsplash.com/photo-1538108149393-fbbd81895907?w=700&q=80" alt="Hospital" class="about-img"/>
+        <img src="https://images.unsplash.com/photo-1538108149393-fbbd81895907?w=700&q=80" alt="Hospital" class="about-img" id="aboutImg"/>
         <div class="about-content">
           <p class="label">Our Story</p>
-          <h2 class="sec-title">A Legacy of Compassionate Care</h2>
-          <p>Loving Heart Hospital was established with a singular vision: to bring world-class, compassionate healthcare to the people of Agbara and its environs in Ogun State, Nigeria.</p>
-          <p>Founded over a decade ago, we began as a small healthcare clinic serving the immediate Cashier community. Through dedicated service, community trust, and continuous investment in infrastructure and human capital, we have grown into a full-service hospital with modern diagnostic, surgical, and therapeutic facilities.</p>
-          <p>Today, we proudly serve thousands of patients annually across Agbara, Ota, and the wider Ogun State corridor. Our team works tirelessly to ensure every patient receives not just medical treatment, but genuine care and attention.</p>
-          <p>At Loving Heart, we believe healthcare is a right, not a privilege. That belief drives every decision we make — from our affordable pricing to our 24/7 emergency services.</p>
+          <h2 class="sec-title" id="aboutStoryTitle">A Legacy of Compassionate Care</h2>
+          <p id="aboutP1">Loving Heart Hospital was established with a singular vision: to bring world-class, compassionate healthcare to the people of Agbara and its environs in Ogun State, Nigeria.</p>
+          <p id="aboutP2">Founded over a decade ago, we began as a small healthcare clinic serving the immediate Cashier community. Through dedicated service, community trust, and continuous investment in infrastructure and human capital, we have grown into a full-service hospital with modern diagnostic, surgical, and therapeutic facilities.</p>
+          <p id="aboutP3">Today, we proudly serve thousands of patients annually across Agbara, Ota, and the wider Ogun State corridor. Our team works tirelessly to ensure every patient receives not just medical treatment, but genuine care and attention.</p>
+          <p id="aboutP4">At Loving Heart, we believe healthcare is a right, not a privilege. That belief drives every decision we make — from our affordable pricing to our 24/7 emergency services.</p>
         </div>
       </div>
     </div>
@@ -699,9 +698,9 @@ section{padding:90px 0}
     <div class="container">
       <div class="sec-head"><p class="label">Who We Are</p><h2 class="sec-title">Mission, Vision & Values</h2></div>
       <div class="mvv-grid">
-        <div class="mvv-card mission"><div class="mvv-icon">🎯</div><h3>Our Mission</h3><p>To provide accessible, affordable, and high-quality healthcare services to every individual and family in our community, treating each patient with dignity, compassion, and professional excellence.</p></div>
-        <div class="mvv-card vision"><div class="mvv-icon">🔭</div><h3>Our Vision</h3><p>To become the leading healthcare provider in Ogun State — recognised for clinical excellence, technological innovation, and an unwavering commitment to patient-centred care that transforms lives.</p></div>
-        <div class="mvv-card vals"><div class="mvv-icon">💎</div><h3>Our Values</h3><p>Compassion, Integrity, Excellence, Teamwork, and Innovation. These five pillars guide every interaction, every procedure, and every decision made at Loving Heart Hospital.</p></div>
+        <div class="mvv-card mission"><div class="mvv-icon">🎯</div><h3>Our Mission</h3><p id="missionText">To provide accessible, affordable, and high-quality healthcare services to every individual and family in our community, treating each patient with dignity, compassion, and professional excellence.</p></div>
+        <div class="mvv-card vision"><div class="mvv-icon">🔭</div><h3>Our Vision</h3><p id="visionText">To become the leading healthcare provider in Ogun State — recognised for clinical excellence, technological innovation, and an unwavering commitment to patient-centred care that transforms lives.</p></div>
+        <div class="mvv-card vals"><div class="mvv-icon">💎</div><h3>Our Values</h3><p id="valuesText">Compassion, Integrity, Excellence, Teamwork, and Innovation. These five pillars guide every interaction, every procedure, and every decision made at Loving Heart Hospital.</p></div>
       </div>
     </div>
   </section>
@@ -1312,6 +1311,11 @@ function showPage(name) {
   document.getElementById('navLinks').classList.remove('open');
   document.getElementById('hamburger').innerHTML = '<span></span><span></span><span></span>';
   document.querySelectorAll('.nav-links a[data-page]').forEach(a => a.classList.toggle('active', a.dataset.page === name));
+  // Admin bottom nav: only visible when on admin page
+  const bn = document.getElementById('adminBottomNav');
+  const mt = document.getElementById('adminMobileTopbar');
+  if (bn) bn.style.display = name === 'admin' ? 'flex' : 'none';
+  if (mt) mt.style.display = name === 'admin' ? 'flex' : 'none';
   if (name === 'admin') { loadAdminData(); initAdminMobile(); }
 }
 
@@ -1731,10 +1735,7 @@ function showAdminTab(name) {
 }
 
 function initAdminMobile() {
-  if (window.innerWidth <= 768) {
-    const tb = document.getElementById('adminMobileTopbar'); if (tb) tb.style.display = 'flex';
-    const bn = document.getElementById('adminBottomNav'); if (bn) bn.style.display = 'flex';
-  }
+  // showPage() already handles adminBottomNav and adminMobileTopbar visibility
 }
 
 function toggleSidebar() {
