@@ -1588,7 +1588,8 @@ const BUILTIN_SERVICES = [
 ];
 
 function renderServicesOnSite(list) {
-  const toShow = (list && list.length > 0) ? list : BUILTIN_SERVICES;
+  // Use merged list (firebase + remaining builtins) so website always shows all services
+  const toShow = getMergedServiceList();
   const cardHTML = toShow.map(s => {
     const bullets = (s.bullets || '').split('\n').filter(b => b.trim()).map(b => `<li>${b.trim()}</li>`).join('');
     return `<div class="srv-card">
@@ -1601,9 +1602,11 @@ function renderServicesOnSite(list) {
 
 async function loadServicesOnSite() {
   try {
-    const snap = await db.collection('services').orderBy('order').get();
+    const snap = await db.collection('services').get();
     const list = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    renderServicesOnSite(list.length ? list : null);
+    list.sort((a,b) => (a.order||0) - (b.order||0));
+    allServices = list;
+    renderServicesOnSite(list);
     return list;
   } catch (e) {
     renderServicesOnSite(null);
@@ -1986,27 +1989,45 @@ async function loadAndRenderServices() {
   } catch(e) { allServices = []; }
   renderServicesAdmin();
 }
+function getMergedServiceList() {
+  // Start with all builtins, then override/replace with any Firebase version by name match
+  const saved = allServices;
+  const merged = [];
+  const usedBuiltinIds = new Set();
+  // Add all builtins, replacing with Firebase version if saved
+  BUILTIN_SERVICES.forEach((bs, i) => {
+    const fbMatch = saved.find(s => s.name && s.name.toLowerCase() === bs.name.toLowerCase());
+    if (fbMatch) {
+      merged.push({ ...fbMatch, _source: 'firebase' });
+      usedBuiltinIds.add(bs.id);
+    } else {
+      merged.push({ ...bs, _source: 'builtin' });
+    }
+  });
+  // Add any Firebase services not matched to a builtin (custom ones added by admin)
+  saved.forEach(s => {
+    const alreadyIn = merged.find(m => m.id === s.id);
+    if (!alreadyIn) merged.push({ ...s, _source: 'firebase' });
+  });
+  return merged;
+}
 function renderServicesAdmin() {
   const el = document.getElementById('srv-body');
   if (!el) return;
-  // Show Firebase services if any, otherwise show builtins as read-only preview
-  const hasFirebase = allServices.length > 0;
-  const list = hasFirebase ? allServices : BUILTIN_SERVICES;
-  el.innerHTML = list.map((s,i) => `
+  const list = getMergedServiceList();
+  el.innerHTML = list.map((s) => `
     <div style="background:var(--bg);border-radius:12px;padding:14px;display:flex;align-items:center;gap:12px;border:1px solid var(--border)">
       <img src="${s.img||''}" style="width:52px;height:52px;border-radius:8px;object-fit:cover;background:#e2e8f0;flex-shrink:0" onerror="this.style.background='#e2e8f0';this.src=''"/>
       <div style="flex:1;min-width:0">
         <div style="font-weight:700;font-size:.92rem;margin-bottom:3px">${s.icon||'🏥'} ${s.name}</div>
         <div style="font-size:.78rem;color:var(--text-mid)">${(s.desc||'').slice(0,70)}${(s.desc||'').length>70?'...':''}</div>
+        ${s._source==='builtin'?'<div style="font-size:.7rem;color:#92400e;margin-top:2px">⚠️ Not yet saved — click Edit to customise</div>':''}
       </div>
       <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">
-        <button onclick="openServiceModal('${s.id}','${hasFirebase?'firebase':'builtin'}')" style="background:#fff;border:1px solid var(--border);color:var(--text);padding:6px 12px;border-radius:8px;font-size:.76rem;cursor:pointer;font-family:var(--sans)">✏️ Edit</button>
-        ${hasFirebase ? `<button onclick="deleteService('${s.id}')" style="background:#fee2e2;border:1px solid #fecaca;color:#b91c1c;padding:6px 12px;border-radius:8px;font-size:.76rem;cursor:pointer;font-family:var(--sans)">🗑 Delete</button>` : ''}
+        <button onclick="openServiceModal('${s.id}','${s._source}')" style="background:#fff;border:1px solid var(--border);color:var(--text);padding:6px 12px;border-radius:8px;font-size:.76rem;cursor:pointer;font-family:var(--sans)">✏️ Edit</button>
+        ${s._source==='firebase' ? `<button onclick="deleteService('${s.id}')" style="background:#fee2e2;border:1px solid #fecaca;color:#b91c1c;padding:6px 12px;border-radius:8px;font-size:.76rem;cursor:pointer;font-family:var(--sans)">🗑 Delete</button>` : ''}
       </div>
     </div>`).join('');
-  if (!hasFirebase) {
-    el.innerHTML = `<div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:14px;font-size:.84rem;color:#92400e;margin-bottom:12px">⚠️ No services saved to database yet. Click ✏️ Edit on any service below to customise and save it. Once you save one, all services become manageable here.</div>` + el.innerHTML;
-  }
 }
 function openServiceModal(id, source) {
   const isNew = !id || source === 'new';
@@ -2052,16 +2073,12 @@ document.getElementById('serviceForm').addEventListener('submit', async function
       if (idx >= 0) allServices[idx] = { id, ...data };
       else allServices.push({ id, ...data });
     } else if (source === 'builtin') {
-      // First time editing a builtin: save ALL builtins to Firebase so none disappear
-      allServices = [];
-      for (let i = 0; i < BUILTIN_SERVICES.length; i++) {
-        const bs = BUILTIN_SERVICES[i];
-        const bsData = bs.id === id
-          ? { ...data, order: i, createdAt: new Date().toISOString() }
-          : { name:bs.name, icon:bs.icon, desc:bs.desc, img:bs.img, bullets:bs.bullets||'', order:i, createdAt:new Date().toISOString(), updatedAt:new Date().toISOString() };
-        const ref = await db.collection('services').add(bsData);
-        allServices.push({ id: ref.id, ...bsData });
-      }
+      // Save just this one builtin to Firebase for the first time
+      const bsIndex = BUILTIN_SERVICES.findIndex(b => b.id === id);
+      data.order = bsIndex >= 0 ? bsIndex : allServices.length;
+      data.createdAt = new Date().toISOString();
+      const ref = await db.collection('services').add(data);
+      allServices.push({ id: ref.id, ...data });
     } else {
       // Brand new service added manually
       data.order = allServices.length;
