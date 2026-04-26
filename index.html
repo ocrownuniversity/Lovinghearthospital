@@ -479,21 +479,21 @@ section{padding:90px 0}
 
   <section class="hero">
     <div class="hero-bg">
-      <img src="https://images.unsplash.com/photo-1586773860418-d37222d8fce3?w=1600&q=80" alt="Hospital"/>
+      <img src="https://images.unsplash.com/photo-1586773860418-d37222d8fce3?w=1600&q=80" alt="Hospital" id="heroImg"/>
       <div class="hero-overlay"></div>
     </div>
     <div class="hero-content container">
-      <div class="hero-badge">🏥 Trusted Healthcare in Ogun State</div>
-      <h1>Your Health,<br><span>Our Commitment</span></h1>
-      <p class="hero-sub">Compassionate, world-class medical care at the heart of Agbara. Dedicated to healing every patient with love, skill, and modern medicine.</p>
+      <div class="hero-badge" id="heroBadge">🏥 Trusted Healthcare in Ogun State</div>
+      <h1 id="heroTitle">Your Health,<br><span id="heroTitleSpan" style="color:#f4a261">Our Commitment</span></h1>
+      <p class="hero-sub" id="heroSub">Compassionate, world-class medical care at the heart of Agbara. Dedicated to healing every patient with love, skill, and modern medicine.</p>
       <div class="hero-actions">
         <button class="btn btn-primary" onclick="showPage('appointment')">Book Appointment</button>
         <button class="btn btn-secondary" onclick="showPage('about')">Learn More</button>
       </div>
       <div class="hero-stats">
-        <div class="stat"><strong>10+</strong><span>Years of Service</span></div>
-        <div class="stat"><strong>5,000+</strong><span>Patients Treated</span></div>
-        <div class="stat"><strong>20+</strong><span>Specialist Doctors</span></div>
+        <div class="stat"><strong id="stat1num">25+</strong><span id="stat1lbl">Years of Service</span></div>
+        <div class="stat"><strong id="stat2num">50,000+</strong><span id="stat2lbl">Patients Treated</span></div>
+        <div class="stat"><strong id="stat3num">20+</strong><span id="stat3lbl">Specialist Doctors</span></div>
       </div>
     </div>
   </section>
@@ -513,17 +513,17 @@ section{padding:90px 0}
     <div class="container">
       <div class="intro-grid">
         <div class="intro-img-wrap">
-          <img src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=700&q=80" alt="Hospital" class="intro-img"/>
+          <img src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=700&q=80" alt="Hospital" class="intro-img" id="introImg"/>
           <div class="intro-badge">
             <span style="font-size:1.8rem">🏆</span>
-            <div><strong>Quality Assured</strong><span>Accredited Healthcare</span></div>
+            <div><strong id="introBadgeTitle">Quality Assured</strong><span id="introBadgeSub">Accredited Healthcare</span></div>
           </div>
         </div>
         <div class="intro-content">
           <p class="label">About Us</p>
-          <h2 class="sec-title">Healing with Heart,<br>Caring with Excellence</h2>
-          <p>Loving Heart Hospital is a premier healthcare facility located in Cashier, Agbara Road, Ogun State, committed to providing accessible, affordable, and quality medical care to every patient.</p>
-          <p>Our team of experienced doctors, nurses, and healthcare professionals work round the clock to ensure your wellbeing — from routine consultations to complex procedures.</p>
+          <h2 class="sec-title" id="introTitle">Healing with Heart,<br>Caring with Excellence</h2>
+          <p id="introP1">Loving Heart Hospital is a premier healthcare facility located in Cashier, Agbara Road, Ogun State, committed to providing accessible, affordable, and quality medical care to every patient.</p>
+          <p id="introP2">Our team of experienced doctors, nurses, and healthcare professionals work round the clock to ensure your wellbeing — from routine consultations to complex procedures.</p>
           <div class="features-grid">
             <div class="feat"><span class="feat-icon">✔</span> Experienced Specialists</div>
             <div class="feat"><span class="feat-icon">✔</span> Modern Equipment</div>
@@ -590,7 +590,7 @@ section{padding:90px 0}
             <div class="why-item"><div class="why-num">04</div><div><h4>24/7 Availability</h4><p>We are always open — because emergencies don't follow office hours.</p></div></div>
           </div>
         </div>
-        <img src="https://images.unsplash.com/photo-1551190822-a9333d879b1f?w=700&q=80" alt="Doctor" class="why-img"/>
+        <img src="https://images.unsplash.com/photo-1551190822-a9333d879b1f?w=700&q=80" alt="Doctor" class="why-img" id="whyImg"/>
       </div>
     </div>
   </section>
@@ -957,6 +957,7 @@ section{padding:90px 0}
         <a onclick="showAdminTab('appointments')" id="stab-appointments"><span class="nav-icon">📅</span> Appointments</a>
         <a onclick="showAdminTab('hero')" id="stab-hero"><span class="nav-icon">🖼️</span> Hero / Banner</a>
         <a onclick="showAdminTab('about-edit')" id="stab-about-edit"><span class="nav-icon">ℹ️</span> About Page</a>
+        <a onclick="showAdminTab('intro-edit')" id="stab-intro-edit"><span class="nav-icon">🏠</span> Home Intro</a>
         <a onclick="showAdminTab('services-edit')" id="stab-services-edit"><span class="nav-icon">🏥</span> Services</a>
         <a onclick="showAdminTab('doctors')" id="stab-doctors"><span class="nav-icon">👨‍⚕️</span> Doctors</a>
         <a onclick="showAdminTab('news')" id="stab-news"><span class="nav-icon">📰</span> News & Tips</a>
@@ -987,6 +988,7 @@ section{padding:90px 0}
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
             <button class="btn-admin" onclick="showAdminTab('hero')" style="padding:13px 8px;font-size:.8rem">🖼️ Edit Hero</button>
             <button class="btn-admin" onclick="showAdminTab('about-edit')" style="padding:13px 8px;font-size:.8rem">ℹ️ Edit About</button>
+            <button class="btn-admin" onclick="showAdminTab('intro-edit')" style="padding:13px 8px;font-size:.8rem">🏠 Home Intro</button>
             <button class="btn-admin" onclick="showAdminTab('services-edit')" style="padding:13px 8px;font-size:.8rem">🏥 Services</button>
             <button class="btn-admin" onclick="showAdminTab('doctors')" style="padding:13px 8px;font-size:.8rem">👨‍⚕️ Doctors</button>
             <button class="btn-admin" onclick="showAdminTab('news')" style="padding:13px 8px;font-size:.8rem">📰 News/Tips</button>
@@ -1056,8 +1058,8 @@ section{padding:90px 0}
           <div class="form-group"><label>Main Title Line 1</label><input type="text" id="eh-title" placeholder="Your Health,"/></div>
           <div class="form-group"><label>Main Title Highlighted Word</label><input type="text" id="eh-span" placeholder="Our Commitment"/></div>
           <div class="form-group"><label>Subtitle</label><textarea id="eh-sub" rows="3" placeholder="Short description..."></textarea></div>
-          <div class="form-row"><div class="form-group"><label>Stat 1 Number</label><input type="text" id="eh-s1n" placeholder="10+"/></div><div class="form-group"><label>Stat 1 Label</label><input type="text" id="eh-s1l" placeholder="Years of Service"/></div></div>
-          <div class="form-row"><div class="form-group"><label>Stat 2 Number</label><input type="text" id="eh-s2n" placeholder="5,000+"/></div><div class="form-group"><label>Stat 2 Label</label><input type="text" id="eh-s2l" placeholder="Patients Treated"/></div></div>
+          <div class="form-row"><div class="form-group"><label>Stat 1 Number</label><input type="text" id="eh-s1n" placeholder="25+"/></div><div class="form-group"><label>Stat 1 Label</label><input type="text" id="eh-s1l" placeholder="Years of Service"/></div></div>
+          <div class="form-row"><div class="form-group"><label>Stat 2 Number</label><input type="text" id="eh-s2n" placeholder="50,000+"/></div><div class="form-group"><label>Stat 2 Label</label><input type="text" id="eh-s2l" placeholder="Patients Treated"/></div></div>
           <div class="form-row"><div class="form-group"><label>Stat 3 Number</label><input type="text" id="eh-s3n" placeholder="20+"/></div><div class="form-group"><label>Stat 3 Label</label><input type="text" id="eh-s3l" placeholder="Specialist Doctors"/></div></div>
         </div>
         <div class="admin-card">
@@ -1092,6 +1094,34 @@ section{padding:90px 0}
         <button class="btn-admin" onclick="saveAboutSection()" style="width:100%;padding:14px;font-size:1rem;background:#065f46;color:#fff;border:none;border-radius:50px;cursor:pointer;font-family:var(--sans);font-weight:600">💾 Save About & Apply to Website</button>
       </div>
 
+
+      <!-- INTRO SECTION EDITOR -->
+      <div id="atab-intro-edit" style="display:none">
+        <div class="admin-topbar"><h1>🏠 Edit Home Intro Section</h1><button class="btn-admin" onclick="saveIntroSection()" style="background:#065f46;color:#fff">💾 Save & Apply</button></div>
+
+        <div class="admin-card">
+          <div class="admin-card-header"><h3>Intro Image</h3></div>
+          <div class="form-group"><label>Image URL</label><input type="url" id="ei-img" placeholder="https://..." oninput="document.getElementById('ei-prev').src=this.value"/></div>
+          <img id="ei-prev" src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=700&q=80" style="width:100%;height:160px;object-fit:cover;border-radius:12px;margin-top:10px"/>
+        </div>
+
+        <div class="admin-card">
+          <div class="admin-card-header"><h3>Intro Text</h3></div>
+          <div class="form-group"><label>Main Heading</label><input type="text" id="ei-title" placeholder="Healing with Heart, Caring with Excellence"/></div>
+          <div class="form-group"><label>Paragraph 1</label><textarea id="ei-p1" rows="3" placeholder="First paragraph..."></textarea></div>
+          <div class="form-group"><label>Paragraph 2</label><textarea id="ei-p2" rows="3" placeholder="Second paragraph..."></textarea></div>
+          <div class="form-group"><label>Badge Title (e.g. Quality Assured)</label><input type="text" id="ei-badge-title" placeholder="Quality Assured"/></div>
+          <div class="form-group"><label>Badge Subtitle (e.g. Accredited Healthcare)</label><input type="text" id="ei-badge-sub" placeholder="Accredited Healthcare"/></div>
+        </div>
+
+        <div class="admin-card">
+          <div class="admin-card-header"><h3>Why Choose Us — Side Image</h3></div>
+          <div class="form-group"><label>Image URL</label><input type="url" id="ei-why-img" placeholder="https://..." oninput="document.getElementById('ei-why-prev').src=this.value"/></div>
+          <img id="ei-why-prev" src="https://images.unsplash.com/photo-1551190822-a9333d879b1f?w=700&q=80" style="width:100%;height:160px;object-fit:cover;border-radius:12px;margin-top:10px"/>
+        </div>
+
+        <button class="btn-admin" onclick="saveIntroSection()" style="width:100%;padding:14px;font-size:1rem;background:#065f46;color:#fff;border:none;border-radius:50px;cursor:pointer;font-family:var(--sans);font-weight:600">💾 Save Intro & Apply to Website</button>
+      </div>
 
       <!-- SERVICES EDITOR -->
       <div id="atab-services-edit" style="display:none">
@@ -1488,6 +1518,24 @@ async function loadAboutToSite() {
 }
 
 // =====================
+// LOAD INTRO SAVED CONTENT
+// =====================
+async function loadIntroToSite() {
+  try {
+    const snap = await db.collection('settings').doc('intro').get();
+    if (!snap.exists) return;
+    const d = snap.data();
+    if (d.img) { const el = document.getElementById('introImg'); if (el) el.src = d.img; }
+    if (d.title) { const el = document.getElementById('introTitle'); if (el) el.textContent = d.title; }
+    if (d.p1) { const el = document.getElementById('introP1'); if (el) el.textContent = d.p1; }
+    if (d.p2) { const el = document.getElementById('introP2'); if (el) el.textContent = d.p2; }
+    if (d.badgeTitle) { const el = document.getElementById('introBadgeTitle'); if (el) el.textContent = d.badgeTitle; }
+    if (d.badgeSub) { const el = document.getElementById('introBadgeSub'); if (el) el.textContent = d.badgeSub; }
+    if (d.whyImg) { const el = document.getElementById('whyImg'); if (el) el.src = d.whyImg; }
+  } catch (e) {}
+}
+
+// =====================
 // DOCTORS — WEBSITE DISPLAY
 // =====================
 function renderDoctorsOnSite(docs) {
@@ -1622,6 +1670,7 @@ async function loadAllSiteContent() {
   loadSiteSettings();
   loadHeroToSite();
   loadAboutToSite();
+  loadIntroToSite();
   loadDoctorsOnSite();
   loadServicesOnSite();
   loadHmosOnSite();
@@ -1657,7 +1706,7 @@ function adminLogout() { auth.signOut().then(() => showPage('home')); }
 // =====================
 // ADMIN TABS
 // =====================
-const ALL_ADMIN_TABS = ['dashboard','hero','about-edit','services-edit','doctors','news','hmo','appointments','messages','settings'];
+const ALL_ADMIN_TABS = ['dashboard','hero','about-edit','intro-edit','services-edit','doctors','news','hmo','appointments','messages','settings'];
 
 function showAdminTab(name) {
   ALL_ADMIN_TABS.forEach(t => {
@@ -1675,6 +1724,7 @@ function showAdminTab(name) {
   if (name === 'settings') loadSiteSettings();
   if (name === 'hero') loadHeroFields();
   if (name === 'about-edit') loadAboutFields();
+  if (name === 'intro-edit') loadIntroFields();
 }
 
 function initAdminMobile() {
@@ -2257,8 +2307,44 @@ function saveAboutSection() {
 }
 
 // =====================
-// SETTINGS
+// INTRO SECTION EDITOR
 // =====================
+function loadIntroFields() {
+  db.collection('settings').doc('intro').get().then(snap => {
+    if (!snap.exists) return;
+    const d = snap.data();
+    if (d.img) { const el = document.getElementById('ei-img'); if (el) el.value = d.img; const p = document.getElementById('ei-prev'); if (p) p.src = d.img; }
+    if (d.title) { const el = document.getElementById('ei-title'); if (el) el.value = d.title; }
+    if (d.p1) { const el = document.getElementById('ei-p1'); if (el) el.value = d.p1; }
+    if (d.p2) { const el = document.getElementById('ei-p2'); if (el) el.value = d.p2; }
+    if (d.badgeTitle) { const el = document.getElementById('ei-badge-title'); if (el) el.value = d.badgeTitle; }
+    if (d.badgeSub) { const el = document.getElementById('ei-badge-sub'); if (el) el.value = d.badgeSub; }
+    if (d.whyImg) { const el = document.getElementById('ei-why-img'); if (el) el.value = d.whyImg; const p = document.getElementById('ei-why-prev'); if (p) p.src = d.whyImg; }
+  }).catch(() => {});
+}
+function saveIntroSection() {
+  const vals = {
+    img: document.getElementById('ei-img').value,
+    title: document.getElementById('ei-title').value,
+    p1: document.getElementById('ei-p1').value,
+    p2: document.getElementById('ei-p2').value,
+    badgeTitle: document.getElementById('ei-badge-title').value,
+    badgeSub: document.getElementById('ei-badge-sub').value,
+    whyImg: document.getElementById('ei-why-img').value,
+    updatedAt: new Date().toISOString()
+  };
+  if (vals.img) { const el = document.getElementById('introImg'); if (el) el.src = vals.img; }
+  if (vals.title) { const el = document.getElementById('introTitle'); if (el) el.textContent = vals.title; }
+  if (vals.p1) { const el = document.getElementById('introP1'); if (el) el.textContent = vals.p1; }
+  if (vals.p2) { const el = document.getElementById('introP2'); if (el) el.textContent = vals.p2; }
+  if (vals.badgeTitle) { const el = document.getElementById('introBadgeTitle'); if (el) el.textContent = vals.badgeTitle; }
+  if (vals.badgeSub) { const el = document.getElementById('introBadgeSub'); if (el) el.textContent = vals.badgeSub; }
+  if (vals.whyImg) { const el = document.getElementById('whyImg'); if (el) el.src = vals.whyImg; }
+  db.collection('settings').doc('intro').set(vals);
+  showToast('✅ Home Intro updated!');
+}
+
+
 document.getElementById('settingsForm').addEventListener('submit', async function(e) {
   e.preventDefault();
   const d = {
