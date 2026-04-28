@@ -1821,6 +1821,43 @@ function renderServicesOnSite(list) {
   ['homeSrvGrid','fullSrvGrid'].forEach(gid => { const g = document.getElementById(gid); if (g) g.innerHTML = cardHTML; });
 }
 
+// =====================
+// ONE-TIME IMAGE FIX — updates any Firebase service docs that still have old images
+// =====================
+const IMAGE_FIXES = {
+  'General Consultation': 'https://i.ibb.co/twpKHdbL/image-1777391226762.jpg',
+  'Laboratory Services':  'https://i.ibb.co/xqtKXN5P/image-1777391848920.jpg',
+  'Pharmacy':             'https://i.ibb.co/JFGFhKqS/copilot-image-1777392448301.png',
+  'Maternity & Obstetrics': 'https://i.ibb.co/606sPGXV/file-000000008fb0720a86298cb4e2eb699b.png',
+  'Emergency Care':       'https://i.ibb.co/5xYqRjx6/file-00000000c4c871f49bf55cd273a7823c.png',
+  'Paediatrics':          'https://i.ibb.co/HDFpxr3Y/copilot-image-1777363126165.png',
+  'Dental Services':      'https://i.ibb.co/TMV7y8ZL/file-000000002aa4720aad2a8b79f6a8feb2.png',
+};
+const OLD_IMAGES = [
+  'photo-1638202993928','photo-1579154204601','photo-1584308666744',
+  'photo-1555252333','photo-1551076805','photo-1631815588090',
+  'photo-1606811971618','RTtfmkCd','27SGPxPs','photo-1609220136736',
+  'photo-1504439904031','photo-1581595220892','photo-1579684385127'
+];
+
+async function fixServiceImages() {
+  try {
+    const snap = await db.collection('services').get();
+    const batch = db.batch();
+    let needsFix = false;
+    snap.docs.forEach(doc => {
+      const d = doc.data();
+      const correctImg = IMAGE_FIXES[d.name];
+      const hasOldImg = OLD_IMAGES.some(old => (d.img||'').includes(old));
+      if (correctImg && hasOldImg) {
+        batch.update(doc.ref, { img: correctImg });
+        needsFix = true;
+      }
+    });
+    if (needsFix) await batch.commit();
+  } catch(e) {}
+}
+
 async function loadServicesOnSite() {
   try {
     const snap = await db.collection('services').get();
@@ -1904,6 +1941,7 @@ function renderNewsOnSite(news) {
 // LOAD EVERYTHING ON PAGE OPEN
 // =====================
 async function loadAllSiteContent() {
+  await fixServiceImages();
   await Promise.allSettled([
     loadSiteSettings(),
     loadHeroToSite(),
