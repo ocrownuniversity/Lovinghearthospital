@@ -1004,6 +1004,7 @@ section{padding:90px 0}
         <a onclick="showAdminTab('news')" id="stab-news"><span class="nav-icon">📰</span> News & Tips</a>
         <a onclick="showAdminTab('messages')" id="stab-messages"><span class="nav-icon">✉️</span> Messages</a>
         <a onclick="showAdminTab('hmo')" id="stab-hmo"><span class="nav-icon">🏥</span> HMO Plans</a>
+        <a onclick="showAdminTab('contact-edit')" id="stab-contact-edit"><span class="nav-icon">📞</span> Contact Info</a>
         <a onclick="showAdminTab('settings')" id="stab-settings"><span class="nav-icon">⚙️</span> Settings</a>
         <a onclick="showPage('home')"><span class="nav-icon">🌐</span> View Website</a>
       </nav>
@@ -1035,6 +1036,7 @@ section{padding:90px 0}
             <button class="btn-admin" onclick="showAdminTab('news')" style="padding:13px 8px;font-size:.8rem">📰 News/Tips</button>
             <button class="btn-admin" onclick="showAdminTab('hmo')" style="padding:13px 8px;font-size:.8rem">💊 HMO Plans</button>
             <button class="btn-admin" onclick="showAdminTab('appointments')" style="padding:13px 8px;font-size:.8rem">📅 Appointments</button>
+            <button class="btn-admin sec" onclick="showAdminTab('contact-edit')" style="padding:13px 8px;font-size:.8rem">📞 Contact Info</button>
             <button class="btn-admin sec" onclick="showAdminTab('settings')" style="padding:13px 8px;font-size:.8rem">⚙️ Settings</button>
           </div>
         </div>
@@ -1193,7 +1195,34 @@ section{padding:90px 0}
         <div class="admin-card"><div id="msgs-body" style="display:grid;grid-template-columns:1fr;gap:12px"><div style="text-align:center;padding:28px;color:var(--text-light)">Loading...</div></div></div>
       </div>
 
+      <!-- CONTACT INFO EDITOR -->
+      <div id="atab-contact-edit" style="display:none">
+        <div class="admin-topbar"><h1>📞 Edit Contact Information</h1><button class="btn-admin" onclick="saveContactInfo()" style="background:#065f46;color:#fff">💾 Save & Apply</button></div>
+
+        <div class="admin-card">
+          <div class="admin-card-header"><h3>Phone Numbers</h3></div>
+          <div class="form-group"><label>Primary Phone (shown everywhere)</label><input type="tel" id="ci-phone1" placeholder="08106949888"/></div>
+          <div class="form-group"><label>Secondary Phone</label><input type="tel" id="ci-phone2" placeholder="08134596513"/></div>
+          <div class="form-group"><label>Third Phone</label><input type="tel" id="ci-phone3" placeholder="09136350430"/></div>
+          <div class="form-group"><label>WhatsApp Number</label><input type="tel" id="ci-whatsapp" placeholder="08136393150"/></div>
+        </div>
+
+        <div class="admin-card">
+          <div class="admin-card-header"><h3>Address & Email</h3></div>
+          <div class="form-group"><label>Hospital Address</label><textarea id="ci-address" rows="3" placeholder="Plot 27, Block 3..."></textarea></div>
+          <div class="form-group"><label>Email Address</label><input type="email" id="ci-email" placeholder="info@lovinghearthospital.ng"/></div>
+        </div>
+
+        <div class="admin-card">
+          <div class="admin-card-header"><h3>Working Hours</h3></div>
+          <div class="form-group"><label>OPD Hours</label><input type="text" id="ci-hours" placeholder="Mon–Sat 8am–6pm"/></div>
+        </div>
+
+        <button class="btn-admin" onclick="saveContactInfo()" style="width:100%;padding:14px;font-size:1rem;background:#065f46;color:#fff;border:none;border-radius:50px;cursor:pointer;font-family:var(--sans);font-weight:600">💾 Save Contact Info & Apply to Website</button>
+      </div>
+
       <!-- Settings Tab -->
+
       <div id="atab-settings" style="display:none">
         <div class="admin-topbar"><h1>Settings</h1></div>
         <div class="admin-card">
@@ -1542,6 +1571,7 @@ async function loadSiteSettings() {
     } else {
       db.collection('settings').doc('contact').set(CORRECT_CONTACT);
     }
+    applyContactToSite(d);
     applySettingsToSite(d);
     ['phone','email','address','hours','hms'].forEach(k => {
       const el = document.getElementById('s-' + k); if (el && d[k]) el.value = d[k];
@@ -1786,7 +1816,7 @@ function adminLogout() { auth.signOut().then(() => showPage('home')); }
 // =====================
 // ADMIN TABS
 // =====================
-const ALL_ADMIN_TABS = ['dashboard','hero','about-edit','intro-edit','services-edit','doctors','news','hmo','appointments','messages','settings'];
+const ALL_ADMIN_TABS = ['dashboard','hero','about-edit','intro-edit','services-edit','doctors','news','hmo','appointments','messages','contact-edit','settings'];
 
 function showAdminTab(name) {
   ALL_ADMIN_TABS.forEach(t => {
@@ -1805,6 +1835,7 @@ function showAdminTab(name) {
   if (name === 'hero') loadHeroFields();
   if (name === 'about-edit') loadAboutFields();
   if (name === 'intro-edit') loadIntroFields();
+  if (name === 'contact-edit') loadContactFields();
 }
 
 function initAdminMobile() {
@@ -2461,6 +2492,85 @@ function saveIntroSection() {
   showToast('✅ Home Intro updated!');
 }
 
+
+// =====================
+// CONTACT INFO EDITOR
+// =====================
+function loadContactFields() {
+  db.collection('settings').doc('contact').get().then(snap => {
+    const d = snap.exists ? snap.data() : CORRECT_CONTACT;
+    const set = (id, val) => { const el = document.getElementById(id); if (el && val) el.value = val; };
+    set('ci-phone1', d.phone || d.phone1 || '08106949888');
+    set('ci-phone2', d.phone2 || '08134596513');
+    set('ci-phone3', d.phone3 || '09136350430');
+    set('ci-whatsapp', d.whatsapp || '08136393150');
+    set('ci-address', d.address || CORRECT_CONTACT.address);
+    set('ci-email', d.email || 'info@lovinghearthospital.ng');
+    set('ci-hours', d.hours || 'Mon–Sun 8:00am–6:00pm');
+  }).catch(() => {});
+}
+
+function saveContactInfo() {
+  const g = id => (document.getElementById(id)||{}).value || '';
+  const phone1 = g('ci-phone1');
+  const phone2 = g('ci-phone2');
+  const phone3 = g('ci-phone3');
+  const whatsapp = g('ci-whatsapp');
+  const address = g('ci-address');
+  const email = g('ci-email');
+  const hours = g('ci-hours');
+
+  const data = { phone: phone1, phone1, phone2, phone3, whatsapp, address, email, hours, updatedAt: new Date().toISOString() };
+
+  // Apply to website immediately
+  applyContactToSite(data);
+
+  // Save to Firebase
+  db.collection('settings').doc('contact').set(data)
+    .then(() => showToast('✅ Contact info saved and applied!'))
+    .catch(() => showToast('Error saving. Try again.', 'err'));
+}
+
+function applyContactToSite(d) {
+  if (!d) return;
+  // Primary phone links
+  if (d.phone) {
+    const clean = '+234' + d.phone.replace(/^0/, '');
+    document.querySelectorAll('a[href^="tel:"]').forEach(el => {
+      if (!el.href.includes('08134') && !el.href.includes('09136')) el.href = 'tel:' + clean;
+    });
+    const ep = document.getElementById('emergPhone'); if (ep) ep.textContent = '📞 ' + d.phone;
+    const fp = document.getElementById('footerPhone'); if (fp) fp.textContent = d.phone;
+    const cp = document.getElementById('contactPhone'); if (cp) cp.textContent = d.phone;
+  }
+  // WhatsApp
+  if (d.whatsapp) {
+    const waClean = '234' + d.whatsapp.replace(/^0/, '');
+    document.querySelectorAll('a[href^="https://wa.me/"]').forEach(el => el.href = 'https://wa.me/' + waClean);
+    document.querySelector('.wa-float') && (document.querySelector('.wa-float').href = 'https://wa.me/' + waClean);
+  }
+  // Phone 2 & 3
+  const p2el = document.querySelector('a[href*="08134596513"], a[href*="2348134596513"]');
+  if (p2el && d.phone2) { p2el.href = 'tel:+234' + d.phone2.replace(/^0/,''); p2el.textContent = d.phone2; }
+  const p3el = document.querySelector('a[href*="09136350430"], a[href*="2349136350430"]');
+  if (p3el && d.phone3) { p3el.href = 'tel:+234' + d.phone3.replace(/^0/,''); p3el.textContent = d.phone3; }
+  // Address
+  if (d.address) {
+    const fa = document.getElementById('footerAddr'); if (fa) fa.innerHTML = '📍 ' + d.address;
+    const ca = document.getElementById('contactAddr'); if (ca) ca.textContent = d.address;
+    const ti = document.querySelector('#topInfoStrip .cis-item'); if (ti) ti.textContent = '📍 ' + d.address;
+  }
+  // Email
+  if (d.email) {
+    const fe = document.getElementById('footerEmail'); if (fe) { fe.href = 'mailto:' + d.email; fe.textContent = d.email; }
+    const ce = document.getElementById('contactEmail'); if (ce) { ce.href = 'mailto:' + d.email; ce.textContent = d.email; }
+  }
+  // Hours
+  if (d.hours) {
+    const fh = document.getElementById('footerHours'); if (fh) fh.innerHTML = '🕐 OPD: ' + d.hours;
+    const ch = document.getElementById('contactHours'); if (ch) ch.textContent = 'OPD: ' + d.hours + ' | Emergency: 24/7';
+  }
+}
 
 document.getElementById('settingsForm').addEventListener('submit', async function(e) {
   e.preventDefault();
