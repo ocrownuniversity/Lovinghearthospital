@@ -490,7 +490,7 @@ section{padding:90px 0}
       <li><a onclick="showPage('home')" data-page="home" class="active">Home</a></li>
       <li><a onclick="showPage('about')" data-page="about">About</a></li>
       <li><a onclick="showPage('services')" data-page="services">Services</a></li>
-      <li><a onclick="showPage('doctors')" data-page="doctors">Doctors</a></li>
+      <li><a onclick="showPage('services')" data-page="services">Services</a></li>
       <li><a onclick="showPage('news')" data-page="news">Health Tips</a></li>
       <li><a onclick="showPage('contact')" data-page="contact">Contact</a></li>
       <li><a onclick="showPage('appointment')" data-page="appointment" class="nav-book">Book Appointment</a></li>
@@ -680,7 +680,7 @@ section{padding:90px 0}
           <li><span onclick="showPage('home')">Home</span></li>
           <li><span onclick="showPage('about')">About Us</span></li>
           <li><span onclick="showPage('services')">Services</span></li>
-          <li><span onclick="showPage('doctors')">Our Doctors</span></li>
+          <li><span onclick="showPage('services')">Our Services</span></li>
           <li><span onclick="showPage('appointment')">Book Appointment</span></li>
           <li><span onclick="showPage('news')">Health Tips</span></li>
           <li><span onclick="showPage('contact')">Contact</span></li>
@@ -786,20 +786,6 @@ section{padding:90px 0}
     </div>
   </section>
   <section class="cta-sec"><div class="container"><div class="cta-inner"><div class="cta-content"><h2>Need a Service Not Listed Here?</h2><p>Contact us — our team will be happy to discuss how we can help you.</p></div><div class="cta-acts"><button class="btn btn-primary" onclick="showPage('contact')">Contact Us</button><a href="tel:+2348106949888" class="btn btn-white">📞 08106949888</a></div></div></div></section>
-  <footer class="footer"><div class="container"><div class="footer-bottom"><p>© 2025 Loving Heart Hospital. All rights reserved.</p><span class="admin-link-foot" onclick="showPage('admin-login')">Admin Panel</span></div></div></footer>
-</div>
-
-<!-- ========== DOCTORS PAGE ========== -->
-<div class="page" id="page-doctors">
-  <section class="page-hero"><div class="container"><h1>Our Doctors</h1><p>Meet our team of dedicated and experienced medical specialists committed to your health.</p><div class="breadcrumb"><span class="nav-link-btn" onclick="showPage('home')">Home</span><span>›</span><span>Our Doctors</span></div></div></section>
-  <section>
-    <div class="container">
-      <div class="sec-head"><p class="label">Medical Team</p><h2 class="sec-title">Expert Doctors, Caring Hearts</h2><p class="sec-desc">Our physicians combine years of medical training with genuine compassion to deliver the best care.</p></div>
-      <div class="doc-grid" id="doctorsDisplay"><div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-light)"><div style="font-size:2rem;margin-bottom:12px">👨‍⚕️</div><p>Loading doctors...</p></div></div>
-      <div class="center"><button class="btn btn-primary" onclick="showPage('appointment')">Book an Appointment</button></div>
-    </div>
-  </section>
-  <section class="cta-sec"><div class="container"><div class="cta-inner"><div class="cta-content"><h2>Find the Right Doctor for You</h2><p>Book an appointment with any of our specialists today for expert medical care.</p></div><div class="cta-acts"><button class="btn btn-primary" onclick="showPage('appointment')">Book Appointment</button><a href="tel:+2348106949888" class="btn btn-white">📞 Call Us</a></div></div></div></section>
   <footer class="footer"><div class="container"><div class="footer-bottom"><p>© 2025 Loving Heart Hospital. All rights reserved.</p><span class="admin-link-foot" onclick="showPage('admin-login')">Admin Panel</span></div></div></footer>
 </div>
 
@@ -1000,7 +986,6 @@ section{padding:90px 0}
         <a onclick="showAdminTab('about-edit')" id="stab-about-edit"><span class="nav-icon">ℹ️</span> About Page</a>
         <a onclick="showAdminTab('intro-edit')" id="stab-intro-edit"><span class="nav-icon">🏠</span> Home Intro</a>
         <a onclick="showAdminTab('services-edit')" id="stab-services-edit"><span class="nav-icon">🏥</span> Services</a>
-        <a onclick="showAdminTab('doctors')" id="stab-doctors"><span class="nav-icon">👨‍⚕️</span> Doctors</a>
         <a onclick="showAdminTab('news')" id="stab-news"><span class="nav-icon">📰</span> News & Tips</a>
         <a onclick="showAdminTab('messages')" id="stab-messages"><span class="nav-icon">✉️</span> Messages</a>
         <a onclick="showAdminTab('hmo')" id="stab-hmo"><span class="nav-icon">🏥</span> HMO Plans</a>
@@ -1019,7 +1004,7 @@ section{padding:90px 0}
           <div class="stat-card"><div class="stat-icon">📅</div><div><div class="stat-num" id="ds-appts">—</div><div class="stat-label">Total Appointments</div></div></div>
           <div class="stat-card"><div class="stat-icon">⏳</div><div><div class="stat-num" id="ds-pending">—</div><div class="stat-label">Pending</div></div></div>
           <div class="stat-card"><div class="stat-icon">✉️</div><div><div class="stat-num" id="ds-msgs">—</div><div class="stat-label">Messages</div></div></div>
-          <div class="stat-card"><div class="stat-icon">👨‍⚕️</div><div><div class="stat-num" id="ds-docs">—</div><div class="stat-label">Doctors Listed</div></div></div>
+          <div class="stat-card"><div class="stat-icon">📰</div><div><div class="stat-num" id="ds-news">—</div><div class="stat-label">News Articles</div></div></div>
         </div>
         <div class="admin-card">
           <div class="admin-card-header"><h3>Recent Appointments</h3><button class="btn-admin" onclick="showAdminTab('appointments')">View All</button></div>
@@ -1032,7 +1017,7 @@ section{padding:90px 0}
             <button class="btn-admin" onclick="showAdminTab('about-edit')" style="padding:13px 8px;font-size:.8rem">ℹ️ Edit About</button>
             <button class="btn-admin" onclick="showAdminTab('intro-edit')" style="padding:13px 8px;font-size:.8rem">🏠 Home Intro</button>
             <button class="btn-admin" onclick="showAdminTab('services-edit')" style="padding:13px 8px;font-size:.8rem">🏥 Services</button>
-            <button class="btn-admin" onclick="showAdminTab('doctors')" style="padding:13px 8px;font-size:.8rem">👨‍⚕️ Doctors</button>
+            <button class="btn-admin" onclick="showAdminTab('hmo')" style="padding:13px 8px;font-size:.8rem">🏥 HMO Plans</button>
             <button class="btn-admin" onclick="showAdminTab('news')" style="padding:13px 8px;font-size:.8rem">📰 News/Tips</button>
             <button class="btn-admin" onclick="showAdminTab('hmo')" style="padding:13px 8px;font-size:.8rem">💊 HMO Plans</button>
             <button class="btn-admin" onclick="showAdminTab('appointments')" style="padding:13px 8px;font-size:.8rem">📅 Appointments</button>
@@ -1278,7 +1263,7 @@ section{padding:90px 0}
   <nav id="adminBottomNav" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#0f1b2d;border-top:1px solid rgba(255,255,255,.15);z-index:996;flex-direction:row">
     <button class="abn-item active" id="abn-dashboard" onclick="showAdminTab('dashboard');setAbn('dashboard')"><span class="abn-icon">🏠</span>Home</button>
     <button class="abn-item" id="abn-appointments" onclick="showAdminTab('appointments');setAbn('appointments')"><span class="abn-icon">📅</span>Appts</button>
-    <button class="abn-item" id="abn-doctors" onclick="showAdminTab('doctors');setAbn('doctors')"><span class="abn-icon">👨‍⚕️</span>Doctors</button>
+    <button class="abn-item" id="abn-news" onclick="showAdminTab('news');setAbn('news')"><span class="abn-icon">📰</span>News</button>
     <button class="abn-item" id="abn-news" onclick="showAdminTab('news');setAbn('news')"><span class="abn-icon">📰</span>News</button>
     <button class="abn-item" id="abn-menu" onclick="toggleSidebar()"><span class="abn-icon">☰</span>More</button>
   </nav>
@@ -1823,7 +1808,7 @@ function adminLogout() { auth.signOut().then(() => showPage('home')); }
 // =====================
 // ADMIN TABS
 // =====================
-const ALL_ADMIN_TABS = ['dashboard','hero','about-edit','intro-edit','services-edit','doctors','news','hmo','appointments','messages','contact-edit','settings'];
+const ALL_ADMIN_TABS = ['dashboard','hero','about-edit','intro-edit','services-edit','news','hmo','appointments','messages','contact-edit','settings'];
 
 function showAdminTab(name) {
   ALL_ADMIN_TABS.forEach(t => {
