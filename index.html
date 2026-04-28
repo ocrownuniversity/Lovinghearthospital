@@ -47,7 +47,12 @@ section{padding:90px 0}
 .center{text-align:center;margin-top:44px}
 
 /* NAV */
-.navbar{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-bottom:1px solid rgba(226,232,240,.6);transition:all .3s;width:100%;box-sizing:border-box}
+.navbar{position:fixed;top:40px;left:0;right:0;z-index:1000;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-bottom:1px solid rgba(226,232,240,.6);transition:all .3s;width:100%;box-sizing:border-box}
+.contact-info-strip{position:fixed;top:0;left:0;right:0;z-index:1001;background:var(--primary);color:#fff;padding:6px 0;font-size:.78rem}
+.cis-inner{display:flex;gap:18px;align-items:center;justify-content:center;flex-wrap:wrap}
+.cis-item{display:flex;align-items:center;gap:5px;color:rgba(255,255,255,.9);white-space:nowrap}
+.cis-item a{color:#fde68a;text-decoration:none}
+.cis-item a:hover{color:#fff}
 .navbar.scrolled{box-shadow:var(--shadow)}
 .nav-inner{max-width:1300px;margin:0 auto;padding:0 16px;display:flex;align-items:center;justify-content:space-between;height:70px;width:100%;box-sizing:border-box}
 .nav-logo{display:flex;align-items:center;gap:11px;cursor:pointer}
@@ -67,7 +72,8 @@ section{padding:90px 0}
 .hamburger span{display:block;width:24px;height:2px;background:var(--primary);border-radius:2px;transition:all .3s}
 
 /* HERO */
-.hero{position:relative;min-height:100vh;display:flex;align-items:center;padding:120px 0 80px}
+.hero{position:relative;min-height:100vh;display:flex;align-items:center;padding:160px 0 80px}
+.navbar.scrolled{box-shadow:var(--shadow)}
 .hero-bg{position:absolute;inset:0;overflow:hidden}
 .hero-bg img{width:100%;height:100%;object-fit:cover}
 .hero-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(10,30,60,.9) 0%,rgba(15,76,117,.75) 50%,rgba(10,30,60,.65) 100%)}
@@ -93,7 +99,7 @@ section{padding:90px 0}
 .e-links a:hover{background:rgba(255,255,255,.2)}
 
 /* PAGE HERO */
-.page-hero{background:linear-gradient(135deg,var(--primary) 0%,#0a2040 100%);padding:140px 0 72px;text-align:center;color:#fff;position:relative;overflow:hidden}
+.page-hero{background:linear-gradient(135deg,var(--primary) 0%,#0a2040 100%);padding:170px 0 72px;text-align:center;color:#fff;position:relative;overflow:hidden}
 .page-hero::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle,rgba(255,255,255,.03) 0%,transparent 60%);animation:rot 30s linear infinite}
 @keyframes rot{from{transform:rotate(0)}to{transform:rotate(360deg)}}
 .page-hero h1{font-family:var(--serif);font-size:clamp(2rem,5vw,3.4rem);margin-bottom:14px;position:relative}
@@ -329,6 +335,15 @@ section{padding:90px 0}
 .footer-bottom{border-top:1px solid rgba(255,255,255,.07);padding:22px 0;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;font-size:.82rem}
 .admin-link-foot{color:rgba(255,255,255,.28);font-size:.75rem;cursor:pointer;transition:color .3s}
 .admin-link-foot:hover{color:rgba(255,255,255,.6)}
+.wa-float{position:fixed;bottom:24px;right:20px;z-index:999;background:#25D366;color:#fff;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.7rem;box-shadow:0 4px 20px rgba(37,211,102,.45);text-decoration:none;transition:all .3s;animation:waPulse 2.5s infinite}
+.wa-float:hover{transform:scale(1.12)}
+@keyframes waPulse{0%,100%{box-shadow:0 4px 20px rgba(37,211,102,.45)}50%{box-shadow:0 4px 32px rgba(37,211,102,.75)}}
+.btt-btn{position:fixed;bottom:90px;right:20px;z-index:998;background:var(--primary);color:#fff;width:42px;height:42px;border-radius:50%;border:none;font-size:1.1rem;cursor:pointer;display:none;align-items:center;justify-content:center;box-shadow:0 3px 14px rgba(0,0,0,.2);transition:all .3s}
+.btt-btn:hover{transform:translateY(-2px)}
+.trust-bar{background:linear-gradient(135deg,#0f4c75 0%,#1a3a5c 100%);padding:12px 0;overflow:hidden}
+.trust-bar-inner{display:flex;gap:28px;align-items:center;flex-wrap:wrap;justify-content:center}
+.trust-item{display:flex;align-items:center;gap:7px;color:rgba(255,255,255,.92);font-size:.82rem;font-weight:500;white-space:nowrap}
+.trust-item .ti{font-size:1rem}
 
 /* LOADING SPINNER */
 .spinner{display:inline-block;width:18px;height:18px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite}
@@ -362,6 +377,8 @@ section{padding:90px 0}
   .hamburger{display:none!important}
 }
 @media(max-width:768px){
+  #topInfoStrip{display:none}
+  .navbar{top:0}
   /* NAV - hamburger visible, links hidden until toggled */
   .nav-links{display:none!important;flex-direction:column;position:fixed;top:70px;left:0;right:0;background:#fff;padding:10px 16px 24px;box-shadow:0 8px 32px rgba(0,0,0,.18);border-top:2px solid var(--border);gap:4px;overflow-y:auto;z-index:9999;max-height:calc(100vh - 70px)}
   .nav-links.open{display:flex!important}
@@ -450,6 +467,16 @@ section{padding:90px 0}
 <body>
 
 <!-- NAV -->
+<!-- Top Info Strip -->
+<div class="contact-info-strip" id="topInfoStrip">
+  <div class="container cis-inner">
+    <span class="cis-item">📍 Plot 27, Block 3, OPIC Estate Agbara, Ogun State</span>
+    <span class="cis-item">📞 <a href="tel:+2348106949888">08106949888</a></span>
+    <span class="cis-item">💬 <a href="https://wa.me/2348136393150" target="_blank">WhatsApp</a></span>
+    <span class="cis-item">🕐 Mon–Sun: 8am–6pm | 🚨 Emergency: 24/7</span>
+  </div>
+</div>
+
 <nav class="navbar" id="navbar">
   <div class="nav-inner">
     <div class="nav-logo" onclick="showPage('home')">
@@ -505,6 +532,18 @@ section{padding:90px 0}
         <a href="tel:+2348106949888" id="emergPhone">📞 08106949888</a>
         <a href="https://wa.me/2348136393150" target="_blank">💬 WhatsApp Us</a>
       </div>
+    </div>
+  </div>
+
+  <!-- Trust Bar -->
+  <div class="trust-bar">
+    <div class="container trust-bar-inner">
+      <div class="trust-item"><span class="ti">🏆</span> Quality Assured Care</div>
+      <div class="trust-item"><span class="ti">👨‍⚕️</span> 20+ Specialist Doctors</div>
+      <div class="trust-item"><span class="ti">🏥</span> Modern Facilities</div>
+      <div class="trust-item"><span class="ti">💊</span> In-House Pharmacy</div>
+      <div class="trust-item"><span class="ti">🔬</span> Diagnostic Laboratory</div>
+      <div class="trust-item"><span class="ti">🤱</span> Maternity & Obstetrics</div>
     </div>
   </div>
 
@@ -1476,17 +1515,38 @@ function applySettingsToSite(d) {
   if (d.hms) { const sh = document.getElementById('s-hms'); if (sh) sh.value = d.hms; }
 }
 
+const CORRECT_CONTACT = {
+  phone: '08106949888',
+  email: 'info@lovinghearthospital.ng',
+  address: 'Plot 27, Block 3, Igere-Ihunsa Future Expansion Scheme, OPIC Estate Agbara, Ogun State, Nigeria',
+  hours: 'Mon–Sun 8:00am–6:00pm',
+  hms: 'info@lovinghearthospital.ng'
+};
+
 async function loadSiteSettings() {
   try {
     const snap = await db.collection('settings').doc('contact').get();
+    let d = CORRECT_CONTACT;
     if (snap.exists) {
-      const d = snap.data();
-      applySettingsToSite(d);
-      ['phone','email','address','hours','hms'].forEach(k => {
-        const el = document.getElementById('s-' + k); if (el && d[k]) el.value = d[k];
-      });
+      const saved = snap.data();
+      // Force-fix old address/phone if still outdated
+      const isOldAddr = saved.address && (saved.address.includes('Cashier') || saved.address.includes('Agbara Road'));
+      const isOldPhone = saved.phone && saved.phone.includes('701');
+      if (isOldAddr || isOldPhone) {
+        // Overwrite Firestore with correct data, keep other fields
+        d = { ...saved, address: CORRECT_CONTACT.address, phone: CORRECT_CONTACT.phone };
+        db.collection('settings').doc('contact').set(d);
+      } else {
+        d = saved;
+      }
+    } else {
+      db.collection('settings').doc('contact').set(CORRECT_CONTACT);
     }
-  } catch (e) {}
+    applySettingsToSite(d);
+    ['phone','email','address','hours','hms'].forEach(k => {
+      const el = document.getElementById('s-' + k); if (el && d[k]) el.value = d[k];
+    });
+  } catch (e) { applySettingsToSite(CORRECT_CONTACT); }
 }
 
 // =====================
@@ -2428,5 +2488,19 @@ document.getElementById('pwdForm').addEventListener('submit', async function(e) 
 });
 
 </script>
+
+<!-- Floating WhatsApp Button -->
+<a href="https://wa.me/2348136393150" target="_blank" class="wa-float" title="Chat with us on WhatsApp">💬</a>
+
+<!-- Back to Top Button -->
+<button class="btt-btn" id="bttBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">↑</button>
+
+<script>
+window.addEventListener('scroll', () => {
+  const btn = document.getElementById('bttBtn');
+  if (btn) btn.style.display = window.scrollY > 400 ? 'flex' : 'none';
+});
+</script>
+
 </body>
 </html>
