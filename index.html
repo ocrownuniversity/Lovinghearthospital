@@ -1622,7 +1622,8 @@ function applySettingsToSite(d) {
   if (d.phone) {
     const clean = d.phone.replace(/\s/g, '');
     document.querySelectorAll('a[href^="tel:"]').forEach(el => el.href = 'tel:' + clean);
-    document.querySelectorAll('a[href^="https://wa.me/"]').forEach(el => el.href = 'https://wa.me/' + clean.replace('+', ''));
+    // WhatsApp number is locked — always use 08136393150
+    document.querySelectorAll('a[href^="https://wa.me/"]').forEach(el => el.href = 'https://wa.me/2348136393150');
     const ep = document.getElementById('emergPhone'); if (ep) ep.textContent = '📞 ' + d.phone;
     const fp = document.getElementById('footerPhone'); if (fp) fp.textContent = d.phone;
     const cp = document.getElementById('contactPhone'); if (cp) cp.textContent = d.phone;
@@ -2673,13 +2674,9 @@ function applyContactToSite(d) {
     const fp = document.getElementById('footerPhone'); if (fp) fp.textContent = d.phone;
     const cp = document.getElementById('contactPhone'); if (cp) cp.textContent = d.phone;
   }
-  // WhatsApp
-  if (d.whatsapp) {
-    const waDigits = d.whatsapp.replace(/\D/g, '').replace(/^0/, '');
-    const waClean = '234' + waDigits;
-    document.querySelectorAll('a[href^="https://wa.me/"]').forEach(el => el.href = 'https://wa.me/' + waClean);
-    document.querySelector('.wa-float') && (document.querySelector('.wa-float').href = 'https://wa.me/' + waClean);
-  }
+  // WhatsApp — always locked to 08136393150
+  document.querySelectorAll('a[href^="https://wa.me/"]').forEach(el => el.href = 'https://wa.me/2348136393150');
+  document.querySelector('.wa-float') && (document.querySelector('.wa-float').href = 'https://wa.me/2348136393150');
   // Phone 2 & 3
   const p2el = document.querySelector('a[href*="2348134596513"]');
   if (p2el && d.phone2) { p2el.href = 'tel:+234' + d.phone2.replace(/\D/g,'').replace(/^0/,''); p2el.textContent = d.phone2; }
