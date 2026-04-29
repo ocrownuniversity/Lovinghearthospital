@@ -2662,9 +2662,12 @@ function applyContactToSite(d) {
   if (!d) return;
   // Primary phone links
   if (d.phone) {
-    const clean = '+234' + d.phone.replace(/^0/, '');
+    const digits = d.phone.replace(/\D/g, '').replace(/^0/, '');
+    const clean = '+234' + digits;
     document.querySelectorAll('a[href^="tel:"]').forEach(el => {
-      if (!el.href.includes('08134') && !el.href.includes('09136')) el.href = 'tel:' + clean;
+      if (!el.href.includes('2348134') && !el.href.includes('2349136')) {
+        el.href = 'tel:' + clean;
+      }
     });
     const ep = document.getElementById('emergPhone'); if (ep) ep.textContent = '📞 ' + d.phone;
     const fp = document.getElementById('footerPhone'); if (fp) fp.textContent = d.phone;
@@ -2672,15 +2675,16 @@ function applyContactToSite(d) {
   }
   // WhatsApp
   if (d.whatsapp) {
-    const waClean = '234' + d.whatsapp.replace(/^0/, '');
+    const waDigits = d.whatsapp.replace(/\D/g, '').replace(/^0/, '');
+    const waClean = '234' + waDigits;
     document.querySelectorAll('a[href^="https://wa.me/"]').forEach(el => el.href = 'https://wa.me/' + waClean);
     document.querySelector('.wa-float') && (document.querySelector('.wa-float').href = 'https://wa.me/' + waClean);
   }
   // Phone 2 & 3
-  const p2el = document.querySelector('a[href*="08134596513"], a[href*="2348134596513"]');
-  if (p2el && d.phone2) { p2el.href = 'tel:+234' + d.phone2.replace(/^0/,''); p2el.textContent = d.phone2; }
-  const p3el = document.querySelector('a[href*="09136350430"], a[href*="2349136350430"]');
-  if (p3el && d.phone3) { p3el.href = 'tel:+234' + d.phone3.replace(/^0/,''); p3el.textContent = d.phone3; }
+  const p2el = document.querySelector('a[href*="2348134596513"]');
+  if (p2el && d.phone2) { p2el.href = 'tel:+234' + d.phone2.replace(/\D/g,'').replace(/^0/,''); p2el.textContent = d.phone2; }
+  const p3el = document.querySelector('a[href*="2349136350430"]');
+  if (p3el && d.phone3) { p3el.href = 'tel:+234' + d.phone3.replace(/\D/g,'').replace(/^0/,''); p3el.textContent = d.phone3; }
   // Address
   if (d.address) {
     const fa = document.getElementById('footerAddr'); if (fa) fa.innerHTML = '📍 ' + d.address;
