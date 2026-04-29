@@ -1915,13 +1915,22 @@ loadAllSiteContent();
 // =====================
 auth.onAuthStateChanged(user => { if (user && currentPage === 'admin-login') showPage('admin'); });
 
+// Whitelisted admin emails — both accounts can access admin panel
+const ADMIN_EMAILS = [
+  'awolajaadekunle1@gmail.com',
+];
+
 document.getElementById('loginForm').addEventListener('submit', async function(e) {
   e.preventDefault();
   const btn = document.getElementById('loginBtn');
   const err = document.getElementById('loginErr');
+  const emailVal = document.getElementById('loginEmail').value.trim().toLowerCase();
+  const passVal  = document.getElementById('loginPassword').value;
   btn.innerHTML = '<span class="spinner"></span> Signing in...'; btn.disabled = true; err.style.display = 'none';
+
   try {
-    await auth.signInWithEmailAndPassword(document.getElementById('loginEmail').value, document.getElementById('loginPassword').value);
+    // Firebase handles authentication for all accounts
+    await auth.signInWithEmailAndPassword(emailVal, passVal);
     showPage('admin');
   } catch (ex) {
     err.textContent = 'Invalid email or password. Please try again.'; err.style.display = 'block';
