@@ -48,7 +48,7 @@
   "logo": "https://i.ibb.co/mCZZ5MMd/IMG-20260427-WA0018.jpg",
   "image": "https://i.ibb.co/mCZZ5MMd/IMG-20260427-WA0018.jpg",
   "telephone": ["+2348106949888", "+2348134596513", "+2349136350430"],
-  "email": "info@lovinghearthospital.ng",
+  "email": "awolajaadekunle1@gmail.com",
   "address": {
     "@type": "PostalAddress",
     "streetAddress": "Plot 27, Block 3, Igere-Ihunsa Future Expansion Scheme, OPIC Estate",
@@ -802,7 +802,7 @@ section{padding:90px 0}
           <div class="footer-social">
             <a href="https://wa.me/2348136393150" target="_blank">💬</a>
             <a href="tel:+2348106949888">📞</a>
-            <a href="mailto:info@lovinghearthospital.ng">✉️</a>
+            <a href="mailto:awolajaadekunle1@gmail.com">✉️</a>
           </div>
         </div>
         <div class="footer-col"><h4>Quick Links</h4><ul>
@@ -827,7 +827,7 @@ section{padding:90px 0}
           <div class="footer-ci">📞 <a href="tel:+2348134596513">08134596513</a></div>
           <div class="footer-ci">📞 <a href="tel:+2349136350430">09136350430</a></div>
           <div class="footer-ci">💬 <a href="https://wa.me/2348136393150" target="_blank">WhatsApp: 08136393150</a></div>
-          <div class="footer-ci">✉️ <a href="mailto:info@lovinghearthospital.ng" id="footerEmail">info@lovinghearthospital.ng</a></div>
+          <div class="footer-ci">✉️ <a href="mailto:awolajaadekunle1@gmail.com" id="footerEmail">awolajaadekunle1@gmail.com</a></div>
           <div class="footer-ci" id="footerHours">🕐 OPD: Mon–Sat 8am–6pm</div>
           <div class="footer-ci">🚨 Emergency: 24/7</div>
         </div>
@@ -994,7 +994,7 @@ section{padding:90px 0}
           <div class="contact-cards">
             <div class="contact-card"><div class="cc-icon">📍</div><div><h4>Our Address</h4><p id="contactAddr">Plot 27, Block 3, Igere-Ihunsa Future Expansion Scheme, OPIC Estate Agbara, Ogun State, Nigeria</p></div></div>
             <div class="contact-card"><div class="cc-icon">📞</div><div><h4>Phone Numbers</h4><p><a href="tel:+2348106949888" id="contactPhone">08106949888</a><br><a href="tel:+2348134596513">08134596513</a><br><a href="tel:+2349136350430">09136350430</a><br>💬 WhatsApp: <a href="https://wa.me/2348136393150" target="_blank" style="color:var(--green)">08136393150</a></p></div></div>
-            <div class="contact-card"><div class="cc-icon">✉️</div><div><h4>Email</h4><p><a href="mailto:info@lovinghearthospital.ng" id="contactEmail">info@lovinghearthospital.ng</a></p></div></div>
+            <div class="contact-card"><div class="cc-icon">✉️</div><div><h4>Email</h4><p><a href="mailto:awolajaadekunle1@gmail.com" id="contactEmail">awolajaadekunle1@gmail.com</a></p></div></div>
             <div class="contact-card"><div class="cc-icon">🕐</div><div><h4>Working Hours</h4><p id="contactHours">OPD: Mon–Sat 8:00am–6:00pm | Emergency: 24/7</p></div></div>
           </div>
           <div class="map-wrap">
@@ -1299,7 +1299,7 @@ section{padding:90px 0}
         <div class="admin-card">
           <div class="admin-card-header"><h3>Address & Email</h3></div>
           <div class="form-group"><label>Hospital Address</label><textarea id="ci-address" rows="3" placeholder="Plot 27, Block 3..."></textarea></div>
-          <div class="form-group"><label>Email Address</label><input type="email" id="ci-email" placeholder="info@lovinghearthospital.ng"/></div>
+          <div class="form-group"><label>Email Address</label><input type="email" id="ci-email" placeholder="awolajaadekunle1@gmail.com"/></div>
         </div>
 
         <div class="admin-card">
@@ -1319,7 +1319,7 @@ section{padding:90px 0}
           <form id="settingsForm">
             <div class="form-row">
               <div class="form-group"><label>Phone / WhatsApp</label><input type="tel" id="s-phone" value="08106949888"/></div>
-              <div class="form-group"><label>Email Address</label><input type="email" id="s-email" value="info@lovinghearthospital.ng"/></div>
+              <div class="form-group"><label>Email Address</label><input type="email" id="s-email" value="awolajaadekunle1@gmail.com"/></div>
             </div>
             <div class="form-group"><label>Address</label><input type="text" id="s-address" value="Plot 27, Block 3, Igere-Ihunsa Future Expansion Scheme, OPIC Estate Agbara, Ogun State, Nigeria"/></div>
             <div class="form-row">
@@ -1629,10 +1629,9 @@ function applySettingsToSite(d) {
     const cp = document.getElementById('contactPhone'); if (cp) cp.textContent = d.phone;
     const ctap = document.getElementById('ctaPhone'); if (ctap) ctap.innerHTML = '📞 ' + d.phone;
   }
-  if (d.email) {
-    const fe = document.getElementById('footerEmail'); if (fe) { fe.href = 'mailto:' + d.email; fe.textContent = d.email; }
-    const ce = document.getElementById('contactEmail'); if (ce) { ce.href = 'mailto:' + d.email; ce.textContent = d.email; }
-  }
+  // Email locked to awolajaadekunle1@gmail.com
+  { const fe = document.getElementById('footerEmail'); if (fe) { fe.href = 'mailto:awolajaadekunle1@gmail.com'; fe.textContent = 'awolajaadekunle1@gmail.com'; }
+    const ce = document.getElementById('contactEmail'); if (ce) { ce.href = 'mailto:awolajaadekunle1@gmail.com'; ce.textContent = 'awolajaadekunle1@gmail.com'; } }
   if (d.address) {
     const fa = document.getElementById('footerAddr'); if (fa) fa.innerHTML = '📍 ' + d.address;
     const ca = document.getElementById('contactAddr'); if (ca) ca.textContent = d.address;
@@ -1646,10 +1645,10 @@ function applySettingsToSite(d) {
 
 const CORRECT_CONTACT = {
   phone: '08106949888',
-  email: 'info@lovinghearthospital.ng',
+  email: 'awolajaadekunle1@gmail.com',
   address: 'Plot 27, Block 3, Igere-Ihunsa Future Expansion Scheme, OPIC Estate Agbara, Ogun State, Nigeria',
   hours: 'Mon–Sun 8:00am–6:00pm',
-  hms: 'info@lovinghearthospital.ng'
+  hms: 'awolajaadekunle1@gmail.com'
 };
 
 async function loadSiteSettings() {
@@ -2633,7 +2632,7 @@ function loadContactFields() {
     set('ci-phone3', d.phone3 || '09136350430');
     set('ci-whatsapp', d.whatsapp || '08136393150');
     set('ci-address', d.address || CORRECT_CONTACT.address);
-    set('ci-email', d.email || 'info@lovinghearthospital.ng');
+    set('ci-email', d.email || 'awolajaadekunle1@gmail.com');
     set('ci-hours', d.hours || 'Mon–Sun 8:00am–6:00pm');
   }).catch(() => {});
 }
@@ -2688,11 +2687,9 @@ function applyContactToSite(d) {
     const ca = document.getElementById('contactAddr'); if (ca) ca.textContent = d.address;
     const ti = document.querySelector('#topInfoStrip .cis-item'); if (ti) ti.textContent = '📍 ' + d.address;
   }
-  // Email
-  if (d.email) {
-    const fe = document.getElementById('footerEmail'); if (fe) { fe.href = 'mailto:' + d.email; fe.textContent = d.email; }
-    const ce = document.getElementById('contactEmail'); if (ce) { ce.href = 'mailto:' + d.email; ce.textContent = d.email; }
-  }
+  // Email locked to awolajaadekunle1@gmail.com
+  { const fe = document.getElementById('footerEmail'); if (fe) { fe.href = 'mailto:awolajaadekunle1@gmail.com'; fe.textContent = 'awolajaadekunle1@gmail.com'; }
+    const ce = document.getElementById('contactEmail'); if (ce) { ce.href = 'mailto:awolajaadekunle1@gmail.com'; ce.textContent = 'awolajaadekunle1@gmail.com'; } }
   // Hours
   if (d.hours) {
     const fh = document.getElementById('footerHours'); if (fh) fh.innerHTML = '🕐 OPD: ' + d.hours;
