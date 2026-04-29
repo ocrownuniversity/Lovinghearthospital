@@ -1774,9 +1774,9 @@ async function loadDoctorsOnSite() {
 // SERVICES — WEBSITE DISPLAY
 // =====================
 const BUILTIN_SERVICES = [
-  {id:'bs1',name:'General Consultation',icon:'🩺',desc:'Expert general practitioners for all health concerns.',img:'https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=500&q=80',bullets:'Adult & paediatric consultations\nChronic disease management\nPreventive care & checkups'},
-  {id:'bs2',name:'Laboratory Services',icon:'🔬',desc:'Modern diagnostic laboratory for accurate test results.',img:'https://images.unsplash.com/photo-1581595220892-b0739db3ba8c?w=500&q=80',bullets:'Full blood count\nHIV, malaria, hepatitis tests\nHormonal profiles'},
-  {id:'bs3',name:'Pharmacy',icon:'💊',desc:'In-house pharmacy with genuine medications.',img:'https://i.ibb.co/27SGPxPs/IMG-20260427-WA0019.jpg',bullets:'Prescription dispensing\nOver-the-counter medications\nMedication counselling'},
+  {id:'bs1',name:'General Consultation',icon:'🩺',desc:'Expert general practitioners for all health concerns.',img:'https://i.ibb.co/twpKHdbL/image-1777391226762.jpg?v=4',bullets:'Adult & paediatric consultations\nChronic disease management\nPreventive care & checkups'},
+  {id:'bs2',name:'Laboratory Services',icon:'🔬',desc:'Modern diagnostic laboratory for accurate test results.',img:'https://i.ibb.co/xqtKXN5P/image-1777391848920.jpg?v=4',bullets:'Full blood count\nHIV, malaria, hepatitis tests\nHormonal profiles'},
+  {id:'bs3',name:'Pharmacy',icon:'💊',desc:'In-house pharmacy with genuine medications.',img:'https://i.ibb.co/JFGFhKqS/copilot-image-1777392448301.png?v=4',bullets:'Prescription dispensing\nOver-the-counter medications\nMedication counselling'},
   {id:'bs4',name:'Maternity & Obstetrics',icon:'🤱',desc:'Comprehensive maternal care from conception through delivery.',img:'https://i.ibb.co/606sPGXV/file-000000008fb0720a86298cb4e2eb699b.png?v=2',bullets:'Antenatal care\nSafe delivery services\nPostnatal care'},
   {id:'bs5',name:'Emergency Care',icon:'🚑',desc:'24/7 emergency department for all medical emergencies.',img:'https://i.ibb.co/5xYqRjx6/file-00000000c4c871f49bf55cd273a7823c.png?v=2',bullets:'Trauma & accident care\nResuscitation\nAmbulance coordination'},
   {id:'bs6',name:'Paediatrics',icon:'👶',desc:'Specialised healthcare for infants and children.',img:'https://i.ibb.co/HDFpxr3Y/copilot-image-1777363126165.png?v=2',bullets:'Child growth monitoring\nVaccination & immunisation\nNutritional counselling'},
@@ -1788,26 +1788,38 @@ const BUILTIN_SERVICES = [
 function renderServicesOnSite(list) {
   const toShow = (list && list.length > 0) ? list : getMergedServiceList();
   const cardHTML = toShow.map(s => {
+    // Always enforce locked images regardless of what data says
+    const img = LOCKED_IMAGES[s.name] || s.img || '';
     const bullets = (s.bullets || '').split('\n').filter(b => b.trim()).map(b => `<li>${b.trim()}</li>`).join('');
     return `<div class="srv-card">
-      <div class="srv-img-wrap"><img class="srv-img" src="${s.img||''}" alt="${s.name}" onerror="this.src='https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=500&q=80'"/></div>
+      <div class="srv-img-wrap"><img class="srv-img" src="${img}" alt="${s.name}" onerror="this.src='https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=500&q=80'"/></div>
       <div class="srv-body"><div class="srv-icon">${s.icon||'🏥'}</div><h3>${s.name}</h3><p>${s.desc||''}</p>${bullets?`<ul class="srv-feats">${bullets}</ul>`:''}</div>
     </div>`;
   }).join('');
   ['homeSrvGrid','fullSrvGrid'].forEach(gid => { const g = document.getElementById(gid); if (g) g.innerHTML = cardHTML; });
 }
 
+// Locked images that Firebase must never override
+const LOCKED_IMAGES = {
+  'General Consultation': 'https://i.ibb.co/twpKHdbL/image-1777391226762.jpg?v=4',
+  'Laboratory Services':  'https://i.ibb.co/xqtKXN5P/image-1777391848920.jpg?v=4',
+  'Pharmacy':             'https://i.ibb.co/JFGFhKqS/copilot-image-1777392448301.png?v=4',
+};
+
 async function loadServicesOnSite() {
   try {
     const snap = await db.collection('services').get();
     if (!snap.empty) {
-      const list = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      const list = snap.docs.map(d => {
+        const data = { id: d.id, ...d.data() };
+        // Always force correct image for locked services
+        if (LOCKED_IMAGES[data.name]) data.img = LOCKED_IMAGES[data.name];
+        return data;
+      });
       list.sort((a,b) => (a.order||0) - (b.order||0));
       allServices = list;
-      // Merge with builtins so Firebase services override builtins by name
       renderServicesOnSite(getMergedServiceList());
     } else {
-      // No Firebase services — show builtins
       renderServicesOnSite(BUILTIN_SERVICES);
     }
   } catch (e) {
