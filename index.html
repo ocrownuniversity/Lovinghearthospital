@@ -6,6 +6,14 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
 <meta http-equiv="Pragma" content="no-cache"/>
 <meta http-equiv="Expires" content="0"/>
+<!-- Preload key service images -->
+<link rel="preload" as="image" href="https://i.ibb.co/twpKHdbL/image-1777391226762.jpg?v=4"/>
+<link rel="preload" as="image" href="https://i.ibb.co/xqtKXN5P/image-1777391848920.jpg?v=4"/>
+<link rel="preload" as="image" href="https://i.ibb.co/JFGFhKqS/copilot-image-1777392448301.png?v=4"/>
+<link rel="preload" as="image" href="https://i.ibb.co/606sPGXV/file-000000008fb0720a86298cb4e2eb699b.png?v=2"/>
+<link rel="preload" as="image" href="https://i.ibb.co/5xYqRjx6/file-00000000c4c871f49bf55cd273a7823c.png?v=2"/>
+<link rel="preload" as="image" href="https://i.ibb.co/HDFpxr3Y/copilot-image-1777363126165.png?v=2"/>
+<link rel="preload" as="image" href="https://i.ibb.co/TMV7y8ZL/file-000000002aa4720aad2a8b79f6a8feb2.png?v=2"/>
 
 <!-- ===== PRIMARY SEO ===== -->
 <title>Loving Heart Hospital | Best Hospital in Agbara, Ogun State Nigeria</title>
@@ -264,11 +272,12 @@ section{padding:90px 0}
 /* SERVICES GRID */
 .services-bg{background:var(--bg)}
 .srv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px}
-.srv-img-wrap{width:calc(100% + 52px);height:260px;overflow:hidden;border-radius:calc(var(--r-lg) - 2px) calc(var(--r-lg) - 2px) 0 0;margin:-34px -26px 18px -26px}
-.srv-img{width:100%;height:100%;object-fit:cover;object-position:center center;transition:transform .45s}
+.srv-img-wrap{width:calc(100% + 52px);height:240px;overflow:hidden;border-radius:calc(var(--r-lg) - 2px) calc(var(--r-lg) - 2px) 0 0;margin:-34px -26px 18px -26px;background:#e8f0fe}
+.srv-img{width:100%;height:100%;object-fit:cover;object-position:center center;transition:transform .45s;opacity:0;transition:opacity .4s ease,transform .45s}
+.srv-img.loaded{opacity:1}
 .srv-img.pos-top{object-position:center top}
 .srv-img.pos-bottom{object-position:center bottom}
-.srv-img.pos-pharmacy{object-fit:cover;object-position:center center;background:none;padding:0}
+.srv-img.pos-pharmacy{object-fit:contain;object-position:center center;background:#f0f7ff;padding:12px;width:calc(100% - 24px);height:calc(100% - 24px);margin:12px auto;display:block}
 .srv-card:hover .srv-img{transform:scale(1.07)}
 .srv-card{background:#fff;padding:34px 26px;border-radius:var(--r-lg);border:1px solid var(--border);transition:all .35s;position:relative;overflow:hidden;cursor:default}
 .srv-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--primary),var(--green));transform:scaleX(0);transition:transform .35s;transform-origin:left}
@@ -1361,14 +1370,12 @@ section{padding:90px 0}
         </div>
       </div>
 
-      </div><!-- close admin-main -->
-    </div><!-- close adminWrap -->
+    </div><!-- close admin-main -->
+  </div><!-- close adminWrap -->
   <!-- Mobile Bottom Nav -->
   <nav id="adminBottomNav" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#0f1b2d;border-top:1px solid rgba(255,255,255,.15);z-index:996;flex-direction:row">
     <button class="abn-item active" id="abn-dashboard" onclick="showAdminTab('dashboard');setAbn('dashboard')"><span class="abn-icon">🏠</span>Home</button>
     <button class="abn-item" id="abn-appointments" onclick="showAdminTab('appointments');setAbn('appointments')"><span class="abn-icon">📅</span>Appts</button>
-    <button class="abn-item" id="abn-news" onclick="showAdminTab('news');setAbn('news')"><span class="abn-icon">📰</span>News</button>
-    <button class="abn-item" id="abn-news" onclick="showAdminTab('news');setAbn('news')"><span class="abn-icon">📰</span>News</button>
     <button class="abn-item" id="abn-menu" onclick="toggleSidebar()"><span class="abn-icon">☰</span>More</button>
   </nav>
 </div><!-- close page-admin -->
@@ -1788,11 +1795,12 @@ const BUILTIN_SERVICES = [
 function renderServicesOnSite(list) {
   const toShow = (list && list.length > 0) ? list : getMergedServiceList();
   const cardHTML = toShow.map(s => {
-    // Always enforce locked images regardless of what data says
     const img = LOCKED_IMAGES[s.name] || s.img || '';
+    const posClass = s.name === 'Pharmacy' ? 'pos-pharmacy' :
+                     ['General Consultation','Maternity & Obstetrics','Maternity Care','Paediatrics'].includes(s.name) ? 'pos-top' : 'pos-center';
     const bullets = (s.bullets || '').split('\n').filter(b => b.trim()).map(b => `<li>${b.trim()}</li>`).join('');
     return `<div class="srv-card">
-      <div class="srv-img-wrap"><img class="srv-img" src="${img}" alt="${s.name}" onerror="this.src='https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=500&q=80'"/></div>
+      <div class="srv-img-wrap"><img class="srv-img ${posClass}" src="${img}" alt="${s.name}" loading="eager" fetchpriority="high" onload="this.classList.add('loaded')" onerror="this.src='https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=500&q=80';this.classList.add('loaded')"/></div>
       <div class="srv-body"><div class="srv-icon">${s.icon||'🏥'}</div><h3>${s.name}</h3><p>${s.desc||''}</p>${bullets?`<ul class="srv-feats">${bullets}</ul>`:''}</div>
     </div>`;
   }).join('');
