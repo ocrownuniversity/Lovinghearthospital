@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+<meta http-equiv="Pragma" content="no-cache"/>
+<meta http-equiv="Expires" content="0"/>
 
 <!-- ===== PRIMARY SEO ===== -->
 <title>Loving Heart Hospital | Best Hospital in Agbara, Ogun State Nigeria</title>
@@ -45,7 +48,7 @@
   "logo": "https://i.ibb.co/mCZZ5MMd/IMG-20260427-WA0018.jpg",
   "image": "https://i.ibb.co/mCZZ5MMd/IMG-20260427-WA0018.jpg",
   "telephone": ["+2348106949888", "+2348134596513", "+2349136350430"],
-  "email": "info@lovinghearthospital.ng",
+  "email": "awolajaadekunle1@gmail.com",
   "address": {
     "@type": "PostalAddress",
     "streetAddress": "Plot 27, Block 3, Igere-Ihunsa Future Expansion Scheme, OPIC Estate",
@@ -261,8 +264,11 @@ section{padding:90px 0}
 /* SERVICES GRID */
 .services-bg{background:var(--bg)}
 .srv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px}
-.srv-img-wrap{width:100%;height:160px;overflow:hidden;border-radius:calc(var(--r-lg) - 2px) calc(var(--r-lg) - 2px) 0 0;margin:-34px -26px 18px -26px;width:calc(100% + 52px)}
-.srv-img{width:100%;height:100%;object-fit:cover;transition:transform .45s}
+.srv-img-wrap{width:calc(100% + 52px);height:260px;overflow:hidden;border-radius:calc(var(--r-lg) - 2px) calc(var(--r-lg) - 2px) 0 0;margin:-34px -26px 18px -26px}
+.srv-img{width:100%;height:100%;object-fit:cover;object-position:center center;transition:transform .45s}
+.srv-img.pos-top{object-position:center top}
+.srv-img.pos-bottom{object-position:center bottom}
+.srv-img.pos-pharmacy{object-fit:cover;object-position:center center;background:none;padding:0}
 .srv-card:hover .srv-img{transform:scale(1.07)}
 .srv-card{background:#fff;padding:34px 26px;border-radius:var(--r-lg);border:1px solid var(--border);transition:all .35s;position:relative;overflow:hidden;cursor:default}
 .srv-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--primary),var(--green));transform:scaleX(0);transition:transform .35s;transform-origin:left}
@@ -542,6 +548,7 @@ section{padding:90px 0}
   .sec-title{font-size:clamp(1.5rem,5vw,2rem)}
   /* GRIDS */
   .srv-grid,.news-grid,.doc-grid{grid-template-columns:1fr}
+  .srv-img-wrap{height:200px}
   .mvv-grid,.vals-grid{grid-template-columns:1fr}
   .footer-grid{grid-template-columns:1fr;gap:28px}
   .form-row{grid-template-columns:1fr}
@@ -628,7 +635,7 @@ section{padding:90px 0}
       <li><a onclick="showPage('home')" data-page="home" class="active">Home</a></li>
       <li><a onclick="showPage('about')" data-page="about">About</a></li>
       <li><a onclick="showPage('services')" data-page="services">Services</a></li>
-      <li><a onclick="showPage('news')" data-page="news">Health Tips</a></li>
+
       <li><a onclick="showPage('contact')" data-page="contact">Contact</a></li>
       <li><a onclick="showPage('appointment')" data-page="appointment" class="nav-book">Book Appointment</a></li>
       <li><a onclick="showPage('portal')" data-page="portal" class="nav-staff">Staff Portal</a></li>
@@ -719,12 +726,12 @@ section{padding:90px 0}
         <p class="sec-desc">Comprehensive healthcare services delivered with expertise and compassion.</p>
       </div>
       <div class="srv-grid" id="homeSrvGrid">
-        <div class="srv-card"><div class="srv-img-wrap"><img src="https://i.ibb.co/twpKHdbL/image-1777391226762.jpg" alt="General Consultation" class="srv-img"/></div><div class="srv-icon">🩺</div><h3>General Consultation</h3><p>Expert general practitioners available daily for all your health concerns and chronic conditions.</p></div>
-        <div class="srv-card"><div class="srv-img-wrap"><img src="https://i.ibb.co/xqtKXN5P/image-1777391848920.jpg" alt="Laboratory Services" class="srv-img"/></div><div class="srv-icon">🔬</div><h3>Laboratory Services</h3><p>State-of-the-art diagnostic lab for accurate test results and timely medical reports.</p></div>
-        <div class="srv-card"><div class="srv-img-wrap"><img src="https://i.ibb.co/JFGFhKqS/copilot-image-1777392448301.png" alt="Pharmacy" class="srv-img"/></div><div class="srv-icon">💊</div><h3>Pharmacy</h3><p>Fully stocked pharmacy with genuine medications and professional pharmacist guidance.</p></div>
-        <div class="srv-card"><div class="srv-img-wrap"><img src="https://i.ibb.co/606sPGXV/file-000000008fb0720a86298cb4e2eb699b.png" alt="Maternity Care" class="srv-img"/></div><div class="srv-icon">🤱</div><h3>Maternity Care</h3><p>Safe, supportive antenatal and postnatal care for mother and child throughout pregnancy.</p></div>
-        <div class="srv-card"><div class="srv-img-wrap"><img src="https://i.ibb.co/5xYqRjx6/file-00000000c4c871f49bf55cd273a7823c.png" alt="Emergency Care" class="srv-img"/></div><div class="srv-icon">🚑</div><h3>Emergency Care</h3><p>24/7 emergency response team always ready to save lives swiftly and effectively.</p></div>
-        <div class="srv-card"><div class="srv-img-wrap"><img src="https://i.ibb.co/HDFpxr3Y/copilot-image-1777363126165.png" alt="Paediatrics" class="srv-img"/></div><div class="srv-icon">👶</div><h3>Paediatrics</h3><p>Specialised healthcare for infants, children, and adolescents by caring paediatric specialists.</p></div>
+        <div class="srv-card"><div class="srv-img-wrap"><img src="https://i.ibb.co/twpKHdbL/image-1777391226762.jpg?v=4" alt="General Consultation" class="srv-img pos-top"/></div><div class="srv-icon">🩺</div><h3>General Consultation</h3><p>Expert general practitioners available daily for all your health concerns and chronic conditions.</p></div>
+        <div class="srv-card"><div class="srv-img-wrap"><img src="https://i.ibb.co/xqtKXN5P/image-1777391848920.jpg?v=4" alt="Laboratory Services" class="srv-img pos-center"/></div><div class="srv-icon">🔬</div><h3>Laboratory Services</h3><p>State-of-the-art diagnostic lab for accurate test results and timely medical reports.</p></div>
+        <div class="srv-card"><div class="srv-img-wrap"><img src="https://i.ibb.co/JFGFhKqS/copilot-image-1777392448301.png?v=4" alt="Pharmacy" class="srv-img pos-pharmacy"/></div><div class="srv-icon">💊</div><h3>Pharmacy</h3><p>Fully stocked pharmacy with genuine medications and professional pharmacist guidance.</p></div>
+        <div class="srv-card"><div class="srv-img-wrap"><img src="https://i.ibb.co/606sPGXV/file-000000008fb0720a86298cb4e2eb699b.png?v=2" alt="Maternity Care" class="srv-img pos-top"/></div><div class="srv-icon">🤱</div><h3>Maternity Care</h3><p>Safe, supportive antenatal and postnatal care for mother and child throughout pregnancy.</p></div>
+        <div class="srv-card"><div class="srv-img-wrap"><img src="https://i.ibb.co/5xYqRjx6/file-00000000c4c871f49bf55cd273a7823c.png?v=2" alt="Emergency Care" class="srv-img pos-center"/></div><div class="srv-icon">🚑</div><h3>Emergency Care</h3><p>24/7 emergency response team always ready to save lives swiftly and effectively.</p></div>
+        <div class="srv-card"><div class="srv-img-wrap"><img src="https://i.ibb.co/HDFpxr3Y/copilot-image-1777363126165.png?v=2" alt="Paediatrics" class="srv-img pos-top"/></div><div class="srv-icon">👶</div><h3>Paediatrics</h3><p>Specialised healthcare for infants, children, and adolescents by caring paediatric specialists.</p></div>
       </div>
       <div class="center"><button class="btn btn-outline" onclick="showPage('services')">View All Services</button></div>
     </div>
@@ -785,21 +792,6 @@ section{padding:90px 0}
     </div>
   </section>
 
-  <section>
-    <div class="container">
-      <div class="sec-head">
-        <p class="label">Latest Updates</p>
-        <h2 class="sec-title">News & Health Tips</h2>
-      </div>
-      <div class="news-grid">
-        <div class="news-card"><div class="news-img"><img src="https://images.unsplash.com/photo-1607619056574-7b8d3ee536b2?w=500&q=70" alt=""/></div><div class="news-body"><span class="news-tag">Health Tips</span><h4>10 Ways to Keep Your Heart Healthy This Season</h4><p>Maintaining a healthy heart requires conscious daily habits. Small changes can make a huge difference...</p><span class="read-more" onclick="showPage('news')">Read More →</span></div></div>
-        <div class="news-card"><div class="news-img"><img src="https://images.unsplash.com/photo-1586773860418-d37222d8fce3?w=500&q=70" alt=""/></div><div class="news-body"><span class="news-tag">Hospital News</span><h4>New Maternity Ward Now Open for Expectant Mothers</h4><p>We are proud to announce the opening of our newly renovated maternity ward with improved facilities...</p><span class="read-more" onclick="showPage('news')">Read More →</span></div></div>
-        <div class="news-card"><div class="news-img"><img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=500&q=70" alt=""/></div><div class="news-body"><span class="news-tag">Awareness</span><h4>Understanding Diabetes: Prevention and Management</h4><p>Diabetes affects millions of Nigerians. Early detection and lifestyle changes can save lives...</p><span class="read-more" onclick="showPage('news')">Read More →</span></div></div>
-      </div>
-      <div class="center"><button class="btn btn-outline" onclick="showPage('news')">View All Articles</button></div>
-    </div>
-  </section>
-
   <!-- FOOTER -->
   <footer class="footer">
     <div class="container">
@@ -810,7 +802,7 @@ section{padding:90px 0}
           <div class="footer-social">
             <a href="https://wa.me/2348136393150" target="_blank">💬</a>
             <a href="tel:+2348106949888">📞</a>
-            <a href="mailto:info@lovinghearthospital.ng">✉️</a>
+            <a href="mailto:awolajaadekunle1@gmail.com">✉️</a>
           </div>
         </div>
         <div class="footer-col"><h4>Quick Links</h4><ul>
@@ -819,7 +811,6 @@ section{padding:90px 0}
           <li><span onclick="showPage('services')">Services</span></li>
           <li><span onclick="showPage('services')">Our Services</span></li>
           <li><span onclick="showPage('appointment')">Book Appointment</span></li>
-          <li><span onclick="showPage('news')">Health Tips</span></li>
           <li><span onclick="showPage('contact')">Contact</span></li>
         </ul></div>
         <div class="footer-col"><h4>Services</h4><ul>
@@ -836,7 +827,7 @@ section{padding:90px 0}
           <div class="footer-ci">📞 <a href="tel:+2348134596513">08134596513</a></div>
           <div class="footer-ci">📞 <a href="tel:+2349136350430">09136350430</a></div>
           <div class="footer-ci">💬 <a href="https://wa.me/2348136393150" target="_blank">WhatsApp: 08136393150</a></div>
-          <div class="footer-ci">✉️ <a href="mailto:info@lovinghearthospital.ng" id="footerEmail">info@lovinghearthospital.ng</a></div>
+          <div class="footer-ci">✉️ <a href="mailto:awolajaadekunle1@gmail.com" id="footerEmail">awolajaadekunle1@gmail.com</a></div>
           <div class="footer-ci" id="footerHours">🕐 OPD: Mon–Sat 8am–6pm</div>
           <div class="footer-ci">🚨 Emergency: 24/7</div>
         </div>
@@ -909,15 +900,15 @@ section{padding:90px 0}
     <div class="container">
       <div class="sec-head"><p class="label">What We Offer</p><h2 class="sec-title">Full-Spectrum Healthcare Services</h2><p class="sec-desc">From routine checkups to specialised treatments, we offer a wide range of medical services.</p></div>
       <div class="srv-grid" id="fullSrvGrid">
-        <div class="srv-card"><div class="srv-img-wrap"><img src="https://i.ibb.co/twpKHdbL/image-1777391226762.jpg" alt="General Consultation" class="srv-img"/></div><div class="srv-icon">🩺</div><h3>General Consultation</h3><p>Expert general practitioners for all health concerns from minor illnesses to complex chronic conditions.</p><ul class="srv-feats"><li>Adult & paediatric consultations</li><li>Chronic disease management</li><li>Preventive care & routine checkups</li><li>Health screenings & referrals</li></ul></div>
-        <div class="srv-card"><div class="srv-img-wrap"><img src="https://i.ibb.co/xqtKXN5P/image-1777391848920.jpg" alt="Laboratory" class="srv-img"/></div><div class="srv-icon">🔬</div><h3>Laboratory Services</h3><p>Modern diagnostic laboratory for accurate and timely test results to support clinical decisions.</p><ul class="srv-feats"><li>Full blood count & haematology</li><li>Microbiology & culture tests</li><li>Biochemistry & hormonal profiles</li><li>Malaria, HIV, hepatitis tests</li></ul></div>
-        <div class="srv-card"><div class="srv-img-wrap"><img src="https://i.ibb.co/JFGFhKqS/copilot-image-1777392448301.png" alt="Pharmacy" class="srv-img"/></div><div class="srv-icon">💊</div><h3>Pharmacy</h3><p>In-house pharmacy stocked with genuine medications staffed by qualified pharmacists.</p><ul class="srv-feats"><li>Prescription dispensing</li><li>Over-the-counter medications</li><li>Medication counselling</li><li>Drug interaction checks</li></ul></div>
-        <div class="srv-card"><div class="srv-img-wrap"><img src="https://i.ibb.co/606sPGXV/file-000000008fb0720a86298cb4e2eb699b.png" alt="Maternity" class="srv-img"/></div><div class="srv-icon">🤱</div><h3>Maternity & Obstetrics</h3><p>Comprehensive maternal care from conception through delivery and postnatal recovery.</p><ul class="srv-feats"><li>Antenatal care & monitoring</li><li>Safe delivery (normal & caesarean)</li><li>Postnatal care & counselling</li><li>Family planning services</li></ul></div>
-        <div class="srv-card"><div class="srv-img-wrap"><img src="https://i.ibb.co/5xYqRjx6/file-00000000c4c871f49bf55cd273a7823c.png" alt="Emergency Care" class="srv-img"/></div><div class="srv-icon">🚑</div><h3>Emergency Care</h3><p>24/7 emergency department equipped to handle all types of medical emergencies swiftly.</p><ul class="srv-feats"><li>Trauma & accident care</li><li>Resuscitation & stabilisation</li><li>Emergency surgery prep</li><li>Ambulance coordination</li></ul></div>
-        <div class="srv-card"><div class="srv-img-wrap"><img src="https://i.ibb.co/HDFpxr3Y/copilot-image-1777363126165.png" alt="Paediatrics" class="srv-img"/></div><div class="srv-icon">👶</div><h3>Paediatrics</h3><p>Specialised healthcare services for infants, children, and adolescents by experienced specialists.</p><ul class="srv-feats"><li>Child growth monitoring</li><li>Vaccination & immunisation</li><li>Childhood illness management</li><li>Nutritional counselling</li></ul></div>
-        <div class="srv-card"><div class="srv-img-wrap"><img src="https://i.ibb.co/TMV7y8ZL/file-000000002aa4720aad2a8b79f6a8feb2.png" alt="Dental Services" class="srv-img"/></div><div class="srv-icon">🦷</div><h3>Dental Services</h3><p>Complete dental care for the whole family from preventive hygiene to complex restorations.</p><ul class="srv-feats"><li>Teeth cleaning & scaling</li><li>Cavity filling & extraction</li><li>Orthodontic assessments</li><li>Dental X-rays</li></ul></div>
-        <div class="srv-card"><div class="srv-img-wrap"><img src="https://images.unsplash.com/photo-1559757175-5700dde675bc?w=500&q=80" alt="Eye Care" class="srv-img"/></div><div class="srv-icon">👁️</div><h3>Eye Care (Ophthalmology)</h3><p>Comprehensive eye examinations and vision care services for all age groups.</p><ul class="srv-feats"><li>Vision testing & refraction</li><li>Glaucoma screening</li><li>Cataract assessment</li><li>Prescription glasses referral</li></ul></div>
-        <div class="srv-card"><div class="srv-img-wrap"><img src="https://images.unsplash.com/photo-1516069677018-378515003435?w=500&q=80" alt="Radiology" class="srv-img"/></div><div class="srv-icon">🏥</div><h3>Radiology & Imaging</h3><p>Modern imaging technology including X-ray and ultrasound with quick results turnaround.</p><ul class="srv-feats"><li>Digital X-ray services</li><li>Obstetric ultrasound</li><li>Abdominal scanning</li><li>Musculoskeletal imaging</li></ul></div>
+        <div class="srv-card"><div class="srv-img-wrap"><img src="https://i.ibb.co/twpKHdbL/image-1777391226762.jpg?v=4" alt="General Consultation" class="srv-img pos-top"/></div><div class="srv-icon">🩺</div><h3>General Consultation</h3><p>Expert general practitioners for all health concerns from minor illnesses to complex chronic conditions.</p><ul class="srv-feats"><li>Adult & paediatric consultations</li><li>Chronic disease management</li><li>Preventive care & routine checkups</li><li>Health screenings & referrals</li></ul></div>
+        <div class="srv-card"><div class="srv-img-wrap"><img src="https://i.ibb.co/xqtKXN5P/image-1777391848920.jpg?v=4" alt="Laboratory" class="srv-img pos-center"/></div><div class="srv-icon">🔬</div><h3>Laboratory Services</h3><p>Modern diagnostic laboratory for accurate and timely test results to support clinical decisions.</p><ul class="srv-feats"><li>Full blood count & haematology</li><li>Microbiology & culture tests</li><li>Biochemistry & hormonal profiles</li><li>Malaria, HIV, hepatitis tests</li></ul></div>
+        <div class="srv-card"><div class="srv-img-wrap"><img src="https://i.ibb.co/JFGFhKqS/copilot-image-1777392448301.png?v=4" alt="Pharmacy" class="srv-img pos-pharmacy"/></div><div class="srv-icon">💊</div><h3>Pharmacy</h3><p>In-house pharmacy stocked with genuine medications staffed by qualified pharmacists.</p><ul class="srv-feats"><li>Prescription dispensing</li><li>Over-the-counter medications</li><li>Medication counselling</li><li>Drug interaction checks</li></ul></div>
+        <div class="srv-card"><div class="srv-img-wrap"><img src="https://i.ibb.co/606sPGXV/file-000000008fb0720a86298cb4e2eb699b.png?v=2" alt="Maternity" class="srv-img pos-top"/></div><div class="srv-icon">🤱</div><h3>Maternity & Obstetrics</h3><p>Comprehensive maternal care from conception through delivery and postnatal recovery.</p><ul class="srv-feats"><li>Antenatal care & monitoring</li><li>Safe delivery (normal & caesarean)</li><li>Postnatal care & counselling</li><li>Family planning services</li></ul></div>
+        <div class="srv-card"><div class="srv-img-wrap"><img src="https://i.ibb.co/5xYqRjx6/file-00000000c4c871f49bf55cd273a7823c.png?v=2" alt="Emergency Care" class="srv-img pos-center"/></div><div class="srv-icon">🚑</div><h3>Emergency Care</h3><p>24/7 emergency department equipped to handle all types of medical emergencies swiftly.</p><ul class="srv-feats"><li>Trauma & accident care</li><li>Resuscitation & stabilisation</li><li>Emergency surgery prep</li><li>Ambulance coordination</li></ul></div>
+        <div class="srv-card"><div class="srv-img-wrap"><img src="https://i.ibb.co/HDFpxr3Y/copilot-image-1777363126165.png?v=2" alt="Paediatrics" class="srv-img pos-top"/></div><div class="srv-icon">👶</div><h3>Paediatrics</h3><p>Specialised healthcare services for infants, children, and adolescents by experienced specialists.</p><ul class="srv-feats"><li>Child growth monitoring</li><li>Vaccination & immunisation</li><li>Childhood illness management</li><li>Nutritional counselling</li></ul></div>
+        <div class="srv-card"><div class="srv-img-wrap"><img src="https://i.ibb.co/TMV7y8ZL/file-000000002aa4720aad2a8b79f6a8feb2.png?v=2" alt="Dental Services" class="srv-img pos-center"/></div><div class="srv-icon">🦷</div><h3>Dental Services</h3><p>Complete dental care for the whole family from preventive hygiene to complex restorations.</p><ul class="srv-feats"><li>Teeth cleaning & scaling</li><li>Cavity filling & extraction</li><li>Orthodontic assessments</li><li>Dental X-rays</li></ul></div>
+        <div class="srv-card"><div class="srv-img-wrap"><img src="https://images.unsplash.com/photo-1559757175-5700dde675bc?w=500&q=80" alt="Eye Care" class="srv-img pos-center"/></div><div class="srv-icon">👁️</div><h3>Eye Care (Ophthalmology)</h3><p>Comprehensive eye examinations and vision care services for all age groups.</p><ul class="srv-feats"><li>Vision testing & refraction</li><li>Glaucoma screening</li><li>Cataract assessment</li><li>Prescription glasses referral</li></ul></div>
+        <div class="srv-card"><div class="srv-img-wrap"><img src="https://images.unsplash.com/photo-1516069677018-378515003435?w=500&q=80" alt="Radiology" class="srv-img pos-center"/></div><div class="srv-icon">🏥</div><h3>Radiology & Imaging</h3><p>Modern imaging technology including X-ray and ultrasound with quick results turnaround.</p><ul class="srv-feats"><li>Digital X-ray services</li><li>Obstetric ultrasound</li><li>Abdominal scanning</li><li>Musculoskeletal imaging</li></ul></div>
       </div>
       <div class="center"><button class="btn btn-primary" onclick="showPage('appointment')" style="margin-right:12px">Book a Service</button><button class="btn btn-outline" onclick="showPage('contact')">Enquire About Services</button></div>
     </div>
@@ -927,30 +918,6 @@ section{padding:90px 0}
 </div>
 
 <!-- ========== NEWS PAGE ========== -->
-<div class="page" id="page-news">
-  <section class="page-hero"><div class="container"><h1>News & Health Tips</h1><p>Stay informed with the latest hospital updates and expert health advice from our doctors.</p><div class="breadcrumb"><span class="nav-link-btn" onclick="showPage('home')">Home</span><span>›</span><span>News & Health Tips</span></div></div></section>
-  <section>
-    <div class="container">
-      <div class="filter-bar">
-        <button class="filter-btn active" onclick="filterNews(this,'all')">All</button>
-        <button class="filter-btn" onclick="filterNews(this,'health-tips')">Health Tips</button>
-        <button class="filter-btn" onclick="filterNews(this,'hospital-news')">Hospital News</button>
-        <button class="filter-btn" onclick="filterNews(this,'awareness')">Awareness</button>
-      </div>
-      <div class="news-grid" id="newsGrid">
-        <div class="news-card" data-cat="health-tips"><div class="news-img"><img src="https://images.unsplash.com/photo-1607619056574-7b8d3ee536b2?w=500&q=70" alt=""/></div><div class="news-body"><div class="news-meta"><span class="news-tag">Health Tips</span><span class="news-date">Dec 15, 2024</span></div><h4>10 Ways to Keep Your Heart Healthy This Season</h4><p>Maintaining a healthy heart requires conscious daily habits. From exercise and balanced nutrition to stress management and regular medical check-ups, small changes make a huge difference.</p></div></div>
-        <div class="news-card" data-cat="hospital-news"><div class="news-img"><img src="https://images.unsplash.com/photo-1586773860418-d37222d8fce3?w=500&q=70" alt=""/></div><div class="news-body"><div class="news-meta"><span class="news-tag">Hospital News</span><span class="news-date">Nov 28, 2024</span></div><h4>New Maternity Ward Now Open for Expectant Mothers</h4><p>We are thrilled to announce the opening of our newly renovated maternity ward. The facility now includes modern delivery suites and a neonatal care unit.</p></div></div>
-        <div class="news-card" data-cat="awareness"><div class="news-img"><img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=500&q=70" alt=""/></div><div class="news-body"><div class="news-meta"><span class="news-tag">Awareness</span><span class="news-date">Nov 14, 2024</span></div><h4>Understanding Diabetes: Prevention and Management Tips</h4><p>Diabetes mellitus is one of the most prevalent chronic diseases in Nigeria. Learn about early detection, lifestyle modifications, and regular monitoring to protect yourself.</p></div></div>
-        <div class="news-card" data-cat="health-tips"><div class="news-img"><img src="https://images.unsplash.com/photo-1504813184591-01572f98c85f?w=500&q=70" alt=""/></div><div class="news-body"><div class="news-meta"><span class="news-tag">Health Tips</span><span class="news-date">Oct 22, 2024</span></div><h4>Malaria Prevention: What Every Nigerian Family Should Know</h4><p>Malaria remains a major public health challenge in Nigeria. Dr. Adeyemi shares essential prevention strategies to protect your family this rainy season.</p></div></div>
-        <div class="news-card" data-cat="hospital-news"><div class="news-img"><img src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=500&q=70" alt=""/></div><div class="news-body"><div class="news-meta"><span class="news-tag">Hospital News</span><span class="news-date">Sep 30, 2024</span></div><h4>We've Upgraded Our Laboratory with Advanced Diagnostic Equipment</h4><p>Loving Heart Hospital has invested in state-of-the-art laboratory equipment. Patients can now expect quicker turnaround times for blood tests and investigations.</p></div></div>
-        <div class="news-card" data-cat="awareness"><div class="news-img"><img src="https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=500&q=70" alt=""/></div><div class="news-body"><div class="news-meta"><span class="news-tag">Awareness</span><span class="news-date">Jul 20, 2024</span></div><h4>Hypertension — The Silent Killer You Should Know About</h4><p>High blood pressure affects millions of Nigerians who are unaware they have it. Learn about risk factors, warning signs, and how routine checks can save your life.</p></div></div>
-      </div>
-    </div>
-  </section>
-  <section class="cta-sec"><div class="container"><div class="cta-inner"><div class="cta-content"><h2>Have a Health Concern?</h2><p>Don't wait — book an appointment with our experienced doctors today.</p></div><div class="cta-acts"><button class="btn btn-primary" onclick="showPage('appointment')">Book Appointment</button><a href="tel:+2348106949888" class="btn btn-white">📞 Call Us</a></div></div></div></section>
-  <footer class="footer"><div class="container"><div class="footer-bottom"><p>© 2025 Loving Heart Hospital. All rights reserved.</p><span class="admin-link-foot" onclick="showPage('admin-login')">Admin Panel</span></div></div></footer>
-</div>
-
 <!-- ========== APPOINTMENT PAGE ========== -->
 <div class="page" id="page-appointment">
   <section class="page-hero"><div class="container"><h1>Book an Appointment</h1><p>Schedule your visit online and our team will confirm within 24 hours.</p><div class="breadcrumb"><span class="nav-link-btn" onclick="showPage('home')">Home</span><span>›</span><span>Book Appointment</span></div></div></section>
@@ -1027,7 +994,7 @@ section{padding:90px 0}
           <div class="contact-cards">
             <div class="contact-card"><div class="cc-icon">📍</div><div><h4>Our Address</h4><p id="contactAddr">Plot 27, Block 3, Igere-Ihunsa Future Expansion Scheme, OPIC Estate Agbara, Ogun State, Nigeria</p></div></div>
             <div class="contact-card"><div class="cc-icon">📞</div><div><h4>Phone Numbers</h4><p><a href="tel:+2348106949888" id="contactPhone">08106949888</a><br><a href="tel:+2348134596513">08134596513</a><br><a href="tel:+2349136350430">09136350430</a><br>💬 WhatsApp: <a href="https://wa.me/2348136393150" target="_blank" style="color:var(--green)">08136393150</a></p></div></div>
-            <div class="contact-card"><div class="cc-icon">✉️</div><div><h4>Email</h4><p><a href="mailto:info@lovinghearthospital.ng" id="contactEmail">info@lovinghearthospital.ng</a></p></div></div>
+            <div class="contact-card"><div class="cc-icon">✉️</div><div><h4>Email</h4><p><a href="mailto:awolajaadekunle1@gmail.com" id="contactEmail">awolajaadekunle1@gmail.com</a></p></div></div>
             <div class="contact-card"><div class="cc-icon">🕐</div><div><h4>Working Hours</h4><p id="contactHours">OPD: Mon–Sat 8:00am–6:00pm | Emergency: 24/7</p></div></div>
           </div>
           <div class="map-wrap">
@@ -1332,7 +1299,7 @@ section{padding:90px 0}
         <div class="admin-card">
           <div class="admin-card-header"><h3>Address & Email</h3></div>
           <div class="form-group"><label>Hospital Address</label><textarea id="ci-address" rows="3" placeholder="Plot 27, Block 3..."></textarea></div>
-          <div class="form-group"><label>Email Address</label><input type="email" id="ci-email" placeholder="info@lovinghearthospital.ng"/></div>
+          <div class="form-group"><label>Email Address</label><input type="email" id="ci-email" placeholder="awolajaadekunle1@gmail.com"/></div>
         </div>
 
         <div class="admin-card">
@@ -1352,7 +1319,7 @@ section{padding:90px 0}
           <form id="settingsForm">
             <div class="form-row">
               <div class="form-group"><label>Phone / WhatsApp</label><input type="tel" id="s-phone" value="08106949888"/></div>
-              <div class="form-group"><label>Email Address</label><input type="email" id="s-email" value="info@lovinghearthospital.ng"/></div>
+              <div class="form-group"><label>Email Address</label><input type="email" id="s-email" value="awolajaadekunle1@gmail.com"/></div>
             </div>
             <div class="form-group"><label>Address</label><input type="text" id="s-address" value="Plot 27, Block 3, Igere-Ihunsa Future Expansion Scheme, OPIC Estate Agbara, Ogun State, Nigeria"/></div>
             <div class="form-row">
@@ -1470,8 +1437,6 @@ section{padding:90px 0}
 <div class="toast" id="toast"></div>
 
 <!-- Firebase SDK -->
-
-<!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
@@ -1480,16 +1445,28 @@ section{padding:90px 0}
 // =====================
 // FIREBASE INIT
 // =====================
-firebase.initializeApp({
-  apiKey:"AIzaSyAYWVzLpHxIOxgwampWoPsa1PZP2O7xzbs",
-  authDomain:"loving-heart-hospital.firebaseapp.com",
-  projectId:"loving-heart-hospital",
-  storageBucket:"loving-heart-hospital.firebasestorage.app",
-  messagingSenderId:"560428403650",
-  appId:"1:560428403650:web:65ac3a27428a3486f2645b"
-});
-const db = firebase.firestore();
-const auth = firebase.auth();
+let db, auth;
+function initFirebase() {
+  if (typeof firebase === 'undefined') {
+    setTimeout(initFirebase, 200);
+    return;
+  }
+  try {
+    if (!firebase.apps.length) {
+      firebase.initializeApp({
+        apiKey:"AIzaSyAYWVzLpHxIOxgwampWoPsa1PZP2O7xzbs",
+        authDomain:"loving-heart-hospital.firebaseapp.com",
+        projectId:"loving-heart-hospital",
+        storageBucket:"loving-heart-hospital.firebasestorage.app",
+        messagingSenderId:"560428403650",
+        appId:"1:560428403650:web:65ac3a27428a3486f2645b"
+      });
+    }
+    db = firebase.firestore();
+    auth = firebase.auth();
+  } catch(e) { console.warn('Firebase init error:', e); }
+}
+initFirebase();
 
 // =====================
 // PAGE ROUTING
@@ -1645,16 +1622,16 @@ function applySettingsToSite(d) {
   if (d.phone) {
     const clean = d.phone.replace(/\s/g, '');
     document.querySelectorAll('a[href^="tel:"]').forEach(el => el.href = 'tel:' + clean);
-    document.querySelectorAll('a[href^="https://wa.me/"]').forEach(el => el.href = 'https://wa.me/' + clean.replace('+', ''));
+    // WhatsApp number is locked — always use 08136393150
+    document.querySelectorAll('a[href^="https://wa.me/"]').forEach(el => el.href = 'https://wa.me/2348136393150');
     const ep = document.getElementById('emergPhone'); if (ep) ep.textContent = '📞 ' + d.phone;
     const fp = document.getElementById('footerPhone'); if (fp) fp.textContent = d.phone;
     const cp = document.getElementById('contactPhone'); if (cp) cp.textContent = d.phone;
     const ctap = document.getElementById('ctaPhone'); if (ctap) ctap.innerHTML = '📞 ' + d.phone;
   }
-  if (d.email) {
-    const fe = document.getElementById('footerEmail'); if (fe) { fe.href = 'mailto:' + d.email; fe.textContent = d.email; }
-    const ce = document.getElementById('contactEmail'); if (ce) { ce.href = 'mailto:' + d.email; ce.textContent = d.email; }
-  }
+  // Email locked to awolajaadekunle1@gmail.com
+  { const fe = document.getElementById('footerEmail'); if (fe) { fe.href = 'mailto:awolajaadekunle1@gmail.com'; fe.textContent = 'awolajaadekunle1@gmail.com'; }
+    const ce = document.getElementById('contactEmail'); if (ce) { ce.href = 'mailto:awolajaadekunle1@gmail.com'; ce.textContent = 'awolajaadekunle1@gmail.com'; } }
   if (d.address) {
     const fa = document.getElementById('footerAddr'); if (fa) fa.innerHTML = '📍 ' + d.address;
     const ca = document.getElementById('contactAddr'); if (ca) ca.textContent = d.address;
@@ -1668,10 +1645,10 @@ function applySettingsToSite(d) {
 
 const CORRECT_CONTACT = {
   phone: '08106949888',
-  email: 'info@lovinghearthospital.ng',
+  email: 'awolajaadekunle1@gmail.com',
   address: 'Plot 27, Block 3, Igere-Ihunsa Future Expansion Scheme, OPIC Estate Agbara, Ogun State, Nigeria',
   hours: 'Mon–Sun 8:00am–6:00pm',
-  hms: 'info@lovinghearthospital.ng'
+  hms: 'awolajaadekunle1@gmail.com'
 };
 
 async function loadSiteSettings() {
@@ -1797,13 +1774,13 @@ async function loadDoctorsOnSite() {
 // SERVICES — WEBSITE DISPLAY
 // =====================
 const BUILTIN_SERVICES = [
-  {id:'bs1',name:'General Consultation',icon:'🩺',desc:'Expert general practitioners for all health concerns.',img:'https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=500&q=80',bullets:'Adult & paediatric consultations\nChronic disease management\nPreventive care & checkups'},
-  {id:'bs2',name:'Laboratory Services',icon:'🔬',desc:'Modern diagnostic laboratory for accurate test results.',img:'https://images.unsplash.com/photo-1581595220892-b0739db3ba8c?w=500&q=80',bullets:'Full blood count\nHIV, malaria, hepatitis tests\nHormonal profiles'},
-  {id:'bs3',name:'Pharmacy',icon:'💊',desc:'In-house pharmacy with genuine medications.',img:'https://i.ibb.co/27SGPxPs/IMG-20260427-WA0019.jpg',bullets:'Prescription dispensing\nOver-the-counter medications\nMedication counselling'},
-  {id:'bs4',name:'Maternity & Obstetrics',icon:'🤱',desc:'Comprehensive maternal care from conception through delivery.',img:'https://i.ibb.co/606sPGXV/file-000000008fb0720a86298cb4e2eb699b.png',bullets:'Antenatal care\nSafe delivery services\nPostnatal care'},
-  {id:'bs5',name:'Emergency Care',icon:'🚑',desc:'24/7 emergency department for all medical emergencies.',img:'https://i.ibb.co/5xYqRjx6/file-00000000c4c871f49bf55cd273a7823c.png',bullets:'Trauma & accident care\nResuscitation\nAmbulance coordination'},
-  {id:'bs6',name:'Paediatrics',icon:'👶',desc:'Specialised healthcare for infants and children.',img:'https://i.ibb.co/HDFpxr3Y/copilot-image-1777363126165.png',bullets:'Child growth monitoring\nVaccination & immunisation\nNutritional counselling'},
-  {id:'bs7',name:'Dental Services',icon:'🦷',desc:'Complete dental care for the whole family.',img:'https://i.ibb.co/TMV7y8ZL/file-000000002aa4720aad2a8b79f6a8feb2.png',bullets:'Teeth cleaning & scaling\nCavity filling\nDental X-rays'},
+  {id:'bs1',name:'General Consultation',icon:'🩺',desc:'Expert general practitioners for all health concerns.',img:'https://i.ibb.co/twpKHdbL/image-1777391226762.jpg?v=4',bullets:'Adult & paediatric consultations\nChronic disease management\nPreventive care & checkups'},
+  {id:'bs2',name:'Laboratory Services',icon:'🔬',desc:'Modern diagnostic laboratory for accurate test results.',img:'https://i.ibb.co/xqtKXN5P/image-1777391848920.jpg?v=4',bullets:'Full blood count\nHIV, malaria, hepatitis tests\nHormonal profiles'},
+  {id:'bs3',name:'Pharmacy',icon:'💊',desc:'In-house pharmacy with genuine medications.',img:'https://i.ibb.co/JFGFhKqS/copilot-image-1777392448301.png?v=4',bullets:'Prescription dispensing\nOver-the-counter medications\nMedication counselling'},
+  {id:'bs4',name:'Maternity & Obstetrics',icon:'🤱',desc:'Comprehensive maternal care from conception through delivery.',img:'https://i.ibb.co/606sPGXV/file-000000008fb0720a86298cb4e2eb699b.png?v=2',bullets:'Antenatal care\nSafe delivery services\nPostnatal care'},
+  {id:'bs5',name:'Emergency Care',icon:'🚑',desc:'24/7 emergency department for all medical emergencies.',img:'https://i.ibb.co/5xYqRjx6/file-00000000c4c871f49bf55cd273a7823c.png?v=2',bullets:'Trauma & accident care\nResuscitation\nAmbulance coordination'},
+  {id:'bs6',name:'Paediatrics',icon:'👶',desc:'Specialised healthcare for infants and children.',img:'https://i.ibb.co/HDFpxr3Y/copilot-image-1777363126165.png?v=2',bullets:'Child growth monitoring\nVaccination & immunisation\nNutritional counselling'},
+  {id:'bs7',name:'Dental Services',icon:'🦷',desc:'Complete dental care for the whole family.',img:'https://i.ibb.co/TMV7y8ZL/file-000000002aa4720aad2a8b79f6a8feb2.png?v=2',bullets:'Teeth cleaning & scaling\nCavity filling\nDental X-rays'},
   {id:'bs8',name:'Eye Care',icon:'👁️',desc:'Comprehensive eye examinations for all ages.',img:'https://images.unsplash.com/photo-1559757175-5700dde675bc?w=500&q=80',bullets:'Vision testing\nGlaucoma screening\nCataract assessment'},
   {id:'bs9',name:'Radiology & Imaging',icon:'🏥',desc:'Modern X-ray and ultrasound imaging.',img:'https://images.unsplash.com/photo-1516069677018-378515003435?w=500&q=80',bullets:'Digital X-ray\nObstetric ultrasound\nAbdominal scanning'},
 ];
@@ -1811,26 +1788,38 @@ const BUILTIN_SERVICES = [
 function renderServicesOnSite(list) {
   const toShow = (list && list.length > 0) ? list : getMergedServiceList();
   const cardHTML = toShow.map(s => {
+    // Always enforce locked images regardless of what data says
+    const img = LOCKED_IMAGES[s.name] || s.img || '';
     const bullets = (s.bullets || '').split('\n').filter(b => b.trim()).map(b => `<li>${b.trim()}</li>`).join('');
     return `<div class="srv-card">
-      <div class="srv-img-wrap"><img class="srv-img" src="${s.img||''}" alt="${s.name}" onerror="this.src='https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=500&q=80'"/></div>
+      <div class="srv-img-wrap"><img class="srv-img" src="${img}" alt="${s.name}" onerror="this.src='https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=500&q=80'"/></div>
       <div class="srv-body"><div class="srv-icon">${s.icon||'🏥'}</div><h3>${s.name}</h3><p>${s.desc||''}</p>${bullets?`<ul class="srv-feats">${bullets}</ul>`:''}</div>
     </div>`;
   }).join('');
   ['homeSrvGrid','fullSrvGrid'].forEach(gid => { const g = document.getElementById(gid); if (g) g.innerHTML = cardHTML; });
 }
 
+// Locked images that Firebase must never override
+const LOCKED_IMAGES = {
+  'General Consultation': 'https://i.ibb.co/twpKHdbL/image-1777391226762.jpg?v=4',
+  'Laboratory Services':  'https://i.ibb.co/xqtKXN5P/image-1777391848920.jpg?v=4',
+  'Pharmacy':             'https://i.ibb.co/JFGFhKqS/copilot-image-1777392448301.png?v=4',
+};
+
 async function loadServicesOnSite() {
   try {
     const snap = await db.collection('services').get();
     if (!snap.empty) {
-      const list = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      const list = snap.docs.map(d => {
+        const data = { id: d.id, ...d.data() };
+        // Always force correct image for locked services
+        if (LOCKED_IMAGES[data.name]) data.img = LOCKED_IMAGES[data.name];
+        return data;
+      });
       list.sort((a,b) => (a.order||0) - (b.order||0));
       allServices = list;
-      // Merge with builtins so Firebase services override builtins by name
       renderServicesOnSite(getMergedServiceList());
     } else {
-      // No Firebase services — show builtins
       renderServicesOnSite(BUILTIN_SERVICES);
     }
   } catch (e) {
@@ -1926,13 +1915,22 @@ loadAllSiteContent();
 // =====================
 auth.onAuthStateChanged(user => { if (user && currentPage === 'admin-login') showPage('admin'); });
 
+// Whitelisted admin emails — both accounts can access admin panel
+const ADMIN_EMAILS = [
+  'awolajaadekunle1@gmail.com',
+];
+
 document.getElementById('loginForm').addEventListener('submit', async function(e) {
   e.preventDefault();
   const btn = document.getElementById('loginBtn');
   const err = document.getElementById('loginErr');
+  const emailVal = document.getElementById('loginEmail').value.trim().toLowerCase();
+  const passVal  = document.getElementById('loginPassword').value;
   btn.innerHTML = '<span class="spinner"></span> Signing in...'; btn.disabled = true; err.style.display = 'none';
+
   try {
-    await auth.signInWithEmailAndPassword(document.getElementById('loginEmail').value, document.getElementById('loginPassword').value);
+    // Firebase handles authentication for all accounts
+    await auth.signInWithEmailAndPassword(emailVal, passVal);
     showPage('admin');
   } catch (ex) {
     err.textContent = 'Invalid email or password. Please try again.'; err.style.display = 'block';
@@ -2634,7 +2632,7 @@ function loadContactFields() {
     set('ci-phone3', d.phone3 || '09136350430');
     set('ci-whatsapp', d.whatsapp || '08136393150');
     set('ci-address', d.address || CORRECT_CONTACT.address);
-    set('ci-email', d.email || 'info@lovinghearthospital.ng');
+    set('ci-email', d.email || 'awolajaadekunle1@gmail.com');
     set('ci-hours', d.hours || 'Mon–Sun 8:00am–6:00pm');
   }).catch(() => {});
 }
@@ -2664,36 +2662,34 @@ function applyContactToSite(d) {
   if (!d) return;
   // Primary phone links
   if (d.phone) {
-    const clean = '+234' + d.phone.replace(/^0/, '');
+    const digits = d.phone.replace(/\D/g, '').replace(/^0/, '');
+    const clean = '+234' + digits;
     document.querySelectorAll('a[href^="tel:"]').forEach(el => {
-      if (!el.href.includes('08134') && !el.href.includes('09136')) el.href = 'tel:' + clean;
+      if (!el.href.includes('2348134') && !el.href.includes('2349136')) {
+        el.href = 'tel:' + clean;
+      }
     });
     const ep = document.getElementById('emergPhone'); if (ep) ep.textContent = '📞 ' + d.phone;
     const fp = document.getElementById('footerPhone'); if (fp) fp.textContent = d.phone;
     const cp = document.getElementById('contactPhone'); if (cp) cp.textContent = d.phone;
   }
-  // WhatsApp
-  if (d.whatsapp) {
-    const waClean = '234' + d.whatsapp.replace(/^0/, '');
-    document.querySelectorAll('a[href^="https://wa.me/"]').forEach(el => el.href = 'https://wa.me/' + waClean);
-    document.querySelector('.wa-float') && (document.querySelector('.wa-float').href = 'https://wa.me/' + waClean);
-  }
+  // WhatsApp — always locked to 08136393150
+  document.querySelectorAll('a[href^="https://wa.me/"]').forEach(el => el.href = 'https://wa.me/2348136393150');
+  document.querySelector('.wa-float') && (document.querySelector('.wa-float').href = 'https://wa.me/2348136393150');
   // Phone 2 & 3
-  const p2el = document.querySelector('a[href*="08134596513"], a[href*="2348134596513"]');
-  if (p2el && d.phone2) { p2el.href = 'tel:+234' + d.phone2.replace(/^0/,''); p2el.textContent = d.phone2; }
-  const p3el = document.querySelector('a[href*="09136350430"], a[href*="2349136350430"]');
-  if (p3el && d.phone3) { p3el.href = 'tel:+234' + d.phone3.replace(/^0/,''); p3el.textContent = d.phone3; }
+  const p2el = document.querySelector('a[href*="2348134596513"]');
+  if (p2el && d.phone2) { p2el.href = 'tel:+234' + d.phone2.replace(/\D/g,'').replace(/^0/,''); p2el.textContent = d.phone2; }
+  const p3el = document.querySelector('a[href*="2349136350430"]');
+  if (p3el && d.phone3) { p3el.href = 'tel:+234' + d.phone3.replace(/\D/g,'').replace(/^0/,''); p3el.textContent = d.phone3; }
   // Address
   if (d.address) {
     const fa = document.getElementById('footerAddr'); if (fa) fa.innerHTML = '📍 ' + d.address;
     const ca = document.getElementById('contactAddr'); if (ca) ca.textContent = d.address;
     const ti = document.querySelector('#topInfoStrip .cis-item'); if (ti) ti.textContent = '📍 ' + d.address;
   }
-  // Email
-  if (d.email) {
-    const fe = document.getElementById('footerEmail'); if (fe) { fe.href = 'mailto:' + d.email; fe.textContent = d.email; }
-    const ce = document.getElementById('contactEmail'); if (ce) { ce.href = 'mailto:' + d.email; ce.textContent = d.email; }
-  }
+  // Email locked to awolajaadekunle1@gmail.com
+  { const fe = document.getElementById('footerEmail'); if (fe) { fe.href = 'mailto:awolajaadekunle1@gmail.com'; fe.textContent = 'awolajaadekunle1@gmail.com'; }
+    const ce = document.getElementById('contactEmail'); if (ce) { ce.href = 'mailto:awolajaadekunle1@gmail.com'; ce.textContent = 'awolajaadekunle1@gmail.com'; } }
   // Hours
   if (d.hours) {
     const fh = document.getElementById('footerHours'); if (fh) fh.innerHTML = '🕐 OPD: ' + d.hours;
