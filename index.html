@@ -1060,7 +1060,17 @@ textarea.form-input{resize:none}
       <div class="form-group"><label class="form-label">Account Name</label><input type="text" class="form-input" id="transferAcctName" placeholder="Auto-fetched..." readonly></div>
     </div>
     <div id="koborushFields">
-      <div class="form-group"><label class="form-label">Username or Phone</label><input type="text" class="form-input" id="transferRecipient" placeholder="@username or 080xxxxxxxx"></div>
+      <div class="form-group">
+        <label class="form-label">Recipient Phone / Account Number</label>
+        <input type="tel" class="form-input" id="transferRecipient" placeholder="080xxxxxxxx or account number" oninput="lookupKoborushUser(this.value)">
+      </div>
+      <div id="koborushLookupBox" style="display:none;background:#F0FDF4;border-radius:12px;padding:11px 14px;margin-top:-8px;margin-bottom:10px;border:1px solid #BBF7D0">
+        <div style="font-size:11px;color:var(--text3);margin-bottom:2px">Account Name</div>
+        <div style="font-size:14px;font-weight:700;color:var(--success-green)" id="koborushRecipientName">—</div>
+      </div>
+      <div id="koborushLookupError" style="display:none;background:#FEF2F2;border-radius:12px;padding:10px 14px;margin-top:-8px;margin-bottom:10px;border:1px solid #FCA5A5;font-size:12px;color:var(--danger)">User not found on KOBOrush</div>
+      <!-- hidden: resolved uid of recipient -->
+      <input type="hidden" id="transferRecipientId">
     </div>
     <div class="form-group"><label class="form-label">Amount (₦)</label><input type="number" class="form-input" id="transferAmt" placeholder="Enter amount"></div>
     <div class="form-group"><label class="form-label">Narration</label><input type="text" class="form-input" id="transferNote" placeholder="Payment for..."></div>
@@ -2050,9 +2060,9 @@ async function loadRecentTx(){
 }
 
 function txHTML(tx){
-  const ic=['fund','referral_bonus','admin_credit','fund_approved'].includes(tx.type);
-  const icons={airtime:'📱',data:'📡',electricity:'⚡',cabletv:'📺',schoolpin:'🎓',fund:'💳',fund_approved:'✅',transfer:'💸',referral_bonus:'🎁',admin_credit:'💰'};
-  const bg={airtime:'#E0F7FF',data:'#F5F3FF',electricity:'#FEF0E6',cabletv:'#FEF2F2',fund:'#E0FDF4',fund_approved:'#D1FAE5',transfer:'#FEFCE8',schoolpin:'#E0FDF4'};
+  const ic=['fund','referral_bonus','admin_credit','fund_approved','transfer_received','recharge_conversion'].includes(tx.type);
+  const icons={airtime:'📱',data:'📡',electricity:'⚡',cabletv:'📺',schoolpin:'🎓',fund:'💳',fund_approved:'✅',transfer:'💸',transfer_received:'💰',referral_bonus:'🎁',admin_credit:'💰',recharge_conversion:'💱'};
+  const bg={airtime:'#E0F7FF',data:'#F5F3FF',electricity:'#FEF0E6',cabletv:'#FEF2F2',fund:'#E0FDF4',fund_approved:'#D1FAE5',transfer:'#FEFCE8',transfer_received:'#E0FDF4',schoolpin:'#E0FDF4',recharge_conversion:'#FFF7E0'};
   const s=csym(_s.userData?.country||'NG');
   return`<div class="tx-item"><div class="tx-icon" style="background:${bg[tx.type]||'#F8FAFC'}">${icons[tx.type]||'💳'}</div><div class="tx-info"><div class="tx-name">${tx.description||tx.type}</div><div class="tx-meta">${tAgo(tx.createdAt)} · <span class="badge badge-${tx.status==='success'?'success':tx.status==='pending'?'pending':tx.status==='review'?'review':'failed'}">${tx.status}</span></div></div><div class="tx-amt"><div class="tx-amt-val ${ic?'cr':'dr'}">${ic?'+':'-'}${fmt(tx.amount,s)}</div></div></div>`;
 }
@@ -2441,7 +2451,29 @@ window.proceedToPIN=async(svc)=>{
   else if(svc==='electricity'){const mt=document.getElementById('elecMeter').value;const am=document.getElementById('elecAmt').value;if(!mt||!am)return showToast('error','Fill all fields');_s.pendingData={type:'electricity',meter:mt,amount:parseFloat(am),provider:_s.selProv['elecProv']||'ikedc',meterType:document.getElementById('elecMeterType').value,description:`Electricity – ${mt}`};sum=`<div class="sum-row"><span class="sum-lbl">Meter</span><span class="sum-val">${mt}</span></div><div class="sum-row"><span class="sum-lbl">DISCO</span><span class="sum-val">${(_s.selProv['elecProv']||'ikedc').toUpperCase()}</span></div><div class="sum-row"><span class="sum-lbl">Amount</span><span class="sum-val" style="color:var(--primary)">₦${parseFloat(am).toLocaleString()}</span></div>`}
   else if(svc==='cabletv'){const cd=document.getElementById('cableCardNo').value;if(!cd||!_s.selPlan)return showToast('error','Fill all fields');_s.pendingData={type:'cabletv',cardNo:cd,amount:_s.selPlan.price,provider:_s.selProv['cableProv']||'dstv',plan:_s.selPlan.name,description:`${_s.selPlan.name} Cable – ${cd}`};sum=`<div class="sum-row"><span class="sum-lbl">Card No</span><span class="sum-val">${cd}</span></div><div class="sum-row"><span class="sum-lbl">Package</span><span class="sum-val">${_s.selPlan.name}</span></div><div class="sum-row"><span class="sum-lbl">Amount</span><span class="sum-val" style="color:var(--primary)">₦${_s.selPlan.price.toLocaleString()}</span></div>`}
   else if(svc==='schoolpin'){const qty=document.getElementById('schoolPinQty').value;const ph=document.getElementById('schoolPhone').value;const ex=_s.selProv['schoolProv']||'waec';const pr={waec:3750,neco:2100,jamb:4200,nabteb:2500}[ex]||2000;const tot=pr*parseInt(qty);_s.pendingData={type:'schoolpin',exam:ex,quantity:parseInt(qty),phone:ph,amount:tot,description:`${ex.toUpperCase()} PIN x${qty}`};sum=`<div class="sum-row"><span class="sum-lbl">Exam</span><span class="sum-val">${ex.toUpperCase()}</span></div><div class="sum-row"><span class="sum-lbl">Qty</span><span class="sum-val">${qty}</span></div><div class="sum-row"><span class="sum-lbl">Total</span><span class="sum-val" style="color:var(--primary)">₦${tot.toLocaleString()}</span></div>`}
-  else if(svc==='transfer'){const am=document.getElementById('transferAmt').value;const rc=document.getElementById('transferRecipient').value||document.getElementById('transferAcctNo')?.value;if(!am||!rc)return showToast('error','Fill all fields');const tot=parseFloat(am)+25;_s.pendingData={type:'transfer',amount:tot,recipient:rc,description:`Transfer to ${rc}`};sum=`<div class="sum-row"><span class="sum-lbl">To</span><span class="sum-val">${rc}</span></div><div class="sum-row"><span class="sum-lbl">Amount</span><span class="sum-val">₦${parseFloat(am).toLocaleString()}</span></div><div class="sum-row"><span class="sum-lbl">Fee</span><span class="sum-val">₦25</span></div><div class="sum-row"><span class="sum-lbl">Total</span><span class="sum-val" style="color:var(--primary)">₦${tot.toLocaleString()}</span></div>`}
+  else if(svc==='transfer'){
+    const am=parseFloat(document.getElementById('transferAmt').value)||0;
+    const transferTypeVal=document.getElementById('transferType').value;
+    if(transferTypeVal==='koborush'){
+      const rid=document.getElementById('transferRecipientId').value;
+      const rname=document.getElementById('koborushRecipientName').textContent;
+      const rphone=document.getElementById('transferRecipient').value;
+      if(!am||am<10)return showToast('error','Enter a valid amount');
+      if(!rid)return showToast('error','Look up a valid KOBOrush recipient first');
+      const tot=am+25;
+      _s.pendingData={type:'transfer',subType:'koborush',amount:tot,sendAmount:am,recipient:rphone,recipientId:rid,recipientName:rname,description:`KOBOrush Transfer to ${rname} (${rphone})`};
+      sum=`<div class="sum-row"><span class="sum-lbl">To</span><span class="sum-val">${rname}</span></div><div class="sum-row"><span class="sum-lbl">Phone</span><span class="sum-val">${rphone}</span></div><div class="sum-row"><span class="sum-lbl">Amount</span><span class="sum-val">₦${am.toLocaleString()}</span></div><div class="sum-row"><span class="sum-lbl">Fee</span><span class="sum-val">₦25</span></div><div class="sum-row"><span class="sum-lbl">Total Deducted</span><span class="sum-val" style="color:var(--primary)">₦${tot.toLocaleString()}</span></div>`;
+    } else {
+      const rc=document.getElementById('transferAcctNo')?.value||'—';
+      const rname=document.getElementById('transferAcctName')?.value||'—';
+      const bank=document.getElementById('transferBank')?.value||'Bank';
+      if(!am||am<10)return showToast('error','Enter a valid amount');
+      if(!rc||rc.length<10)return showToast('error','Enter a valid 10-digit account number');
+      const tot=am+25;
+      _s.pendingData={type:'transfer',subType:'bank',amount:tot,sendAmount:am,recipient:rc,recipientName:rname,bank,description:`Bank Transfer to ${rname} – ${bank}`};
+      sum=`<div class="sum-row"><span class="sum-lbl">Bank</span><span class="sum-val">${bank}</span></div><div class="sum-row"><span class="sum-lbl">Account</span><span class="sum-val">${rc}</span></div><div class="sum-row"><span class="sum-lbl">Name</span><span class="sum-val">${rname}</span></div><div class="sum-row"><span class="sum-lbl">Amount</span><span class="sum-val">₦${am.toLocaleString()}</span></div><div class="sum-row"><span class="sum-lbl">Fee</span><span class="sum-val">₦25</span></div><div class="sum-row"><span class="sum-lbl">Total</span><span class="sum-val" style="color:var(--primary)">₦${tot.toLocaleString()}</span></div>`;
+    }
+  }
   if(_s.userData&&_s.pendingData?.amount>_s.userData.balance)return showToast('error','Insufficient balance');
   // Check KYC daily limit
   if(_s.pendingData){
@@ -2463,12 +2495,57 @@ async function confirmTx(pin){
   await new Promise(r=>setTimeout(r,1800));
   try{
     const tid=genId(12);
-    await runTransaction(db,async(t)=>{const uRef=doc(db,'users',_s.user.uid);const us=await t.get(uRef);const bb=us.data().balance;t.update(uRef,{balance:increment(-d.amount),totalSpent:increment(d.amount)});t.set(doc(db,'transactions',tid),{id:tid,userId:_s.user.uid,type:d.type,status:'success',amount:d.amount,description:d.description||d.type,provider:d.provider||'clubkonnect',phone:d.phone||'',meter:d.meter||'',cardNo:d.cardNo||'',recipient:d.recipient||'',balanceBefore:bb,balanceAfter:bb-d.amount,createdAt:serverTimestamp()})});
-    if(ud.agentLevel&&ud.agentLevel!=='standard'){const r={airtime:0.015,data:0.02,electricity:0.005,cabletv:0.01,schoolpin:0.02};const comm=(r[d.type]||0.01)*d.amount;if(comm>0)await updateDoc(doc(db,'users',_s.user.uid),{agentCommission:increment(comm)})}
-    await addNotif(_s.user.uid,'✅ Transaction Successful',`${d.description} processed via ClubKonnect.`,'success');
-    navigateTo('successScreen');document.getElementById('successTitle').textContent='Transaction Successful!';document.getElementById('successMsg').textContent=d.description+' processed.';document.getElementById('successReceipt').innerHTML=[{l:'Service',v:d.description},{l:'Provider',v:'ClubKonnect'},{l:'Amount',v:`₦${d.amount.toLocaleString()}`},{l:'Status',v:'✅ Success'},{l:'Reference',v:tid},{l:'Date',v:new Date().toLocaleString()}].map(i=>`<div class="receipt-row"><span class="r-label">${i.l}</span><span class="r-val">${i.v}</span></div>`).join('');
+    // ── KOBORUSH-TO-KOBORUSH: credit receiver atomically ──
+    if(d.type==='transfer' && d.subType==='koborush' && d.recipientId){
+      const sendAmt=d.sendAmount||d.amount;
+      await runTransaction(db,async(t)=>{
+        const sRef=doc(db,'users',_s.user.uid);
+        const rRef=doc(db,'users',d.recipientId);
+        const [ss,rs]=await Promise.all([t.get(sRef),t.get(rRef)]);
+        if(!rs.exists())throw new Error('Recipient not found');
+        const sbal=ss.data().balance;
+        if(sbal<d.amount)throw new Error('Insufficient balance');
+        // Deduct from sender (amount sent + fee)
+        t.update(sRef,{balance:increment(-d.amount),totalSpent:increment(d.amount)});
+        // Credit receiver (only the send amount, not the fee)
+        t.update(rRef,{balance:increment(sendAmt)});
+        // Sender tx record
+        t.set(doc(db,'transactions',tid),{
+          id:tid,userId:_s.user.uid,type:'transfer',subType:'koborush',status:'success',
+          amount:d.amount,sendAmount:sendAmt,description:d.description,
+          recipientId:d.recipientId,recipient:d.recipient,recipientName:d.recipientName,
+          balanceBefore:sbal,balanceAfter:sbal-d.amount,createdAt:serverTimestamp()
+        });
+        // Receiver tx record
+        const rtid=genId(12);
+        t.set(doc(db,'transactions',rtid),{
+          id:rtid,userId:d.recipientId,type:'transfer_received',subType:'koborush',status:'success',
+          amount:sendAmt,description:('Money received from '+(_s.userData?.firstName||'')+' '+(_s.userData?.lastName||'')+' ('+(_s.userData?.phone||'')+')' ),
+          senderId:_s.user.uid,senderName:(_s.userData?.firstName||'')+' '+(_s.userData?.lastName||''),
+          balanceBefore:rs.data().balance,balanceAfter:rs.data().balance+sendAmt,createdAt:serverTimestamp()
+        });
+      });
+      // Notify receiver
+      await addNotif(d.recipientId,'💸 Money Received!',`₦${sendAmt.toLocaleString()} received from ${_s.userData?.firstName||''} ${_s.userData?.lastName||''}.`,'success').catch(()=>{});
+      await addNotif(_s.user.uid,'✅ Transfer Successful',`₦${sendAmt.toLocaleString()} sent to ${d.recipientName}.`,'success').catch(()=>{});
+      navigateTo('successScreen');
+      document.getElementById('successTitle').textContent='Transfer Successful!';
+      document.getElementById('successMsg').textContent=`₦${sendAmt.toLocaleString()} sent to ${d.recipientName}`;
+      document.getElementById('successReceipt').innerHTML=[
+        {l:'To',v:d.recipientName},{l:'Phone',v:d.recipient},
+        {l:'Amount Sent',v:`₦${sendAmt.toLocaleString()}`},
+        {l:'Fee',v:'₦25'},{l:'Total Deducted',v:`₦${d.amount.toLocaleString()}`},
+        {l:'Status',v:'✅ Success'},{l:'Reference',v:tid},{l:'Date',v:new Date().toLocaleString()}
+      ].map(i=>`<div class="receipt-row"><span class="r-label">${i.l}</span><span class="r-val">${i.v}</span></div>`).join('');
+    } else {
+      // ── ALL OTHER TRANSACTIONS (airtime, data, electricity, etc. + bank transfer) ──
+      await runTransaction(db,async(t)=>{const uRef=doc(db,'users',_s.user.uid);const us=await t.get(uRef);const bb=us.data().balance;t.update(uRef,{balance:increment(-d.amount),totalSpent:increment(d.amount)});t.set(doc(db,'transactions',tid),{id:tid,userId:_s.user.uid,type:d.type,status:'success',amount:d.amount,description:d.description||d.type,provider:d.provider||'clubkonnect',phone:d.phone||'',meter:d.meter||'',cardNo:d.cardNo||'',recipient:d.recipient||'',balanceBefore:bb,balanceAfter:bb-d.amount,createdAt:serverTimestamp()})});
+      if(ud.agentLevel&&ud.agentLevel!=='standard'){const r={airtime:0.015,data:0.02,electricity:0.005,cabletv:0.01,schoolpin:0.02};const comm=(r[d.type]||0.01)*d.amount;if(comm>0)await updateDoc(doc(db,'users',_s.user.uid),{agentCommission:increment(comm)})}
+      await addNotif(_s.user.uid,'✅ Transaction Successful',`${d.description} processed via ClubKonnect.`,'success');
+      navigateTo('successScreen');document.getElementById('successTitle').textContent='Transaction Successful!';document.getElementById('successMsg').textContent=d.description+' processed.';document.getElementById('successReceipt').innerHTML=[{l:'Service',v:d.description},{l:'Provider',v:'ClubKonnect'},{l:'Amount',v:`₦${d.amount.toLocaleString()}`},{l:'Status',v:'✅ Success'},{l:'Reference',v:tid},{l:'Date',v:new Date().toLocaleString()}].map(i=>`<div class="receipt-row"><span class="r-label">${i.l}</span><span class="r-val">${i.v}</span></div>`).join('');
+    }
     _s.pendingData=null;
-  }catch(e){showToast('error','Transaction failed');goBack()}
+  }catch(e){showToast('error',e.message||'Transaction failed');goBack()}
 }
 window.shareReceipt=()=>{const text=document.getElementById('successReceipt').innerText;if(navigator.share)navigator.share({title:'KOBOrush Receipt',text});else showToast('info','Copy receipt')};
 
@@ -2477,7 +2554,70 @@ window.saveProfile=async()=>{if(!_s.user)return;const u={firstName:document.getE
 function prefillEdit(){const d=_s.userData;if(!d)return;document.getElementById('editFirst').value=d.firstName||'';document.getElementById('editLast').value=d.lastName||'';document.getElementById('editPhone').value=d.phone||'';document.getElementById('editCountry').value=d.country||'NG'};
 window.shareReferral=()=>{const code=_s.userData?.referralCode||'KBR00000';const origin=window.location.origin+window.location.pathname.replace(/\/[^/]*$/,'/');const link=origin+'?ref='+code;const text=`Join KOBOrush! Use my code ${code} for ₦200 bonus. ${link}`;if(navigator.share)navigator.share({title:'Join KOBOrush',text});else{navigator.clipboard?.writeText(text);showToast('success','Link copied!')}};
 window.copyRefCode=()=>{const code=_s.userData?.referralCode||'KBR00000';navigator.clipboard?.writeText(code);showToast('success',code+' copied!')};
-window.updateTransferType=()=>{const t=document.getElementById('transferType').value;document.getElementById('bankFields').classList.toggle('hidden',t!=='bank');document.getElementById('koborushFields').classList.toggle('hidden',t!=='koborush')};
+// ── KOBOrush user lookup by phone or account number ──
+let _lookupTimer = null;
+window.lookupKoborushUser = (val) => {
+  const box = document.getElementById('koborushLookupBox');
+  const errBox = document.getElementById('koborushLookupError');
+  const nameEl = document.getElementById('koborushRecipientName');
+  const ridEl = document.getElementById('transferRecipientId');
+  box.style.display = 'none';
+  errBox.style.display = 'none';
+  ridEl.value = '';
+  if (_lookupTimer) clearTimeout(_lookupTimer);
+  const v = val.trim();
+  if (v.length < 10) return;
+  nameEl.textContent = 'Searching…';
+  box.style.display = 'block';
+  _lookupTimer = setTimeout(async () => {
+    try {
+      // Search by phone number first, then by accountNumber
+      let found = null;
+      const phoneQ = query(collection(db, 'users'), where('phone', '==', v), limit(1));
+      const phoneSnap = await getDocs(phoneQ);
+      if (!phoneSnap.empty) {
+        found = { id: phoneSnap.docs[0].id, ...phoneSnap.docs[0].data() };
+      } else {
+        const acctQ = query(collection(db, 'users'), where('accountNumber', '==', v), limit(1));
+        const acctSnap = await getDocs(acctQ);
+        if (!acctSnap.empty) {
+          found = { id: acctSnap.docs[0].id, ...acctSnap.docs[0].data() };
+        }
+      }
+      if (found && found.id !== _s.user.uid) {
+        nameEl.textContent = (found.firstName || '') + ' ' + (found.lastName || '');
+        ridEl.value = found.id;
+        box.style.display = 'block';
+        errBox.style.display = 'none';
+      } else if (found && found.id === _s.user.uid) {
+        box.style.display = 'none';
+        errBox.style.display = 'block';
+        errBox.textContent = 'You cannot transfer to yourself';
+      } else {
+        box.style.display = 'none';
+        errBox.style.display = 'block';
+        errBox.textContent = 'No KOBOrush user found with this phone/account number';
+      }
+    } catch(e) {
+      box.style.display = 'none';
+      errBox.style.display = 'block';
+      errBox.textContent = 'Lookup failed. Check your connection.';
+    }
+  }, 700); // debounce 700ms
+};
+
+window.updateTransferType=()=>{
+  const t=document.getElementById('transferType').value;
+  document.getElementById('bankFields').classList.toggle('hidden',t!=='bank');
+  document.getElementById('koborushFields').classList.toggle('hidden',t!=='koborush');
+  // Reset lookup when switching type
+  const ridEl=document.getElementById('transferRecipientId');
+  if(ridEl) ridEl.value='';
+  const box=document.getElementById('koborushLookupBox');
+  const errBox=document.getElementById('koborushLookupError');
+  if(box) box.style.display='none';
+  if(errBox) errBox.style.display='none';
+};
 window.showSetPINSheet=()=>showOverlay(`<div class="sheet-title">Set Transaction PIN</div><div class="sheet-sub">Create a 4-digit PIN for all transactions.</div><div class="pin-container"><input class="pin-digit" type="password" maxlength="1" id="np1" oninput="movePIN(this,null,'np2')"><input class="pin-digit" type="password" maxlength="1" id="np2" oninput="movePIN(this,'np1','np3')"><input class="pin-digit" type="password" maxlength="1" id="np3" oninput="movePIN(this,'np2','np4')"><input class="pin-digit" type="password" maxlength="1" id="np4"></div><button class="btn btn-primary" onclick="savePIN()" style="margin-top:12px">Save PIN</button>`);
 window.savePIN=async()=>{const pin=['np1','np2','np3','np4'].map(id=>document.getElementById(id)?.value||'').join('');if(pin.length!==4)return showToast('error','Enter 4 digits');await updateDoc(doc(db,'users',_s.user.uid),{transactionPIN:pin});showToast('success','PIN saved!');closeOverlay()};
 window.showWithdrawSheet=()=>showOverlay(`<div class="sheet-title">Withdraw Funds</div><div class="sheet-sub">Submit a request. Admin processes within 24 hours.</div><div class="form-group"><label class="form-label">Bank</label><select class="form-input" id="wdBank"><option>GTBank</option><option>First Bank</option><option>Zenith Bank</option><option>Access Bank</option><option>UBA</option></select></div><div class="form-group"><label class="form-label">Account Number</label><input type="text" class="form-input" id="wdAcct" placeholder="10-digit number" maxlength="10"></div><div class="form-group"><label class="form-label">Account Name</label><input type="text" class="form-input" id="wdName"></div><div class="form-group"><label class="form-label">Amount (₦)</label><input type="number" class="form-input" id="wdAmt" placeholder="Min ₦500"></div><button class="btn btn-primary" onclick="submitWithdrawal()">Submit Request</button>`);
