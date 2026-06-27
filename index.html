@@ -2089,20 +2089,23 @@ async function loadWallet(){
     if(el('walletCountryLabel'))el('walletCountryLabel').textContent=fl+' '+nm+' · NGN';
   }
   updateUI();
-  const el=document.getElementById('walletTx');el.innerHTML='<div class="loading-spinner"></div>';
+  const el=document.getElementById('walletTx');
+  if(!el)return;
+  if(!_s.user){el.innerHTML='<div class="empty-state" style="padding:16px"><div class="empty-icon">📋</div><p>Please log in</p></div>';return;}
+  el.innerHTML='<div class="loading-spinner"></div>';
   try{
-    let txSnap2;
-    try{
-      // Try simple query first (no orderBy) to avoid composite index requirement
-      const q=query(collection(db,'transactions'),where('userId','==',_s.user.uid),limit(20));
-      txSnap2=await Promise.race([getDocs(q),new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),6000))]);
-    }catch(e2){
-      console.warn('Wallet tx query failed:',e2);
-      txSnap2={docs:[]};
-    }
-    const txs=txSnap2.docs.map(d=>d.data()).sort((a,b)=>{const ta=a.createdAt?.toMillis?a.createdAt.toMillis():0;const tb=b.createdAt?.toMillis?b.createdAt.toMillis():0;return tb-ta;});
+    const q=query(collection(db,'transactions'),where('userId','==',_s.user.uid),limit(20));
+    const snap=await getDocs(q);
+    const txs=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>{
+      const ta=a.createdAt?.toMillis?a.createdAt.toMillis():0;
+      const tb=b.createdAt?.toMillis?b.createdAt.toMillis():0;
+      return tb-ta;
+    });
     el.innerHTML=txs.length?txs.map(d=>txHTML(d)).join(''):'<div class="empty-state" style="padding:16px"><div class="empty-icon">📋</div><p>No transactions yet</p></div>';
-  }catch(e){el.innerHTML='<div class="empty-state" style="padding:16px"><div class="empty-icon">📋</div><p>Error loading transactions</p></div>';}
+  }catch(e){
+    console.error('Wallet tx error:',e);
+    el.innerHTML='<div class="empty-state" style="padding:16px"><div class="empty-icon">📋</div><p>'+e.message+'</p></div>';
+  }
 }
 
 // ── HISTORY SCREEN ──
@@ -2532,10 +2535,11 @@ async function confirmTx(pin){
       navigateTo('successScreen');
       document.getElementById('successTitle').textContent='Transfer Successful!';
       document.getElementById('successMsg').textContent=`₦${sendAmt.toLocaleString()} sent to ${d.recipientName}`;
+      const s=csym(_s.userData?.country);
       document.getElementById('successReceipt').innerHTML=[
         {l:'To',v:d.recipientName},{l:'Phone',v:d.recipient},
-        {l:'Amount Sent',v:`₦${sendAmt.toLocaleString()}`},
-        {l:'Fee',v:'₦25'},{l:'Total Deducted',v:`₦${d.amount.toLocaleString()}`},
+        {l:'Amount Sent',v:fmt(sendAmt,s)},
+        {l:'Fee',v:fmt(25,s)},{l:'Total Deducted',v:fmt(d.amount,s)},
         {l:'Status',v:'✅ Success'},{l:'Reference',v:tid},{l:'Date',v:new Date().toLocaleString()}
       ].map(i=>`<div class="receipt-row"><span class="r-label">${i.l}</span><span class="r-val">${i.v}</span></div>`).join('');
     } else {
@@ -2548,7 +2552,14 @@ async function confirmTx(pin){
     _s.pendingData=null;
   }catch(e){showToast('error',e.message||'Transaction failed');goBack()}
 }
-window.shareReceipt=()=>{const text=document.getElementById('successReceipt').innerText;if(navigator.share)navigator.share({title:'KOBOrush Receipt',text});else showToast('info','Copy receipt')};
+window.shareReceipt=()=>{
+  const rows=[...document.getElementById('successReceipt').querySelectorAll('.receipt-row')];
+  const lines=rows.map(r=>{const l=r.querySelector('.r-label')?.textContent||'';const v=r.querySelector('.r-val')?.textContent||'';return l+': '+v;});
+  const title=document.getElementById('successTitle')?.textContent||'KOBOrush Receipt';
+  const text='🧾 '+title+'\n'+'─'.repeat(28)+'\n'+lines.join('\n')+'\n'+'─'.repeat(28)+'\nPowered by KOBOrush';
+  if(navigator.share)navigator.share({title:'KOBOrush Receipt',text});
+  else{navigator.clipboard?.writeText(text).then(()=>showToast('success','Receipt copied!')).catch(()=>showToast('info','Copy receipt manually'));}
+};
 
 // Profile
 window.saveProfile=async()=>{if(!_s.user)return;const u={firstName:document.getElementById('editFirst').value,lastName:document.getElementById('editLast').value,phone:document.getElementById('editPhone').value,country:document.getElementById('editCountry').value};try{await updateDoc(doc(db,'users',_s.user.uid),u);await updateProfile(_s.user,{displayName:`${u.firstName} ${u.lastName}`});showToast('success','Profile updated!');goBack()}catch(e){showToast('error','Failed')}};
