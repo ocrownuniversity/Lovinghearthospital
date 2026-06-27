@@ -39,9 +39,9 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:#1E1B4B
 
 /* ── AUTH ── */
 #auth{background:#fff;overflow-y:auto}
-#home,#walletScreen,#profileScreen,#admin,#fundWallet,#adminFundingRequests,#airtimeScreen,#dataScreen,#electricityScreen,#cableTVScreen,#schoolPinScreen,#transferScreen,#historyScreen,#notifications,#referral,#agentScreen,#securityScreen,#supportScreen,#editProfile,#pinScreen,#successScreen,#adminTransactions,#adminAPIs,#adminUsers,#adminWallets,#termsScreen,#adminTerms,#adminSecurity,#kycScreen,#adminKYC,#promoScreen,#adminPromos,#adminSupport,#supportChatScreen,#adminChatReply{background:var(--bg)}
+#home,#walletScreen,#profileScreen,#admin,#fundWallet,#adminFundingRequests,#airtimeScreen,#dataScreen,#electricityScreen,#cableTVScreen,#schoolPinScreen,#transferScreen,#historyScreen,#notifications,#referral,#agentScreen,#securityScreen,#supportScreen,#editProfile,#pinScreen,#successScreen,#adminTransactions,#adminAPIs,#adminUsers,#adminWallets,#termsScreen,#adminTerms,#adminSecurity,#kycScreen,#adminKYC,#promoScreen,#adminPromos,#adminSupport,#supportChatScreen,#adminChatReply,#rechargeScreen,#adminRechargeRequests{background:var(--bg)}
 /* All non-splash/auth screens get grey background */
-#home,#walletScreen,#servicesScreen,#profileScreen,#admin,#fundWallet,#adminFundingRequests,#airtimeScreen,#dataScreen,#electricityScreen,#cableTVScreen,#schoolPinScreen,#transferScreen,#historyScreen,#notifications,#referral,#agentScreen,#securityScreen,#supportScreen,#editProfile,#adminTransactions,#adminAPIs,#adminServices,#adminPricing,#adminCountries,#adminNotifications,#adminWallets,#adminAgents,#adminUsers,#pinScreen,#successScreen,#termsScreen,#adminTerms,#adminSecurity,#kycScreen,#adminKYC,#promoScreen,#adminPromos,#adminSupport,#supportChatScreen,#adminChatReply{background:var(--bg)}
+#home,#walletScreen,#servicesScreen,#profileScreen,#admin,#fundWallet,#adminFundingRequests,#airtimeScreen,#dataScreen,#electricityScreen,#cableTVScreen,#schoolPinScreen,#transferScreen,#historyScreen,#notifications,#referral,#agentScreen,#securityScreen,#supportScreen,#editProfile,#adminTransactions,#adminAPIs,#adminServices,#adminPricing,#adminCountries,#adminNotifications,#adminWallets,#adminAgents,#adminUsers,#pinScreen,#successScreen,#termsScreen,#adminTerms,#adminSecurity,#kycScreen,#adminKYC,#promoScreen,#adminPromos,#adminSupport,#supportChatScreen,#adminChatReply,#rechargeScreen,#adminRechargeRequests{background:var(--bg)}
 .auth-logo-bar{background:linear-gradient(145deg,#1E1B4B,#3B3582);padding:44px 24px 26px;display:flex;flex-direction:column;align-items:center;gap:10px}
 .auth-logo-box{width:68px;height:68px;background:white;border-radius:14px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,0.25);padding:6px}
 .auth-logo-box img{width:100%;height:100%;object-fit:contain}
@@ -638,6 +638,7 @@ textarea.form-input{resize:none}
         <div class="action-item" onclick="navigateTo('schoolPinScreen')"><div class="action-icon ai-purple">🎓</div><div class="action-label">School PIN</div></div>
         <div class="action-item" onclick="navigateTo('kycScreen')"><div class="action-icon" style="background:#E0F2FE">🪪</div><div class="action-label">KYC</div></div>
         <div class="action-item" onclick="navigateTo('supportChatScreen')"><div class="action-icon" style="background:#F0FDF4">🎧</div><div class="action-label">Support</div></div>
+        <div class="action-item" onclick="navigateTo('rechargeScreen')"><div class="action-icon" style="background:#FFF7E0">💱</div><div class="action-label">Recharge</div></div>
         <div class="action-item" onclick="navigateTo('referral')"><div class="action-icon" style="background:#FDF4FF">🎁</div><div class="action-label">Refer</div></div>
       </div>
     </div>
@@ -728,6 +729,7 @@ textarea.form-input{resize:none}
     <div class="svc-card" onclick="navigateTo('kycScreen')"><div class="svc-icon" style="background:#E0F2FE">🪪</div><div class="svc-name">KYC Verification</div><div class="svc-desc">Unlock higher limits</div></div>
     <div class="svc-card" onclick="navigateTo('supportChatScreen')"><div class="svc-icon" style="background:#F0FDF4">🎧</div><div class="svc-name">Live Support</div><div class="svc-desc">Chat with our team</div></div>
     <div class="svc-card" onclick="navigateTo('referral')"><div class="svc-icon" style="background:#FDF4FF">🎁</div><div class="svc-name">Refer & Earn</div><div class="svc-desc">₦500 per referral</div></div>
+    <div class="svc-card" onclick="navigateTo('rechargeScreen')"><div class="svc-icon" style="background:#FFF7E0">💱</div><div class="svc-name">Recharge to Cash</div><div class="svc-desc">Convert airtime → money</div></div>
   </div>
   <!-- Refer & Earn placed under services as requested -->
   <div class="refer-strip" onclick="navigateTo('referral')">
@@ -813,6 +815,7 @@ textarea.form-input{resize:none}
     <div class="admin-nav-card" onclick="navigateTo('adminKYC')"><div class="anc-icon">🪪</div><div class="anc-label">KYC</div><div class="anc-badge" id="kycPendingBadge" style="display:none">0</div></div>
     <div class="admin-nav-card" onclick="navigateTo('adminPromos')"><div class="anc-icon">🏷️</div><div class="anc-label">Promos</div></div>
     <div class="admin-nav-card" onclick="navigateTo('adminSupport')"><div class="anc-icon">💬</div><div class="anc-label">Support</div><div class="anc-badge" id="supportUnreadBadge" style="display:none">0</div></div>
+    <div class="admin-nav-card" onclick="navigateTo('adminRechargeRequests')"><div class="anc-icon">💱</div><div class="anc-label">Recharge</div><div class="anc-badge" id="rechargeRequestBadge" style="display:none">0</div></div>
   </div>
   <div class="admin-panel"><div class="admin-panel-header"><h4>Recent Users</h4><span style="font-size:11px;color:var(--primary);font-weight:700;cursor:pointer" onclick="navigateTo('adminUsers')">See all</span></div><div id="adminUsersList"><div class="loading-spinner"></div></div></div>
   <div class="admin-panel"><div class="admin-panel-header"><h4>API Status</h4><span style="font-size:11px;color:var(--primary);font-weight:700;cursor:pointer" onclick="navigateTo('adminAPIs')">Manage</span></div><div id="adminAPIStatus"></div></div>
@@ -1172,6 +1175,76 @@ textarea.form-input{resize:none}
   <div class="chat-input-bar">
     <textarea class="chat-input" id="chatInput" placeholder="Type a message..." rows="1" onkeydown="chatInputKeydown(event)"></textarea>
     <button class="chat-send-btn" onclick="sendChatMessage()">➤</button>
+  </div>
+</div>
+
+
+<!-- ══ RECHARGE TO CASH ══ -->
+<div class="screen" id="rechargeScreen">
+  <div class="wallet-header">
+    <div style="display:flex;align-items:center;gap:10px;padding-top:42px;margin-bottom:14px">
+      <button class="nav-back white" onclick="goBack()">←</button>
+      <div>
+        <div style="font-family:var(--font-display);font-size:17px;font-weight:700;color:white">Convert Recharge to Cash</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.55)">₦100 recharge = ₦80 wallet credit</div>
+      </div>
+    </div>
+  </div>
+  <div style="padding:16px 12px 80px">
+    <div class="card" style="margin-bottom:12px">
+      <div class="section-title">How it works</div>
+      <div style="font-size:12px;color:var(--text2);line-height:1.7">
+        1. Enter the amount of airtime you want to convert.<br>
+        2. We'll calculate your wallet credit at <strong>80%</strong> of the value.<br>
+        3. Send the airtime to our number (shown after submission).<br>
+        4. Admin verifies and credits your wallet.
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:12px">
+      <div class="section-title" style="margin-bottom:10px">Enter Recharge Amount</div>
+      <div class="form-group">
+        <label class="form-label">Airtime Amount (₦)</label>
+        <input type="number" class="form-input" id="rechargeAmount" placeholder="e.g. 1000" min="100" oninput="calcRechargePreview()">
+      </div>
+      <div id="rechargePreview" style="display:none;background:#F0FDF4;border-radius:12px;padding:12px 14px;margin-top:8px;border:1px solid #BBF7D0">
+        <div style="font-size:12px;color:var(--text2)">You will receive in wallet:</div>
+        <div style="font-size:22px;font-weight:700;color:var(--success-green)" id="rechargeResult">₦0.00</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:2px">Conversion rate: 80%</div>
+      </div>
+      <div class="form-group" style="margin-top:12px">
+        <label class="form-label">Network</label>
+        <select class="form-input" id="rechargeNetwork">
+          <option value="">Select network</option>
+          <option value="MTN">MTN</option>
+          <option value="Airtel">Airtel</option>
+          <option value="Glo">Glo</option>
+          <option value="9mobile">9mobile</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Your Phone Number</label>
+        <input type="tel" class="form-input" id="rechargePhone" placeholder="080xxxxxxxx">
+      </div>
+      <button class="btn btn-primary" style="width:100%;margin-top:6px" onclick="submitRechargeRequest()">Submit Request</button>
+    </div>
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <div class="section-title" style="margin:0">My Conversions</div>
+      </div>
+      <div id="myRechargeList"><div class="loading-spinner"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ADMIN RECHARGE REQUESTS ══ -->
+<div class="screen" id="adminRechargeRequests" style="background:var(--bg)">
+  <div class="navbar light" style="padding-top:42px">
+    <button class="nav-back" onclick="goBack()">←</button>
+    <div class="nav-title">Recharge Requests</div>
+    <div style="width:37px"></div>
+  </div>
+  <div style="padding:10px 12px 80px">
+    <div id="adminRechargeList"><div class="loading-spinner"></div></div>
   </div>
 </div>
 
@@ -1699,13 +1772,42 @@ window.addEventListener('error', function(e) {
   }
 });
 import{initializeApp}from'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import{getAuth,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,onAuthStateChanged,sendPasswordResetEmail,GoogleAuthProvider,signInWithPopup,updateProfile}from'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import{getAuth,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,onAuthStateChanged,sendPasswordResetEmail,GoogleAuthProvider,signInWithPopup,updateProfile,browserSessionPersistence,setPersistence}from'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
 import{getFirestore,doc,setDoc,getDoc,updateDoc,collection,addDoc,query,where,orderBy,limit,getDocs,onSnapshot,serverTimestamp,increment,runTransaction}from'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 import{getStorage as fbStorage,ref as storageRef,uploadString,getDownloadURL}from'https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js';
 
 const FC={apiKey:"AIzaSyCPyNhUxVqf4nl2FwgoKT26kedQr8L0E_g",authDomain:"fintech-d16e9.firebaseapp.com",projectId:"fintech-d16e9",storageBucket:"fintech-d16e9.firebasestorage.app",messagingSenderId:"500436305722",appId:"1:500436305722:web:e1e5ec4f7b6bd3c70ef203"};
 const app=initializeApp(FC);
 const auth=getAuth(app);
+// ── SESSION SECURITY: force session-only persistence (no auto login after browser close) ──
+setPersistence(auth,browserSessionPersistence).catch(()=>{});
+
+// ── INACTIVITY LOGOUT: auto sign out after 5 minutes of inactivity ──
+let _inactivityTimer=null;
+const INACTIVITY_LIMIT=5*60*1000; // 5 minutes
+function _resetInactivityTimer(){
+  if(_inactivityTimer)clearTimeout(_inactivityTimer);
+  if(!_s.user)return;
+  _inactivityTimer=setTimeout(async()=>{
+    await handleLogout();
+    showToast('info','Signed out due to inactivity');
+  },INACTIVITY_LIMIT);
+}
+function _startInactivityWatcher(){
+  ['click','keydown','touchstart','mousemove'].forEach(ev=>document.addEventListener(ev,_resetInactivityTimer,{passive:true}));
+  _resetInactivityTimer();
+}
+function _stopInactivityWatcher(){
+  if(_inactivityTimer)clearTimeout(_inactivityTimer);
+  _inactivityTimer=null;
+  ['click','keydown','touchstart','mousemove'].forEach(ev=>document.removeEventListener(ev,_resetInactivityTimer));
+}
+
+// ── SIGN OUT ON PAGE/TAB CLOSE ──
+window.addEventListener('beforeunload',()=>{
+  if(_s.user){try{signOut(auth);}catch(e){}}
+});
+
 const db=getFirestore(app);
 const storage=fbStorage(app);
 const ADMIN='oladejiridwanopeyemi@gmail.com';
@@ -1748,6 +1850,8 @@ window.navigateTo=(id)=>{
   if(id==='promoScreen')loadPromoScreen();
   if(id==='adminPromos')loadAdminPromos();
   if(id==='adminSupport')loadAdminSupportList();
+  if(id==='rechargeScreen')initRechargeScreen();
+  if(id==='adminRechargeRequests')loadAdminRechargeRequests();
   if(id==='supportChatScreen')initSupportChat();
   if(id==='adminTerms')loadAdminTermsEditor();
   if(id==='adminSecurity'){}
@@ -1806,9 +1910,9 @@ window.handleGoogleAuth=async()=>{
   }catch(e){showToast('error',e.message)}
 };
 window.handlePhoneAuth=()=>showToast('info','Phone OTP coming soon');
-window.showForgotPassword=()=>showOverlay(`<div class="sheet-title">Reset Password</div><div class="sheet-sub">Enter your email and we'll send a reset link.</div><div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" id="resetEmail" placeholder="your@email.com"></div><button class="btn btn-primary" onclick="sendReset()">Send Reset Link</button>`);
+window.showForgotPassword=()=>showOverlay(`<div class="sheet-title">Reset Password</div><div class="sheet-sub">Enter your email and we'll send a reset link.</div><div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" id="resetEmail" placeholder="your@email.com"></div><button class="btn btn-primary" onclick="sendReset()">Send Reset Link</button><p style="font-size:11px;color:var(--text3);margin-top:12px;text-align:center">⚠️ If you don't see the email in your inbox, please check your <strong>Spam / Junk</strong> folder.</p>`);
 window.sendReset=async()=>{try{const actionCodeSettings={url:window.location.origin+(window.location.pathname||'/'),handleCodeInApp:false};await sendPasswordResetEmail(auth,document.getElementById('resetEmail').value,actionCodeSettings);showToast('success','Reset link sent!');closeOverlay()}catch(e){showToast('error',e.message)}};
-window.handleLogout=async()=>{await signOut(auth);_s.user=null;_s.userData=null;document.getElementById('bottomNav').style.display='none';showScreen('auth');showToast('info','Signed out')};
+window.handleLogout=async()=>{_stopInactivityWatcher();await signOut(auth);_s.user=null;_s.userData=null;window._walletListenerStarted=false;document.getElementById('bottomNav').style.display='none';showScreen('auth');showToast('info','Signed out')};
 
 window.handleProfilePicChange=async(input)=>{
   const file=input.files[0];if(!file||!_s.user)return;
@@ -1858,6 +1962,7 @@ onAuthStateChanged(auth,async(user)=>{
     _s.user=user;setBtnLoading('loginBtn',false,'Sign In');
     await loadUD(user.uid);
     document.getElementById('bottomNav').style.display='flex';
+    _startInactivityWatcher();
     if(_s.isAdmin){
       document.getElementById('bottomNav').style.display='none';
       // Show PIN gate before admin dashboard
@@ -1976,9 +2081,15 @@ async function loadWallet(){
   updateUI();
   const el=document.getElementById('walletTx');el.innerHTML='<div class="loading-spinner"></div>';
   try{
-    const q=query(collection(db,'transactions'),where('userId','==',_s.user.uid),limit(10));
-    const s=await getDocs(q);
-    const txs=s.docs.map(d=>d.data()).sort((a,b)=>{const ta=a.createdAt?.toMillis?a.createdAt.toMillis():0;const tb=b.createdAt?.toMillis?b.createdAt.toMillis():0;return tb-ta;});
+    let txSnap2;
+    try{
+      const q=query(collection(db,'transactions'),where('userId','==',_s.user.uid),orderBy('createdAt','desc'),limit(10));
+      txSnap2=await Promise.race([getDocs(q),new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),8000))]);
+    }catch(e2){
+      const q=query(collection(db,'transactions'),where('userId','==',_s.user.uid),limit(10));
+      txSnap2=await getDocs(q);
+    }
+    const txs=txSnap2.docs.map(d=>d.data()).sort((a,b)=>{const ta=a.createdAt?.toMillis?a.createdAt.toMillis():0;const tb=b.createdAt?.toMillis?b.createdAt.toMillis():0;return tb-ta;});
     el.innerHTML=txs.length?txs.map(d=>txHTML(d)).join(''):'<div class="empty-state" style="padding:16px"><div class="empty-icon">📋</div><p>No transactions yet</p></div>';
   }catch(e){el.innerHTML='<div class="empty-state" style="padding:16px"><div class="empty-icon">📋</div><p>Error loading transactions</p></div>';}
 }
@@ -3250,6 +3361,182 @@ window.initSupportChat = async () => {
 
   // Listen for messages
   const msgsRef = collection(db,'supportChats',chatId,'messages');
+
+// ════════════════════════════════════════════
+// RECHARGE TO CASH FEATURE
+// Conversion rate: ₦100 airtime = ₦80 wallet
+// ════════════════════════════════════════════
+
+const RECHARGE_RATE = 0.80; // 80%
+
+window.calcRechargePreview = () => {
+  const amt = parseFloat(document.getElementById('rechargeAmount').value) || 0;
+  const preview = document.getElementById('rechargePreview');
+  const result = document.getElementById('rechargeResult');
+  if (amt >= 100) {
+    preview.style.display = 'block';
+    result.textContent = fmt(amt * RECHARGE_RATE);
+  } else {
+    preview.style.display = 'none';
+  }
+};
+
+window.submitRechargeRequest = async () => {
+  const amt = parseFloat(document.getElementById('rechargeAmount').value) || 0;
+  const network = document.getElementById('rechargeNetwork').value;
+  const phone = document.getElementById('rechargePhone').value.trim();
+
+  if (amt < 100) return showToast('error', 'Minimum recharge amount is ₦100');
+  if (!network) return showToast('error', 'Please select a network');
+  if (!phone || phone.length < 10) return showToast('error', 'Enter a valid phone number');
+  if (!_s.user) return showToast('error', 'Please log in');
+
+  const credit = amt * RECHARGE_RATE;
+
+  try {
+    const reqId = genId(12);
+    await setDoc(doc(db, 'rechargeRequests', reqId), {
+      id: reqId,
+      userId: _s.user.uid,
+      email: _s.userData?.email,
+      userName: (_s.userData?.firstName || '') + ' ' + (_s.userData?.lastName || ''),
+      rechargeAmount: amt,
+      creditAmount: credit,
+      network,
+      phone,
+      status: 'pending',
+      createdAt: serverTimestamp()
+    });
+
+    await addNotif(_s.user.uid, '💱 Recharge Request Submitted',
+      `₦${amt.toLocaleString()} recharge → ₦${credit.toLocaleString()} wallet credit pending admin approval.`, 'info'
+    ).catch(() => {});
+
+    showToast('success', 'Request submitted! Send ₦' + amt.toLocaleString() + ' airtime to the number below.');
+
+    // Show transfer number overlay
+    showOverlay(`<div class="sheet-title">Send Airtime Now</div>
+      <div class="sheet-sub">Transfer ₦${amt.toLocaleString()} ${network} airtime to:</div>
+      <div style="font-size:26px;font-weight:700;color:var(--primary);text-align:center;margin:14px 0;letter-spacing:2px" id="rechargeTargetNum">Loading...</div>
+      <div style="font-size:11px;color:var(--text3);text-align:center;margin-bottom:16px">After sending, await admin verification (usually within 1 hour)</div>
+      <button class="btn btn-primary" style="width:100%" onclick="closeOverlay()">Done</button>`);
+
+    // Load company number from settings
+    getDoc(doc(db, 'settings', 'recharge')).then(snap => {
+      const num = snap.exists() ? (snap.data().transferNumber || 'Not set – contact support') : 'Not set – contact support';
+      const el = document.getElementById('rechargeTargetNum');
+      if (el) el.textContent = num;
+    }).catch(() => {});
+
+    // Reset form
+    document.getElementById('rechargeAmount').value = '';
+    document.getElementById('rechargeNetwork').value = '';
+    document.getElementById('rechargePhone').value = '';
+    document.getElementById('rechargePreview').style.display = 'none';
+    loadMyRechargeHistory();
+
+  } catch (e) {
+    showToast('error', 'Failed to submit: ' + e.message);
+  }
+};
+
+async function initRechargeScreen() {
+  loadMyRechargeHistory();
+}
+
+async function loadMyRechargeHistory() {
+  const el = document.getElementById('myRechargeList');
+  if (!el || !_s.user) return;
+  el.innerHTML = '<div class="loading-spinner"></div>';
+  try {
+    const q = query(collection(db, 'rechargeRequests'), where('userId', '==', _s.user.uid), limit(20));
+    const snap = await getDocs(q);
+    const items = snap.docs.map(d => d.data()).sort((a, b) => {
+      const ta = a.createdAt?.toMillis ? a.createdAt.toMillis() : 0;
+      const tb = b.createdAt?.toMillis ? b.createdAt.toMillis() : 0;
+      return tb - ta;
+    });
+    if (!items.length) {
+      el.innerHTML = '<div class="empty-state" style="padding:16px"><div class="empty-icon">💱</div><p>No conversions yet</p></div>';
+      return;
+    }
+    el.innerHTML = items.map(r => `
+      <div class="tx-item">
+        <div class="tx-icon" style="background:#FFF7E0">💱</div>
+        <div class="tx-info">
+          <div class="tx-name">${r.network} Recharge → Cash</div>
+          <div class="tx-meta">${tAgo(r.createdAt)} · <span class="badge badge-${r.status === 'approved' ? 'success' : r.status === 'rejected' ? 'failed' : 'pending'}">${r.status}</span></div>
+        </div>
+        <div class="tx-amt">
+          <div class="tx-amt-val cr">+${fmt(r.creditAmount)}</div>
+          <div style="font-size:10px;color:var(--text3)">of ₦${r.rechargeAmount?.toLocaleString()}</div>
+        </div>
+      </div>`).join('');
+  } catch(e) {
+    el.innerHTML = '<div class="empty-state" style="padding:16px"><div class="empty-icon">💱</div><p>Error loading history</p></div>';
+  }
+}
+
+// ── ADMIN: load recharge requests ──
+window.loadAdminRechargeRequests = async () => {
+  const el = document.getElementById('adminRechargeList');
+  if (!el) return;
+  el.innerHTML = '<div class="loading-spinner"></div>';
+  try {
+    const snap = await getDocs(query(collection(db, 'rechargeRequests'), limit(100)));
+    const items = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => {
+      const ta = a.createdAt?.toMillis ? a.createdAt.toMillis() : 0;
+      const tb = b.createdAt?.toMillis ? b.createdAt.toMillis() : 0;
+      return tb - ta;
+    });
+    if (!items.length) {
+      el.innerHTML = '<div class="empty-state"><p>No recharge requests</p></div>';
+      return;
+    }
+    el.innerHTML = `<div class="admin-panel" style="margin:0">${items.map(r => `
+      <div class="admin-table-row">
+        <div class="row-main">
+          <div class="row-title">${r.userName || r.email} – ${r.network}</div>
+          <div class="row-sub">${tAgo(r.createdAt)} · Phone: ${r.phone}</div>
+          <div class="row-sub">Airtime: ₦${r.rechargeAmount?.toLocaleString()} → Credit: ₦${r.creditAmount?.toLocaleString()}</div>
+        </div>
+        <div style="text-align:right">
+          <span class="badge badge-${r.status === 'approved' ? 'success' : r.status === 'rejected' ? 'failed' : 'pending'}">${r.status}</span>
+          ${r.status === 'pending' ? `<div style="margin-top:6px;display:flex;gap:6px;justify-content:flex-end">
+            <button class="btn btn-sm" style="background:var(--success-green);color:white;font-size:10px;padding:4px 8px;border:none;border-radius:6px;cursor:pointer" onclick="approveRecharge('${r.id}','${r.userId}',${r.creditAmount})">Approve</button>
+            <button class="btn btn-sm" style="background:var(--danger);color:white;font-size:10px;padding:4px 8px;border:none;border-radius:6px;cursor:pointer" onclick="rejectRecharge('${r.id}','${r.userId}')">Reject</button>
+          </div>` : ''}
+        </div>
+      </div>`).join('')}</div>`;
+  } catch(e) {
+    el.innerHTML = '<div class="empty-state"><p>Error: ' + e.message + '</p></div>';
+  }
+};
+
+window.approveRecharge = async (reqId, userId, creditAmt) => {
+  try {
+    await updateDoc(doc(db, 'rechargeRequests', reqId), { status: 'approved' });
+    await updateDoc(doc(db, 'users', userId), { balance: increment(creditAmt) });
+    const txId = genId(12);
+    await setDoc(doc(db, 'transactions', txId), {
+      id: txId, userId, type: 'recharge_conversion', status: 'success',
+      amount: creditAmt, description: 'Recharge to Cash Conversion', createdAt: serverTimestamp()
+    });
+    await addNotif(userId, '✅ Recharge Approved!', `₦${creditAmt?.toLocaleString()} credited to your wallet.`, 'success').catch(() => {});
+    showToast('success', 'Approved & wallet credited!');
+    loadAdminRechargeRequests();
+  } catch(e) { showToast('error', 'Failed: ' + e.message); }
+};
+
+window.rejectRecharge = async (reqId, userId) => {
+  try {
+    await updateDoc(doc(db, 'rechargeRequests', reqId), { status: 'rejected' });
+    await addNotif(userId, '❌ Recharge Rejected', 'Your recharge conversion request was rejected. Contact support.', 'error').catch(() => {});
+    showToast('info', 'Request rejected');
+    loadAdminRechargeRequests();
+  } catch(e) { showToast('error', 'Failed: ' + e.message); }
+};
+
   window._chatListener = onSnapshot(query(msgsRef, orderBy ? query(msgsRef) : msgsRef), (snap) => {
     const msgs = snap.docs.map(d=>d.data()).sort((a,b)=>{
       const ta = a.sentAt?.toMillis?a.sentAt.toMillis():0;
@@ -3362,6 +3649,182 @@ window.openAdminChat = async (userId, userName, userEmail) => {
   msgEl.innerHTML = '<div class="loading-spinner"></div>';
 
   const msgsRef = collection(db,'supportChats',userId,'messages');
+
+// ════════════════════════════════════════════
+// RECHARGE TO CASH FEATURE
+// Conversion rate: ₦100 airtime = ₦80 wallet
+// ════════════════════════════════════════════
+
+const RECHARGE_RATE = 0.80; // 80%
+
+window.calcRechargePreview = () => {
+  const amt = parseFloat(document.getElementById('rechargeAmount').value) || 0;
+  const preview = document.getElementById('rechargePreview');
+  const result = document.getElementById('rechargeResult');
+  if (amt >= 100) {
+    preview.style.display = 'block';
+    result.textContent = fmt(amt * RECHARGE_RATE);
+  } else {
+    preview.style.display = 'none';
+  }
+};
+
+window.submitRechargeRequest = async () => {
+  const amt = parseFloat(document.getElementById('rechargeAmount').value) || 0;
+  const network = document.getElementById('rechargeNetwork').value;
+  const phone = document.getElementById('rechargePhone').value.trim();
+
+  if (amt < 100) return showToast('error', 'Minimum recharge amount is ₦100');
+  if (!network) return showToast('error', 'Please select a network');
+  if (!phone || phone.length < 10) return showToast('error', 'Enter a valid phone number');
+  if (!_s.user) return showToast('error', 'Please log in');
+
+  const credit = amt * RECHARGE_RATE;
+
+  try {
+    const reqId = genId(12);
+    await setDoc(doc(db, 'rechargeRequests', reqId), {
+      id: reqId,
+      userId: _s.user.uid,
+      email: _s.userData?.email,
+      userName: (_s.userData?.firstName || '') + ' ' + (_s.userData?.lastName || ''),
+      rechargeAmount: amt,
+      creditAmount: credit,
+      network,
+      phone,
+      status: 'pending',
+      createdAt: serverTimestamp()
+    });
+
+    await addNotif(_s.user.uid, '💱 Recharge Request Submitted',
+      `₦${amt.toLocaleString()} recharge → ₦${credit.toLocaleString()} wallet credit pending admin approval.`, 'info'
+    ).catch(() => {});
+
+    showToast('success', 'Request submitted! Send ₦' + amt.toLocaleString() + ' airtime to the number below.');
+
+    // Show transfer number overlay
+    showOverlay(`<div class="sheet-title">Send Airtime Now</div>
+      <div class="sheet-sub">Transfer ₦${amt.toLocaleString()} ${network} airtime to:</div>
+      <div style="font-size:26px;font-weight:700;color:var(--primary);text-align:center;margin:14px 0;letter-spacing:2px" id="rechargeTargetNum">Loading...</div>
+      <div style="font-size:11px;color:var(--text3);text-align:center;margin-bottom:16px">After sending, await admin verification (usually within 1 hour)</div>
+      <button class="btn btn-primary" style="width:100%" onclick="closeOverlay()">Done</button>`);
+
+    // Load company number from settings
+    getDoc(doc(db, 'settings', 'recharge')).then(snap => {
+      const num = snap.exists() ? (snap.data().transferNumber || 'Not set – contact support') : 'Not set – contact support';
+      const el = document.getElementById('rechargeTargetNum');
+      if (el) el.textContent = num;
+    }).catch(() => {});
+
+    // Reset form
+    document.getElementById('rechargeAmount').value = '';
+    document.getElementById('rechargeNetwork').value = '';
+    document.getElementById('rechargePhone').value = '';
+    document.getElementById('rechargePreview').style.display = 'none';
+    loadMyRechargeHistory();
+
+  } catch (e) {
+    showToast('error', 'Failed to submit: ' + e.message);
+  }
+};
+
+async function initRechargeScreen() {
+  loadMyRechargeHistory();
+}
+
+async function loadMyRechargeHistory() {
+  const el = document.getElementById('myRechargeList');
+  if (!el || !_s.user) return;
+  el.innerHTML = '<div class="loading-spinner"></div>';
+  try {
+    const q = query(collection(db, 'rechargeRequests'), where('userId', '==', _s.user.uid), limit(20));
+    const snap = await getDocs(q);
+    const items = snap.docs.map(d => d.data()).sort((a, b) => {
+      const ta = a.createdAt?.toMillis ? a.createdAt.toMillis() : 0;
+      const tb = b.createdAt?.toMillis ? b.createdAt.toMillis() : 0;
+      return tb - ta;
+    });
+    if (!items.length) {
+      el.innerHTML = '<div class="empty-state" style="padding:16px"><div class="empty-icon">💱</div><p>No conversions yet</p></div>';
+      return;
+    }
+    el.innerHTML = items.map(r => `
+      <div class="tx-item">
+        <div class="tx-icon" style="background:#FFF7E0">💱</div>
+        <div class="tx-info">
+          <div class="tx-name">${r.network} Recharge → Cash</div>
+          <div class="tx-meta">${tAgo(r.createdAt)} · <span class="badge badge-${r.status === 'approved' ? 'success' : r.status === 'rejected' ? 'failed' : 'pending'}">${r.status}</span></div>
+        </div>
+        <div class="tx-amt">
+          <div class="tx-amt-val cr">+${fmt(r.creditAmount)}</div>
+          <div style="font-size:10px;color:var(--text3)">of ₦${r.rechargeAmount?.toLocaleString()}</div>
+        </div>
+      </div>`).join('');
+  } catch(e) {
+    el.innerHTML = '<div class="empty-state" style="padding:16px"><div class="empty-icon">💱</div><p>Error loading history</p></div>';
+  }
+}
+
+// ── ADMIN: load recharge requests ──
+window.loadAdminRechargeRequests = async () => {
+  const el = document.getElementById('adminRechargeList');
+  if (!el) return;
+  el.innerHTML = '<div class="loading-spinner"></div>';
+  try {
+    const snap = await getDocs(query(collection(db, 'rechargeRequests'), limit(100)));
+    const items = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => {
+      const ta = a.createdAt?.toMillis ? a.createdAt.toMillis() : 0;
+      const tb = b.createdAt?.toMillis ? b.createdAt.toMillis() : 0;
+      return tb - ta;
+    });
+    if (!items.length) {
+      el.innerHTML = '<div class="empty-state"><p>No recharge requests</p></div>';
+      return;
+    }
+    el.innerHTML = `<div class="admin-panel" style="margin:0">${items.map(r => `
+      <div class="admin-table-row">
+        <div class="row-main">
+          <div class="row-title">${r.userName || r.email} – ${r.network}</div>
+          <div class="row-sub">${tAgo(r.createdAt)} · Phone: ${r.phone}</div>
+          <div class="row-sub">Airtime: ₦${r.rechargeAmount?.toLocaleString()} → Credit: ₦${r.creditAmount?.toLocaleString()}</div>
+        </div>
+        <div style="text-align:right">
+          <span class="badge badge-${r.status === 'approved' ? 'success' : r.status === 'rejected' ? 'failed' : 'pending'}">${r.status}</span>
+          ${r.status === 'pending' ? `<div style="margin-top:6px;display:flex;gap:6px;justify-content:flex-end">
+            <button class="btn btn-sm" style="background:var(--success-green);color:white;font-size:10px;padding:4px 8px;border:none;border-radius:6px;cursor:pointer" onclick="approveRecharge('${r.id}','${r.userId}',${r.creditAmount})">Approve</button>
+            <button class="btn btn-sm" style="background:var(--danger);color:white;font-size:10px;padding:4px 8px;border:none;border-radius:6px;cursor:pointer" onclick="rejectRecharge('${r.id}','${r.userId}')">Reject</button>
+          </div>` : ''}
+        </div>
+      </div>`).join('')}</div>`;
+  } catch(e) {
+    el.innerHTML = '<div class="empty-state"><p>Error: ' + e.message + '</p></div>';
+  }
+};
+
+window.approveRecharge = async (reqId, userId, creditAmt) => {
+  try {
+    await updateDoc(doc(db, 'rechargeRequests', reqId), { status: 'approved' });
+    await updateDoc(doc(db, 'users', userId), { balance: increment(creditAmt) });
+    const txId = genId(12);
+    await setDoc(doc(db, 'transactions', txId), {
+      id: txId, userId, type: 'recharge_conversion', status: 'success',
+      amount: creditAmt, description: 'Recharge to Cash Conversion', createdAt: serverTimestamp()
+    });
+    await addNotif(userId, '✅ Recharge Approved!', `₦${creditAmt?.toLocaleString()} credited to your wallet.`, 'success').catch(() => {});
+    showToast('success', 'Approved & wallet credited!');
+    loadAdminRechargeRequests();
+  } catch(e) { showToast('error', 'Failed: ' + e.message); }
+};
+
+window.rejectRecharge = async (reqId, userId) => {
+  try {
+    await updateDoc(doc(db, 'rechargeRequests', reqId), { status: 'rejected' });
+    await addNotif(userId, '❌ Recharge Rejected', 'Your recharge conversion request was rejected. Contact support.', 'error').catch(() => {});
+    showToast('info', 'Request rejected');
+    loadAdminRechargeRequests();
+  } catch(e) { showToast('error', 'Failed: ' + e.message); }
+};
+
   window._chatListener = onSnapshot(msgsRef, (snap) => {
     const msgs = snap.docs.map(d=>d.data()).sort((a,b)=>{
       const ta = a.sentAt?.toMillis?a.sentAt.toMillis():0;
