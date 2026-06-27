@@ -1059,9 +1059,26 @@ textarea.form-input{resize:none}
   <div class="svc-form-body">
     <div class="form-group"><label class="form-label">Transfer Type</label><select class="form-input" id="transferType" onchange="updateTransferType()"><option value="koborush">KOBOrush to KOBOrush</option><option value="bank">Bank Transfer</option></select></div>
     <div id="bankFields" class="hidden">
-      <div class="form-group"><label class="form-label">Bank</label><select class="form-input" id="transferBank"><option>GTBank</option><option>First Bank</option><option>Access Bank</option><option>Zenith Bank</option><option>UBA</option><option>Wema Bank</option><option>Kuda</option><option>OPay</option></select></div>
-      <div class="form-group"><label class="form-label">Account Number</label><input type="text" class="form-input" id="transferAcctNo" placeholder="10-digit account" maxlength="10"></div>
-      <div class="form-group"><label class="form-label">Account Name</label><input type="text" class="form-input" id="transferAcctName" placeholder="Auto-fetched..." readonly></div>
+      <div class="form-group"><label class="form-label">Bank</label>
+        <select class="form-input" id="transferBank" onchange="lookupBankAcct()">
+          <option value="">Select bank...</option>
+          <option value="058">GTBank</option><option value="011">First Bank</option>
+          <option value="044">Access Bank</option><option value="057">Zenith Bank</option>
+          <option value="033">UBA</option><option value="035">Wema Bank</option>
+          <option value="070">Fidelity Bank</option><option value="082">Keystone</option>
+          <option value="032">Union Bank</option><option value="215">Unity Bank</option>
+          <option value="232">Sterling Bank</option><option value="035A">ALAT</option>
+          <option value="50211">Kuda Bank</option><option value="999992">OPay</option>
+          <option value="999991">PalmPay</option><option value="120001">9PSB</option>
+        </select>
+      </div>
+      <div class="form-group"><label class="form-label">Account Number</label><input type="tel" class="form-input" id="transferAcctNo" placeholder="10-digit account" maxlength="10" oninput="if(this.value.length===10)lookupBankAcct()"></div>
+      <div id="transferAcctNameBox" style="display:none;background:#F0FDF4;border-radius:10px;padding:10px 13px;margin:-8px 0 10px;border:1px solid #BBF7D0">
+        <div style="font-size:10px;color:var(--text3)">Account Name</div>
+        <div style="font-size:14px;font-weight:700;color:var(--success-green)" id="transferAcctNameVal">—</div>
+      </div>
+      <div id="transferAcctNameErr" style="display:none;background:#FEF2F2;border-radius:10px;padding:9px 13px;margin:-8px 0 10px;border:1px solid #FCA5A5;font-size:12px;color:var(--danger)">Account not found</div>
+      <input type="hidden" id="transferAcctName">
     </div>
     <div id="koborushFields">
       <div class="form-group">
@@ -2627,6 +2644,45 @@ window.saveProfile=async()=>{if(!_s.user)return;const u={firstName:document.getE
 function prefillEdit(){const d=_s.userData;if(!d)return;document.getElementById('editFirst').value=d.firstName||'';document.getElementById('editLast').value=d.lastName||'';document.getElementById('editPhone').value=d.phone||'';document.getElementById('editCountry').value=d.country||'NG'};
 window.shareReferral=()=>{const code=_s.userData?.referralCode||'KBR00000';const origin=window.location.origin+window.location.pathname.replace(/\/[^/]*$/,'/');const link=origin+'?ref='+code;const text=`Join KOBOrush! Use my code ${code} for ₦200 bonus. ${link}`;if(navigator.share)navigator.share({title:'Join KOBOrush',text});else{navigator.clipboard?.writeText(text);showToast('success','Link copied!')}};
 window.copyRefCode=()=>{const code=_s.userData?.referralCode||'KBR00000';navigator.clipboard?.writeText(code);showToast('success',code+' copied!')};
+// ── Paystack bank account name lookup (for bank transfer screen) ──
+let _bankLookupTimer=null;
+window.lookupBankAcct=()=>{
+  const acct=document.getElementById('transferAcctNo')?.value||'';
+  const bankCode=document.getElementById('transferBank')?.value||'';
+  const box=document.getElementById('transferAcctNameBox');
+  const val=document.getElementById('transferAcctNameVal');
+  const err=document.getElementById('transferAcctNameErr');
+  const hidden=document.getElementById('transferAcctName');
+  if(box)box.style.display='none';
+  if(err)err.style.display='none';
+  if(hidden)hidden.value='';
+  if(acct.length!==10||!bankCode)return;
+  if(val)val.textContent='Verifying...';
+  if(box)box.style.display='block';
+  if(_bankLookupTimer)clearTimeout(_bankLookupTimer);
+  _bankLookupTimer=setTimeout(async()=>{
+    try{
+      const sec=await _getPaystackSecret();
+      if(!sec)throw new Error('Paystack not configured');
+      const r=await fetch(`https://api.paystack.co/bank/resolve?account_number=${acct}&bank_code=${bankCode}`,{headers:{'Authorization':'Bearer '+sec}});
+      const j=await r.json();
+      if(j.status&&j.data?.account_name){
+        val.textContent=j.data.account_name;
+        if(hidden)hidden.value=j.data.account_name;
+        box.style.display='block';
+        err.style.display='none';
+      } else {
+        box.style.display='none';
+        err.style.display='block';
+        err.textContent=j.message||'Account not found';
+      }
+    }catch(e){
+      if(box)box.style.display='none';
+      if(err){err.style.display='block';err.textContent='Lookup failed. Check Paystack key in admin.';}
+    }
+  },800);
+};
+
 // ── KOBOrush user lookup by phone or account number ──
 let _lookupTimer = null;
 window.lookupKoborushUser = (val) => {
@@ -2693,8 +2749,200 @@ window.updateTransferType=()=>{
 };
 window.showSetPINSheet=()=>showOverlay(`<div class="sheet-title">Set Transaction PIN</div><div class="sheet-sub">Create a 4-digit PIN for all transactions.</div><div class="pin-container"><input class="pin-digit" type="password" maxlength="1" id="np1" oninput="movePIN(this,null,'np2')"><input class="pin-digit" type="password" maxlength="1" id="np2" oninput="movePIN(this,'np1','np3')"><input class="pin-digit" type="password" maxlength="1" id="np3" oninput="movePIN(this,'np2','np4')"><input class="pin-digit" type="password" maxlength="1" id="np4"></div><button class="btn btn-primary" onclick="savePIN()" style="margin-top:12px">Save PIN</button>`);
 window.savePIN=async()=>{const pin=['np1','np2','np3','np4'].map(id=>document.getElementById(id)?.value||'').join('');if(pin.length!==4)return showToast('error','Enter 4 digits');await updateDoc(doc(db,'users',_s.user.uid),{transactionPIN:pin});showToast('success','PIN saved!');closeOverlay()};
-window.showWithdrawSheet=()=>showOverlay(`<div class="sheet-title">Withdraw Funds</div><div class="sheet-sub">Submit a request. Admin processes within 24 hours.</div><div class="form-group"><label class="form-label">Bank</label><select class="form-input" id="wdBank"><option>GTBank</option><option>First Bank</option><option>Zenith Bank</option><option>Access Bank</option><option>UBA</option></select></div><div class="form-group"><label class="form-label">Account Number</label><input type="text" class="form-input" id="wdAcct" placeholder="10-digit number" maxlength="10"></div><div class="form-group"><label class="form-label">Account Name</label><input type="text" class="form-input" id="wdName"></div><div class="form-group"><label class="form-label">Amount (₦)</label><input type="number" class="form-input" id="wdAmt" placeholder="Min ₦500"></div><button class="btn btn-primary" onclick="submitWithdrawal()">Submit Request</button>`);
-window.submitWithdrawal=async()=>{const am=parseFloat(document.getElementById('wdAmt').value);const bk=document.getElementById('wdBank').value;const ac=document.getElementById('wdAcct').value;const nm=document.getElementById('wdName').value;if(!am||am<500||!ac||!nm)return showToast('error','Fill all fields');if(am>_s.userData?.balance)return showToast('error','Insufficient balance');try{await addDoc(collection(db,'withdrawalRequests'),{userId:_s.user.uid,email:_s.userData?.email,amount:am,bank:bk,accountNumber:ac,accountName:nm,status:'pending',createdAt:serverTimestamp()});await updateDoc(doc(db,'users',_s.user.uid),{balance:increment(-am),pendingBalance:increment(am)});await addNotif(_s.user.uid,'💸 Withdrawal Requested',`₦${am.toLocaleString()} pending admin approval.`,'info');showToast('success','Request submitted!');closeOverlay()}catch(e){showToast('error','Failed')}};
+window.showWithdrawSheet=async()=>{
+  // Load Nigerian banks from Paystack
+  let bankOptions='<option value="">Select bank...</option>';
+  try{
+    const sec=await _getPaystackSecret();
+    if(sec){
+      const r=await fetch('https://api.paystack.co/bank?currency=NGN&perPage=100',{headers:{'Authorization':'Bearer '+sec}});
+      const j=await r.json();
+      if(j.status&&j.data){
+        bankOptions=j.data.map(b=>`<option value="${b.code}" data-name="${b.name}">${b.name}</option>`).join('');
+        bankOptions='<option value="">Select bank...</option>'+bankOptions;
+      }
+    }
+  }catch(e){
+    // Fallback to common banks
+    bankOptions=`<option value="">Select bank...</option>
+      <option value="058">GTBank</option><option value="011">First Bank</option>
+      <option value="044">Access Bank</option><option value="057">Zenith Bank</option>
+      <option value="033">UBA</option><option value="035">Wema Bank</option>
+      <option value="070">Fidelity Bank</option><option value="082">Keystone</option>
+      <option value="076">Skye Bank</option><option value="232">Sterling Bank</option>
+      <option value="032">Union Bank</option><option value="215">Unity Bank</option>
+      <option value="035A">ALAT by Wema</option><option value="50211">Kuda Bank</option>
+      <option value="999992">OPay</option><option value="999991">PalmPay</option>
+      <option value="090110">VFD Microfinance</option><option value="120001">9PSB</option>`;
+  }
+  showOverlay(`
+    <div class="sheet-title">Withdraw to Bank</div>
+    <div class="sheet-sub">Instant transfer via Paystack. Fee: ₦50 per withdrawal.</div>
+    <div class="form-group"><label class="form-label">Bank</label>
+      <select class="form-input" id="wdBank" onchange="wdLookupAcct()">${bankOptions}</select>
+    </div>
+    <div class="form-group"><label class="form-label">Account Number</label>
+      <input type="tel" class="form-input" id="wdAcct" placeholder="10-digit number" maxlength="10" oninput="if(this.value.length===10)wdLookupAcct()">
+    </div>
+    <div id="wdNameBox" style="display:none;background:#F0FDF4;border-radius:10px;padding:10px 13px;margin:-4px 0 10px;border:1px solid #BBF7D0">
+      <div style="font-size:10px;color:var(--text3)">Account Name</div>
+      <div style="font-size:14px;font-weight:700;color:var(--success-green)" id="wdNameVal">—</div>
+    </div>
+    <div id="wdNameErr" style="display:none;background:#FEF2F2;border-radius:10px;padding:9px 13px;margin:-4px 0 10px;border:1px solid #FCA5A5;font-size:12px;color:var(--danger)">Account not found</div>
+    <div class="form-group"><label class="form-label">Amount (₦)</label>
+      <input type="number" class="form-input" id="wdAmt" placeholder="Min ₦500" oninput="wdCalcFee()">
+    </div>
+    <div id="wdFeeBox" style="display:none;font-size:12px;color:var(--text2);margin:-4px 0 12px;padding:8px 13px;background:var(--bg);border-radius:8px">
+      Amount: <b id="wdAmtDisp">₦0</b> + Fee: <b>₦50</b> = Total deducted: <b id="wdTotalDisp">₦0</b>
+    </div>
+    <div id="wdRecipientCode" style="display:none"></div>
+    <button class="btn btn-primary" style="width:100%" onclick="submitWithdrawal()">Withdraw Now</button>
+  `);
+};
+
+window.wdCalcFee=()=>{
+  const amt=parseFloat(document.getElementById('wdAmt')?.value)||0;
+  const box=document.getElementById('wdFeeBox');
+  if(amt>=500&&box){
+    box.style.display='block';
+    document.getElementById('wdAmtDisp').textContent=fmt(amt);
+    document.getElementById('wdTotalDisp').textContent=fmt(amt+50);
+  } else if(box){box.style.display='none';}
+};
+
+let _wdLookupTimer=null;
+window.wdLookupAcct=()=>{
+  const acct=document.getElementById('wdAcct')?.value||'';
+  const bankCode=document.getElementById('wdBank')?.value||'';
+  const nameBox=document.getElementById('wdNameBox');
+  const nameVal=document.getElementById('wdNameVal');
+  const nameErr=document.getElementById('wdNameErr');
+  const rcEl=document.getElementById('wdRecipientCode');
+  if(nameBox)nameBox.style.display='none';
+  if(nameErr)nameErr.style.display='none';
+  if(rcEl)rcEl.textContent='';
+  if(acct.length!==10||!bankCode)return;
+  if(nameVal)nameVal.textContent='Verifying...';
+  if(nameBox)nameBox.style.display='block';
+  if(_wdLookupTimer)clearTimeout(_wdLookupTimer);
+  _wdLookupTimer=setTimeout(async()=>{
+    try{
+      const sec=await _getPaystackSecret();
+      if(!sec)throw new Error('Paystack not configured');
+      const r=await fetch(`https://api.paystack.co/bank/resolve?account_number=${acct}&bank_code=${bankCode}`,{headers:{'Authorization':'Bearer '+sec}});
+      const j=await r.json();
+      if(j.status&&j.data?.account_name){
+        nameVal.textContent=j.data.account_name;
+        nameBox.style.display='block';
+        nameErr.style.display='none';
+        // Create transfer recipient immediately
+        const rr=await fetch('https://api.paystack.co/transferrecipient',{
+          method:'POST',headers:{'Authorization':'Bearer '+sec,'Content-Type':'application/json'},
+          body:JSON.stringify({type:'nuban',name:j.data.account_name,account_number:acct,bank_code:bankCode,currency:'NGN'})
+        });
+        const rj=await rr.json();
+        if(rj.status&&rj.data?.recipient_code){
+          rcEl.textContent=rj.data.recipient_code;
+        }
+      } else {
+        nameBox.style.display='none';
+        nameErr.style.display='block';
+        nameErr.textContent=j.message||'Account not found';
+      }
+    }catch(e){
+      if(nameBox)nameBox.style.display='none';
+      if(nameErr){nameErr.style.display='block';nameErr.textContent='Verification failed: '+e.message;}
+    }
+  },800);
+};
+// Helper: get Paystack secret from Firestore settings
+async function _getPaystackSecret(){
+  try{
+    const snap=await getDoc(doc(db,'settings','apis'));
+    if(snap.exists()){const a=snap.data();return a.paystackSec||a.paystackSecret||'';}
+  }catch(e){}
+  return '';
+}
+
+window.submitWithdrawal=async()=>{
+  const am=parseFloat(document.getElementById('wdAmt')?.value)||0;
+  const bankCode=document.getElementById('wdBank')?.value||'';
+  const bankName=document.getElementById('wdBank')?.selectedOptions[0]?.dataset?.name||document.getElementById('wdBank')?.selectedOptions[0]?.text||'';
+  const ac=document.getElementById('wdAcct')?.value||'';
+  const nm=document.getElementById('wdNameVal')?.textContent||'';
+  const rc=document.getElementById('wdRecipientCode')?.textContent||'';
+  const total=am+50; // ₦50 fee
+
+  if(!bankCode)return showToast('error','Select a bank');
+  if(ac.length!==10)return showToast('error','Enter a valid 10-digit account number');
+  if(!nm||nm==='—'||nm==='Verifying...')return showToast('error','Wait for account verification');
+  if(am<500)return showToast('error','Minimum withdrawal is ₦500');
+  if(total>(_s.userData?.balance||0))return showToast('error','Insufficient balance (including ₦50 fee)');
+  if(!rc)return showToast('error','Account not verified yet. Wait a moment.');
+
+  try{
+    const sec=await _getPaystackSecret();
+    if(!sec)return showToast('error','Paystack not configured. Contact admin.');
+
+    closeOverlay();
+    showToast('info','Processing withdrawal...');
+
+    // Deduct from user wallet first (atomically)
+    const tid=genId(12);
+    await runTransaction(db,async(t)=>{
+      const uRef=doc(db,'users',_s.user.uid);
+      const us=await t.get(uRef);
+      const bal=us.data().balance;
+      if(bal<total)throw new Error('Insufficient balance');
+      t.update(uRef,{balance:increment(-total),totalSpent:increment(total)});
+      t.set(doc(db,'transactions',tid),{
+        id:tid,userId:_s.user.uid,type:'withdrawal',status:'processing',
+        amount:total,sendAmount:am,fee:50,
+        bank:bankName,accountNumber:ac,accountName:nm,
+        recipientCode:rc,description:`Withdrawal to ${nm} – ${bankName}`,
+        balanceBefore:bal,balanceAfter:bal-total,createdAt:serverTimestamp()
+      });
+    });
+
+    // Initiate Paystack transfer
+    const ref='KBR-WD-'+tid;
+    const tr=await fetch('https://api.paystack.co/transfer',{
+      method:'POST',
+      headers:{'Authorization':'Bearer '+sec,'Content-Type':'application/json'},
+      body:JSON.stringify({source:'balance',amount:Math.round(am*100),recipient:rc,reason:'KOBOrush Withdrawal – '+nm,reference:ref})
+    });
+    const tj=await tr.json();
+
+    if(tj.status&&(tj.data?.status==='success'||tj.data?.status==='pending')){
+      // Update transaction with transfer code
+      await updateDoc(doc(db,'transactions',tid),{
+        status:tj.data.status==='success'?'success':'pending',
+        paystackRef:tj.data.reference||ref,
+        transferCode:tj.data.transfer_code||''
+      });
+      await addNotif(_s.user.uid,'💸 Withdrawal '+(tj.data.status==='success'?'Successful':'Processing'),
+        `₦${am.toLocaleString()} sent to ${nm} (${bankName}). Ref: ${ref}`,'success');
+      navigateTo('successScreen');
+      document.getElementById('successTitle').textContent='Withdrawal Initiated!';
+      document.getElementById('successMsg').textContent=tj.data.status==='success'?'Money sent successfully!':'Transfer is processing. Usually instant.';
+      const _rs=csym(_s.userData?.country);
+      document.getElementById('successReceipt').innerHTML=[
+        {l:'To',v:nm},{l:'Bank',v:bankName},{l:'Account',v:ac},
+        {l:'Amount',v:fmt(am,_rs)},{l:'Fee',v:fmt(50,_rs)},{l:'Total Deducted',v:fmt(total,_rs)},
+        {l:'Status',v:tj.data.status==='success'?'✅ Sent':'⏳ Processing'},
+        {l:'Reference',v:ref},{l:'Date',v:new Date().toLocaleString()}
+      ].map(i=>`<div class="receipt-row"><span class="r-label">${i.l}</span><span class="r-val">${i.v}</span></div>`).join('');
+    } else {
+      // Transfer failed — refund user
+      await updateDoc(doc(db,'users',_s.user.uid),{balance:increment(total)});
+      await updateDoc(doc(db,'transactions',tid),{status:'failed',failReason:tj.message||'Paystack error'});
+      showToast('error','Transfer failed: '+(tj.message||'Please try again'));
+    }
+  }catch(e){
+    showToast('error',e.message||'Withdrawal failed');
+    console.error('Withdrawal error:',e);
+  }
+};
 
 // ADMIN
 // ══ ADMIN PIN GATE ══
