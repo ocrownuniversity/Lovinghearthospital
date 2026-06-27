@@ -39,9 +39,9 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:#1E1B4B
 
 /* ── AUTH ── */
 #auth{background:#fff;overflow-y:auto}
-#home,#walletScreen,#profileScreen,#admin,#fundWallet,#adminFundingRequests,#airtimeScreen,#dataScreen,#electricityScreen,#cableTVScreen,#schoolPinScreen,#transferScreen,#historyScreen,#notifications,#referral,#agentScreen,#securityScreen,#supportScreen,#editProfile,#pinScreen,#successScreen,#adminTransactions,#adminAPIs,#adminUsers,#adminWallets,#termsScreen,#adminTerms,#adminSecurity{background:var(--bg)}
+#home,#walletScreen,#profileScreen,#admin,#fundWallet,#adminFundingRequests,#airtimeScreen,#dataScreen,#electricityScreen,#cableTVScreen,#schoolPinScreen,#transferScreen,#historyScreen,#notifications,#referral,#agentScreen,#securityScreen,#supportScreen,#editProfile,#pinScreen,#successScreen,#adminTransactions,#adminAPIs,#adminUsers,#adminWallets,#termsScreen,#adminTerms,#adminSecurity,#kycScreen,#adminKYC,#promoScreen,#adminPromos,#adminSupport,#supportChatScreen,#adminChatReply{background:var(--bg)}
 /* All non-splash/auth screens get grey background */
-#home,#walletScreen,#servicesScreen,#profileScreen,#admin,#fundWallet,#adminFundingRequests,#airtimeScreen,#dataScreen,#electricityScreen,#cableTVScreen,#schoolPinScreen,#transferScreen,#historyScreen,#notifications,#referral,#agentScreen,#securityScreen,#supportScreen,#editProfile,#adminTransactions,#adminAPIs,#adminServices,#adminPricing,#adminCountries,#adminNotifications,#adminWallets,#adminAgents,#adminUsers,#pinScreen,#successScreen,#termsScreen,#adminTerms,#adminSecurity{background:var(--bg)}
+#home,#walletScreen,#servicesScreen,#profileScreen,#admin,#fundWallet,#adminFundingRequests,#airtimeScreen,#dataScreen,#electricityScreen,#cableTVScreen,#schoolPinScreen,#transferScreen,#historyScreen,#notifications,#referral,#agentScreen,#securityScreen,#supportScreen,#editProfile,#adminTransactions,#adminAPIs,#adminServices,#adminPricing,#adminCountries,#adminNotifications,#adminWallets,#adminAgents,#adminUsers,#pinScreen,#successScreen,#termsScreen,#adminTerms,#adminSecurity,#kycScreen,#adminKYC,#promoScreen,#adminPromos,#adminSupport,#supportChatScreen,#adminChatReply{background:var(--bg)}
 .auth-logo-bar{background:linear-gradient(145deg,#1E1B4B,#3B3582);padding:44px 24px 26px;display:flex;flex-direction:column;align-items:center;gap:10px}
 .auth-logo-box{width:68px;height:68px;background:white;border-radius:14px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,0.25);padding:6px}
 .auth-logo-box img{width:100%;height:100%;object-fit:contain}
@@ -150,6 +150,83 @@ select.form-input{cursor:pointer;-webkit-appearance:none;background-image:url("d
 .badge-pending{background:#FEF3C7;color:#92400E}
 .badge-failed{background:#FEE2E2;color:#991B1B}
 .badge-review{background:#DBEAFE;color:#1E40AF}
+/* ── KYC VERIFICATION ── */
+
+/* ── REFERRAL DASHBOARD ── */
+.ref-link-box{background:white;border:2px dashed var(--primary);border-radius:14px;padding:14px;margin-bottom:12px;text-align:center}
+.ref-link-url{font-size:11px;color:var(--primary);font-weight:600;word-break:break-all;margin-bottom:10px;line-height:1.4}
+.ref-friends-list{background:white;border-radius:14px;box-shadow:var(--shadow);overflow:hidden;margin-bottom:12px}
+.ref-friend-row{display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:1px solid var(--border)}
+.ref-friend-row:last-child{border-bottom:none}
+.ref-friend-avatar{width:36px;height:36px;border-radius:50%;background:var(--primary-light);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:var(--primary);flex-shrink:0}
+.ref-friend-name{font-size:13px;font-weight:600;color:var(--text)}
+.ref-friend-date{font-size:10px;color:var(--text3)}
+.ref-earn-badge{background:#DCFCE7;color:#166534;font-size:10px;font-weight:700;padding:2px 7px;border-radius:99px;margin-left:auto}
+/* ── PROMO CODE ── */
+.promo-card{background:linear-gradient(135deg,#1E1B4B,#4338CA);border-radius:16px;padding:16px;margin-bottom:12px;color:white;position:relative;overflow:hidden}
+.promo-card::before{content:'';position:absolute;right:-20px;top:-20px;width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,.06)}
+.promo-code-tag{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.15);border:1px dashed rgba(255,255,255,.4);padding:6px 14px;border-radius:8px;font-size:15px;font-weight:700;letter-spacing:2px;font-family:monospace;cursor:pointer;margin:8px 0}
+.promo-admin-card{background:white;border-radius:14px;padding:14px;margin-bottom:10px;box-shadow:var(--shadow)}
+.promo-badge-active{background:#DCFCE7;color:#166534;font-size:10px;font-weight:700;padding:3px 8px;border-radius:99px}
+.promo-badge-disabled{background:#FEE2E2;color:#991B1B;font-size:10px;font-weight:700;padding:3px 8px;border-radius:99px}
+/* ── SUPPORT CHAT ── */
+.chat-screen{display:flex;flex-direction:column;height:100vh;max-height:100vh;background:var(--bg)}
+.chat-header{background:white;padding:42px 14px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-shrink:0}
+.chat-avatar{width:38px;height:38px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.chat-messages{flex:1;overflow-y:auto;padding:14px 12px;display:flex;flex-direction:column;gap:8px;padding-bottom:80px}
+.chat-bubble{max-width:80%;padding:10px 13px;border-radius:16px;font-size:13px;line-height:1.45;word-break:break-word}
+.chat-bubble.user{background:var(--primary);color:white;border-bottom-right-radius:4px;align-self:flex-end}
+.chat-bubble.admin{background:white;color:var(--text);border-bottom-left-radius:4px;align-self:flex-start;box-shadow:var(--shadow)}
+.chat-bubble-time{font-size:10px;opacity:.6;margin-top:4px;display:block}
+.chat-input-bar{position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid var(--border);padding:10px 12px;display:flex;gap:8px;align-items:flex-end;z-index:100}
+.chat-input{flex:1;border:1.5px solid var(--border);border-radius:22px;padding:9px 14px;font-size:13px;outline:none;resize:none;max-height:90px;font-family:var(--font-body);line-height:1.4;background:var(--bg)}
+.chat-input:focus{border-color:var(--primary)}
+.chat-send-btn{width:40px;height:40px;border-radius:50%;background:var(--primary);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:white;font-size:18px;flex-shrink:0}
+.chat-date-divider{text-align:center;font-size:10px;color:var(--text3);margin:6px 0;font-weight:600}
+.support-user-card{background:white;border-radius:14px;padding:14px;margin-bottom:10px;box-shadow:var(--shadow);cursor:pointer;display:flex;align-items:center;gap:12px}
+.support-user-preview{flex:1;min-width:0}
+.support-user-name{font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px}
+.support-last-msg{font-size:11px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.support-unread{background:var(--primary);color:white;font-size:10px;font-weight:700;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.chat-typing{display:flex;gap:4px;padding:10px 14px;background:white;border-radius:16px;border-bottom-left-radius:4px;align-self:flex-start;box-shadow:var(--shadow)}
+.chat-typing span{width:6px;height:6px;background:var(--text3);border-radius:50%;animation:typing .9s infinite}
+.chat-typing span:nth-child(2){animation-delay:.2s}
+.chat-typing span:nth-child(3){animation-delay:.4s}
+@keyframes typing{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
+
+.kyc-tier-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:99px;font-size:11px;font-weight:700;border:none}
+.kyc-bronze{background:#FEF0E6;color:#C2510F}
+.kyc-silver{background:#F1F5F9;color:#475569;border:1px solid #CBD5E1}
+.kyc-gold{background:#FEF9C3;color:#854D0E}
+.kyc-pending{background:#FEF3C7;color:#92400E}
+.kyc-rejected{background:#FEE2E2;color:#991B1B}
+.kyc-unverified{background:#F1F5F9;color:#64748B}
+.kyc-card{background:white;border-radius:16px;padding:16px;box-shadow:var(--shadow);margin-bottom:12px}
+.kyc-card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.kyc-doc-upload{border:2px dashed var(--border);border-radius:12px;padding:18px;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:12px}
+.kyc-doc-upload:active{background:var(--bg)}
+.kyc-doc-upload-icon{font-size:28px;margin-bottom:6px}
+.kyc-doc-upload-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px}
+.kyc-doc-upload-sub{font-size:11px;color:var(--text3)}
+.limit-bar{height:6px;background:var(--border);border-radius:99px;overflow:hidden;margin-top:5px}
+.limit-bar-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--primary),var(--accent));transition:width .5s ease}
+/* Admin KYC */
+.kyc-req-card{background:white;border-radius:14px;padding:14px;margin-bottom:10px;box-shadow:var(--shadow)}
+.kyc-req-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+.kyc-req-user{font-size:13px;font-weight:700;color:var(--text)}
+.kyc-req-time{font-size:10px;color:var(--text3);margin-top:2px}
+.kyc-req-docs{display:flex;gap:8px;margin-bottom:10px;overflow-x:auto}
+.kyc-req-doc{width:80px;height:60px;border-radius:8px;object-fit:cover;border:1px solid var(--border);cursor:pointer;flex-shrink:0}
+.kyc-req-detail{font-size:12px;color:var(--text2);margin-bottom:4px}
+.kyc-req-actions{display:flex;gap:8px;margin-top:10px}
+.tier-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:99px;font-size:10px;font-weight:700}
+.tier-bronze{background:#FEF0E6;color:#C2510F}
+.tier-silver{background:#F1F5F9;color:#475569}
+.tier-gold{background:#FEF9C3;color:#854D0E}
+.upgrade-prompt{background:linear-gradient(135deg,var(--primary),var(--primary-mid));border-radius:14px;padding:14px;margin:0 12px 12px;color:white;cursor:pointer}
+.upgrade-prompt h4{font-size:13px;font-weight:700;margin-bottom:3px}
+.upgrade-prompt p{font-size:11px;opacity:.8}
+
 
 /* ── BOTTOM NAV ── */
 .bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:white;border-top:1px solid var(--border);display:flex;padding:8px 0 20px;z-index:200;box-shadow:0 -4px 20px rgba(0,0,0,.06)}
@@ -559,6 +636,9 @@ textarea.form-input{resize:none}
         <div class="action-item" onclick="navigateTo('historyScreen')"><div class="action-icon ai-pink">📋</div><div class="action-label">History</div></div>
         <div class="action-item" onclick="navigateTo('transferScreen')"><div class="action-icon ai-yellow">💸</div><div class="action-label">Transfer</div></div>
         <div class="action-item" onclick="navigateTo('schoolPinScreen')"><div class="action-icon ai-purple">🎓</div><div class="action-label">School PIN</div></div>
+        <div class="action-item" onclick="navigateTo('kycScreen')"><div class="action-icon" style="background:#E0F2FE">🪪</div><div class="action-label">KYC</div></div>
+        <div class="action-item" onclick="navigateTo('supportChatScreen')"><div class="action-icon" style="background:#F0FDF4">🎧</div><div class="action-label">Support</div></div>
+        <div class="action-item" onclick="navigateTo('referral')"><div class="action-icon" style="background:#FDF4FF">🎁</div><div class="action-label">Refer</div></div>
       </div>
     </div>
     <!-- Recent Transactions -->
@@ -645,6 +725,9 @@ textarea.form-input{resize:none}
     <div class="svc-card" onclick="navigateTo('cableTVScreen')"><div class="svc-icon" style="background:#FEF2F2">📺</div><div class="svc-name">Cable TV</div><div class="svc-desc">DSTV, GOtv, Startimes</div></div>
     <div class="svc-card" onclick="navigateTo('schoolPinScreen')"><div class="svc-icon" style="background:#E0FDF4">🎓</div><div class="svc-name">School PIN</div><div class="svc-desc">WAEC, NECO, JAMB</div></div>
     <div class="svc-card" onclick="navigateTo('transferScreen')"><div class="svc-icon" style="background:#FEFCE8">💸</div><div class="svc-name">Send Money</div><div class="svc-desc">Bank & wallet transfer</div></div>
+    <div class="svc-card" onclick="navigateTo('kycScreen')"><div class="svc-icon" style="background:#E0F2FE">🪪</div><div class="svc-name">KYC Verification</div><div class="svc-desc">Unlock higher limits</div></div>
+    <div class="svc-card" onclick="navigateTo('supportChatScreen')"><div class="svc-icon" style="background:#F0FDF4">🎧</div><div class="svc-name">Live Support</div><div class="svc-desc">Chat with our team</div></div>
+    <div class="svc-card" onclick="navigateTo('referral')"><div class="svc-icon" style="background:#FDF4FF">🎁</div><div class="svc-name">Refer & Earn</div><div class="svc-desc">₦500 per referral</div></div>
   </div>
   <!-- Refer & Earn placed under services as requested -->
   <div class="refer-strip" onclick="navigateTo('referral')">
@@ -687,7 +770,9 @@ textarea.form-input{resize:none}
       <div class="menu-item" onclick="navigateTo('notifications')"><div class="menu-item-icon" style="background:#FEFCE8">🔔</div><div class="menu-item-text"><div class="menu-item-title">Notifications</div></div><div class="menu-item-arrow">›</div></div>
       <div class="menu-item" onclick="navigateTo('supportScreen')"><div class="menu-item-icon" style="background:#E0FDF4">💬</div><div class="menu-item-text"><div class="menu-item-title">Help & Support</div></div><div class="menu-item-arrow">›</div></div>
     </div>
-    <div class="menu-list"><div class="menu-item" onclick="handleLogout()"><div class="menu-item-icon" style="background:#FEF2F2">🚪</div><div class="menu-item-text"><div class="menu-item-title" style="color:var(--danger)">Sign Out</div></div><div class="menu-item-arrow">›</div></div></div>
+    <div class="menu-list"><div class="menu-item" onclick="navigateTo('promoScreen')"><div class="menu-item-icon" style="background:#FFFBEB">🏷️</div><div class="menu-item-text"><div class="menu-item-title">Promo Codes</div><div class="menu-item-sub">Apply discount codes</div></div><div class="menu-item-arrow">›</div></div></div>
+<div class="menu-list"><div class="menu-item" onclick="navigateTo('kycScreen')"><div class="menu-item-icon" style="background:#E0F2FE">🪪</div><div class="menu-item-text"><div class="menu-item-title">KYC Verification</div><div class="menu-item-sub" id="profileKYCStatus">Tap to verify your identity</div></div><div class="menu-item-arrow">›</div></div></div>
+<div class="menu-list"><div class="menu-item" onclick="handleLogout()"><div class="menu-item-icon" style="background:#FEF2F2">🚪</div><div class="menu-item-text"><div class="menu-item-title" style="color:var(--danger)">Sign Out</div></div><div class="menu-item-arrow">›</div></div></div>
     <div class="version-tag">KOBOrush v2.1.0 · RC: 979668 · Made with ❤️ in Africa</div>
   </div>
 </div>
@@ -725,6 +810,9 @@ textarea.form-input{resize:none}
     <div class="admin-nav-card" onclick="navigateTo('adminNotifications')"><div class="anc-icon">📢</div><div class="anc-label">Notify</div></div>
     <div class="admin-nav-card" onclick="navigateTo('adminTerms')"><div class="anc-icon">📄</div><div class="anc-label">Terms</div></div>
     <div class="admin-nav-card" onclick="navigateTo('adminSecurity')"><div class="anc-icon">🔐</div><div class="anc-label">Security</div></div>
+    <div class="admin-nav-card" onclick="navigateTo('adminKYC')"><div class="anc-icon">🪪</div><div class="anc-label">KYC</div><div class="anc-badge" id="kycPendingBadge" style="display:none">0</div></div>
+    <div class="admin-nav-card" onclick="navigateTo('adminPromos')"><div class="anc-icon">🏷️</div><div class="anc-label">Promos</div></div>
+    <div class="admin-nav-card" onclick="navigateTo('adminSupport')"><div class="anc-icon">💬</div><div class="anc-label">Support</div><div class="anc-badge" id="supportUnreadBadge" style="display:none">0</div></div>
   </div>
   <div class="admin-panel"><div class="admin-panel-header"><h4>Recent Users</h4><span style="font-size:11px;color:var(--primary);font-weight:700;cursor:pointer" onclick="navigateTo('adminUsers')">See all</span></div><div id="adminUsersList"><div class="loading-spinner"></div></div></div>
   <div class="admin-panel"><div class="admin-panel-header"><h4>API Status</h4><span style="font-size:11px;color:var(--primary);font-weight:700;cursor:pointer" onclick="navigateTo('adminAPIs')">Manage</span></div><div id="adminAPIStatus"></div></div>
@@ -999,29 +1087,133 @@ textarea.form-input{resize:none}
 </div>
 
 <!-- REFERRAL -->
+
+<!-- ══ REFERRAL DASHBOARD ══ -->
 <div class="screen" id="referral">
   <div style="background:linear-gradient(145deg,#1E1B4B,#3B3582);padding:48px 16px 22px">
-    <div style="display:flex;align-items:center;gap:9px;margin-bottom:16px"><button class="nav-back white" onclick="goBack()">←</button><div style="font-family:var(--font-display);font-size:16px;font-weight:700;color:white">Refer & Earn</div></div>
-    <div class="ref-code-card"><div style="font-size:11px;opacity:.7;margin-bottom:5px">Your Referral Code</div><div class="ref-code" id="refCode">KBR00000</div><div style="font-size:11px;opacity:.7;margin-top:5px">Earn ₦500 per successful referral</div></div>
+    <div style="display:flex;align-items:center;gap:9px;margin-bottom:16px">
+      <button class="nav-back white" onclick="goBack()">←</button>
+      <div style="font-family:var(--font-display);font-size:16px;font-weight:700;color:white">Refer & Earn</div>
+    </div>
+    <div class="ref-code-card">
+      <div style="font-size:11px;opacity:.7;margin-bottom:5px">Your Referral Code</div>
+      <div class="ref-code" id="refCode">KBR00000</div>
+      <div style="font-size:11px;opacity:.7;margin-top:5px">Earn ₦500 per successful referral</div>
+    </div>
   </div>
-  <div style="padding:12px">
-    <div class="ref-stats" style="margin-bottom:15px">
+  <div style="padding:12px 12px 100px">
+    <!-- Stats -->
+    <div class="ref-stats" style="margin-bottom:14px">
       <div class="ref-stat"><div class="ref-stat-val" id="refTotal">0</div><div class="ref-stat-label">Referred</div></div>
       <div class="ref-stat"><div class="ref-stat-val" id="refActive">0</div><div class="ref-stat-label">Active</div></div>
       <div class="ref-stat"><div class="ref-stat-val" id="refEarned">₦0</div><div class="ref-stat-label">Earned</div></div>
     </div>
-    <button class="btn btn-primary" onclick="shareReferral()" style="margin-bottom:8px">📤 Share Referral Link</button>
-    <button class="btn btn-outline" onclick="copyRefCode()">📋 Copy Code</button>
-    <div class="card" style="margin-top:15px">
+    <!-- Link Box -->
+    <div class="ref-link-box">
+      <div class="ref-link-url" id="refLinkDisplay">Loading...</div>
+      <div style="display:flex;gap:8px;justify-content:center">
+        <button class="btn btn-primary btn-sm" onclick="copyRefLink()">📋 Copy Link</button>
+        <button class="btn btn-outline btn-sm" onclick="shareReferral()">📤 Share</button>
+      </div>
+    </div>
+    <!-- Friends List -->
+    <div class="section-title" style="margin-bottom:8px">Your Referrals</div>
+    <div id="refFriendsList"><div class="loading-spinner"></div></div>
+    <!-- How it Works -->
+    <div class="card" style="margin-top:14px">
       <div class="section-title">How it Works</div>
       <div style="display:flex;flex-direction:column;gap:10px">
-        <div style="display:flex;gap:10px;align-items:flex-start"><div style="width:27px;height:27px;background:var(--primary-light);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--primary);flex-shrink:0;font-size:11px">1</div><div><div style="font-size:12px;font-weight:600;color:var(--text)">Share your code</div><div style="font-size:11px;color:var(--text3);margin-top:1px">Send it via WhatsApp or SMS</div></div></div>
-        <div style="display:flex;gap:10px;align-items:flex-start"><div style="width:27px;height:27px;background:var(--primary-light);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--primary);flex-shrink:0;font-size:11px">2</div><div><div style="font-size:12px;font-weight:600;color:var(--text)">Friend signs up</div><div style="font-size:11px;color:var(--text3);margin-top:1px">They use your referral code</div></div></div>
-        <div style="display:flex;gap:10px;align-items:flex-start"><div style="width:27px;height:27px;background:var(--primary-light);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--primary);flex-shrink:0;font-size:11px">3</div><div><div style="font-size:12px;font-weight:600;color:var(--text)">Both earn rewards</div><div style="font-size:11px;color:var(--text3);margin-top:1px">₦500 for you, ₦200 for them</div></div></div>
+        <div style="display:flex;gap:10px;align-items:flex-start"><div style="width:27px;height:27px;background:var(--primary-light);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--primary);flex-shrink:0;font-size:11px">1</div><div><div style="font-size:12px;font-weight:600;color:var(--text)">Share your link</div><div style="font-size:11px;color:var(--text3);margin-top:1px">Send via WhatsApp, SMS, or any platform</div></div></div>
+        <div style="display:flex;gap:10px;align-items:flex-start"><div style="width:27px;height:27px;background:var(--primary-light);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--primary);flex-shrink:0;font-size:11px">2</div><div><div style="font-size:12px;font-weight:600;color:var(--text)">Friend signs up</div><div style="font-size:11px;color:var(--text3);margin-top:1px">They register using your referral link or code</div></div></div>
+        <div style="display:flex;gap:10px;align-items:flex-start"><div style="width:27px;height:27px;background:var(--primary-light);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--primary);flex-shrink:0;font-size:11px">3</div><div><div style="font-size:12px;font-weight:600;color:var(--text)">Both earn rewards</div><div style="font-size:11px;color:var(--text3);margin-top:1px">₦500 for you, ₦200 bonus for your friend</div></div></div>
       </div>
     </div>
   </div>
 </div>
+
+<!-- ══ PROMO CODE USER PAGE ══ -->
+<div class="screen" id="promoScreen" style="background:var(--bg)">
+  <div class="navbar light" style="padding-top:42px">
+    <button class="nav-back" onclick="goBack()">←</button>
+    <div class="nav-title">Promo Codes</div>
+    <div style="width:37px"></div>
+  </div>
+  <div style="padding:12px 12px 100px">
+    <div class="promo-card">
+      <div style="font-size:12px;opacity:.8;margin-bottom:4px">🎉 Got a promo code?</div>
+      <div style="font-size:17px;font-weight:700;margin-bottom:10px">Apply & Save on Transactions</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <input type="text" id="promoCodeInput" placeholder="Enter code e.g. SAVE500" class="form-input" style="flex:1;text-transform:uppercase;letter-spacing:1px;font-weight:600">
+        <button class="btn btn-primary btn-sm" style="background:white;color:var(--primary);flex-shrink:0" onclick="applyPromoCode()">Apply</button>
+      </div>
+      <div id="promoResult" style="margin-top:10px;font-size:12px;min-height:18px"></div>
+    </div>
+    <div class="section-title" style="margin-bottom:8px">Active Promotions</div>
+    <div id="activePromosList"><div class="loading-spinner"></div></div>
+    <div class="section-title" style="margin:14px 0 8px">My Used Codes</div>
+    <div id="usedPromosList"><div style="font-size:12px;color:var(--text3);text-align:center;padding:16px">No used codes yet</div></div>
+  </div>
+</div>
+
+<!-- ══ SUPPORT CHAT (USER) ══ -->
+<div class="screen chat-screen" id="supportChatScreen">
+  <div class="chat-header">
+    <button style="background:none;border:none;font-size:20px;cursor:pointer;padding:0;margin-right:2px" onclick="goBack()">←</button>
+    <div class="chat-avatar">🎧</div>
+    <div>
+      <div style="font-size:14px;font-weight:700;color:var(--text)">KOBOrush Support</div>
+      <div style="font-size:11px;color:var(--success-green);font-weight:600" id="supportStatusDot">● Online · Typically replies in minutes</div>
+    </div>
+  </div>
+  <div class="chat-messages" id="chatMessages">
+    <div class="chat-date-divider">Today</div>
+    <div class="chat-bubble admin">👋 Hi! Welcome to KOBOrush Support. How can we help you today?<span class="chat-bubble-time">Support Team</span></div>
+  </div>
+  <div class="chat-input-bar">
+    <textarea class="chat-input" id="chatInput" placeholder="Type a message..." rows="1" onkeydown="chatInputKeydown(event)"></textarea>
+    <button class="chat-send-btn" onclick="sendChatMessage()">➤</button>
+  </div>
+</div>
+
+<!-- ══ ADMIN PROMO CODES ══ -->
+<div class="screen" id="adminPromos" style="background:var(--bg)">
+  <div class="navbar light" style="padding-top:42px">
+    <button class="nav-back" onclick="goBack()">←</button>
+    <div class="nav-title">Promo Codes</div>
+    <button class="btn btn-primary btn-sm" style="font-size:11px;padding:6px 12px" onclick="showCreatePromo()">+ New</button>
+  </div>
+  <div style="padding:10px 12px 80px">
+    <div id="adminPromoList"><div class="loading-spinner"></div></div>
+  </div>
+</div>
+
+<!-- ══ ADMIN SUPPORT CHATS ══ -->
+<div class="screen" id="adminSupport" style="background:var(--bg)">
+  <div class="navbar light" style="padding-top:42px">
+    <button class="nav-back" onclick="goBack()">←</button>
+    <div class="nav-title">Support Chats</div>
+    <div style="width:37px"></div>
+  </div>
+  <div id="adminChatList" style="padding:10px 12px 20px"><div class="loading-spinner"></div></div>
+</div>
+
+<!-- ══ ADMIN CHAT REPLY SCREEN ══ -->
+<div class="screen chat-screen" id="adminChatReply">
+  <div class="chat-header">
+    <button style="background:none;border:none;font-size:20px;cursor:pointer;padding:0;margin-right:2px" onclick="goBack()">←</button>
+    <div class="chat-avatar" id="adminReplyAvatar">👤</div>
+    <div>
+      <div style="font-size:14px;font-weight:700;color:var(--text)" id="adminReplyName">User</div>
+      <div style="font-size:11px;color:var(--text3)" id="adminReplyEmail"></div>
+    </div>
+  </div>
+  <div class="chat-messages" id="adminChatMessages"></div>
+  <div class="chat-input-bar">
+    <textarea class="chat-input" id="adminChatInput" placeholder="Reply as Support..." rows="1" onkeydown="adminChatKeydown(event)"></textarea>
+    <button class="chat-send-btn" onclick="sendAdminReply()">➤</button>
+  </div>
+</div>
+
 
 <!-- AGENT -->
 <div class="screen" id="agentScreen">
@@ -1152,6 +1344,150 @@ textarea.form-input{resize:none}
     </div>
   </div>
 </div>
+
+
+<!-- ══ KYC VERIFICATION ══ -->
+<div class="screen" id="kycScreen" style="background:var(--bg)">
+  <div class="navbar light" style="padding-top:42px">
+    <button class="nav-back" onclick="goBack()">←</button>
+    <div class="nav-title">KYC Verification</div>
+    <div style="width:37px"></div>
+  </div>
+  <div style="padding:12px 12px 100px">
+    <!-- Current Status Card -->
+    <div class="kyc-card">
+      <div class="kyc-card-header">
+        <div>
+          <div class="section-title" style="margin:0">Account Status</div>
+          <div id="kycTierDesc" style="font-size:11px;color:var(--text3);margin-top:2px">Complete verification to unlock higher limits</div>
+        </div>
+        <span id="kycStatusBadge" class="kyc-tier-badge kyc-unverified">🔓 Unverified</span>
+      </div>
+      <!-- Tier Display -->
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px">
+        <div id="kycTierBronze" class="plan-opt" style="text-align:center;padding:10px 6px">
+          <div style="font-size:18px;margin-bottom:3px">🥉</div>
+          <div style="font-size:11px;font-weight:700;color:var(--text)">Bronze</div>
+          <div style="font-size:10px;color:var(--text3)">₦50k/day</div>
+        </div>
+        <div id="kycTierSilver" class="plan-opt" style="text-align:center;padding:10px 6px">
+          <div style="font-size:18px;margin-bottom:3px">🥈</div>
+          <div style="font-size:11px;font-weight:700;color:var(--text)">Silver</div>
+          <div style="font-size:10px;color:var(--text3)">₦200k/day</div>
+        </div>
+        <div id="kycTierGold" class="plan-opt" style="text-align:center;padding:10px 6px">
+          <div style="font-size:18px;margin-bottom:3px">🥇</div>
+          <div style="font-size:11px;font-weight:700;color:var(--text)">Gold</div>
+          <div style="font-size:10px;color:var(--text3)">₦1M/day</div>
+        </div>
+      </div>
+      <!-- Daily Limit Progress -->
+      <div style="background:var(--bg);border-radius:10px;padding:10px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+          <span style="font-size:11px;color:var(--text2);font-weight:600">Today's Usage</span>
+          <span id="kycLimitText" style="font-size:11px;font-weight:700;color:var(--primary)">₦0 / ₦50,000</span>
+        </div>
+        <div class="limit-bar"><div class="limit-bar-fill" id="kycLimitBar" style="width:0%"></div></div>
+      </div>
+    </div>
+
+    <!-- Submission Form (hidden if already approved) -->
+    <div id="kycFormSection">
+      <div class="kyc-card">
+        <div class="section-title">Step 1: Identity Details</div>
+        <div class="form-group">
+          <label class="form-label">Verification Type</label>
+          <select class="form-input" id="kycDocType">
+            <option value="bvn">BVN (Bank Verification Number)</option>
+            <option value="nin">NIN (National Identity Number)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" id="kycDocLabel">BVN Number</label>
+          <input type="number" class="form-input" id="kycDocNumber" placeholder="Enter 11-digit BVN" maxlength="11">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Full Legal Name (as on ID)</label>
+          <input type="text" class="form-input" id="kycLegalName" placeholder="e.g. John Adewale Doe">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Date of Birth</label>
+          <input type="date" class="form-input" id="kycDob">
+        </div>
+      </div>
+
+      <div class="kyc-card">
+        <div class="section-title">Step 2: Upload Documents</div>
+        <p style="font-size:12px;color:var(--text2);margin-bottom:12px;line-height:1.5">Upload clear photos of your government-issued ID and a selfie holding it.</p>
+        
+        <div class="kyc-doc-upload" id="kycDocFront" onclick="document.getElementById('kycDocFrontInput').click()">
+          <div class="kyc-doc-upload-icon">🪪</div>
+          <div class="kyc-doc-upload-title">Front of ID Card</div>
+          <div class="kyc-doc-upload-sub">National ID, Passport, or Driver's Licence</div>
+          <img id="kycDocFrontPreview" style="display:none;width:100%;max-height:120px;object-fit:cover;border-radius:8px;margin-top:8px">
+        </div>
+        <input type="file" id="kycDocFrontInput" accept="image/*" style="display:none" onchange="handleKYCDoc(this,'front')">
+
+        <div class="kyc-doc-upload" id="kycDocBack" onclick="document.getElementById('kycDocBackInput').click()">
+          <div class="kyc-doc-upload-icon">📄</div>
+          <div class="kyc-doc-upload-title">Back of ID Card</div>
+          <div class="kyc-doc-upload-sub">Back side of the same ID</div>
+          <img id="kycDocBackPreview" style="display:none;width:100%;max-height:120px;object-fit:cover;border-radius:8px;margin-top:8px">
+        </div>
+        <input type="file" id="kycDocBackInput" accept="image/*" style="display:none" onchange="handleKYCDoc(this,'back')">
+
+        <div class="kyc-doc-upload" id="kycDocSelfie" onclick="document.getElementById('kycDocSelfieInput').click()">
+          <div class="kyc-doc-upload-icon">🤳</div>
+          <div class="kyc-doc-upload-title">Selfie with ID</div>
+          <div class="kyc-doc-upload-sub">Hold your ID next to your face</div>
+          <img id="kycDocSelfiePreview" style="display:none;width:100%;max-height:120px;object-fit:cover;border-radius:8px;margin-top:8px">
+        </div>
+        <input type="file" id="kycDocSelfieInput" accept="image/*" style="display:none" onchange="handleKYCDoc(this,'selfie')">
+      </div>
+
+      <div class="kyc-card" style="background:#EEF2FF">
+        <div style="font-size:12px;color:#3730A3;line-height:1.6">
+          🔒 <strong>Your data is secure.</strong> Documents are reviewed by our compliance team and are never shared with third parties. By submitting, you confirm that all information is accurate.
+        </div>
+      </div>
+
+      <button class="btn btn-primary" id="kycSubmitBtn" onclick="submitKYC()">Submit for Verification</button>
+    </div>
+
+    <!-- Pending/Rejected Status Message -->
+    <div id="kycStatusSection" style="display:none">
+      <div class="kyc-card" id="kycStatusCard">
+        <div style="text-align:center;padding:10px 0">
+          <div id="kycStatusIcon" style="font-size:48px;margin-bottom:10px">⏳</div>
+          <h3 id="kycStatusTitle" style="font-size:17px;font-weight:700;color:var(--text);margin-bottom:6px">Under Review</h3>
+          <p id="kycStatusMsg" style="font-size:12px;color:var(--text2);line-height:1.5">Your documents are being reviewed. This usually takes 1-24 hours.</p>
+          <div id="kycResubmitBtn" style="display:none;margin-top:14px">
+            <button class="btn btn-outline" onclick="resetKYCForm()">Resubmit Documents</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ADMIN KYC MANAGEMENT ══ -->
+<div class="screen" id="adminKYC" style="background:var(--bg)">
+  <div class="navbar light" style="padding-top:42px">
+    <button class="nav-back" onclick="goBack()">←</button>
+    <div class="nav-title">KYC Management</div>
+    <div style="width:37px"></div>
+  </div>
+  <div style="padding:10px 12px 0">
+    <div class="chip-row" id="kycFilter">
+      <div class="chip active" onclick="filterKYC('pending',this)">⏳ Pending</div>
+      <div class="chip" onclick="filterKYC('approved',this)">✅ Approved</div>
+      <div class="chip" onclick="filterKYC('rejected',this)">❌ Rejected</div>
+      <div class="chip" onclick="filterKYC('all',this)">All</div>
+    </div>
+  </div>
+  <div id="kycReqList" style="padding:0 12px 20px"><div class="loading-spinner"></div></div>
+</div>
+
 
 <!-- EDIT PROFILE -->
 <div class="screen svc-form" id="editProfile">
@@ -1406,6 +1742,13 @@ window.navigateTo=(id)=>{
   if(id==='fundWallet')resetFundWallet();
   if(id==='adminAPIs')setTimeout(attachAutoSave,200);
   if(id==='termsScreen')loadTermsForUser();
+  if(id==='kycScreen')loadKYCScreen();
+  if(id==='adminKYC')loadAdminKYC();
+  if(id==='referral')loadReferralDashboard();
+  if(id==='promoScreen')loadPromoScreen();
+  if(id==='adminPromos')loadAdminPromos();
+  if(id==='adminSupport')loadAdminSupportList();
+  if(id==='supportChatScreen')initSupportChat();
   if(id==='adminTerms')loadAdminTermsEditor();
   if(id==='adminSecurity'){}
   updateNav(id);
@@ -1464,7 +1807,7 @@ window.handleGoogleAuth=async()=>{
 };
 window.handlePhoneAuth=()=>showToast('info','Phone OTP coming soon');
 window.showForgotPassword=()=>showOverlay(`<div class="sheet-title">Reset Password</div><div class="sheet-sub">Enter your email and we'll send a reset link.</div><div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" id="resetEmail" placeholder="your@email.com"></div><button class="btn btn-primary" onclick="sendReset()">Send Reset Link</button>`);
-window.sendReset=async()=>{try{const email=document.getElementById('resetEmail').value;const siteUrl=window.location.origin+window.location.pathname.replace(/\/index\.html$/,'');const actionCodeSettings={url:siteUrl,handleCodeInApp:false};await sendPasswordResetEmail(auth,email,actionCodeSettings);showToast('success','Reset link sent!');closeOverlay()}catch(e){showToast('error',e.message)}};
+window.sendReset=async()=>{try{const actionCodeSettings={url:window.location.origin+(window.location.pathname||'/'),handleCodeInApp:false};await sendPasswordResetEmail(auth,document.getElementById('resetEmail').value,actionCodeSettings);showToast('success','Reset link sent!');closeOverlay()}catch(e){showToast('error',e.message)}};
 window.handleLogout=async()=>{await signOut(auth);_s.user=null;_s.userData=null;document.getElementById('bottomNav').style.display='none';showScreen('auth');showToast('info','Signed out')};
 
 window.handleProfilePicChange=async(input)=>{
@@ -1963,7 +2306,7 @@ window.selProv=(grid,id,el)=>{document.querySelectorAll(`#${grid} .prov-opt`).fo
 window.selPlan=(el,name,price)=>{el.closest('.data-plans').querySelectorAll('.plan-opt').forEach(p=>p.classList.remove('selected'));el.classList.add('selected');_s.selPlan={name,price}};
 
 // PIN & TRANSACTIONS
-window.proceedToPIN=(svc)=>{
+window.proceedToPIN=async(svc)=>{
   let sum='';
   if(svc==='airtime'){const ph=document.getElementById('airtimePhone').value;const am=document.getElementById('airtimeAmt').value;if(!ph||!am)return showToast('error','Fill all fields');_s.pendingData={type:'airtime',phone:ph,amount:parseFloat(am),provider:_s.selProv['airtimeProv']||'mtn',description:`Airtime – ${ph}`};sum=`<div class="sum-row"><span class="sum-lbl">Phone</span><span class="sum-val">${ph}</span></div><div class="sum-row"><span class="sum-lbl">Network</span><span class="sum-val">${(_s.selProv['airtimeProv']||'MTN').toUpperCase()}</span></div><div class="sum-row"><span class="sum-lbl">Amount</span><span class="sum-val" style="color:var(--primary)">₦${parseFloat(am).toLocaleString()}</span></div>`}
   else if(svc==='data'){const ph=document.getElementById('dataPhone').value;if(!ph||!_s.selPlan)return showToast('error','Fill all fields');_s.pendingData={type:'data',phone:ph,amount:_s.selPlan.price,provider:_s.selProv['dataProv']||'mtn',description:`${_s.selPlan.name} Data – ${ph}`};sum=`<div class="sum-row"><span class="sum-lbl">Plan</span><span class="sum-val">${_s.selPlan.name}</span></div><div class="sum-row"><span class="sum-lbl">Phone</span><span class="sum-val">${ph}</span></div><div class="sum-row"><span class="sum-lbl">Amount</span><span class="sum-val" style="color:var(--primary)">₦${_s.selPlan.price.toLocaleString()}</span></div>`}
@@ -1972,6 +2315,11 @@ window.proceedToPIN=(svc)=>{
   else if(svc==='schoolpin'){const qty=document.getElementById('schoolPinQty').value;const ph=document.getElementById('schoolPhone').value;const ex=_s.selProv['schoolProv']||'waec';const pr={waec:3750,neco:2100,jamb:4200,nabteb:2500}[ex]||2000;const tot=pr*parseInt(qty);_s.pendingData={type:'schoolpin',exam:ex,quantity:parseInt(qty),phone:ph,amount:tot,description:`${ex.toUpperCase()} PIN x${qty}`};sum=`<div class="sum-row"><span class="sum-lbl">Exam</span><span class="sum-val">${ex.toUpperCase()}</span></div><div class="sum-row"><span class="sum-lbl">Qty</span><span class="sum-val">${qty}</span></div><div class="sum-row"><span class="sum-lbl">Total</span><span class="sum-val" style="color:var(--primary)">₦${tot.toLocaleString()}</span></div>`}
   else if(svc==='transfer'){const am=document.getElementById('transferAmt').value;const rc=document.getElementById('transferRecipient').value||document.getElementById('transferAcctNo')?.value;if(!am||!rc)return showToast('error','Fill all fields');const tot=parseFloat(am)+25;_s.pendingData={type:'transfer',amount:tot,recipient:rc,description:`Transfer to ${rc}`};sum=`<div class="sum-row"><span class="sum-lbl">To</span><span class="sum-val">${rc}</span></div><div class="sum-row"><span class="sum-lbl">Amount</span><span class="sum-val">₦${parseFloat(am).toLocaleString()}</span></div><div class="sum-row"><span class="sum-lbl">Fee</span><span class="sum-val">₦25</span></div><div class="sum-row"><span class="sum-lbl">Total</span><span class="sum-val" style="color:var(--primary)">₦${tot.toLocaleString()}</span></div>`}
   if(_s.userData&&_s.pendingData?.amount>_s.userData.balance)return showToast('error','Insufficient balance');
+  // Check KYC daily limit
+  if(_s.pendingData){
+    const kycOk=await checkTransactionLimit(_s.pendingData.amount);
+    if(!kycOk)return;
+  }
   document.getElementById('pinSummary').innerHTML=`<div class="sum-card" style="margin:0">${sum}</div>`;
   ['pin1','pin2','pin3','pin4'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''});
   navigateTo('pinScreen');setTimeout(()=>document.getElementById('pin1')?.focus(),300);
@@ -1999,7 +2347,7 @@ window.shareReceipt=()=>{const text=document.getElementById('successReceipt').in
 // Profile
 window.saveProfile=async()=>{if(!_s.user)return;const u={firstName:document.getElementById('editFirst').value,lastName:document.getElementById('editLast').value,phone:document.getElementById('editPhone').value,country:document.getElementById('editCountry').value};try{await updateDoc(doc(db,'users',_s.user.uid),u);await updateProfile(_s.user,{displayName:`${u.firstName} ${u.lastName}`});showToast('success','Profile updated!');goBack()}catch(e){showToast('error','Failed')}};
 function prefillEdit(){const d=_s.userData;if(!d)return;document.getElementById('editFirst').value=d.firstName||'';document.getElementById('editLast').value=d.lastName||'';document.getElementById('editPhone').value=d.phone||'';document.getElementById('editCountry').value=d.country||'NG'};
-window.shareReferral=()=>{const code=_s.userData?.referralCode||'KBR00000';const siteUrl=window.location.origin+window.location.pathname.replace(/\/index\.html$/,'');const refLink=`${siteUrl}?ref=${code}`;const text=`Join KOBOrush! Use my code ${code} for ₦200 bonus. ${refLink}`;if(navigator.share)navigator.share({title:'Join KOBOrush',text,url:refLink});else{navigator.clipboard?.writeText(text);showToast('success','Link copied!')}};
+window.shareReferral=()=>{const code=_s.userData?.referralCode||'KBR00000';const origin=window.location.origin+window.location.pathname.replace(/\/[^/]*$/,'/');const link=origin+'?ref='+code;const text=`Join KOBOrush! Use my code ${code} for ₦200 bonus. ${link}`;if(navigator.share)navigator.share({title:'Join KOBOrush',text});else{navigator.clipboard?.writeText(text);showToast('success','Link copied!')}};
 window.copyRefCode=()=>{const code=_s.userData?.referralCode||'KBR00000';navigator.clipboard?.writeText(code);showToast('success',code+' copied!')};
 window.updateTransferType=()=>{const t=document.getElementById('transferType').value;document.getElementById('bankFields').classList.toggle('hidden',t!=='bank');document.getElementById('koborushFields').classList.toggle('hidden',t!=='koborush')};
 window.showSetPINSheet=()=>showOverlay(`<div class="sheet-title">Set Transaction PIN</div><div class="sheet-sub">Create a 4-digit PIN for all transactions.</div><div class="pin-container"><input class="pin-digit" type="password" maxlength="1" id="np1" oninput="movePIN(this,null,'np2')"><input class="pin-digit" type="password" maxlength="1" id="np2" oninput="movePIN(this,'np1','np3')"><input class="pin-digit" type="password" maxlength="1" id="np3" oninput="movePIN(this,'np2','np4')"><input class="pin-digit" type="password" maxlength="1" id="np4"></div><button class="btn btn-primary" onclick="savePIN()" style="margin-top:12px">Save PIN</button>`);
@@ -2033,7 +2381,7 @@ window.verifyAdminPIN=async()=>{
   if(pin===correct){
     _s.adminPINVerified=true;
     ['apg1','apg2','apg3','apg4'].forEach(id=>document.getElementById(id).value='');
-    showScreen('admin');loadAdminDash();listenPendingFundRequests();
+    showScreen('admin');loadAdminDash();listenPendingFundRequests();listenPendingKYC();listenSupportUnread();
   }else{
     document.getElementById('adminPINError').textContent='Incorrect PIN. Try again.';
     ['apg1','apg2','apg3','apg4'].forEach(id=>document.getElementById(id).value='');
@@ -2155,6 +2503,899 @@ window.loadAdminSvcs=()=>{document.getElementById('adminSvcsContent').innerHTML=
 window.loadCountries=()=>{const c=document.getElementById('adminCountriesList');const countries=[{name:'Nigeria',flag:'🇳🇬',code:'NG',ccy:'NGN',on:true},{name:'Ghana',flag:'🇬🇭',code:'GH',ccy:'GHS',on:true},{name:'Benin',flag:'🇧🇯',code:'BJ',ccy:'XOF',on:true},{name:'Kenya',flag:'🇰🇪',code:'KE',ccy:'KES',on:false},{name:'Senegal',flag:'🇸🇳',code:'SN',ccy:'XOF',on:false},{name:'Ivory Coast',flag:'🇨🇮',code:'CI',ccy:'XOF',on:false},{name:'Cameroon',flag:'🇨🇲',code:'CM',ccy:'XAF',on:false},{name:'Togo',flag:'🇹🇬',code:'TG',ccy:'XOF',on:false},{name:'Burkina Faso',flag:'🇧🇫',code:'BF',ccy:'XOF',on:false},{name:'Niger',flag:'🇳🇪',code:'NE',ccy:'XOF',on:false},{name:'Mali',flag:'🇲🇱',code:'ML',ccy:'XOF',on:false},{name:'South Africa',flag:'🇿🇦',code:'ZA',ccy:'ZAR',on:false},{name:'Tanzania',flag:'🇹🇿',code:'TZ',ccy:'TZS',on:false},{name:'Uganda',flag:'🇺🇬',code:'UG',ccy:'UGX',on:false},{name:'Rwanda',flag:'🇷🇼',code:'RW',ccy:'RWF',on:false},{name:'Ethiopia',flag:'🇪🇹',code:'ET',ccy:'ETB',on:false}];c.innerHTML=`<div class="admin-panel" style="margin:0">${countries.map(ct=>`<div class="admin-table-row"><div style="font-size:26px;flex-shrink:0">${ct.flag}</div><div class="row-main"><div class="row-title">${ct.name}</div><div class="row-sub">${ct.ccy}</div></div><label class="toggle-switch"><input type="checkbox" ${ct.on?'checked':''} onchange="toggleCountry('${ct.code}',this.checked)"><div class="toggle-slider"></div></label></div>`).join('')}</div>`};
 window.toggleCountry=async(code,e)=>{await setDoc(doc(db,'settings','countries'),{[code]:e},{merge:true});showToast(e?'success':'info',`${code} ${e?'enabled':'disabled'}`)};
 window.adminCreditWallet=async()=>{const ui=document.getElementById('adminFundUser').value;const am=parseFloat(document.getElementById('adminFundAmt').value);const re=document.getElementById('adminFundReason').value;if(!ui||!am)return showToast('error','Fill all fields');try{const q=query(collection(db,'users'),where('email','==',ui));const s=await getDocs(q);if(s.empty)return showToast('error','User not found');const uid=s.docs[0].id;await updateDoc(doc(db,'users',uid),{balance:increment(am)});const tid=genId(12);await setDoc(doc(db,'transactions',tid),{id:tid,userId:uid,type:'admin_credit',status:'success',amount:am,description:`Admin Credit: ${re}`,createdAt:serverTimestamp()});await addNotif(uid,'💰 Wallet Credited',`₦${am.toLocaleString()} added. Reason: ${re}`,'success');showToast('success',`₦${am.toLocaleString()} credited!`)}catch(e){showToast('error','Failed')}};
+
+// ════════════════════════════════
+// KYC VERIFICATION SYSTEM
+// ════════════════════════════════
+const KYC_TIERS = {
+  unverified: { label: 'Unverified', dailyLimit: 0, icon: '🔓', badgeClass: 'kyc-unverified' },
+  bronze: { label: 'Bronze', dailyLimit: 50000, icon: '🥉', badgeClass: 'kyc-bronze' },
+  silver: { label: 'Silver', dailyLimit: 200000, icon: '🥈', badgeClass: 'kyc-silver' },
+  gold: { label: 'Gold', dailyLimit: 1000000, icon: '🥇', badgeClass: 'kyc-gold' }
+};
+
+// KYC doc storage
+window._kycDocs = { front: null, back: null, selfie: null };
+
+// Load KYC screen data
+window.loadKYCScreen = async () => {
+  if (!_s.user || !_s.userData) return;
+  const d = _s.userData;
+  const kycStatus = d.kycStatus || 'unverified';
+  const kycTier = d.kycTier || 'unverified';
+
+  // Update status badge
+  const badge = document.getElementById('kycStatusBadge');
+  const tierData = KYC_TIERS[kycTier] || KYC_TIERS.unverified;
+  if (badge) {
+    badge.textContent = tierData.icon + ' ' + tierData.label;
+    badge.className = 'kyc-tier-badge ' + tierData.badgeClass;
+  }
+
+  // Highlight active tier
+  ['bronze','silver','gold'].forEach(t => {
+    const el = document.getElementById('kycTier'+t.charAt(0).toUpperCase()+t.slice(1));
+    if (el) el.classList.toggle('selected', kycTier === t);
+  });
+
+  // Update daily limit
+  await updateKYCLimitDisplay();
+
+  // Show/hide form vs status section
+  const formSection = document.getElementById('kycFormSection');
+  const statusSection = document.getElementById('kycStatusSection');
+
+  if (kycStatus === 'pending') {
+    if (formSection) formSection.style.display = 'none';
+    if (statusSection) statusSection.style.display = 'block';
+    document.getElementById('kycStatusIcon').textContent = '⏳';
+    document.getElementById('kycStatusTitle').textContent = 'Under Review';
+    document.getElementById('kycStatusMsg').textContent = 'Your KYC documents are being reviewed. This usually takes 1-24 hours during business hours.';
+    document.getElementById('kycStatusBadge').textContent = '⏳ Pending';
+    document.getElementById('kycStatusBadge').className = 'kyc-tier-badge kyc-pending';
+    document.getElementById('kycResubmitBtn').style.display = 'none';
+  } else if (kycStatus === 'approved') {
+    if (formSection) formSection.style.display = 'none';
+    if (statusSection) statusSection.style.display = 'block';
+    document.getElementById('kycStatusIcon').textContent = '✅';
+    document.getElementById('kycStatusTitle').textContent = 'Verified – ' + (tierData.label);
+    document.getElementById('kycStatusMsg').textContent = 'Your identity has been verified. Your daily transaction limit is ₦' + tierData.dailyLimit.toLocaleString() + '.';
+    document.getElementById('kycResubmitBtn').style.display = 'none';
+  } else if (kycStatus === 'rejected') {
+    if (formSection) formSection.style.display = 'none';
+    if (statusSection) statusSection.style.display = 'block';
+    document.getElementById('kycStatusIcon').textContent = '❌';
+    document.getElementById('kycStatusTitle').textContent = 'Verification Rejected';
+    const reason = d.kycRejectionReason || 'Documents were unclear or invalid.';
+    document.getElementById('kycStatusMsg').textContent = 'Reason: ' + reason + '. Please resubmit with clearer documents.';
+    document.getElementById('kycStatusBadge').textContent = '❌ Rejected';
+    document.getElementById('kycStatusBadge').className = 'kyc-tier-badge kyc-rejected';
+    document.getElementById('kycResubmitBtn').style.display = 'block';
+  } else {
+    // Unverified — show form
+    if (formSection) formSection.style.display = 'block';
+    if (statusSection) statusSection.style.display = 'none';
+  }
+
+  // Update profile menu KYC status text
+  const profileKYC = document.getElementById('profileKYCStatus');
+  if (profileKYC) {
+    const statusMap = { unverified:'Tap to verify your identity', pending:'⏳ Under review', approved:'✅ Verified – '+tierData.label, rejected:'❌ Rejected – resubmit' };
+    profileKYC.textContent = statusMap[kycStatus] || 'Tap to verify';
+  }
+
+  // Prefill doc type toggle
+  document.getElementById('kycDocType')?.addEventListener('change', (e) => {
+    const lbl = document.getElementById('kycDocLabel');
+    if (lbl) lbl.textContent = e.target.value === 'nin' ? 'NIN Number' : 'BVN Number';
+  });
+};
+
+async function updateKYCLimitDisplay() {
+  const d = _s.userData;
+  const kycTier = d?.kycTier || 'unverified';
+  const tierData = KYC_TIERS[kycTier] || KYC_TIERS.unverified;
+  const limit = tierData.dailyLimit;
+
+  // Calculate today's spending
+  const todaySpent = await getTodaySpending();
+
+  const limitText = document.getElementById('kycLimitText');
+  const limitBar = document.getElementById('kycLimitBar');
+  const tierDesc = document.getElementById('kycTierDesc');
+
+  if (limitText) limitText.textContent = '₦' + todaySpent.toLocaleString() + ' / ₦' + (limit > 0 ? limit.toLocaleString() : '0');
+  if (limitBar && limit > 0) limitBar.style.width = Math.min((todaySpent / limit) * 100, 100) + '%';
+  if (tierDesc) {
+    if (kycTier === 'unverified') tierDesc.textContent = 'Submit KYC to start transacting';
+    else if (kycTier === 'gold') tierDesc.textContent = 'Maximum tier – ₦1,000,000/day limit';
+    else tierDesc.textContent = 'Upgrade KYC tier to unlock higher limits';
+  }
+}
+
+async function getTodaySpending() {
+  if (!_s.user) return 0;
+  try {
+    const todayStart = new Date(); todayStart.setHours(0,0,0,0);
+    const q = query(collection(db,'transactions'), where('userId','==',_s.user.uid), where('status','==','success'));
+    const snap = await getDocs(q);
+    let total = 0;
+    snap.forEach(d => {
+      const tx = d.data();
+      const txDate = tx.createdAt?.toDate ? tx.createdAt.toDate() : new Date(tx.createdAt);
+      if (txDate >= todayStart && !['fund','fund_approved','referral_bonus','admin_credit'].includes(tx.type)) {
+        total += tx.amount || 0;
+      }
+    });
+    return total;
+  } catch(e) { return 0; }
+}
+
+window.handleKYCDoc = (input, docType) => {
+  const file = input.files[0];
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) return showToast('error', 'File too large. Max 5MB');
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    window._kycDocs[docType] = e.target.result;
+    const preview = document.getElementById('kycDoc' + docType.charAt(0).toUpperCase() + docType.slice(1) + 'Preview');
+    if (preview) { preview.src = e.target.result; preview.style.display = 'block'; }
+    const uploadEl = document.getElementById('kycDoc' + docType.charAt(0).toUpperCase() + docType.slice(1));
+    if (uploadEl) uploadEl.style.borderColor = 'var(--success-green)';
+    showToast('success', docType.charAt(0).toUpperCase() + docType.slice(1) + ' uploaded!');
+  };
+  reader.readAsDataURL(file);
+};
+
+window.submitKYC = async () => {
+  if (!_s.user) return;
+  const docType = document.getElementById('kycDocType').value;
+  const docNumber = document.getElementById('kycDocNumber').value.trim();
+  const legalName = document.getElementById('kycLegalName').value.trim();
+  const dob = document.getElementById('kycDob').value;
+
+  if (!docNumber || docNumber.length < 10) return showToast('error', 'Enter a valid ' + docType.toUpperCase() + ' number');
+  if (!legalName) return showToast('error', 'Enter your legal name');
+  if (!dob) return showToast('error', 'Enter your date of birth');
+  if (!window._kycDocs.front) return showToast('error', 'Upload front of ID card');
+  if (!window._kycDocs.back) return showToast('error', 'Upload back of ID card');
+  if (!window._kycDocs.selfie) return showToast('error', 'Upload selfie with ID');
+
+  const btn = document.getElementById('kycSubmitBtn');
+  btn.disabled = true; btn.innerHTML = '<span class="btn-spinner"></span> Submitting…';
+
+  try {
+    // Compress images
+    const compressImg = async (dataURL) => {
+      const img = new Image();
+      await new Promise((res,rej) => { img.onload=res; img.onerror=rej; img.src=dataURL; });
+      const cvs = document.createElement('canvas');
+      const maxW = 400;
+      const scale = Math.min(maxW/img.width, 1);
+      cvs.width = Math.round(img.width*scale);
+      cvs.height = Math.round(img.height*scale);
+      cvs.getContext('2d').drawImage(img, 0, 0, cvs.width, cvs.height);
+      let result = cvs.toDataURL('image/jpeg', 0.65);
+      if (result.length > 350000) result = cvs.toDataURL('image/jpeg', 0.4);
+      return result;
+    };
+    const [frontThumb, backThumb, selfieThumb] = await Promise.all([
+      compressImg(window._kycDocs.front),
+      compressImg(window._kycDocs.back),
+      compressImg(window._kycDocs.selfie)
+    ]);
+
+    const kycId = genId(12);
+    await setDoc(doc(db, 'kycSubmissions', kycId), {
+      id: kycId,
+      userId: _s.user.uid,
+      userEmail: _s.userData?.email || '',
+      userName: (_s.userData?.firstName||'') + ' ' + (_s.userData?.lastName||''),
+      docType, docNumber, legalName, dob,
+      frontThumb, backThumb, selfieThumb,
+      status: 'pending',
+      createdAt: serverTimestamp(),
+      reviewedAt: null, reviewedBy: null, rejectionReason: ''
+    });
+
+    // Update user KYC status
+    await updateDoc(doc(db, 'users', _s.user.uid), {
+      kycStatus: 'pending',
+      kycSubmissionId: kycId
+    });
+
+    _s.userData.kycStatus = 'pending';
+    await addNotif(_s.user.uid, '⏳ KYC Submitted', 'Your identity documents are under review. We will notify you within 24 hours.', 'info');
+    showToast('success', 'KYC submitted successfully!');
+    loadKYCScreen();
+  } catch(e) {
+    showToast('error', 'Submission failed: ' + e.message);
+  } finally {
+    btn.disabled = false; btn.innerHTML = 'Submit for Verification';
+  }
+};
+
+window.resetKYCForm = () => {
+  window._kycDocs = { front: null, back: null, selfie: null };
+  document.getElementById('kycFormSection').style.display = 'block';
+  document.getElementById('kycStatusSection').style.display = 'none';
+  ['Front','Back','Selfie'].forEach(t => {
+    const p = document.getElementById('kycDoc'+t+'Preview');
+    if(p) p.style.display = 'none';
+    const u = document.getElementById('kycDoc'+t.toLowerCase());
+    if(u) u.style.borderColor = '';
+  });
+};
+
+// ── TRANSACTION LIMIT ENFORCEMENT ──
+async function checkTransactionLimit(amount) {
+  const d = _s.userData;
+  const kycTier = d?.kycTier || 'unverified';
+  const kycStatus = d?.kycStatus || 'unverified';
+  const tierData = KYC_TIERS[kycTier] || KYC_TIERS.unverified;
+
+  if (kycStatus !== 'approved' || kycTier === 'unverified') {
+    showOverlay(`
+      <div class="sheet-title">🔒 KYC Required</div>
+      <div style="text-align:center;padding:10px 0 16px">
+        <div style="font-size:48px;margin-bottom:10px">🪪</div>
+        <p style="font-size:13px;color:var(--text2);line-height:1.5;margin-bottom:16px">
+          You need to complete KYC verification before making transactions. It takes just a few minutes.
+        </p>
+        <button class="btn btn-primary" onclick="closeOverlay();navigateTo('kycScreen')">Complete KYC Now</button>
+      </div>`);
+    return false;
+  }
+
+  const todaySpent = await getTodaySpending();
+  const dailyLimit = tierData.dailyLimit;
+
+  if (todaySpent + amount > dailyLimit) {
+    const remaining = Math.max(0, dailyLimit - todaySpent);
+    const nextTier = { bronze: 'Silver', silver: 'Gold' }[kycTier] || null;
+    const upgradeHtml = nextTier
+      ? '<div style="background:linear-gradient(135deg,var(--primary),var(--primary-mid));border-radius:12px;padding:12px;color:white;margin-bottom:14px;cursor:pointer" onclick="closeOverlay();navigateTo(\'kycScreen\')">'
+        + '<div style="font-size:13px;font-weight:700;margin-bottom:2px">🚀 Upgrade to ' + nextTier + '</div>'
+        + '<div style="font-size:11px;opacity:.8">Complete additional KYC to unlock a higher limit</div></div>'
+      : '';
+    showOverlay(
+      '<div class="sheet-title">⚠️ Daily Limit Reached</div>'
+      + '<div style="padding:10px 0 16px">'
+      + '<p style="font-size:13px;color:var(--text2);line-height:1.5;margin-bottom:12px">'
+      + 'Your ' + tierData.label + ' tier daily limit is <strong>₦' + dailyLimit.toLocaleString() + '</strong>.<br>'
+      + 'You\'ve used <strong>₦' + todaySpent.toLocaleString() + '</strong> today.<br>'
+      + 'Remaining: <strong>₦' + remaining.toLocaleString() + '</strong>.</p>'
+      + upgradeHtml
+      + '<button class="btn btn-outline" onclick="closeOverlay()">OK, Got It</button>'
+      + '</div>'
+    );
+    return false;
+  }
+  return true;
+}
+
+// ── ADMIN KYC MANAGEMENT ──
+window.loadAdminKYC = async (statusFilter = 'pending') => {
+  const c = document.getElementById('kycReqList');
+  if (!c) return;
+  c.innerHTML = '<div class="loading-spinner"></div>';
+  try {
+    let q;
+    if (statusFilter === 'all') q = query(collection(db,'kycSubmissions'), limit(100));
+    else q = query(collection(db,'kycSubmissions'), where('status','==',statusFilter), limit(100));
+    const snap = await getDocs(q);
+    const reqs = snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>{
+      const ta = a.createdAt?.toMillis?a.createdAt.toMillis():0;
+      const tb = b.createdAt?.toMillis?b.createdAt.toMillis():0;
+      return tb-ta;
+    });
+    if (!reqs.length) {
+      c.innerHTML = '<div class="empty-state" style="padding:30px 20px;text-align:center"><div style="font-size:36px;margin-bottom:10px">🪪</div><h4>No '+statusFilter+' KYC requests</h4></div>';
+      return;
+    }
+    c.innerHTML = reqs.map(r => `
+      <div class="kyc-req-card">
+        <div class="kyc-req-header">
+          <div>
+            <div class="kyc-req-user">${r.userName || r.userEmail}</div>
+            <div class="kyc-req-time">${tAgo(r.createdAt)} · ${r.docType?.toUpperCase()}: ${r.docNumber}</div>
+          </div>
+          <span class="badge badge-${r.status==='approved'?'success':r.status==='rejected'?'failed':'pending'}">${r.status}</span>
+        </div>
+        <div class="kyc-req-detail"><strong>Legal Name:</strong> ${r.legalName}</div>
+        <div class="kyc-req-detail"><strong>DOB:</strong> ${r.dob}</div>
+        <div class="kyc-req-detail"><strong>Email:</strong> ${r.userEmail}</div>
+        <div style="display:flex;gap:8px;margin:10px 0;overflow-x:auto">
+          ${r.frontThumb ? '<img src="'+r.frontThumb+'" class="kyc-req-doc" onclick="viewKYCDoc(\''+r.id+'\',\'front\')" title="Front of ID">' : ''}
+          ${r.backThumb ? '<img src="'+r.backThumb+'" class="kyc-req-doc" onclick="viewKYCDoc(\''+r.id+'\',\'back\')" title="Back of ID">' : ''}
+          ${r.selfieThumb ? '<img src="'+r.selfieThumb+'" class="kyc-req-doc" onclick="viewKYCDoc(\''+r.id+'\',\'selfie\')" title="Selfie">' : ''}
+        </div>
+        ${r.status === 'pending' ? (
+        '<div style="margin-bottom:10px">' +
+          '<label style="font-size:12px;font-weight:600;color:var(--text);display:block;margin-bottom:6px">Upgrade to Tier:</label>' +
+          '<select class="form-input" id="kycTierSelect_'+r.id+'" style="margin-bottom:8px">' +
+            '<option value="bronze">🥉 Bronze (₦50,000/day)</option>' +
+            '<option value="silver">🥈 Silver (₦200,000/day)</option>' +
+            '<option value="gold">🥇 Gold (₦1,000,000/day)</option>' +
+          '</select></div>' +
+        '<div class="kyc-req-actions">' +
+          '<button class="btn btn-success btn-sm" style="flex:1" onclick="approveKYC(\''+r.id+'\',\''+r.userId+'\')">✅ Approve</button>' +
+          '<button class="btn btn-danger btn-sm" style="flex:1" onclick="rejectKYC(\''+r.id+'\',\''+r.userId+'\')">❌ Reject</button>' +
+        '</div>')
+        : '<div style="font-size:11px;color:var(--text3);text-align:center;padding-top:4px">Reviewed '+tAgo(r.reviewedAt)+'</div>'}
+      </div>`).join('');
+  } catch(e) {
+    c.innerHTML = '<div style="padding:20px;text-align:center;color:var(--danger)">Error: '+e.message+'</div>';
+  }
+};
+
+window.filterKYC = (f, el) => {
+  document.querySelectorAll('#kycFilter .chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  loadAdminKYC(f);
+};
+
+window.viewKYCDoc = (reqId, docType) => {
+  const titleMap = {front:'Front of ID', back:'Back of ID', selfie:'Selfie with ID'};
+  const allImgs = document.querySelectorAll('.kyc-req-doc');
+  let imgSrc = null;
+  allImgs.forEach(el => {
+    const oc = el.getAttribute('onclick') || '';
+    if (oc.includes(reqId) && oc.includes(docType)) imgSrc = el.src;
+  });
+  if (!imgSrc) return;
+  showOverlay('<div class="sheet-title">'+(titleMap[docType]||docType)+'</div><img src="'+imgSrc+'" style="width:100%;border-radius:12px;margin-bottom:12px;max-height:70vh;object-fit:contain"><button class="btn btn-outline" onclick="closeOverlay()">Close</button>');
+};
+
+window.approveKYC = async (kycId, userId) => {
+  const tierSelect = document.getElementById('kycTierSelect_' + kycId);
+  const tier = tierSelect ? tierSelect.value : 'bronze';
+  if (!confirm('Approve KYC and set ' + tier + ' tier?')) return;
+  try {
+    await updateDoc(doc(db,'kycSubmissions',kycId), { status:'approved', reviewedAt:serverTimestamp(), reviewedBy:_s.user.uid, approvedTier:tier });
+    await updateDoc(doc(db,'users',userId), { kycStatus:'approved', kycTier:tier, kycVerified:true });
+    const tierLabel = KYC_TIERS[tier]?.label || tier;
+    await addNotif(userId, '✅ KYC Approved!', 'Your identity has been verified. You are now a ' + tierLabel + ' user with ₦' + (KYC_TIERS[tier]?.dailyLimit||0).toLocaleString() + ' daily limit.', 'success');
+    showToast('success', 'KYC approved – ' + tierLabel + ' tier assigned!');
+    loadAdminKYC('pending');
+  } catch(e) { showToast('error', 'Approval failed: ' + e.message); }
+};
+
+window.rejectKYC = async (kycId, userId) => {
+  const reason = prompt('Reason for rejection:') || 'Documents were unclear or invalid';
+  try {
+    await updateDoc(doc(db,'kycSubmissions',kycId), { status:'rejected', reviewedAt:serverTimestamp(), reviewedBy:_s.user.uid, rejectionReason:reason });
+    await updateDoc(doc(db,'users',userId), { kycStatus:'rejected', kycRejectionReason:reason });
+    await addNotif(userId, '❌ KYC Rejected', 'Reason: ' + reason + '. Please resubmit with clearer documents.', 'warning');
+    showToast('info', 'KYC rejected');
+    loadAdminKYC('pending');
+  } catch(e) { showToast('error', 'Failed: ' + e.message); }
+};
+
+// Listen for pending KYC submissions (admin badge)
+function listenPendingKYC() {
+  try {
+    const q = query(collection(db,'kycSubmissions'), where('status','==','pending'));
+    onSnapshot(q, (s) => {
+      const count = s.size;
+      const badge = document.getElementById('kycPendingBadge');
+      if (badge) { badge.textContent = count; badge.style.display = count > 0 ? 'flex' : 'none'; }
+    });
+  } catch(e) {}
+}
+
+
+
+// ════════════════════════════════
+// REFERRAL DASHBOARD SYSTEM
+// ════════════════════════════════
+window.loadReferralDashboard = async () => {
+  if (!_s.user || !_s.userData) return;
+  const code = _s.userData.referralCode || 'KBR' + _s.user.uid.slice(0,5).toUpperCase();
+  const link = window.location.origin + window.location.pathname.replace(/\/[^/]*$/, '/') + '?ref=' + code;
+  const el = document.getElementById('refCode'); if(el) el.textContent = code;
+  const ld = document.getElementById('refLinkDisplay'); if(ld) ld.textContent = link;
+  window._refLink = link; window._refCode = code;
+
+  // Load referrals from Firestore
+  const listEl = document.getElementById('refFriendsList');
+  if (listEl) listEl.innerHTML = '<div class="loading-spinner"></div>';
+  try {
+    const q = query(collection(db,'referrals'), where('referrerId','==',_s.user.uid));
+    const snap = await getDocs(q);
+    const refs = snap.docs.map(d => d.data());
+    const totalEarned = refs.reduce((s,r) => s + (r.bonusPaid||0), 0);
+
+    // Update stats
+    const t = document.getElementById('refTotal'); if(t) t.textContent = refs.length;
+    const a = document.getElementById('refActive'); if(a) a.textContent = refs.filter(r=>r.active).length;
+    const e = document.getElementById('refEarned'); if(e) e.textContent = '₦' + totalEarned.toLocaleString();
+
+    // Render friends
+    if (!listEl) return;
+    if (!refs.length) {
+      listEl.innerHTML = '<div style="background:white;border-radius:14px;padding:20px;text-align:center;box-shadow:var(--shadow)">'
+        + '<div style="font-size:32px;margin-bottom:8px">👥</div>'
+        + '<div style="font-size:13px;font-weight:600;color:var(--text)">No referrals yet</div>'
+        + '<div style="font-size:11px;color:var(--text3);margin-top:3px">Share your link to start earning</div></div>';
+      return;
+    }
+    listEl.innerHTML = '<div class="ref-friends-list">'
+      + refs.map(r => {
+        const initials = (r.refereeName||'U').charAt(0).toUpperCase();
+        return '<div class="ref-friend-row">'
+          + '<div class="ref-friend-avatar">' + initials + '</div>'
+          + '<div style="flex:1;min-width:0"><div class="ref-friend-name">' + (r.refereeName||'Friend') + '</div>'
+          + '<div class="ref-friend-date">' + tAgo(r.joinedAt) + '</div></div>'
+          + '<span class="ref-earn-badge">+₦' + (r.bonusPaid||500).toLocaleString() + '</span></div>';
+      }).join('') + '</div>';
+  } catch(e) {
+    if(listEl) listEl.innerHTML = '<div style="text-align:center;padding:20px;color:var(--danger);font-size:12px">Error loading referrals</div>';
+  }
+};
+
+window.copyRefLink = () => {
+  const link = window._refLink || (window.location.origin + window.location.pathname.replace(/\/[^/]*$/, '/') + '?ref=' + (_s.userData?.referralCode || 'KBR00000'));
+  navigator.clipboard?.writeText(link);
+  showToast('success', 'Referral link copied!');
+};
+
+window.shareReferral = () => {
+  const code = window._refCode || (_s.userData?.referralCode || 'KBR00000');
+  const link = window.location.origin + window.location.pathname.replace(/\/[^/]*$/, '/') + '?ref=' + code;
+  const text = 'Join KOBOrush! Use my code ' + code + ' for a ₦200 bonus. ' + link;
+  if (navigator.share) navigator.share({title:'Join KOBOrush', text, url: link});
+  else { navigator.clipboard?.writeText(text); showToast('success', 'Link copied!'); }
+};
+
+window.copyRefCode = () => {
+  const code = document.getElementById('refCode')?.textContent || '';
+  navigator.clipboard?.writeText(code);
+  showToast('success', 'Code copied!');
+};
+
+// Award referral bonus (called on registration if referral code used)
+window.processReferralBonus = async (newUserId, newUserName, referralCode) => {
+  if (!referralCode) return;
+  try {
+    const q = query(collection(db,'users'), where('referralCode','==',referralCode));
+    const snap = await getDocs(q);
+    if (snap.empty) return;
+    const referrerDoc = snap.docs[0];
+    const referrerId = referrerDoc.id;
+    if (referrerId === newUserId) return;
+
+    const refId = genId(10);
+    await setDoc(doc(db,'referrals',refId), {
+      id: refId, referrerId, referralCode,
+      refereeId: newUserId, refereeName: newUserName,
+      bonusPaid: 500, active: true,
+      joinedAt: serverTimestamp()
+    });
+    // Credit referrer
+    const referrerData = referrerDoc.data();
+    await updateDoc(doc(db,'users',referrerId), { balance: (referrerData.balance||0) + 500 });
+    await addNotif(referrerId, '🎉 Referral Bonus!', newUserName + ' joined using your code. ₦500 has been added to your wallet!', 'success');
+    // Credit new user
+    await updateDoc(doc(db,'users',newUserId), { balance: (await getDoc(doc(db,'users',newUserId))).data()?.balance||0 + 200 });
+    await addNotif(newUserId, '🎁 Welcome Bonus!', 'You got ₦200 for joining via referral!', 'success');
+  } catch(e) { console.warn('Referral bonus error:', e); }
+};
+
+// ════════════════════════════════
+// PROMO CODES SYSTEM
+// ════════════════════════════════
+window._activePromo = null;
+
+window.loadPromoScreen = async () => {
+  // Load active/public promos
+  const el = document.getElementById('activePromosList');
+  if (el) el.innerHTML = '<div class="loading-spinner"></div>';
+  try {
+    const q = query(collection(db,'promoCodes'), where('active','==',true), where('public','==',true));
+    const snap = await getDocs(q);
+    const promos = snap.docs.map(d => ({id:d.id,...d.data()}));
+    if (!el) return;
+    if (!promos.length) {
+      el.innerHTML = '<div style="background:white;border-radius:14px;padding:16px;text-align:center;box-shadow:var(--shadow);font-size:12px;color:var(--text3)">No active promotions right now. Check back soon!</div>';
+      return;
+    }
+    el.innerHTML = promos.map(p => {
+      const exp = p.expiresAt?.toDate ? p.expiresAt.toDate().toLocaleDateString() : 'No expiry';
+      return '<div class="promo-card" style="cursor:pointer" onclick="prefillPromo(\'' + p.code + '\')">'
+        + '<div style="font-size:11px;opacity:.8;margin-bottom:4px">' + (p.description||'Limited time offer') + '</div>'
+        + '<div class="promo-code-tag">🏷️ ' + p.code + '</div>'
+        + '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px">'
+        + '<span style="font-size:12px;opacity:.8">' + (p.discountType==='percent' ? p.discountValue+'% off' : '₦'+p.discountValue+' off') + '</span>'
+        + '<span style="font-size:10px;opacity:.6">Expires: ' + exp + '</span></div></div>';
+    }).join('');
+  } catch(e) {
+    if(el) el.innerHTML = '<div style="font-size:12px;color:var(--danger);text-align:center;padding:14px">Error loading promotions</div>';
+  }
+  // Load used codes by this user
+  if (!_s.user) return;
+  const usedEl = document.getElementById('usedPromosList');
+  try {
+    const q2 = query(collection(db,'promoUsage'), where('userId','==',_s.user.uid));
+    const snap2 = await getDocs(q2);
+    const used = snap2.docs.map(d => d.data());
+    if (!usedEl) return;
+    if (!used.length) { usedEl.innerHTML = '<div style="font-size:12px;color:var(--text3);text-align:center;padding:14px">No used codes yet</div>'; return; }
+    usedEl.innerHTML = '<div class="ref-friends-list">'
+      + used.map(u => '<div class="ref-friend-row">'
+        + '<div class="ref-friend-avatar" style="background:#FFFBEB;color:#92400E;font-size:14px">🏷️</div>'
+        + '<div style="flex:1"><div class="ref-friend-name">' + u.code + '</div>'
+        + '<div class="ref-friend-date">' + tAgo(u.usedAt) + '</div></div>'
+        + '<span class="ref-earn-badge">-' + (u.discountType==='percent'?u.discountValue+'%':'₦'+u.discountValue) + '</span></div>'
+      ).join('') + '</div>';
+  } catch(e) {}
+};
+
+window.prefillPromo = (code) => {
+  const inp = document.getElementById('promoCodeInput');
+  if (inp) { inp.value = code; inp.focus(); }
+  showToast('info', 'Code filled in. Tap Apply!');
+};
+
+window.applyPromoCode = async () => {
+  const code = (document.getElementById('promoCodeInput')?.value||'').trim().toUpperCase();
+  const resEl = document.getElementById('promoResult');
+  if (!code) { if(resEl) resEl.innerHTML = '<span style="color:#EF4444">Please enter a promo code</span>'; return; }
+  if(resEl) resEl.innerHTML = '<span style="opacity:.6">Checking code...</span>';
+  try {
+    const snap = await getDocs(query(collection(db,'promoCodes'), where('code','==',code)));
+    if (snap.empty) { if(resEl) resEl.innerHTML = '<span style="color:#EF4444">❌ Invalid promo code</span>'; return; }
+    const promo = {id:snap.docs[0].id, ...snap.docs[0].data()};
+    if (!promo.active) { if(resEl) resEl.innerHTML = '<span style="color:#EF4444">❌ This promo has expired</span>'; return; }
+    // Check usage limit
+    if (promo.usageLimit && (promo.usageCount||0) >= promo.usageLimit) {
+      if(resEl) resEl.innerHTML = '<span style="color:#EF4444">❌ This promo has reached its usage limit</span>'; return;
+    }
+    // Check if user already used it
+    if (_s.user) {
+      const used = await getDocs(query(collection(db,'promoUsage'), where('userId','==',_s.user.uid), where('code','==',code)));
+      if (!used.empty && !promo.multiUse) { if(resEl) resEl.innerHTML = '<span style="color:#EF4444">❌ You have already used this code</span>'; return; }
+    }
+    // Valid!
+    window._activePromo = promo;
+    const discount = promo.discountType==='percent' ? promo.discountValue+'% off' : '₦'+promo.discountValue+' off';
+    if(resEl) resEl.innerHTML = '<span style="color:#22C55E;font-weight:700">✅ Code applied! You get ' + discount + ' on your next transaction.</span>';
+    showToast('success', 'Promo code applied: ' + discount + '!');
+  } catch(e) { if(resEl) resEl.innerHTML = '<span style="color:#EF4444">Error checking code</span>'; }
+};
+
+window.recordPromoUsage = async (promoId, code, discountType, discountValue) => {
+  if (!_s.user || !promoId) return;
+  try {
+    await setDoc(doc(db,'promoUsage', genId(10)), {
+      userId: _s.user.uid, promoId, code,
+      discountType, discountValue, usedAt: serverTimestamp()
+    });
+    await updateDoc(doc(db,'promoCodes',promoId), { usageCount: ((await getDoc(doc(db,'promoCodes',promoId))).data()?.usageCount||0) + 1 });
+  } catch(e) {}
+};
+
+// ── ADMIN PROMO MANAGEMENT ──
+window.loadAdminPromos = async () => {
+  const c = document.getElementById('adminPromoList');
+  if (!c) return;
+  c.innerHTML = '<div class="loading-spinner"></div>';
+  try {
+    const snap = await getDocs(collection(db,'promoCodes'));
+    const promos = snap.docs.map(d=>({id:d.id,...d.data()}));
+    if (!promos.length) {
+      c.innerHTML = '<div style="text-align:center;padding:30px 20px"><div style="font-size:36px;margin-bottom:10px">🏷️</div><h4>No promo codes yet</h4><p style="font-size:12px;color:var(--text2);margin-top:4px">Create your first promo code</p></div>';
+      return;
+    }
+    c.innerHTML = promos.map(p => {
+      const exp = p.expiresAt?.toDate ? p.expiresAt.toDate().toLocaleDateString() : 'No expiry';
+      return '<div class="promo-admin-card">'
+        + '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">'
+        + '<span style="font-size:14px;font-weight:700;font-family:monospace;letter-spacing:1px;color:var(--primary)">' + p.code + '</span>'
+        + '<span class="' + (p.active ? 'promo-badge-active' : 'promo-badge-disabled') + '">' + (p.active ? 'Active' : 'Disabled') + '</span></div>'
+        + '<div style="font-size:12px;color:var(--text2);margin-bottom:4px">' + (p.description||'') + '</div>'
+        + '<div style="display:flex;gap:12px;font-size:11px;color:var(--text3);margin-bottom:10px">'
+        + '<span>💰 ' + (p.discountType==='percent'?p.discountValue+'%':'₦'+p.discountValue) + ' off</span>'
+        + '<span>📊 Used: ' + (p.usageCount||0) + (p.usageLimit?'/'+p.usageLimit:'') + '</span>'
+        + '<span>📅 ' + exp + '</span></div>'
+        + '<div style="display:flex;gap:6px">'
+        + '<button class="btn btn-outline btn-sm" style="flex:1;font-size:11px" onclick="editPromo(\'' + p.id + '\')">✏️ Edit</button>'
+        + '<button class="btn btn-sm" style="flex:1;font-size:11px;background:' + (p.active?'#FEE2E2':'#DCFCE7') + ';color:' + (p.active?'#991B1B':'#166534') + ';border:none" onclick="togglePromo(\'' + p.id + '\',' + p.active + ')">' + (p.active?'🚫 Disable':'✅ Enable') + '</button>'
+        + '<button class="btn btn-sm" style="font-size:11px;background:#FEE2E2;color:#991B1B;border:none" onclick="deletePromo(\'' + p.id + '\')">🗑</button>'
+        + '</div></div>';
+    }).join('');
+  } catch(e) { c.innerHTML = '<div style="padding:20px;text-align:center;color:var(--danger);font-size:12px">Error: ' + e.message + '</div>'; }
+};
+
+window.showCreatePromo = () => {
+  showOverlay(
+    '<div class="sheet-title">Create Promo Code</div>'
+    + '<div class="form-group"><label class="form-label">Code (e.g. SAVE500)</label>'
+    + '<input type="text" class="form-input" id="newPromoCode" placeholder="SAVE500" style="text-transform:uppercase;font-weight:700;letter-spacing:1px"></div>'
+    + '<div class="form-group"><label class="form-label">Description</label>'
+    + '<input type="text" class="form-input" id="newPromoDesc" placeholder="e.g. Get 10% off your next bill"></div>'
+    + '<div class="form-group"><label class="form-label">Discount Type</label>'
+    + '<select class="form-input" id="newPromoType"><option value="flat">Flat (₦)</option><option value="percent">Percentage (%)</option></select></div>'
+    + '<div class="form-group"><label class="form-label">Discount Value</label>'
+    + '<input type="number" class="form-input" id="newPromoValue" placeholder="e.g. 500 or 10"></div>'
+    + '<div class="form-group"><label class="form-label">Usage Limit (0 = unlimited)</label>'
+    + '<input type="number" class="form-input" id="newPromoLimit" placeholder="0" value="0"></div>'
+    + '<div class="form-group"><label class="form-label">Expiry Date</label>'
+    + '<input type="date" class="form-input" id="newPromoExpiry"></div>'
+    + '<div style="display:flex;gap:6px;margin-bottom:4px">'
+    + '<label style="display:flex;align-items:center;gap:6px;font-size:12px"><input type="checkbox" id="newPromoPublic" checked> Show publicly</label>'
+    + '<label style="display:flex;align-items:center;gap:6px;font-size:12px;margin-left:10px"><input type="checkbox" id="newPromoMulti"> Allow multiple uses per user</label></div>'
+    + '<button class="btn btn-primary" onclick="saveNewPromo()" style="margin-top:10px">Create Promo Code</button>'
+  );
+};
+
+window.saveNewPromo = async () => {
+  const code = (document.getElementById('newPromoCode')?.value||'').trim().toUpperCase();
+  const desc = document.getElementById('newPromoDesc')?.value||'';
+  const type = document.getElementById('newPromoType')?.value||'flat';
+  const val = parseFloat(document.getElementById('newPromoValue')?.value||'0');
+  const limit = parseInt(document.getElementById('newPromoLimit')?.value||'0');
+  const expiry = document.getElementById('newPromoExpiry')?.value;
+  const isPublic = document.getElementById('newPromoPublic')?.checked;
+  const multiUse = document.getElementById('newPromoMulti')?.checked;
+
+  if (!code || !val) return showToast('error', 'Code and discount value are required');
+  try {
+    const promoData = {
+      code, description: desc, discountType: type, discountValue: val,
+      usageLimit: limit||0, usageCount: 0, active: true,
+      public: isPublic, multiUse: multiUse||false,
+      createdAt: serverTimestamp()
+    };
+    if (expiry) promoData.expiresAt = new Date(expiry);
+    await setDoc(doc(db,'promoCodes',genId(8)), promoData);
+    closeOverlay();
+    showToast('success', 'Promo code created!');
+    loadAdminPromos();
+  } catch(e) { showToast('error', 'Failed: ' + e.message); }
+};
+
+window.editPromo = async (promoId) => {
+  const snap = await getDoc(doc(db,'promoCodes',promoId));
+  if (!snap.exists()) return;
+  const p = snap.data();
+  const expStr = p.expiresAt?.toDate ? p.expiresAt.toDate().toISOString().split('T')[0] : '';
+  showOverlay(
+    '<div class="sheet-title">Edit Promo: ' + p.code + '</div>'
+    + '<div class="form-group"><label class="form-label">Description</label>'
+    + '<input type="text" class="form-input" id="editPromoDesc" value="' + (p.description||'') + '"></div>'
+    + '<div class="form-group"><label class="form-label">Discount Type</label>'
+    + '<select class="form-input" id="editPromoType"><option value="flat"' + (p.discountType==='flat'?' selected':'') + '>Flat (₦)</option>'
+    + '<option value="percent"' + (p.discountType==='percent'?' selected':'') + '>Percentage (%)</option></select></div>'
+    + '<div class="form-group"><label class="form-label">Discount Value</label>'
+    + '<input type="number" class="form-input" id="editPromoValue" value="' + (p.discountValue||0) + '"></div>'
+    + '<div class="form-group"><label class="form-label">Usage Limit</label>'
+    + '<input type="number" class="form-input" id="editPromoLimit" value="' + (p.usageLimit||0) + '"></div>'
+    + '<div class="form-group"><label class="form-label">Expiry Date</label>'
+    + '<input type="date" class="form-input" id="editPromoExpiry" value="' + expStr + '"></div>'
+    + '<button class="btn btn-primary" onclick="saveEditPromo(\'' + promoId + '\')" style="margin-top:6px">Save Changes</button>'
+  );
+};
+
+window.saveEditPromo = async (promoId) => {
+  const desc = document.getElementById('editPromoDesc')?.value||'';
+  const type = document.getElementById('editPromoType')?.value||'flat';
+  const val = parseFloat(document.getElementById('editPromoValue')?.value||'0');
+  const limit = parseInt(document.getElementById('editPromoLimit')?.value||'0');
+  const expiry = document.getElementById('editPromoExpiry')?.value;
+  const upd = { description: desc, discountType: type, discountValue: val, usageLimit: limit };
+  if (expiry) upd.expiresAt = new Date(expiry);
+  await updateDoc(doc(db,'promoCodes',promoId), upd);
+  closeOverlay(); showToast('success', 'Promo updated!'); loadAdminPromos();
+};
+
+window.togglePromo = async (promoId, currentState) => {
+  await updateDoc(doc(db,'promoCodes',promoId), { active: !currentState });
+  showToast('success', !currentState ? 'Promo enabled' : 'Promo disabled');
+  loadAdminPromos();
+};
+
+window.deletePromo = async (promoId) => {
+  if (!confirm('Delete this promo code? This cannot be undone.')) return;
+  await deleteDoc(doc(db,'promoCodes',promoId));
+  showToast('info', 'Promo deleted'); loadAdminPromos();
+};
+
+// ════════════════════════════════
+// SUPPORT CHAT SYSTEM
+// ════════════════════════════════
+window._chatListener = null;
+window._currentChatUserId = null;
+
+window.initSupportChat = async () => {
+  if (!_s.user) return;
+  const chatId = _s.user.uid; // one chat thread per user
+  const msgEl = document.getElementById('chatMessages');
+  if (!msgEl) return;
+
+  // Unsubscribe previous listener
+  if (window._chatListener) { window._chatListener(); window._chatListener = null; }
+
+  // Create chat thread doc if not exists
+  const chatRef = doc(db,'supportChats',chatId);
+  const chatSnap = await getDoc(chatRef);
+  if (!chatSnap.exists()) {
+    await setDoc(chatRef, {
+      userId: _s.user.uid,
+      userName: (_s.userData?.firstName||'') + ' ' + (_s.userData?.lastName||''),
+      userEmail: _s.userData?.email||'',
+      lastMessage: '', lastAt: serverTimestamp(), unreadAdmin: 0, unreadUser: 0
+    });
+  }
+
+  // Mark user messages as read
+  await updateDoc(chatRef, { unreadUser: 0 });
+
+  // Listen for messages
+  const msgsRef = collection(db,'supportChats',chatId,'messages');
+  window._chatListener = onSnapshot(query(msgsRef, orderBy ? query(msgsRef) : msgsRef), (snap) => {
+    const msgs = snap.docs.map(d=>d.data()).sort((a,b)=>{
+      const ta = a.sentAt?.toMillis?a.sentAt.toMillis():0;
+      const tb = b.sentAt?.toMillis?b.sentAt.toMillis():0;
+      return ta - tb;
+    });
+    renderChatMessages(msgs, msgEl, 'user');
+  });
+};
+
+function renderChatMessages(msgs, container, viewAs) {
+  if (!container) return;
+  container.innerHTML = '<div class="chat-date-divider">Support Chat</div>'
+    + '<div class="chat-bubble admin">👋 Hi! Welcome to KOBOrush Support. How can we help you today?<span class="chat-bubble-time">Support Team</span></div>'
+    + msgs.map(m => {
+      const isUser = m.sender === 'user';
+      const bubbleClass = (viewAs === 'admin') ? (isUser ? 'user' : 'admin') : (isUser ? 'user' : 'admin');
+      const time = m.sentAt?.toDate ? m.sentAt.toDate().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}) : '';
+      return '<div class="chat-bubble ' + bubbleClass + '">'
+        + escapeHtml(m.text)
+        + '<span class="chat-bubble-time">' + (isUser ? '' : '🎧 Support · ') + time + '</span></div>';
+    }).join('');
+  setTimeout(() => container.scrollTop = container.scrollHeight, 100);
+}
+
+function escapeHtml(t) { return (t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+window.sendChatMessage = async () => {
+  if (!_s.user) return;
+  const inp = document.getElementById('chatInput');
+  const text = inp?.value?.trim();
+  if (!text) return;
+  inp.value = '';
+  inp.style.height = '';
+
+  const chatId = _s.user.uid;
+  const msgId = genId(10);
+  try {
+    await setDoc(doc(db,'supportChats',chatId,'messages',msgId), {
+      id: msgId, text, sender: 'user',
+      sentAt: serverTimestamp()
+    });
+    await updateDoc(doc(db,'supportChats',chatId), {
+      lastMessage: text, lastAt: serverTimestamp(), unreadAdmin: increment(1)
+    });
+  } catch(e) { showToast('error', 'Failed to send message'); }
+};
+
+window.chatInputKeydown = (e) => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChatMessage(); }
+  // Auto-resize
+  setTimeout(() => {
+    const inp = document.getElementById('chatInput');
+    if (inp) { inp.style.height = 'auto'; inp.style.height = Math.min(inp.scrollHeight, 90) + 'px'; }
+  }, 0);
+};
+
+// ── ADMIN SUPPORT CHAT LIST ──
+window.loadAdminSupportList = async () => {
+  const c = document.getElementById('adminChatList');
+  if (!c) return;
+  c.innerHTML = '<div class="loading-spinner"></div>';
+  try {
+    const snap = await getDocs(collection(db,'supportChats'));
+    const chats = snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>{
+      const ta = a.lastAt?.toMillis?a.lastAt.toMillis():0;
+      const tb = b.lastAt?.toMillis?b.lastAt.toMillis():0;
+      return tb - ta;
+    });
+    if (!chats.length) {
+      c.innerHTML = '<div style="text-align:center;padding:40px 20px"><div style="font-size:36px;margin-bottom:10px">💬</div><h4>No support chats yet</h4></div>';
+      return;
+    }
+    c.innerHTML = chats.map(ch => {
+      const initials = (ch.userName||'U').charAt(0).toUpperCase();
+      const unread = ch.unreadAdmin||0;
+      return '<div class="support-user-card" onclick="openAdminChat(\'' + ch.userId + '\',\'' + escapeHtml(ch.userName||'User') + '\',\'' + escapeHtml(ch.userEmail||'') + '\')">'
+        + '<div class="ref-friend-avatar" style="width:42px;height:42px;font-size:15px;flex-shrink:0">' + initials + '</div>'
+        + '<div class="support-user-preview">'
+        + '<div class="support-user-name">' + escapeHtml(ch.userName||'User') + '</div>'
+        + '<div class="support-last-msg">' + escapeHtml(ch.lastMessage||'No messages yet') + '</div></div>'
+        + (unread > 0 ? '<div class="support-unread">' + unread + '</div>' : '<div style="font-size:10px;color:var(--text3)">' + tAgo(ch.lastAt) + '</div>')
+        + '</div>';
+    }).join('');
+
+    // Update badge
+    const totalUnread = chats.reduce((s,c)=>s+(c.unreadAdmin||0),0);
+    const badge = document.getElementById('supportUnreadBadge');
+    if (badge) { badge.textContent = totalUnread; badge.style.display = totalUnread > 0 ? 'flex' : 'none'; }
+  } catch(e) {
+    c.innerHTML = '<div style="padding:20px;text-align:center;color:var(--danger);font-size:12px">Error: ' + e.message + '</div>';
+  }
+};
+
+window.openAdminChat = async (userId, userName, userEmail) => {
+  window._currentChatUserId = userId;
+  document.getElementById('adminReplyName').textContent = userName;
+  document.getElementById('adminReplyEmail').textContent = userEmail;
+  document.getElementById('adminReplyAvatar').textContent = (userName||'U').charAt(0).toUpperCase();
+
+  // Unsubscribe previous
+  if (window._chatListener) { window._chatListener(); window._chatListener = null; }
+
+  // Mark admin unread as 0
+  try { await updateDoc(doc(db,'supportChats',userId), { unreadAdmin: 0 }); } catch(e) {}
+
+  navigateTo('adminChatReply');
+  const msgEl = document.getElementById('adminChatMessages');
+  if (!msgEl) return;
+  msgEl.innerHTML = '<div class="loading-spinner"></div>';
+
+  const msgsRef = collection(db,'supportChats',userId,'messages');
+  window._chatListener = onSnapshot(msgsRef, (snap) => {
+    const msgs = snap.docs.map(d=>d.data()).sort((a,b)=>{
+      const ta = a.sentAt?.toMillis?a.sentAt.toMillis():0;
+      const tb = b.sentAt?.toMillis?b.sentAt.toMillis():0;
+      return ta-tb;
+    });
+    renderChatMessages(msgs, msgEl, 'admin');
+  });
+};
+
+window.sendAdminReply = async () => {
+  const uid = window._currentChatUserId;
+  if (!uid) return;
+  const inp = document.getElementById('adminChatInput');
+  const text = inp?.value?.trim();
+  if (!text) return;
+  inp.value = ''; inp.style.height = '';
+
+  const msgId = genId(10);
+  try {
+    await setDoc(doc(db,'supportChats',uid,'messages',msgId), {
+      id: msgId, text, sender: 'admin',
+      sentAt: serverTimestamp()
+    });
+    await updateDoc(doc(db,'supportChats',uid), {
+      lastMessage: text, lastAt: serverTimestamp(), unreadUser: increment(1)
+    });
+    await addNotif(uid, '💬 Support Reply', text.length > 60 ? text.substring(0,57)+'...' : text, 'info');
+  } catch(e) { showToast('error', 'Failed to send reply'); }
+};
+
+window.adminChatKeydown = (e) => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendAdminReply(); }
+  setTimeout(() => {
+    const inp = document.getElementById('adminChatInput');
+    if (inp) { inp.style.height = 'auto'; inp.style.height = Math.min(inp.scrollHeight, 90) + 'px'; }
+  }, 0);
+};
+
+// Listen for unread support messages (admin badge)
+function listenSupportUnread() {
+  try {
+    onSnapshot(collection(db,'supportChats'), (snap) => {
+      const total = snap.docs.reduce((s,d)=>s+(d.data().unreadAdmin||0),0);
+      const badge = document.getElementById('supportUnreadBadge');
+      if (badge) { badge.textContent = total; badge.style.display = total > 0 ? 'flex' : 'none'; }
+    });
+  } catch(e) {}
+}
+
+
 window.adminDebitWallet=async()=>{const ui=document.getElementById('adminDebitUser').value;const am=parseFloat(document.getElementById('adminDebitAmt').value);if(!ui||!am)return showToast('error','Fill all fields');try{const q=query(collection(db,'users'),where('email','==',ui));const s=await getDocs(q);if(s.empty)return showToast('error','User not found');if(am>(s.docs[0].data().balance||0))return showToast('error','Insufficient balance');await updateDoc(doc(db,'users',s.docs[0].id),{balance:increment(-am)});showToast('success',`₦${am.toLocaleString()} debited!`)}catch(e){showToast('error','Failed')}};
 window.sendBroadcast=async()=>{const t=document.getElementById('notifTitle').value;const m=document.getElementById('notifMsg').value;const tp=document.getElementById('notifType').value;const tg=document.getElementById('notifTarget').value;if(!t||!m)return showToast('error','Fill all fields');try{let uq=collection(db,'users');if(tg==='agents')uq=query(uq,where('role','==','agent'));else if(tg!=='all')uq=query(uq,where('country','==',tg));const s=await getDocs(uq);await Promise.all(s.docs.map(d=>addNotif(d.id,t,m,tp)));showToast('success',`Sent to ${s.size} users!`);document.getElementById('notifTitle').value='';document.getElementById('notifMsg').value=''}catch(e){showToast('error','Failed')}};
 
