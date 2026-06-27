@@ -3502,6 +3502,15 @@ window.initSupportChat = async () => {
   // Listen for messages
   const msgsRef = collection(db,'supportChats',chatId,'messages');
 
+  window._chatListener = onSnapshot(msgsRef, (snap) => {
+    const msgs = snap.docs.map(d=>d.data()).sort((a,b)=>{
+      const ta = a.sentAt?.toMillis?a.sentAt.toMillis():0;
+      const tb = b.sentAt?.toMillis?b.sentAt.toMillis():0;
+      return ta-tb;
+    });
+    renderChatMessages(msgs, msgEl, 'user');
+  });
+};
 // ════════════════════════════════════════════
 // RECHARGE TO CASH FEATURE
 // Conversion rate: ₦100 airtime = ₦80 wallet
@@ -3677,15 +3686,7 @@ window.rejectRecharge = async (reqId, userId) => {
   } catch(e) { showToast('error', 'Failed: ' + e.message); }
 };
 
-  window._chatListener = onSnapshot(query(msgsRef, orderBy ? query(msgsRef) : msgsRef), (snap) => {
-    const msgs = snap.docs.map(d=>d.data()).sort((a,b)=>{
-      const ta = a.sentAt?.toMillis?a.sentAt.toMillis():0;
-      const tb = b.sentAt?.toMillis?b.sentAt.toMillis():0;
-      return ta - tb;
-    });
-    renderChatMessages(msgs, msgEl, 'user');
-  });
-};
+
 
 function renderChatMessages(msgs, container, viewAs) {
   if (!container) return;
