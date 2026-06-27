@@ -1356,7 +1356,7 @@ textarea.form-input{resize:none}
       <input class="pin-digit" type="password" maxlength="1" id="apg1" oninput="moveAdminPIN(this,null,'apg2')" style="background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2);color:white">
       <input class="pin-digit" type="password" maxlength="1" id="apg2" oninput="moveAdminPIN(this,'apg1','apg3')" style="background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2);color:white">
       <input class="pin-digit" type="password" maxlength="1" id="apg3" oninput="moveAdminPIN(this,'apg2','apg4')" style="background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2);color:white">
-      <input class="pin-digit" type="password" maxlength="1" id="apg4" oninput="moveAdminPIN(this,'apg3',null)" onkeyup="checkAdminPINDone()" style="background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2);color:white">
+      <input class="pin-digit" type="password" maxlength="1" id="apg4" oninput="moveAdminPIN(this,'apg3',null)" style="background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2);color:white">
     </div>
     <div class="pin-gate-error" id="adminPINError"></div>
     <button class="btn btn-primary" onclick="verifyAdminPIN()" style="margin-top:8px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25)">Verify PIN →</button>
@@ -2093,11 +2093,12 @@ async function loadWallet(){
   try{
     let txSnap2;
     try{
-      const q=query(collection(db,'transactions'),where('userId','==',_s.user.uid),orderBy('createdAt','desc'),limit(10));
-      txSnap2=await Promise.race([getDocs(q),new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),8000))]);
+      // Try simple query first (no orderBy) to avoid composite index requirement
+      const q=query(collection(db,'transactions'),where('userId','==',_s.user.uid),limit(20));
+      txSnap2=await Promise.race([getDocs(q),new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),6000))]);
     }catch(e2){
-      const q=query(collection(db,'transactions'),where('userId','==',_s.user.uid),limit(10));
-      txSnap2=await getDocs(q);
+      console.warn('Wallet tx query failed:',e2);
+      txSnap2={docs:[]};
     }
     const txs=txSnap2.docs.map(d=>d.data()).sort((a,b)=>{const ta=a.createdAt?.toMillis?a.createdAt.toMillis():0;const tb=b.createdAt?.toMillis?b.createdAt.toMillis():0;return tb-ta;});
     el.innerHTML=txs.length?txs.map(d=>txHTML(d)).join(''):'<div class="empty-state" style="padding:16px"><div class="empty-icon">📋</div><p>No transactions yet</p></div>';
@@ -2639,8 +2640,7 @@ window.moveAdminPIN=(el,prevId,nextId)=>{
   document.getElementById('adminPINError').textContent='';
 };
 window.checkAdminPINDone=()=>{
-  const pin=['apg1','apg2','apg3','apg4'].map(id=>document.getElementById(id).value).join('');
-  if(pin.length===4)verifyAdminPIN();
+  // Auto-submit disabled: user must press Verify PIN button
 };
 window.verifyAdminPIN=async()=>{
   const pin=['apg1','apg2','apg3','apg4'].map(id=>document.getElementById(id).value).join('');
@@ -3791,181 +3791,7 @@ window.openAdminChat = async (userId, userName, userEmail) => {
   const msgsRef = collection(db,'supportChats',userId,'messages');
 
 // ════════════════════════════════════════════
-// RECHARGE TO CASH FEATURE
-// Conversion rate: ₦100 airtime = ₦80 wallet
-// ════════════════════════════════════════════
-
-const RECHARGE_RATE = 0.80; // 80%
-
-window.calcRechargePreview = () => {
-  const amt = parseFloat(document.getElementById('rechargeAmount').value) || 0;
-  const preview = document.getElementById('rechargePreview');
-  const result = document.getElementById('rechargeResult');
-  if (amt >= 100) {
-    preview.style.display = 'block';
-    result.textContent = fmt(amt * RECHARGE_RATE);
-  } else {
-    preview.style.display = 'none';
-  }
-};
-
-window.submitRechargeRequest = async () => {
-  const amt = parseFloat(document.getElementById('rechargeAmount').value) || 0;
-  const network = document.getElementById('rechargeNetwork').value;
-  const phone = document.getElementById('rechargePhone').value.trim();
-
-  if (amt < 100) return showToast('error', 'Minimum recharge amount is ₦100');
-  if (!network) return showToast('error', 'Please select a network');
-  if (!phone || phone.length < 10) return showToast('error', 'Enter a valid phone number');
-  if (!_s.user) return showToast('error', 'Please log in');
-
-  const credit = amt * RECHARGE_RATE;
-
-  try {
-    const reqId = genId(12);
-    await setDoc(doc(db, 'rechargeRequests', reqId), {
-      id: reqId,
-      userId: _s.user.uid,
-      email: _s.userData?.email,
-      userName: (_s.userData?.firstName || '') + ' ' + (_s.userData?.lastName || ''),
-      rechargeAmount: amt,
-      creditAmount: credit,
-      network,
-      phone,
-      status: 'pending',
-      createdAt: serverTimestamp()
-    });
-
-    await addNotif(_s.user.uid, '💱 Recharge Request Submitted',
-      `₦${amt.toLocaleString()} recharge → ₦${credit.toLocaleString()} wallet credit pending admin approval.`, 'info'
-    ).catch(() => {});
-
-    showToast('success', 'Request submitted! Send ₦' + amt.toLocaleString() + ' airtime to the number below.');
-
-    // Show transfer number overlay
-    showOverlay(`<div class="sheet-title">Send Airtime Now</div>
-      <div class="sheet-sub">Transfer ₦${amt.toLocaleString()} ${network} airtime to:</div>
-      <div style="font-size:26px;font-weight:700;color:var(--primary);text-align:center;margin:14px 0;letter-spacing:2px" id="rechargeTargetNum">Loading...</div>
-      <div style="font-size:11px;color:var(--text3);text-align:center;margin-bottom:16px">After sending, await admin verification (usually within 1 hour)</div>
-      <button class="btn btn-primary" style="width:100%" onclick="closeOverlay()">Done</button>`);
-
-    // Load company number from settings
-    getDoc(doc(db, 'settings', 'recharge')).then(snap => {
-      const num = snap.exists() ? (snap.data().transferNumber || 'Not set – contact support') : 'Not set – contact support';
-      const el = document.getElementById('rechargeTargetNum');
-      if (el) el.textContent = num;
-    }).catch(() => {});
-
-    // Reset form
-    document.getElementById('rechargeAmount').value = '';
-    document.getElementById('rechargeNetwork').value = '';
-    document.getElementById('rechargePhone').value = '';
-    document.getElementById('rechargePreview').style.display = 'none';
-    loadMyRechargeHistory();
-
-  } catch (e) {
-    showToast('error', 'Failed to submit: ' + e.message);
-  }
-};
-
-async function initRechargeScreen() {
-  loadMyRechargeHistory();
-}
-
-async function loadMyRechargeHistory() {
-  const el = document.getElementById('myRechargeList');
-  if (!el || !_s.user) return;
-  el.innerHTML = '<div class="loading-spinner"></div>';
-  try {
-    const q = query(collection(db, 'rechargeRequests'), where('userId', '==', _s.user.uid), limit(20));
-    const snap = await getDocs(q);
-    const items = snap.docs.map(d => d.data()).sort((a, b) => {
-      const ta = a.createdAt?.toMillis ? a.createdAt.toMillis() : 0;
-      const tb = b.createdAt?.toMillis ? b.createdAt.toMillis() : 0;
-      return tb - ta;
-    });
-    if (!items.length) {
-      el.innerHTML = '<div class="empty-state" style="padding:16px"><div class="empty-icon">💱</div><p>No conversions yet</p></div>';
-      return;
-    }
-    el.innerHTML = items.map(r => `
-      <div class="tx-item">
-        <div class="tx-icon" style="background:#FFF7E0">💱</div>
-        <div class="tx-info">
-          <div class="tx-name">${r.network} Recharge → Cash</div>
-          <div class="tx-meta">${tAgo(r.createdAt)} · <span class="badge badge-${r.status === 'approved' ? 'success' : r.status === 'rejected' ? 'failed' : 'pending'}">${r.status}</span></div>
-        </div>
-        <div class="tx-amt">
-          <div class="tx-amt-val cr">+${fmt(r.creditAmount)}</div>
-          <div style="font-size:10px;color:var(--text3)">of ₦${r.rechargeAmount?.toLocaleString()}</div>
-        </div>
-      </div>`).join('');
-  } catch(e) {
-    el.innerHTML = '<div class="empty-state" style="padding:16px"><div class="empty-icon">💱</div><p>Error loading history</p></div>';
-  }
-}
-
-// ── ADMIN: load recharge requests ──
-window.loadAdminRechargeRequests = async () => {
-  const el = document.getElementById('adminRechargeList');
-  if (!el) return;
-  el.innerHTML = '<div class="loading-spinner"></div>';
-  try {
-    const snap = await getDocs(query(collection(db, 'rechargeRequests'), limit(100)));
-    const items = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => {
-      const ta = a.createdAt?.toMillis ? a.createdAt.toMillis() : 0;
-      const tb = b.createdAt?.toMillis ? b.createdAt.toMillis() : 0;
-      return tb - ta;
-    });
-    if (!items.length) {
-      el.innerHTML = '<div class="empty-state"><p>No recharge requests</p></div>';
-      return;
-    }
-    el.innerHTML = `<div class="admin-panel" style="margin:0">${items.map(r => `
-      <div class="admin-table-row">
-        <div class="row-main">
-          <div class="row-title">${r.userName || r.email} – ${r.network}</div>
-          <div class="row-sub">${tAgo(r.createdAt)} · Phone: ${r.phone}</div>
-          <div class="row-sub">Airtime: ₦${r.rechargeAmount?.toLocaleString()} → Credit: ₦${r.creditAmount?.toLocaleString()}</div>
-        </div>
-        <div style="text-align:right">
-          <span class="badge badge-${r.status === 'approved' ? 'success' : r.status === 'rejected' ? 'failed' : 'pending'}">${r.status}</span>
-          ${r.status === 'pending' ? `<div style="margin-top:6px;display:flex;gap:6px;justify-content:flex-end">
-            <button class="btn btn-sm" style="background:var(--success-green);color:white;font-size:10px;padding:4px 8px;border:none;border-radius:6px;cursor:pointer" onclick="approveRecharge('${r.id}','${r.userId}',${r.creditAmount})">Approve</button>
-            <button class="btn btn-sm" style="background:var(--danger);color:white;font-size:10px;padding:4px 8px;border:none;border-radius:6px;cursor:pointer" onclick="rejectRecharge('${r.id}','${r.userId}')">Reject</button>
-          </div>` : ''}
-        </div>
-      </div>`).join('')}</div>`;
-  } catch(e) {
-    el.innerHTML = '<div class="empty-state"><p>Error: ' + e.message + '</p></div>';
-  }
-};
-
-window.approveRecharge = async (reqId, userId, creditAmt) => {
-  try {
-    await updateDoc(doc(db, 'rechargeRequests', reqId), { status: 'approved' });
-    await updateDoc(doc(db, 'users', userId), { balance: increment(creditAmt) });
-    const txId = genId(12);
-    await setDoc(doc(db, 'transactions', txId), {
-      id: txId, userId, type: 'recharge_conversion', status: 'success',
-      amount: creditAmt, description: 'Recharge to Cash Conversion', createdAt: serverTimestamp()
-    });
-    await addNotif(userId, '✅ Recharge Approved!', `₦${creditAmt?.toLocaleString()} credited to your wallet.`, 'success').catch(() => {});
-    showToast('success', 'Approved & wallet credited!');
-    loadAdminRechargeRequests();
-  } catch(e) { showToast('error', 'Failed: ' + e.message); }
-};
-
-window.rejectRecharge = async (reqId, userId) => {
-  try {
-    await updateDoc(doc(db, 'rechargeRequests', reqId), { status: 'rejected' });
-    await addNotif(userId, '❌ Recharge Rejected', 'Your recharge conversion request was rejected. Contact support.', 'error').catch(() => {});
-    showToast('info', 'Request rejected');
-    loadAdminRechargeRequests();
-  } catch(e) { showToast('error', 'Failed: ' + e.message); }
-};
-
-  window._chatListener = onSnapshot(msgsRef, (snap) => {
+window._chatListener = onSnapshot(msgsRef, (snap) => {
     const msgs = snap.docs.map(d=>d.data()).sort((a,b)=>{
       const ta = a.sentAt?.toMillis?a.sentAt.toMillis():0;
       const tb = b.sentAt?.toMillis?b.sentAt.toMillis():0;
