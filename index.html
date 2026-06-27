@@ -464,7 +464,7 @@ select.form-input{cursor:pointer;-webkit-appearance:none;background-image:url("d
 @keyframes pop{0%{transform:scale(0);opacity:0}100%{transform:scale(1);opacity:1}}
 .success-screen h2{font-family:var(--font-display);font-size:21px;font-weight:700;color:var(--text);margin-bottom:6px}
 .success-screen p{font-size:13px;color:var(--text2);line-height:1.5;margin-bottom:22px}
-.receipt-card{background:var(--bg);border-radius:13px;padding:14px;text-align:left;margin-bottom:20px;width:100%}
+.receipt-card{background:#fff;border-radius:16px;padding:18px 16px;text-align:left;margin-bottom:20px;width:100%;border:1.5px solid var(--border);box-shadow:0 2px 12px rgba(0,0,0,.07)}
 .receipt-row{display:flex;justify-content:space-between;padding:6px 0}
 .r-label{font-size:11px;color:var(--text3)}
 .r-val{font-size:11px;font-weight:600;color:var(--text)}
@@ -495,6 +495,8 @@ select.form-input{cursor:pointer;-webkit-appearance:none;background-image:url("d
 @keyframes slideIn{from{transform:translateY(-15px);opacity:0}to{transform:translateY(0);opacity:1}}
 textarea.form-input{resize:none}
 </style>
+  <script src="https://www.google.com/recaptcha/api.js?onload=onRecaptchaLoad&render=explicit" async defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
 <div id="app">
@@ -545,6 +547,7 @@ textarea.form-input{resize:none}
       <div class="form-group"><label class="form-label">E-Mail</label><input type="email" class="form-input" id="loginEmail" placeholder="your@email.com" autocomplete="email"></div>
       <div class="form-group"><label class="form-label">Password</label><div class="input-icon-wrap"><input type="password" class="form-input" id="loginPassword" placeholder="Enter password" autocomplete="current-password"><button class="toggle-pw" onclick="togglePw('loginPassword',this)">👁</button></div></div>
       <div class="forgot-link"><a onclick="showForgotPassword()">Forgot password?</a></div>
+      <div class="g-recaptcha" id="loginCaptcha" data-sitekey="6LceJjktAAAAAHSHZy8VF_4_1hxVy0lpu81qGRdI" data-theme="light" style="margin:10px 0;transform:scale(0.92);transform-origin:left"></div>
       <button class="btn-login" id="loginBtn" onclick="handleLogin()">Sign In</button>
       <div class="login-footer">No account? <span onclick="switchAuthTab('register')">Create Account</span></div>
     </div>
@@ -584,6 +587,7 @@ textarea.form-input{resize:none}
       <div class="form-group"><label class="form-label">Password</label><div class="input-icon-wrap"><input type="password" class="form-input" id="regPassword" placeholder="Minimum 8 characters"><button class="toggle-pw" onclick="togglePw('regPassword',this)">👁</button></div></div>
       <div class="form-group"><label class="form-label">Confirm Password</label><input type="password" class="form-input" id="regConfirm" placeholder="Repeat password"></div>
       <div class="check-row"><input type="checkbox" id="termsCheck"><label for="termsCheck">I agree to the <a style="cursor:pointer" onclick="navigateTo('termsScreen')">Privacy Policy</a> and <a style="cursor:pointer" onclick="navigateTo('termsScreen')">Terms of Service</a></label></div>
+      <div class="g-recaptcha" id="registerCaptcha" data-sitekey="6LceJjktAAAAAHSHZy8VF_4_1hxVy0lpu81qGRdI" data-theme="light" style="margin:10px 0;transform:scale(0.92);transform-origin:left"></div>
       <button class="btn-register" id="registerBtn" onclick="handleRegister()">Create Account</button>
       <div class="login-footer" style="margin-top:12px">Already have an account? <span onclick="switchAuthTab('login')">Sign In</span></div>
     </div>
@@ -1716,7 +1720,14 @@ textarea.form-input{resize:none}
   <div class="success-icon">✅</div>
   <h2 id="successTitle">Transaction Successful!</h2>
   <p id="successMsg">Your transaction has been processed.</p>
-  <div class="receipt-card" id="successReceipt"></div>
+  <div class="receipt-card" id="successReceiptWrap" style="padding:0;overflow:hidden">
+    <div style="background:var(--primary);padding:12px 16px;display:flex;align-items:center;gap:8px;border-radius:14px 14px 0 0">
+      <div style="background:white;border-radius:8px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px">💳</div>
+      <div style="color:white;font-weight:700;font-size:13px">KOBOrush Receipt</div>
+    </div>
+    <div id="successReceipt" style="padding:14px 16px"></div>
+    <div style="background:var(--bg);padding:8px 16px;border-top:1px solid var(--border);text-align:center;font-size:10px;color:var(--text3);border-radius:0 0 14px 14px">Powered by KOBOrush · koborush.com</div>
+  </div>
   <div class="share-btns">
     <button class="btn btn-outline" onclick="shareReceipt()">📤 Share</button>
     <button class="btn btn-primary" onclick="navigateTo('home')">Done</button>
@@ -1873,6 +1884,21 @@ function updateNav(id){document.querySelectorAll('.nav-item').forEach(el=>el.cla
 function showScreen(id){if(window._splashTimer)clearTimeout(window._splashTimer);document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));const el=document.getElementById(id);if(el)el.classList.add('active')}
 
 // AUTH
+// Render reCAPTCHA widgets when ready
+window.onRecaptchaLoad=()=>{
+  if(typeof grecaptcha==='undefined')return;
+  const lEl=document.getElementById('loginCaptcha');
+  const rEl=document.getElementById('registerCaptcha');
+  if(lEl&&!window._loginCaptchaId&&lEl.children.length===0){
+    window._loginCaptchaId=grecaptcha.render('loginCaptcha',{sitekey:'6LceJjktAAAAAHSHZy8VF_4_1hxVy0lpu81qGRdI',theme:'light'});
+  }
+  if(rEl&&!window._registerCaptchaId&&rEl.children.length===0){
+    window._registerCaptchaId=grecaptcha.render('registerCaptcha',{sitekey:'6LceJjktAAAAAHSHZy8VF_4_1hxVy0lpu81qGRdI',theme:'light'});
+  }
+};
+// Trigger after recaptcha script loads
+setTimeout(()=>{if(typeof grecaptcha!=='undefined'&&grecaptcha.render)window.onRecaptchaLoad();},1500);
+
 window.switchAuthTab=(tab)=>{
   document.querySelectorAll('.auth-tab-btn').forEach((t,i)=>t.classList.toggle('active',(i===0&&tab==='login')||(i===1&&tab==='register')));
   document.getElementById('loginForm').classList.toggle('hidden',tab!=='login');
@@ -1883,9 +1909,16 @@ window.handleLogin=async()=>{
   const email=document.getElementById('loginEmail').value.trim();
   const pw=document.getElementById('loginPassword').value;
   if(!email||!pw)return showToast('error','Please fill all fields');
+  // Verify reCAPTCHA
+  const captchaResp=grecaptcha.getResponse(window._loginCaptchaId);
+  if(!captchaResp){showToast('error','Please complete the reCAPTCHA verification');return;}
   setBtnLoading('loginBtn',true);
   try{await signInWithEmailAndPassword(auth,email,pw)}
-  catch(e){setBtnLoading('loginBtn',false,'Sign In');showToast('error',e.code==='auth/invalid-credential'?'Incorrect email or password':e.message)}
+  catch(e){
+    setBtnLoading('loginBtn',false,'Sign In');
+    grecaptcha.reset(window._loginCaptchaId);
+    showToast('error',e.code==='auth/invalid-credential'?'Incorrect email or password':e.message);
+  }
 };
 window.handleRegister=async()=>{
   const first=document.getElementById('regFirstName').value.trim(),last=document.getElementById('regLastName').value.trim();
@@ -1897,6 +1930,9 @@ window.handleRegister=async()=>{
   if(pw.length<8)return showToast('error','Password must be at least 8 characters');
   if(pw!==pwc)return showToast('error','Passwords do not match');
   if(!terms)return showToast('error','Please accept the Terms');
+  // Verify reCAPTCHA
+  const captchaResp=grecaptcha.getResponse(window._registerCaptchaId);
+  if(!captchaResp){showToast('error','Please complete the reCAPTCHA verification');return;}
   setBtnLoading('registerBtn',true,'Register');
   try{
     const cred=await createUserWithEmailAndPassword(auth,email,pw);
@@ -1906,7 +1942,7 @@ window.handleRegister=async()=>{
     if(ref){const rq=query(collection(db,'users'),where('referralCode','==',ref));const rs=await getDocs(rq);if(!rs.empty){await updateDoc(doc(db,'users',rs.docs[0].id),{balance:increment(500),referralCount:increment(1),referralEarned:increment(500)});await updateDoc(doc(db,'users',cred.user.uid),{balance:increment(200)})}}
     await addNotif(cred.user.uid,'🎉 Welcome to KOBOrush!',`Hi ${first}! Your account is ready.`,'success');
     showToast('success','Account created!');
-  }catch(e){setBtnLoading('registerBtn',false,'Create Account');showToast('error',e.code==='auth/email-already-in-use'?'Email already registered':e.message)}
+  }catch(e){setBtnLoading('registerBtn',false,'Create Account');grecaptcha.reset(window._registerCaptchaId);showToast('error',e.code==='auth/email-already-in-use'?'Email already registered':e.message)}
 };
 window.handleGoogleAuth=async()=>{
   try{
@@ -2495,7 +2531,7 @@ async function confirmTx(pin){
   const d=_s.pendingData;const ud=_s.userData;
   if(ud.transactionPIN&&ud.transactionPIN!==pin){showToast('error','Incorrect PIN');['pin1','pin2','pin3','pin4'].forEach(id=>document.getElementById(id).value='');document.getElementById('pin1').focus();return}
   if(d.amount>ud.balance){showToast('error','Insufficient balance');goBack();return}
-  navigateTo('successScreen');document.getElementById('successTitle').textContent='Processing…';document.getElementById('successMsg').textContent='Sending to ClubKonnect…';document.getElementById('successReceipt').innerHTML='<div class="loading-spinner"></div>';
+  navigateTo('successScreen');document.getElementById('successTitle').textContent='Processing…';document.getElementById('successMsg').textContent='Please wait…';document.getElementById('successReceipt').innerHTML='<div class="loading-spinner"></div>';
   await new Promise(r=>setTimeout(r,1800));
   try{
     const tid=genId(12);
@@ -2546,19 +2582,44 @@ async function confirmTx(pin){
       // ── ALL OTHER TRANSACTIONS (airtime, data, electricity, etc. + bank transfer) ──
       await runTransaction(db,async(t)=>{const uRef=doc(db,'users',_s.user.uid);const us=await t.get(uRef);const bb=us.data().balance;t.update(uRef,{balance:increment(-d.amount),totalSpent:increment(d.amount)});t.set(doc(db,'transactions',tid),{id:tid,userId:_s.user.uid,type:d.type,status:'success',amount:d.amount,description:d.description||d.type,provider:d.provider||'clubkonnect',phone:d.phone||'',meter:d.meter||'',cardNo:d.cardNo||'',recipient:d.recipient||'',balanceBefore:bb,balanceAfter:bb-d.amount,createdAt:serverTimestamp()})});
       if(ud.agentLevel&&ud.agentLevel!=='standard'){const r={airtime:0.015,data:0.02,electricity:0.005,cabletv:0.01,schoolpin:0.02};const comm=(r[d.type]||0.01)*d.amount;if(comm>0)await updateDoc(doc(db,'users',_s.user.uid),{agentCommission:increment(comm)})}
-      await addNotif(_s.user.uid,'✅ Transaction Successful',`${d.description} processed via ClubKonnect.`,'success');
-      navigateTo('successScreen');document.getElementById('successTitle').textContent='Transaction Successful!';document.getElementById('successMsg').textContent=d.description+' processed.';document.getElementById('successReceipt').innerHTML=[{l:'Service',v:d.description},{l:'Provider',v:'ClubKonnect'},{l:'Amount',v:`₦${d.amount.toLocaleString()}`},{l:'Status',v:'✅ Success'},{l:'Reference',v:tid},{l:'Date',v:new Date().toLocaleString()}].map(i=>`<div class="receipt-row"><span class="r-label">${i.l}</span><span class="r-val">${i.v}</span></div>`).join('');
+      await addNotif(_s.user.uid,'✅ Transaction Successful',`${d.description} completed successfully.`,'success');
+      navigateTo('successScreen');document.getElementById('successTitle').textContent='Transaction Successful!';document.getElementById('successMsg').textContent=d.description+' processed.';const _rs=csym(_s.userData?.country);document.getElementById('successReceipt').innerHTML=[{l:'Service',v:d.description},{l:'Amount',v:fmt(d.amount,_rs)},{l:'Status',v:'✅ Success'},{l:'Reference',v:tid},{l:'Date',v:new Date().toLocaleString()}].map(i=>`<div class="receipt-row"><span class="r-label">${i.l}</span><span class="r-val">${i.v}</span></div>`).join('');
     }
     _s.pendingData=null;
   }catch(e){showToast('error',e.message||'Transaction failed');goBack()}
 }
-window.shareReceipt=()=>{
-  const rows=[...document.getElementById('successReceipt').querySelectorAll('.receipt-row')];
-  const lines=rows.map(r=>{const l=r.querySelector('.r-label')?.textContent||'';const v=r.querySelector('.r-val')?.textContent||'';return l+': '+v;});
-  const title=document.getElementById('successTitle')?.textContent||'KOBOrush Receipt';
-  const text='🧾 '+title+'\n'+'─'.repeat(28)+'\n'+lines.join('\n')+'\n'+'─'.repeat(28)+'\nPowered by KOBOrush';
-  if(navigator.share)navigator.share({title:'KOBOrush Receipt',text});
-  else{navigator.clipboard?.writeText(text).then(()=>showToast('success','Receipt copied!')).catch(()=>showToast('info','Copy receipt manually'));}
+window.shareReceipt=async()=>{
+  const wrap=document.getElementById('successReceiptWrap')||document.getElementById('successReceipt');
+  if(typeof html2canvas==='undefined'){
+    showToast('error','Screenshot not available');return;
+  }
+  try{
+    showToast('info','Preparing receipt image…');
+    const canvas=await html2canvas(wrap,{
+      backgroundColor:'#ffffff',scale:2,useCORS:true,
+      width:wrap.offsetWidth,height:wrap.offsetHeight,
+      windowWidth:wrap.offsetWidth,logging:false
+    });
+    canvas.toBlob(async(blob)=>{
+      if(!blob){showToast('error','Could not create image');return;}
+      const file=new File([blob],'KOBOrush-Receipt.png',{type:'image/png'});
+      if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){
+        await navigator.share({title:'KOBOrush Receipt',files:[file]});
+      } else {
+        // Fallback: download the image
+        const url=URL.createObjectURL(blob);
+        const a=document.createElement('a');
+        a.href=url;a.download='KOBOrush-Receipt.png';
+        document.body.appendChild(a);a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showToast('success','Receipt saved as image!');
+      }
+    },'image/png');
+  }catch(e){
+    showToast('error','Could not capture receipt');
+    console.error(e);
+  }
 };
 
 // Profile
