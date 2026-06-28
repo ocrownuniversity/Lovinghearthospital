@@ -19,10 +19,10 @@
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;width:100%;overflow:hidden;font-family:var(--font);background:#1E1B4B;position:fixed;top:0;left:0;right:0;bottom:0}
-#app{width:100%;max-width:430px;height:100%;margin:0 auto;position:relative;overflow:hidden;background:#1E1B4B;display:flex;flex-direction:column;isolation:isolate}
-.screen{position:absolute;inset:0;display:flex;flex-direction:column;overflow-y:auto;overflow-x:hidden;background:#1E1B4B;transition:transform .3s cubic-bezier(.4,0,.2,1),opacity .25s;transform:translateX(100%);opacity:0;pointer-events:none;will-change:transform}
-.screen.active{transform:translateX(0);opacity:1;pointer-events:all}
-.screen.slide-left{transform:translateX(-100%);opacity:0}
+#app{position:fixed;top:0;left:0;right:0;bottom:0;width:100%;max-width:430px;margin:0 auto;overflow:hidden;background:#1E1B4B;display:flex;flex-direction:column}
+.screen{position:absolute;top:0;left:0;right:0;bottom:0;display:flex;flex-direction:column;overflow-y:auto;overflow-x:hidden;background:#1E1B4B;transition:opacity .22s ease;opacity:0;pointer-events:none;visibility:hidden}
+.screen.active{opacity:1;pointer-events:all;visibility:visible}
+
 
 /* ── SPLASH ── */
 #splash{background:linear-gradient(155deg,#1E1B4B 0%,#2C2665 50%,#1E1B4B 100%);align-items:center;justify-content:center;gap:14px}
@@ -1866,7 +1866,7 @@ window.copyFundAmount=()=>{const v=document.getElementById('fundAmount')?.value|
 // NAVIGATION
 window.navigateTo=(id)=>{
   const cur=document.querySelector('.screen.active');
-  if(cur&&cur.id!==id){_s.navHist.push(cur.id);cur.classList.remove('active');cur.classList.add('slide-left');setTimeout(()=>cur.classList.remove('slide-left'),400)}
+  if(cur&&cur.id!==id){_s.navHist.push(cur.id);cur.classList.remove('active');}
   const nxt=document.getElementById(id);if(nxt)nxt.classList.add('active');
   if(id==='historyScreen')loadHist();
   if(id==='notifications')loadNotifs();
@@ -2144,7 +2144,19 @@ async function loadWallet(){
     el.innerHTML=txs.length?txs.map(d=>txHTML(d)).join(''):'<div class="empty-state" style="padding:16px"><div class="empty-icon">📋</div><p>No transactions yet</p></div>';
   }catch(e){
     console.error('Wallet tx error:',e);
-    el.innerHTML='<div class="empty-state" style="padding:16px"><div class="empty-icon">📋</div><p>'+e.message+'</p></div>';
+    // Try fetching funding requests as fallback
+    try{
+      const fq=query(collection(db,'fundingRequests'),where('userId','==',_s.user.uid),limit(10));
+      const fs=await getDocs(fq);
+      if(!fs.empty){
+        const items=fs.docs.map(d=>{const r={...d.data(),id:d.id};return txHTML({type:r.status==='approved'?'fund_approved':'fund',status:r.status,amount:r.amount,description:'Wallet Funding',createdAt:r.createdAt});}).join('');
+        el.innerHTML=items;
+      } else {
+        el.innerHTML='<div class="empty-state" style="padding:16px"><div class="empty-icon">📋</div><p>No transactions yet</p></div>';
+      }
+    }catch(e2){
+      el.innerHTML='<div class="empty-state" style="padding:16px"><div class="empty-icon">📋</div><p>No transactions yet</p></div>';
+    }
   }
 }
 
