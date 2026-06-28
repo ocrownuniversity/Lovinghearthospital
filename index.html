@@ -2015,8 +2015,10 @@ onAuthStateChanged(auth,async(user)=>{
     _startInactivityWatcher();
     if(_s.isAdmin){
       document.getElementById('bottomNav').style.display='none';
-      // Go straight to admin dashboard (PIN gate removed)
-      showScreen('admin');
+      // Show PIN gate before admin dashboard
+      _s.adminPINVerified=false;
+      showScreen('adminPINGate');
+      setTimeout(()=>document.getElementById('apg1')?.focus(),400);
     }else{
       document.getElementById('bottomNav').style.display='flex';
       showScreen('home');loadHome();
