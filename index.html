@@ -1997,32 +1997,54 @@ window.showForgotPassword=()=>showOverlay(`<div class="sheet-title">Reset Passwo
 window.sendReset=async()=>{try{const actionCodeSettings={url:window.location.origin+(window.location.pathname||'/'),handleCodeInApp:false};await sendPasswordResetEmail(auth,document.getElementById('resetEmail').value,actionCodeSettings);showToast('success','Reset link sent!');closeOverlay()}catch(e){showToast('error',e.message)}};
 
 // ════════════════════════════════════════════════════════════
-// FINGERPRINT / BIOMETRIC LOGIN
+// FINGERPRINT / BIOMETRIC LOGIN  (v2 — Android-compatible)
 // Strategy: WebAuthn (PassKey) registers on the CURRENT domain.
-// The rpId is always window.location.hostname so it works on
-// lovinghearthospital.com.ng, GitHub Pages, or any HTTPS host.
-// On login: biometric verifies identity → app re-signs in
-// using the encrypted credentials stored in localStorage.
+// rpId = window.location.hostname → works on lovinghearthospital.com.ng
+// On login: biometric verifies identity → app re-signs in using
+// the AES-256-GCM encrypted credentials stored in localStorage.
+//
+// Key fixes vs v1:
+//  • residentKey:'preferred' + requireResidentKey:false → broader
+//    Android/Samsung Browser compatibility
+//  • userVerification:'preferred' during GET (not 'required') →
+//    avoids NotAllowedError on devices where UV is unavailable
+//  • No double-toast before credentials.create (avoids focus loss
+//    that causes NotAllowedError on Chrome Android)
+//  • Password verification happens BEFORE the biometric prompt
+//    so the overlay is fully closed and focus is restored first
+//  • Correct base64url ↔ ArrayBuffer helpers (handles padding)
 // ════════════════════════════════════════════════════════════
 const FP_KEY      = 'kbr_fp_uid';
 const FP_EMAIL_KEY= 'kbr_fp_email';
 const FP_PW_KEY   = 'kbr_fp_pw';   // AES-GCM encrypted password
-const FP_CRED_KEY = 'kbr_fp_cred'; // WebAuthn credential ID (base64)
+const FP_CRED_KEY = 'kbr_fp_cred'; // WebAuthn credential ID (base64url)
 const FP_IV_KEY   = 'kbr_fp_iv';   // AES-GCM IV (base64)
 const FP_CK_KEY   = 'kbr_fp_ck';   // AES-GCM key material (base64)
 
-// ── helpers ──
-function _b64(buf){ return btoa(String.fromCharCode(...new Uint8Array(buf))); }
-function _fromb64(s){ return Uint8Array.from(atob(s), c=>c.charCodeAt(0)); }
+// ── Base64 helpers (handle standard and url-safe variants) ──
+function _b64(buf){
+  const bytes = new Uint8Array(buf);
+  let str = '';
+  for(let i=0;i<bytes.length;i++) str += String.fromCharCode(bytes[i]);
+  return btoa(str);
+}
+function _fromb64(s){
+  // Accept both standard base64 and base64url
+  const std = s.replace(/-/g,'+').replace(/_/g,'/');
+  const pad = std.padEnd(std.length + (4 - std.length % 4) % 4, '=');
+  return Uint8Array.from(atob(pad), c=>c.charCodeAt(0));
+}
 
+// ── Check if WebAuthn + HTTPS available ──
 function isBiometricSupported(){
   return !!(window.PublicKeyCredential &&
             navigator.credentials &&
             navigator.credentials.create &&
-            window.location.protocol === 'https:');
+            navigator.credentials.get &&
+            window.isSecureContext);
 }
 
-// Encrypt password with AES-GCM using a random key stored in localStorage
+// ── AES-256-GCM encrypt/decrypt ──
 async function _encryptPW(pw){
   const key = await crypto.subtle.generateKey({name:'AES-GCM',length:256},true,['encrypt','decrypt']);
   const iv  = crypto.getRandomValues(new Uint8Array(12));
@@ -2047,8 +2069,23 @@ window.initFingerprintStatus = async () => {
   if (!statusText) return;
 
   if (!isBiometricSupported()) {
-    statusText.textContent = '❌ Fingerprint not supported on this browser or requires HTTPS.';
-    if(noteEl) noteEl.textContent = 'Open the app on Chrome/Samsung Browser over HTTPS (lovinghearthospital.com.ng) and try again.';
+    statusText.textContent = '❌ Fingerprint not supported on this browser or connection is not secure.';
+    if(noteEl) noteEl.textContent = 'Open the app on Chrome or Samsung Browser over HTTPS (lovinghearthospital.com.ng) and try again.';
+    if(btnReg)    btnReg.style.display    = 'none';
+    if(btnRemove) btnRemove.style.display = 'none';
+    if(btnReReg)  btnReReg.style.display  = 'none';
+    return;
+  }
+
+  // Check if platform authenticator (fingerprint sensor) is available
+  let platformAvailable = false;
+  try {
+    platformAvailable = await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
+  } catch(e){ platformAvailable = true; } // assume available if check fails
+
+  if (!platformAvailable) {
+    statusText.textContent = '❌ No fingerprint sensor found on this device.';
+    if(noteEl) noteEl.textContent = 'Make sure your device has a fingerprint sensor and it is enrolled in your phone settings.';
     if(btnReg)    btnReg.style.display    = 'none';
     if(btnRemove) btnRemove.style.display = 'none';
     if(btnReReg)  btnReReg.style.display  = 'none';
@@ -2073,70 +2110,86 @@ window.initFingerprintStatus = async () => {
   }
 };
 
-// ── REGISTER: show password prompt → verify with biometric → store encrypted creds ──
+// ── REGISTER: show password prompt → verify → biometric → store ──
 window.registerFingerprint = async () => {
   if (!isBiometricSupported()) return showToast('error', 'Fingerprint requires HTTPS. Open the app via lovinghearthospital.com.ng');
   if (!_s.user) return showToast('error', 'You must be logged in to register fingerprint');
 
-  // Ask for password to encrypt and store
   showOverlay(
     '<div class="sheet-title">👆 Register Fingerprint</div>'
-   +'<div class="sheet-sub">Enter your account password. It will be encrypted and stored on this device so your fingerprint can log you in automatically.</div>'
+   +'<div class="sheet-sub">Enter your account password to verify it\'s you. Your fingerprint will be linked to this account on this device only.</div>'
    +'<div class="form-group"><label class="form-label">Account Password</label>'
    +'<div class="input-icon-wrap"><input type="password" class="form-input" id="fpRegPw" placeholder="Your login password" autocomplete="current-password">'
    +'<button class="toggle-pw" onclick="togglePw(\'fpRegPw\',this)">👁</button></div></div>'
-   +'<button class="btn btn-primary" onclick="_doRegisterFP()" style="margin-top:10px">👆 Scan Fingerprint & Save</button>'
-   +'<p style="font-size:11px;color:var(--text3);margin-top:10px;line-height:1.5">Your password is encrypted with AES-256 and never sent anywhere. Only your fingerprint can unlock it.</p>'
+   +'<button class="btn btn-primary" onclick="_doRegisterFP()" style="margin-top:10px">👆 Verify & Register Fingerprint</button>'
+   +'<p style="font-size:11px;color:var(--text3);margin-top:10px;line-height:1.5">Your password is encrypted with AES-256 and stored only on this device. It is never sent anywhere.</p>'
   );
 };
 
 window._doRegisterFP = async () => {
-  const pw = document.getElementById('fpRegPw')?.value || '';
+  const pw = document.getElementById('fpRegPw')?.value?.trim() || '';
   if (!pw) return showToast('error', 'Enter your password first');
 
-  // Verify password is correct before storing
+  // Step 1: close overlay and verify password BEFORE triggering biometric
+  // (overlay/modal must be fully dismissed or Chrome Android raises NotAllowedError)
   closeOverlay();
+  await new Promise(r => setTimeout(r, 350)); // wait for overlay animation to finish
+
   showToast('info', 'Verifying password…');
   try {
-    await signInWithEmailAndPassword(auth, _s.userData.email, pw);
+    await signInWithEmailAndPassword(auth, _s.userData.email || _s.user.email, pw);
   } catch(e) {
-    return showToast('error', 'Wrong password. Enter your correct login password.');
+    if(e.code === 'auth/wrong-password' || e.code === 'auth/invalid-credential')
+      return showToast('error', 'Wrong password. Enter your correct login password.');
+    if(e.code === 'auth/too-many-requests')
+      return showToast('error', 'Too many attempts. Wait a moment and try again.');
+    return showToast('error', 'Password check failed: ' + (e.message || e.code));
   }
 
-  showToast('info', 'Now scan your fingerprint when prompted…');
+  // Step 2: trigger biometric — no toast/dialog must be open at this point
   try {
-    const challenge = crypto.getRandomValues(new Uint8Array(32));
-    const rpId      = window.location.hostname; // e.g. lovinghearthospital.com.ng
+    const challenge  = crypto.getRandomValues(new Uint8Array(32));
+    const rpId       = window.location.hostname; // lovinghearthospital.com.ng
+
+    // Use a short userId buffer (max 64 bytes per spec)
+    const userIdBuf  = new TextEncoder().encode(_s.user.uid.slice(0, 64));
 
     const cred = await navigator.credentials.create({
       publicKey: {
         challenge,
-        rp: { name: 'KOBOrush', id: rpId },
+        rp: {
+          name: 'KOBOrush',
+          id: rpId
+        },
         user: {
-          id: new TextEncoder().encode(_s.user.uid),
-          name: _s.userData?.email || _s.user.uid,
-          displayName: (_s.userData?.firstName||'') + ' ' + (_s.userData?.lastName||'')
+          id: userIdBuf,
+          name: _s.userData?.email || _s.user.email || _s.user.uid,
+          displayName: ((_s.userData?.firstName||'') + ' ' + (_s.userData?.lastName||'')).trim() || 'KOBOrush User'
         },
         pubKeyCredParams: [
-          { type:'public-key', alg:-7   },  // ES256
-          { type:'public-key', alg:-257 }   // RS256
+          { type:'public-key', alg:-7   },  // ES256  (preferred)
+          { type:'public-key', alg:-257 },  // RS256
+          { type:'public-key', alg:-37  }   // PS256  (Samsung Browser)
         ],
         authenticatorSelection: {
-          authenticatorAttachment: 'platform',
-          userVerification: 'required'
+          authenticatorAttachment: 'platform',   // device fingerprint sensor only
+          userVerification: 'preferred',          // preferred (not required) — avoids NotAllowedError
+          residentKey: 'preferred',               // discoverable credential preferred
+          requireResidentKey: false
         },
-        timeout: 60000
+        excludeCredentials: [],  // allow re-registration on same device
+        timeout: 90000
       }
     });
 
-    if (!cred) return showToast('error', 'Fingerprint registration failed. Try again.');
+    if (!cred) throw new Error('No credential returned');
 
-    // Encrypt the password and store everything locally
+    // Step 3: encrypt password and persist everything
     const { enc, iv, ck } = await _encryptPW(pw);
     const credId = _b64(cred.rawId);
 
     localStorage.setItem(FP_KEY,       _s.user.uid);
-    localStorage.setItem(FP_EMAIL_KEY, _s.userData.email);
+    localStorage.setItem(FP_EMAIL_KEY, _s.userData?.email || _s.user.email || '');
     localStorage.setItem(FP_CRED_KEY,  credId);
     localStorage.setItem(FP_PW_KEY,    enc);
     localStorage.setItem(FP_IV_KEY,    iv);
@@ -2148,12 +2201,22 @@ window._doRegisterFP = async () => {
     checkAndShowFingerprintBtn();
 
   } catch(e) {
-    if (e.name === 'NotAllowedError')
-      showToast('error', 'Fingerprint scan was cancelled or not allowed. Try again.');
-    else if (e.name === 'InvalidStateError')
-      showToast('error', 'This fingerprint is already registered. Try Re-Register.');
-    else
-      showToast('error', 'Error: ' + (e.message || e.name));
+    console.warn('[FP register error]', e.name, e.message);
+    if (e.name === 'NotAllowedError') {
+      // Most common causes on Android:
+      // 1. Another dialog was open (handled by waiting above)
+      // 2. User dismissed the biometric prompt
+      // 3. Device has no fingerprint enrolled in Settings
+      showToast('error', 'Fingerprint prompt was dismissed. Make sure a fingerprint is enrolled in your phone Settings, then try again.');
+    } else if (e.name === 'InvalidStateError') {
+      showToast('error', 'A credential already exists. Tap "Re-Register" to replace it.');
+    } else if (e.name === 'NotSupportedError') {
+      showToast('error', 'Fingerprint not supported on this device or browser.');
+    } else if (e.name === 'SecurityError') {
+      showToast('error', 'Security error: the app must be opened on lovinghearthospital.com.ng over HTTPS.');
+    } else {
+      showToast('error', 'Fingerprint setup failed: ' + (e.message || e.name));
+    }
   }
 };
 
@@ -2167,14 +2230,15 @@ window.removeFingerprint = async () => {
   checkAndShowFingerprintBtn();
 };
 
-// ── Show/hide fingerprint button on login screen ──
+// ── Show/hide fingerprint login button on the login screen ──
 function checkAndShowFingerprintBtn() {
   const fpBtn = document.getElementById('fpLoginBtn');
   if (!fpBtn) return;
   const uid   = localStorage.getItem(FP_KEY);
   const cred  = localStorage.getItem(FP_CRED_KEY);
-  if (uid && cred && isBiometricSupported()) {
-    fpBtn.style.display = 'flex';
+  const hasCreds = !!(uid && cred && localStorage.getItem(FP_PW_KEY));
+  if (hasCreds && isBiometricSupported()) {
+    fpBtn.style.cssText = 'display:flex!important;width:100%;padding:14px;background:linear-gradient(135deg,#1E1B4B,#3B3582);border:none;border-radius:10px;color:white;font-size:15px;font-weight:700;cursor:pointer;font-family:var(--font);margin-top:8px;align-items:center;justify-content:center;gap:9px';
   } else {
     fpBtn.style.display = 'none';
   }
@@ -2189,54 +2253,61 @@ window.loginWithFingerprint = async () => {
   const encCk       = localStorage.getItem(FP_CK_KEY);
 
   if (!storedEmail || !storedCred || !encPw) {
-    return showToast('error', 'No fingerprint registered on this device. Log in normally first, then register your fingerprint in Security Settings.');
+    return showToast('error', 'No fingerprint registered on this device. Log in normally first, then register in Security Settings.');
   }
   if (!isBiometricSupported()) {
-    return showToast('error', 'Fingerprint requires HTTPS. Open via lovinghearthospital.com.ng');
+    return showToast('error', 'Fingerprint requires HTTPS. Open the app via lovinghearthospital.com.ng');
   }
 
+  const btn = document.getElementById('fpLoginBtn');
+  if(btn){ btn.disabled=true; btn.textContent='Scanning…'; }
+
   try {
-    showToast('info', '👆 Scan your fingerprint…');
     const challenge = crypto.getRandomValues(new Uint8Array(32));
 
     const assertion = await navigator.credentials.get({
       publicKey: {
         challenge,
-        timeout: 60000,
-        userVerification: 'required',
+        timeout: 90000,
+        userVerification: 'preferred',   // 'preferred' avoids NotAllowedError on some Android devices
         rpId: window.location.hostname,
         allowCredentials: [{
           type: 'public-key',
           id: _fromb64(storedCred),
-          transports: ['internal']
+          transports: ['internal', 'hybrid']
         }]
       }
     });
 
-    if (!assertion) return showToast('error', 'Fingerprint verification failed');
+    if (!assertion) throw new Error('No assertion returned');
 
     // Biometric passed → decrypt stored password → sign in with Firebase
-    showToast('info', 'Verified! Signing you in…');
     const pw = await _decryptPW(encPw, encIv, encCk);
-
-    const btnLoading = document.getElementById('fpLoginBtn');
-    if(btnLoading){ btnLoading.disabled=true; btnLoading.textContent='Signing in…'; }
+    if(btn){ btn.textContent='Signing in…'; }
 
     await signInWithEmailAndPassword(auth, storedEmail, pw);
-    // onAuthStateChanged will navigate to home automatically
+    // onAuthStateChanged handles navigation to home
 
   } catch(e) {
-    const btn = document.getElementById('fpLoginBtn');
+    console.warn('[FP login error]', e.name, e.message);
     if(btn){ btn.disabled=false; btn.innerHTML='👆 Login with Fingerprint'; }
 
-    if (e.name === 'NotAllowedError')
-      showToast('error', 'Fingerprint scan cancelled. Try again.');
-    else if (e.name === 'SecurityError')
-      showToast('error', 'Security error: make sure you are on lovinghearthospital.com.ng');
-    else if (e.code === 'auth/invalid-credential')
-      showToast('error', 'Saved credentials expired. Please log in normally and re-register fingerprint.');
-    else
+    if (e.name === 'NotAllowedError') {
+      showToast('error', 'Fingerprint scan was dismissed. Tap the button again and scan when prompted.');
+    } else if (e.name === 'SecurityError') {
+      showToast('error', 'Security error: open the app on lovinghearthospital.com.ng (HTTPS required).');
+    } else if (e.name === 'InvalidStateError' || e.name === 'UnknownError') {
+      // Credential not found on device (e.g. after browser data clear)
+      [FP_KEY, FP_EMAIL_KEY, FP_CRED_KEY, FP_PW_KEY, FP_IV_KEY, FP_CK_KEY].forEach(k=>localStorage.removeItem(k));
+      checkAndShowFingerprintBtn();
+      showToast('error', 'Fingerprint data was cleared. Please log in with your password and re-register fingerprint in Security Settings.');
+    } else if (e.code === 'auth/wrong-password' || e.code === 'auth/invalid-credential') {
+      [FP_KEY, FP_EMAIL_KEY, FP_CRED_KEY, FP_PW_KEY, FP_IV_KEY, FP_CK_KEY].forEach(k=>localStorage.removeItem(k));
+      checkAndShowFingerprintBtn();
+      showToast('error', 'Saved credentials expired. Log in with password and re-register fingerprint.');
+    } else {
       showToast('error', 'Fingerprint login failed: ' + (e.message || e.name));
+    }
   }
 };
 window.handleLogout=async()=>{_stopInactivityWatcher();await signOut(auth);_s.user=null;_s.userData=null;window._walletListenerStarted=false;document.getElementById('bottomNav').style.display='none';showScreen('auth');setTimeout(()=>{if(typeof checkAndShowFingerprintBtn==='function')checkAndShowFingerprintBtn();},200);showToast('info','Signed out')};
