@@ -1659,12 +1659,16 @@ textarea.form-input{resize:none}
     <div class="section-title">ClubKonnect VTU</div>
     <div class="admin-panel" style="margin:0 0 12px">
       <div class="api-form">
-        <div class="api-field"><label class="api-label">API Username</label><input class="api-input" id="ckUser" placeholder="ClubKonnect username"></div>
-        <div class="api-field"><label class="api-label">API Password / Token</label><input class="api-input" id="ckToken" type="password" placeholder="Password or token"></div>
-        <div class="api-field"><label class="api-label">Base URL</label><input class="api-input" id="ckURL" value="https://www.clubkonnect.com/api/"></div>
-        <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:12px;font-weight:600;color:var(--text)">Enable ClubKonnect</span><label class="toggle-switch"><input type="checkbox" id="ckEnabled" checked><div class="toggle-slider"></div></label></div>
+        <div class="api-field"><label class="api-label">UserID (ClubKonnect login)</label><input class="api-input" id="ckUser" placeholder="Your ClubKonnect UserID"></div>
+        <div class="api-field"><label class="api-label">APIKey</label><input class="api-input" id="ckToken" type="password" placeholder="Your ClubKonnect APIKey"></div>
+        <div class="api-field"><label class="api-label">Base URL</label><input class="api-input" id="ckURL" value="https://www.nellobytesystems.com/"></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-size:12px;font-weight:600;color:var(--text)">Enable ClubKonnect</span><label class="toggle-switch"><input type="checkbox" id="ckEnabled" checked><div class="toggle-slider"></div></label></div>
+        <div id="ckWalletBal" style="background:var(--primary-light);border-radius:8px;padding:8px 10px;font-size:12px;color:var(--primary);font-weight:600;display:none">CK Wallet Balance: Loading…</div>
       </div>
-      <div style="padding:12px"><button class="btn btn-primary" onclick="saveAPISettings()">Save Settings</button></div>
+      <div style="padding:12px;display:flex;gap:8px">
+        <button class="btn btn-primary" style="flex:2" onclick="saveAPISettings()">Save Settings</button>
+        <button class="btn btn-outline" style="flex:1;font-size:13px" onclick="checkCKWalletBalance()">Check Balance</button>
+      </div>
     </div>
     <div class="section-title">Company Bank Account (for Funding)</div>
     <div class="admin-panel" style="margin:0 0 12px">
@@ -2885,21 +2889,28 @@ function populateProviders(){
   ];
   const rp=(id,items)=>{const el=document.getElementById(id);if(!el)return;el.innerHTML=items.map((p,i)=>`<div class="prov-opt ${i===0?'selected':''}" onclick="selProv('${id}','${p.id}',this)">${p.logo}<span class="prov-label">${p.n}</span></div>`).join('');_s.selProv[id]=items[0].id};
   rp('airtimeProv',AT);rp('dataProv',DT);rp('elecProv',EL);rp('cableProv',CB);rp('schoolProv',SC);
+  // Load live data plans from ClubKonnect for default network (MTN)
+  loadCKDataPlans('mtn');
+  loadCKCablePackages('dstv');
   const dp=document.getElementById('dataPlans');
-  if(dp){const pl=[{n:'500MB',d:'1 day',p:130},{n:'1GB',d:'1 day',p:230},{n:'1GB',d:'30 days',p:480},{n:'2GB',d:'30 days',p:950},{n:'5GB',d:'30 days',p:1850},{n:'10GB',d:'30 days',p:3200}];dp.innerHTML=pl.map((p,i)=>`<div class="plan-opt ${i===0?'selected':''}" onclick="selPlan(this,'${p.n}',${p.p})"><div class="plan-name">${p.n}</div><div class="plan-desc">${p.d}</div><div class="plan-price">₦${p.p}</div></div>`).join('');_s.selPlan=_s.selPlan||{name:pl[0].n,price:pl[0].p}}
+  if(dp){/* Data plans are loaded live from ClubKonnect via loadCKDataPlans() */}
   const cp=document.getElementById('cablePlans');
-  if(cp){const cl=[{n:'Padi',d:'Access – 1mo',p:2500},{n:'Yanga',d:'Compact – 1mo',p:3500},{n:'Compact',d:'Compact+',p:7900},{n:'Premium',d:'Full',p:24500}];cp.innerHTML=cl.map((p,i)=>`<div class="plan-opt ${i===0?'selected':''}" onclick="selPlan(this,'${p.n}',${p.p})"><div class="plan-name">${p.n}</div><div class="plan-desc">${p.d}</div><div class="plan-price">₦${p.p.toLocaleString()}</div></div>`).join('')}
+  if(cp){/* Cable packages are loaded live from ClubKonnect via loadCKCablePackages() */}
 }
-window.selProv=(grid,id,el)=>{document.querySelectorAll(`#${grid} .prov-opt`).forEach(p=>p.classList.remove('selected'));el.classList.add('selected');_s.selProv[grid]=id};
+window.selProv=(grid,id,el)=>{document.querySelectorAll(`#${grid} .prov-opt`).forEach(p=>p.classList.remove('selected'));el.classList.add('selected');_s.selProv[grid]=id;
+  // Load live data plans when network selected in data screen
+  if(grid==='dataProv') loadCKDataPlans(id);
+  if(grid==='cableProv') loadCKCablePackages(id);
+};
 window.selPlan=(el,name,price)=>{el.closest('.data-plans').querySelectorAll('.plan-opt').forEach(p=>p.classList.remove('selected'));el.classList.add('selected');_s.selPlan={name,price}};
 
 // PIN & TRANSACTIONS
 window.proceedToPIN=async(svc)=>{
   let sum='';
   if(svc==='airtime'){const ph=document.getElementById('airtimePhone').value;const am=document.getElementById('airtimeAmt').value;if(!ph||!am)return showToast('error','Fill all fields');_s.pendingData={type:'airtime',phone:ph,amount:parseFloat(am),provider:_s.selProv['airtimeProv']||'mtn',description:`Airtime – ${ph}`};sum=`<div class="sum-row"><span class="sum-lbl">Phone</span><span class="sum-val">${ph}</span></div><div class="sum-row"><span class="sum-lbl">Network</span><span class="sum-val">${(_s.selProv['airtimeProv']||'MTN').toUpperCase()}</span></div><div class="sum-row"><span class="sum-lbl">Amount</span><span class="sum-val" style="color:var(--primary)">₦${parseFloat(am).toLocaleString()}</span></div>`}
-  else if(svc==='data'){const ph=document.getElementById('dataPhone').value;if(!ph||!_s.selPlan)return showToast('error','Fill all fields');_s.pendingData={type:'data',phone:ph,amount:_s.selPlan.price,provider:_s.selProv['dataProv']||'mtn',description:`${_s.selPlan.name} Data – ${ph}`};sum=`<div class="sum-row"><span class="sum-lbl">Plan</span><span class="sum-val">${_s.selPlan.name}</span></div><div class="sum-row"><span class="sum-lbl">Phone</span><span class="sum-val">${ph}</span></div><div class="sum-row"><span class="sum-lbl">Amount</span><span class="sum-val" style="color:var(--primary)">₦${_s.selPlan.price.toLocaleString()}</span></div>`}
+  else if(svc==='data'){const ph=document.getElementById('dataPhone').value;if(!ph||!_s.selPlan)return showToast('error','Fill all fields');_s.pendingData={type:'data',phone:ph,amount:_s.selPlan.price,provider:_s.selProv['dataProv']||'mtn',planCode:_s.selPlan.code||'',description:`${_s.selPlan.name} Data – ${ph}`};sum=`<div class="sum-row"><span class="sum-lbl">Plan</span><span class="sum-val">${_s.selPlan.name}</span></div><div class="sum-row"><span class="sum-lbl">Phone</span><span class="sum-val">${ph}</span></div><div class="sum-row"><span class="sum-lbl">Amount</span><span class="sum-val" style="color:var(--primary)">₦${_s.selPlan.price.toLocaleString()}</span></div>`}
   else if(svc==='electricity'){const mt=document.getElementById('elecMeter').value;const am=document.getElementById('elecAmt').value;if(!mt||!am)return showToast('error','Fill all fields');_s.pendingData={type:'electricity',meter:mt,amount:parseFloat(am),provider:_s.selProv['elecProv']||'ikedc',meterType:document.getElementById('elecMeterType').value,description:`Electricity – ${mt}`};sum=`<div class="sum-row"><span class="sum-lbl">Meter</span><span class="sum-val">${mt}</span></div><div class="sum-row"><span class="sum-lbl">DISCO</span><span class="sum-val">${(_s.selProv['elecProv']||'ikedc').toUpperCase()}</span></div><div class="sum-row"><span class="sum-lbl">Amount</span><span class="sum-val" style="color:var(--primary)">₦${parseFloat(am).toLocaleString()}</span></div>`}
-  else if(svc==='cabletv'){const cd=document.getElementById('cableCardNo').value;if(!cd||!_s.selPlan)return showToast('error','Fill all fields');_s.pendingData={type:'cabletv',cardNo:cd,amount:_s.selPlan.price,provider:_s.selProv['cableProv']||'dstv',plan:_s.selPlan.name,description:`${_s.selPlan.name} Cable – ${cd}`};sum=`<div class="sum-row"><span class="sum-lbl">Card No</span><span class="sum-val">${cd}</span></div><div class="sum-row"><span class="sum-lbl">Package</span><span class="sum-val">${_s.selPlan.name}</span></div><div class="sum-row"><span class="sum-lbl">Amount</span><span class="sum-val" style="color:var(--primary)">₦${_s.selPlan.price.toLocaleString()}</span></div>`}
+  else if(svc==='cabletv'){const cd=document.getElementById('cableCardNo').value;const ph=document.getElementById('cablePhone')?.value||'';if(!cd||!_s.selPlan)return showToast('error','Fill all fields');_s.pendingData={type:'cabletv',cardNo:cd,phone:ph,amount:_s.selPlan.price,provider:_s.selProv['cableProv']||'dstv',plan:_s.selPlan.name,planCode:_s.selPlan.code||'',description:`${_s.selPlan.name} Cable – ${cd}`};sum=`<div class="sum-row"><span class="sum-lbl">Card No</span><span class="sum-val">${cd}</span></div><div class="sum-row"><span class="sum-lbl">Package</span><span class="sum-val">${_s.selPlan.name}</span></div><div class="sum-row"><span class="sum-lbl">Amount</span><span class="sum-val" style="color:var(--primary)">₦${_s.selPlan.price.toLocaleString()}</span></div>`}
   else if(svc==='schoolpin'){const qty=document.getElementById('schoolPinQty').value;const ph=document.getElementById('schoolPhone').value;const ex=_s.selProv['schoolProv']||'waec';const pr={waec:3750,neco:2100,jamb:4200,nabteb:2500}[ex]||2000;const tot=pr*parseInt(qty);_s.pendingData={type:'schoolpin',exam:ex,quantity:parseInt(qty),phone:ph,amount:tot,description:`${ex.toUpperCase()} PIN x${qty}`};sum=`<div class="sum-row"><span class="sum-lbl">Exam</span><span class="sum-val">${ex.toUpperCase()}</span></div><div class="sum-row"><span class="sum-lbl">Qty</span><span class="sum-val">${qty}</span></div><div class="sum-row"><span class="sum-lbl">Total</span><span class="sum-val" style="color:var(--primary)">₦${tot.toLocaleString()}</span></div>`}
   else if(svc==='transfer'){
     const am=parseFloat(document.getElementById('transferAmt').value)||0;
@@ -2936,6 +2947,157 @@ window.proceedToPIN=async(svc)=>{
 };
 window.movePIN=(el,p,n)=>{if(el.value.length===1&&n)document.getElementById(n)?.focus();if(!el.value&&p)document.getElementById(p)?.focus()};
 window.checkPINDone=()=>{const pin=['pin1','pin2','pin3','pin4'].map(id=>document.getElementById(id).value).join('');if(pin.length===4)confirmTx(pin)};
+// ════════════════════════════════════════════════════
+// CLUBKONNECT API LAYER
+// All VTU transactions route through here.
+// Credentials are loaded from Firestore settings/apis.
+// ════════════════════════════════════════════════════
+let _ckCreds = null;
+async function _loadCKCreds(force=false){
+  if(_ckCreds && !force) return _ckCreds;
+  try{
+    const snap = await getDoc(doc(db,'settings','apis'));
+    if(snap.exists()){
+      const a = snap.data();
+      if(a.ckEnabled !== false && a.ckUser && a.ckToken){
+        _ckCreds = { user: a.ckUser, key: a.ckToken, base: (a.ckURL||'https://www.nellobytesystems.com/').replace(/\/?$/,'/') };
+        return _ckCreds;
+      }
+    }
+  }catch(e){}
+  return null;
+}
+
+// Build a query-string URL for ClubKonnect
+function _ckURL(endpoint, params){
+  const c = _ckCreds;
+  if(!c) throw new Error('ClubKonnect not configured');
+  const base = c.base + endpoint;
+  const q = new URLSearchParams({ UserID: c.user, APIKey: c.key, output: 'JSON', ...params });
+  return base + '?' + q.toString();
+}
+
+// Generic CK fetch — returns parsed JSON
+async function _ckFetch(endpoint, params){
+  const creds = await _loadCKCreds();
+  if(!creds) throw new Error('ClubKonnect not configured. Ask admin to enter credentials in API Management.');
+  const url = _ckURL(endpoint, params);
+  const resp = await fetch(url);
+  if(!resp.ok) throw new Error('ClubKonnect HTTP ' + resp.status);
+  const text = await resp.text();
+  try{ return JSON.parse(text); }catch(e){ throw new Error('Invalid response from ClubKonnect: ' + text.substring(0,80)); }
+}
+
+// Network code map  (ClubKonnect codes)
+const _ckNet = { mtn:'01', glo:'02', airtel:'03', '9mobile':'04', etisalat:'04', mtngh:'05', vodafone:'06' };
+
+// Check CK wallet balance (admin)
+window.checkCKWalletBalance = async () => {
+  const balEl = document.getElementById('ckWalletBal');
+  if(balEl){ balEl.style.display='block'; balEl.textContent='Checking balance…'; }
+  try{
+    const data = await _ckFetch('APIWalletBalance.asp', {});
+    const bal = data?.WALLET_BALANCE ?? data?.Balance ?? data?.balance ?? JSON.stringify(data);
+    if(balEl) balEl.textContent = 'CK Wallet Balance: ₦' + Number(bal).toLocaleString();
+    showToast('success', 'CK Balance: ₦' + Number(bal).toLocaleString());
+  }catch(e){
+    if(balEl) balEl.textContent = 'Balance check failed: ' + e.message;
+    showToast('error', e.message);
+  }
+};
+
+// Load data plans from ClubKonnect for a network
+window.loadCKDataPlans = async (network) => {
+  const dp = document.getElementById('dataPlans');
+  if(!dp) return;
+  dp.innerHTML = '<div class="loading-spinner" style="margin:12px auto"></div>';
+  try{
+    const netCode = _ckNet[network] || '01';
+    await _loadCKCreds();
+    const data = await _ckFetch('APIDataBundlePlansV1.asp', { MobileNetwork: netCode });
+    // Response: { MOBILE_NETWORK:[{ NETWORK_ID, NETWORK_NAME, PRODUCT:[{ PRODUCT_ID, PRODUCT_CODE, PRODUCT_NAME, PRODUCT_AMOUNT }] }] }
+    const networkArr = data?.MOBILE_NETWORK || data?.DATA_NETWORK || [];
+    let plans = [];
+    networkArr.forEach(n => { (n.PRODUCT||[]).forEach(p => { plans.push(p); }); });
+    if(!plans.length) throw new Error('No plans returned');
+    dp.innerHTML = plans.map((p,i)=>`<div class="plan-opt ${i===0?'selected':''}" onclick="selCKPlan(this,'${p.PRODUCT_CODE||p.PRODUCT_ID}','${p.PRODUCT_NAME}',${p.PRODUCT_AMOUNT})" data-code="${p.PRODUCT_CODE||p.PRODUCT_ID}" data-id="${p.PRODUCT_ID||''}"><div class="plan-name" style="font-size:11px;line-height:1.3">${p.PRODUCT_NAME}</div><div class="plan-price">₦${Number(p.PRODUCT_AMOUNT).toLocaleString()}</div></div>`).join('');
+    _s.selPlan = { name: plans[0].PRODUCT_NAME, price: Number(plans[0].PRODUCT_AMOUNT), code: plans[0].PRODUCT_CODE||plans[0].PRODUCT_ID, id: plans[0].PRODUCT_ID||'' };
+  }catch(e){
+    dp.innerHTML = `<div style="font-size:11px;color:var(--danger);padding:8px">Could not load live plans: ${e.message}. Using defaults.</div>`;
+    // Fallback to static plans
+    const pl=[{n:'500MB',d:'1 day',p:130,c:'500MB-1DAY'},{n:'1GB',d:'30 days',p:480,c:'1GB-30DAYS'},{n:'2GB',d:'30 days',p:950,c:'2GB-30DAYS'},{n:'5GB',d:'30 days',p:1850,c:'5GB-30DAYS'}];
+    dp.innerHTML += pl.map((p,i)=>`<div class="plan-opt ${i===0?'selected':''}" onclick="selCKPlan(this,'${p.c}','${p.n} – ${p.d}',${p.p})"><div class="plan-name">${p.n}</div><div class="plan-desc">${p.d}</div><div class="plan-price">₦${p.p}</div></div>`).join('');
+    _s.selPlan = { name: pl[0].n, price: pl[0].p, code: pl[0].c };
+  }
+};
+
+window.selCKPlan = (el, code, name, price) => {
+  el.closest('.data-plans').querySelectorAll('.plan-opt').forEach(p=>p.classList.remove('selected'));
+  el.classList.add('selected');
+  _s.selPlan = { name, price: Number(price), code, id: el.dataset.id||'' };
+};
+
+// Load cable TV packages from ClubKonnect
+window.loadCKCablePackages = async (cableProvider) => {
+  const cp = document.getElementById('cablePlans');
+  if(!cp) return;
+  cp.innerHTML = '<div class="loading-spinner" style="margin:12px auto"></div>';
+  try{
+    await _loadCKCreds();
+    const data = await _ckFetch('APICableTVPackagesV2.asp', {});
+    // Response has TV_ID array → each with PRODUCT array
+    const tvArr = data?.TV_ID || [];
+    const prov = tvArr.find(t => (t.TV_NAME||'').toLowerCase().includes(cableProvider.toLowerCase())) || tvArr[0];
+    const plans = prov?.PRODUCT || [];
+    if(!plans.length) throw new Error('No packages');
+    cp.innerHTML = plans.map((p,i)=>`<div class="plan-opt ${i===0?'selected':''}" onclick="selCKCable(this,'${p.PRODUCT_CODE||p.PRODUCT_ID}','${escHTML(p.PRODUCT_NAME)}',${p.PRODUCT_AMOUNT})"><div class="plan-name" style="font-size:10px;line-height:1.3">${p.PRODUCT_NAME}</div><div class="plan-price">₦${Number(p.PRODUCT_AMOUNT).toLocaleString()}</div></div>`).join('');
+    _s.selPlan = { name: plans[0].PRODUCT_NAME, price: Number(plans[0].PRODUCT_AMOUNT), code: plans[0].PRODUCT_CODE||plans[0].PRODUCT_ID };
+  }catch(e){
+    const cl=[{n:'Padi',d:'Access',p:2500},{n:'Yanga',d:'Compact',p:3500},{n:'Compact+',d:'Family',p:7900},{n:'Premium',d:'Full',p:24500}];
+    cp.innerHTML=cl.map((p,i)=>`<div class="plan-opt ${i===0?'selected':''}" onclick="selPlan(this,'${p.n}',${p.p})"><div class="plan-name">${p.n}</div><div class="plan-desc">${p.d}</div><div class="plan-price">₦${p.p.toLocaleString()}</div></div>`).join('');
+  }
+};
+
+window.selCKCable = (el, code, name, price) => {
+  el.closest('.data-plans').querySelectorAll('.plan-opt').forEach(p=>p.classList.remove('selected'));
+  el.classList.add('selected');
+  _s.selPlan = { name, price: Number(price), code };
+};
+
+function escHTML(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/'/g,'&#39;'); }
+
+// Check transaction status by RequestID
+async function _ckCheckStatus(requestId){
+  try{
+    return await _ckFetch('APIQueryV1.asp', { RequestID: requestId });
+  }catch(e){ return null; }
+}
+
+// ── EXECUTE VTU via ClubKonnect ──
+// Returns { success, message, data }
+async function _executeCKTransaction(txType, params, tid){
+  await _loadCKCreds();
+  const endpoints = {
+    airtime:     'APIAirtimeV1.asp',
+    data:        'APIDatabundleV1.asp',
+    cabletv:     'APICableTVV1.asp',
+    electricity: 'APIElectricityV1.asp',
+    waec:        'APIWAECV1.asp',
+    jamb:        'APIJAMBV1.asp',
+  };
+  const ep = endpoints[txType];
+  if(!ep) throw new Error('Unknown VTU type: ' + txType);
+  const result = await _ckFetch(ep, { ...params, RequestID: tid });
+  // ClubKonnect typically returns STATUS field: '200' = success
+  const status = String(result?.STATUS||result?.status||result?.Status||'');
+  const msg = result?.MESSAGE || result?.message || result?.RESPONSE || result?.response || JSON.stringify(result);
+  if(status === '200' || status === 'success' || msg?.toLowerCase().includes('successful')){
+    return { success: true, message: msg, data: result };
+  }
+  // Error: return failure with message
+  return { success: false, message: msg || 'ClubKonnect error', data: result };
+}
+
 async function confirmTx(pin){
   if(!_s.user||!_s.pendingData)return;
   const d=_s.pendingData;const ud=_s.userData;
@@ -2989,16 +3151,105 @@ async function confirmTx(pin){
         {l:'Status',v:'✅ Success'},{l:'Reference',v:tid},{l:'Date',v:new Date().toLocaleString()}
       ].map(i=>`<div class="receipt-row"><span class="r-label">${i.l}</span><span class="r-val">${i.v}</span></div>`).join('');
     } else {
-      // ── ALL OTHER TRANSACTIONS (airtime, data, electricity, etc. + bank transfer) ──
-      // Revenue note: only bank transfers carry a real, declared fee (amount - sendAmount).
-      // Airtime/data/electricity/cable/school-pin purchases have no markup recorded in this
-      // app's pricing model, so their fee is correctly 0 — they are NOT revenue sources unless
-      // a real margin field is added to their pricing logic.
+      // ── VTU / BANK TRANSFER TRANSACTIONS ──
       const _txFee=(d.type==='transfer'&&d.sendAmount!=null)?(d.amount-d.sendAmount):0;
-      await runTransaction(db,async(t)=>{const uRef=doc(db,'users',_s.user.uid);const us=await t.get(uRef);const bb=us.data().balance;t.update(uRef,{balance:increment(-d.amount),totalSpent:increment(d.amount)});t.set(doc(db,'transactions',tid),{id:tid,userId:_s.user.uid,type:d.type,status:'success',amount:d.amount,sendAmount:d.sendAmount||null,fee:_txFee,description:d.description||d.type,provider:d.provider||'clubkonnect',phone:d.phone||'',meter:d.meter||'',cardNo:d.cardNo||'',recipient:d.recipient||'',balanceBefore:bb,balanceAfter:bb-d.amount,createdAt:serverTimestamp()})});
+      const VTU_TYPES = ['airtime','data','electricity','cabletv','schoolpin'];
+      const isVTU = VTU_TYPES.includes(d.type);
+
+      // 1. Deduct wallet first (pessimistic lock)
+      let balanceBefore = 0;
+      await runTransaction(db,async(t)=>{
+        const uRef=doc(db,'users',_s.user.uid);
+        const us=await t.get(uRef);
+        const bb=us.data().balance;
+        balanceBefore = bb;
+        if(bb < d.amount) throw new Error('Insufficient balance');
+        t.update(uRef,{balance:increment(-d.amount),totalSpent:increment(d.amount)});
+        t.set(doc(db,'transactions',tid),{
+          id:tid,userId:_s.user.uid,type:d.type,status:'processing',
+          amount:d.amount,sendAmount:d.sendAmount||null,fee:_txFee,
+          description:d.description||d.type,provider:'clubkonnect',
+          phone:d.phone||'',meter:d.meter||'',cardNo:d.cardNo||'',
+          recipient:d.recipient||'',balanceBefore:bb,balanceAfter:bb-d.amount,
+          createdAt:serverTimestamp()
+        });
+      });
+
+      // 2. Call ClubKonnect API for VTU types
+      let ckResult = null;
+      let txStatus = 'success';
+      let txNote = '';
+
+      if(isVTU){
+        try{
+          let ckParams = {};
+          const netCode = _ckNet[d.provider||'mtn'] || '01';
+
+          if(d.type==='airtime'){
+            ckParams = { MobileNumber: d.phone, MobileNetwork: netCode, Amount: d.amount };
+          } else if(d.type==='data'){
+            ckParams = { MobileNumber: d.phone, MobileNetwork: netCode, DataPlan: d.planCode||d.plan||'', Amount: d.amount };
+          } else if(d.type==='cabletv'){
+            ckParams = { CableTV: (d.provider||'dstv').toUpperCase(), Package: d.planCode||d.plan||'', SmartCardNo: d.cardNo||'', PhoneNo: d.phone||'' };
+          } else if(d.type==='electricity'){
+            ckParams = { ElectricCompany: (d.provider||'ikedc').toUpperCase(), MeterType: d.meterType||'prepaid', MeterNo: d.meter||'', Amount: d.amount, PhoneNo: d.phone||'' };
+          } else if(d.type==='schoolpin'){
+            const examType = (d.exam||'WAEC').toUpperCase();
+            const ep = examType==='JAMB' ? 'jamb' : 'waec';
+            ckResult = await _executeCKTransaction(ep, { ExamType: examType, PhoneNo: d.phone||'' }, tid);
+          }
+
+          if(d.type !== 'schoolpin'){
+            ckResult = await _executeCKTransaction(d.type, ckParams, tid);
+          }
+
+          if(ckResult && !ckResult.success){
+            // CK returned error — refund wallet
+            txStatus = 'failed';
+            txNote = ckResult.message || 'Provider error';
+            await updateDoc(doc(db,'users',_s.user.uid),{balance:increment(d.amount),totalSpent:increment(-d.amount)});
+          }
+        }catch(ckErr){
+          txStatus = 'failed';
+          txNote = ckErr.message || 'ClubKonnect error';
+          // Refund wallet
+          await updateDoc(doc(db,'users',_s.user.uid),{balance:increment(d.amount),totalSpent:increment(-d.amount)});
+        }
+      }
+
+      // 3. Update transaction record with final status
+      await updateDoc(doc(db,'transactions',tid),{
+        status: txStatus,
+        ckResponse: ckResult?.data ? JSON.stringify(ckResult.data).substring(0,500) : '',
+        note: txNote,
+        updatedAt: serverTimestamp()
+      });
+
+      if(txStatus === 'failed'){
+        showToast('error', txNote || 'Transaction failed. Wallet refunded.');
+        document.getElementById('successTitle').textContent='Transaction Failed';
+        document.getElementById('successMsg').textContent=txNote||'Wallet refunded.';
+        document.getElementById('successReceipt').innerHTML='<div style="text-align:center;padding:16px;font-size:13px;color:var(--danger)">❌ ' + (txNote||'Failed') + '<br><br>Your wallet has been refunded.</div>';
+        return;
+      }
+
+      // 4. Agent commission
       if(ud.agentLevel&&ud.agentLevel!=='standard'){const r={airtime:0.015,data:0.02,electricity:0.005,cabletv:0.01,schoolpin:0.02};const comm=(r[d.type]||0.01)*d.amount;if(comm>0)await updateDoc(doc(db,'users',_s.user.uid),{agentCommission:increment(comm)})}
+
       await addNotif(_s.user.uid,'✅ Transaction Successful',`${d.description} completed successfully.`,'success');
-      navigateTo('successScreen');document.getElementById('successTitle').textContent='Transaction Successful!';document.getElementById('successMsg').textContent=d.description+' processed.';const _rs=csym(_s.userData?.country);document.getElementById('successReceipt').innerHTML=[{l:'Service',v:d.description},{l:'Amount',v:fmt(d.amount,_rs)},{l:'Status',v:'✅ Success'},{l:'Reference',v:tid},{l:'Date',v:new Date().toLocaleString()}].map(i=>`<div class="receipt-row"><span class="r-label">${i.l}</span><span class="r-val">${i.v}</span></div>`).join('');
+      navigateTo('successScreen');
+      document.getElementById('successTitle').textContent='Transaction Successful!';
+      document.getElementById('successMsg').textContent=d.description+' processed.';
+      const _rs=csym(_s.userData?.country);
+      const extraRows = ckResult?.data?.TOKEN ? [{l:'Token/PIN', v: ckResult.data.TOKEN||ckResult.data.token||''}] : [];
+      document.getElementById('successReceipt').innerHTML=[
+        {l:'Service',v:d.description},
+        {l:'Amount',v:fmt(d.amount,_rs)},
+        ...extraRows,
+        {l:'Status',v:'✅ Success'},
+        {l:'Reference',v:tid},
+        {l:'Date',v:new Date().toLocaleString()}
+      ].map(i=>`<div class="receipt-row"><span class="r-label">${i.l}</span><span class="r-val">${i.v}</span></div>`).join('');
     }
     _s.pendingData=null;
   }catch(e){showToast('error',e.message||'Transaction failed');goBack()}
@@ -3781,10 +4032,12 @@ window.promoteUser=async(id)=>{const lv=['standard','bronze','silver','gold'];co
 window.loadAdminTxs=async()=>{document.getElementById('adminTxList').innerHTML='<div class="loading-spinner"></div>';try{const s=await getDocs(query(collection(db,'transactions'),limit(100)));const txs=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>{const ta=a.createdAt?.toMillis?a.createdAt.toMillis():0;const tb=b.createdAt?.toMillis?b.createdAt.toMillis():0;return tb-ta;});document.getElementById('adminTxList').innerHTML=txs.length?`<div class="admin-panel" style="margin:0">${txs.map(tx=>`<div class="admin-table-row"><div class="row-main"><div class="row-title">${tx.description||tx.type}</div><div class="row-sub">${tAgo(tx.createdAt)}</div></div><div style="text-align:right"><div style="font-size:12px;font-weight:700;color:${['fund','fund_approved','admin_credit'].includes(tx.type)?'var(--success-green)':'var(--danger)'}">₦${(tx.amount||0).toLocaleString()}</div><span class="badge badge-${tx.status==='success'?'success':tx.status==='pending'?'pending':'failed'}">${tx.status}</span></div></div>`).join('')}</div>`:'<div class="empty-state"><p>No transactions</p></div>';return;}catch(e){document.getElementById('adminTxList').innerHTML='<div class="empty-state"><p>Error: '+e.message+'</p></div>';}const txs=s.docs.map(d=>({id:d.id,...d.data()}));document.getElementById('adminTxList').innerHTML=txs.length?`<div class="admin-panel" style="margin:0">${txs.map(tx=>`<div class="admin-table-row"><div class="row-main"><div class="row-title">${tx.description||tx.type}</div><div class="row-sub">${tAgo(tx.createdAt)}</div></div><div style="text-align:right"><div style="font-size:12px;font-weight:700;color:${['fund','fund_approved','admin_credit'].includes(tx.type)?'var(--success-green)':'var(--danger)'}">₦${(tx.amount||0).toLocaleString()}</div><span class="badge badge-${tx.status==='success'?'success':tx.status==='pending'?'pending':'failed'}">${tx.status}</span></div></div>`).join('')}</div>`:'<div class="empty-state"><p>No transactions</p></div>'};
 window.filterAdminTx=(f,el)=>{document.querySelectorAll('#adminTransactions .chip').forEach(c=>c.classList.remove('active'));el.classList.add('active')};
 window.loadAdminAgents=async()=>{const c=document.getElementById('adminAgentsList');const q=query(collection(db,'users'),where('role','==','agent'));const s=await getDocs(q);c.innerHTML=s.empty?'<div class="empty-state"><div class="empty-icon">🏪</div><h4>No agents yet</h4></div>':`<div class="admin-panel" style="margin:0">${s.docs.map(d=>{const u=d.data();return`<div class="user-row"><div class="avatar" style="width:30px;height:30px;font-size:11px">${(u.firstName?.[0]||'?')+(u.lastName?.[0]||'')}</div><div class="user-row-info"><div class="user-row-name">${u.firstName} ${u.lastName}</div><div class="user-row-meta">Level: ${u.agentLevel} · Comm: ₦${(u.agentCommission||0).toLocaleString()}</div></div><span class="badge badge-success">${u.agentLevel}</span></div>`}).join('')}</div>`};
-async function loadAPIConfigs(){try{const snap=await getDoc(doc(db,'settings','apis'));if(snap.exists()){const a=snap.data();['ckUser','ckToken','ckURL'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=a[id]||'';});const pub=a.paystackPub||a.paystackPublic||'';const sec=a.paystackSec||a.paystackSecret||'';const pe=document.getElementById('paystackPub');if(pe)pe.value=pub;const se=document.getElementById('paystackSec');if(se)se.value=sec;const en=document.getElementById('paystackEnabled');if(en)en.checked=a.paystackEnabled!==false;if(pub&&pub.startsWith('pk_'))window._paystackKey=pub;}}catch(e){console.error('loadAPIConfigs:',e);}}
+async function loadAPIConfigs(){try{const snap=await getDoc(doc(db,'settings','apis'));if(snap.exists()){const a=snap.data();['ckUser','ckToken'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=a[id]||'';});const urlEl=document.getElementById('ckURL');if(urlEl)urlEl.value=a.ckURL||'https://www.nellobytesystems.com/';const ckEnEl=document.getElementById('ckEnabled');if(ckEnEl)ckEnEl.checked=a.ckEnabled!==false;const pub=a.paystackPub||a.paystackPublic||'';const sec=a.paystackSec||a.paystackSecret||'';const pe=document.getElementById('paystackPub');if(pe)pe.value=pub;const se=document.getElementById('paystackSec');if(se)se.value=sec;const en=document.getElementById('paystackEnabled');if(en)en.checked=a.paystackEnabled!==false;if(pub&&pub.startsWith('pk_'))window._paystackKey=pub;_ckCreds=null;// will be reloaded on next use
+}}catch(e){console.error('loadAPIConfigs:',e);}}
 window.loadAPISettings=async()=>{await loadAPIConfigs();loadVTU()};
 async function loadVTU(){const el=document.getElementById('vtuList');if(!el)return;try{const s=await getDocs(collection(db,'vtuProviders'));el.innerHTML=s.empty?'<p style="font-size:11px;color:var(--text3);padding:5px 0">No additional providers added.</p>':s.docs.map(d=>{const p=d.data();return`<div class="admin-panel" style="margin:0 0 7px"><div class="admin-table-row"><div class="row-main"><div class="row-title">${p.name}</div><div class="row-sub">${p.url}</div></div><label class="toggle-switch"><input type="checkbox" ${p.enabled?'checked':''} onchange="toggleVTU('${d.id}',this.checked)"><div class="toggle-slider"></div></label></div></div>`}).join('')}catch(e){}}
-window.saveAPISettings=async()=>{const pub=document.getElementById('paystackPub')?.value||'';const sec=document.getElementById('paystackSec')?.value||'';const s={ckUser:document.getElementById('ckUser')?.value||'',ckToken:document.getElementById('ckToken')?.value||'',ckURL:document.getElementById('ckURL')?.value||'',ckEnabled:document.getElementById('ckEnabled')?.checked,paystackPub:pub,paystackPublic:pub,paystackSec:sec,paystackSecret:sec,paystackEnabled:document.getElementById('paystackEnabled')?.checked,updatedAt:serverTimestamp()};await setDoc(doc(db,'settings','apis'),s,{merge:true});if(pub&&pub.startsWith('pk_'))window._paystackKey=pub;showToast('success','Settings saved! Paystack ready.');};
+window.saveAPISettings=async()=>{const pub=document.getElementById('paystackPub')?.value||'';const sec=document.getElementById('paystackSec')?.value||'';const ckUser=document.getElementById('ckUser')?.value||'';const ckKey=document.getElementById('ckToken')?.value||'';const ckUrl=document.getElementById('ckURL')?.value||'https://www.nellobytesystems.com/';const s={ckUser,ckToken:ckKey,ckURL:ckUrl,ckEnabled:document.getElementById('ckEnabled')?.checked,paystackPub:pub,paystackPublic:pub,paystackSec:sec,paystackSecret:sec,paystackEnabled:document.getElementById('paystackEnabled')?.checked,updatedAt:serverTimestamp()};await setDoc(doc(db,'settings','apis'),s,{merge:true});_ckCreds=null;// force reload of CK creds
+if(pub&&pub.startsWith('pk_'))window._paystackKey=pub;showToast('success','Settings saved! ClubKonnect & Paystack configured.');};
 window.showAddAPISheet=()=>showOverlay(`<div class="sheet-title">Add VTU Provider</div><div class="api-field"><label class="api-label">Name</label><input class="api-input" id="newPN" placeholder="Provider Name"></div><div class="api-field"><label class="api-label">API URL</label><input class="api-input" id="newPU" placeholder="https://api.provider.com/"></div><div class="api-field"><label class="api-label">API Key</label><input class="api-input" id="newPK" type="password" placeholder="API key"></div><button class="btn btn-primary" style="margin-top:12px" onclick="saveNewProvider()">Add Provider</button>`);
 window.saveNewProvider=async()=>{const n=document.getElementById('newPN').value;const u=document.getElementById('newPU').value;const k=document.getElementById('newPK').value;if(!n||!u)return showToast('error','Fill required fields');await addDoc(collection(db,'vtuProviders'),{name:n,url:u,apiKey:k,enabled:true,createdAt:serverTimestamp()});showToast('success','Provider added!');closeOverlay();loadVTU()};
 window.toggleVTU=async(id,e)=>{await updateDoc(doc(db,'vtuProviders',id),{enabled:e});showToast(e?'success':'info',`Provider ${e?'enabled':'disabled'}`)};
