@@ -39,9 +39,9 @@ html,body{height:100%;width:100%;overflow:hidden;font-family:var(--font);backgro
 
 /* ── AUTH ── */
 #auth{background:#fff;overflow-y:auto}
-#home,#walletScreen,#profileScreen,#admin,#fundWallet,#adminFundingRequests,#airtimeScreen,#dataScreen,#electricityScreen,#cableTVScreen,#schoolPinScreen,#transferScreen,#historyScreen,#notifications,#referral,#agentScreen,#securityScreen,#supportScreen,#editProfile,#pinScreen,#successScreen,#adminTransactions,#adminAPIs,#adminUsers,#adminWallets,#termsScreen,#adminTerms,#adminSecurity,#kycScreen,#adminKYC,#promoScreen,#adminPromos,#adminSupport,#supportChatScreen,#adminChatReply,#rechargeScreen,#adminRechargeRequests{background:var(--bg)}
+#home,#walletScreen,#profileScreen,#admin,#fundWallet,#adminFundingRequests,#airtimeScreen,#dataScreen,#electricityScreen,#cableTVScreen,#schoolPinScreen,#transferScreen,#historyScreen,#notifications,#referral,#agentScreen,#securityScreen,#supportScreen,#editProfile,#pinScreen,#successScreen,#adminTransactions,#adminAPIs,#adminUsers,#adminWallets,#adminRevenueScreen,#termsScreen,#adminTerms,#adminSecurity,#kycScreen,#adminKYC,#promoScreen,#adminPromos,#adminSupport,#supportChatScreen,#adminChatReply,#rechargeScreen,#adminRechargeRequests{background:var(--bg)}
 /* All non-splash/auth screens get grey background */
-#home,#walletScreen,#servicesScreen,#profileScreen,#admin,#fundWallet,#adminFundingRequests,#airtimeScreen,#dataScreen,#electricityScreen,#cableTVScreen,#schoolPinScreen,#transferScreen,#historyScreen,#notifications,#referral,#agentScreen,#securityScreen,#supportScreen,#editProfile,#adminTransactions,#adminAPIs,#adminServices,#adminPricing,#adminCountries,#adminNotifications,#adminWallets,#adminAgents,#adminUsers,#pinScreen,#successScreen,#termsScreen,#adminTerms,#adminSecurity,#kycScreen,#adminKYC,#promoScreen,#adminPromos,#adminSupport,#supportChatScreen,#adminChatReply,#rechargeScreen,#adminRechargeRequests{background:var(--bg)}
+#home,#walletScreen,#servicesScreen,#profileScreen,#admin,#fundWallet,#adminFundingRequests,#airtimeScreen,#dataScreen,#electricityScreen,#cableTVScreen,#schoolPinScreen,#transferScreen,#historyScreen,#notifications,#referral,#agentScreen,#securityScreen,#supportScreen,#editProfile,#adminTransactions,#adminAPIs,#adminServices,#adminPricing,#adminCountries,#adminNotifications,#adminWallets,#adminRevenueScreen,#adminAgents,#adminUsers,#pinScreen,#successScreen,#termsScreen,#adminTerms,#adminSecurity,#kycScreen,#adminKYC,#promoScreen,#adminPromos,#adminSupport,#supportChatScreen,#adminChatReply,#rechargeScreen,#adminRechargeRequests{background:var(--bg)}
 .auth-logo-bar{background:linear-gradient(145deg,#1E1B4B,#3B3582);padding:44px 24px 26px;display:flex;flex-direction:column;align-items:center;gap:10px}
 .auth-logo-box{width:68px;height:68px;background:white;border-radius:14px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,0.25);padding:6px}
 .auth-logo-box img{width:100%;height:100%;object-fit:contain}
@@ -807,6 +807,8 @@ textarea.form-input{resize:none}
   <div class="admin-nav-grid">
     <div class="admin-nav-card" onclick="navigateTo('adminUsers')"><div class="anc-icon">👥</div><div class="anc-label">Users</div></div>
     <div class="admin-nav-card" onclick="navigateTo('adminTransactions')"><div class="anc-icon">💳</div><div class="anc-label">Transactions</div></div>
+    <!-- Revenue analytics: accurate, source-broken-down revenue dashboard -->
+    <div class="admin-nav-card" onclick="navigateTo('adminRevenueScreen')"><div class="anc-icon">📈</div><div class="anc-label">Revenue</div></div>
     <!-- Funding requests with pending badge -->
     <div class="admin-nav-card" id="fundingNavCard" onclick="navigateTo('adminFundingRequests')"><div class="anc-icon">💰</div><div class="anc-label">Funding</div><div class="anc-badge" id="pendingFundBadge" style="display:none">0</div></div>
     <div class="admin-nav-card" onclick="navigateTo('adminWallets')"><div class="anc-icon">👛</div><div class="anc-label">Wallets</div></div>
@@ -1741,6 +1743,49 @@ textarea.form-input{resize:none}
   </div>
 </div>
 
+<!-- ══ ADMIN REVENUE ANALYTICS ══ -->
+<div class="screen" id="adminRevenueScreen">
+  <div class="navbar light" style="padding-top:42px"><button class="nav-back" onclick="goBack()">←</button><div class="nav-title">Revenue Analytics</div><div style="width:37px"></div></div>
+  <div style="padding:10px 12px 80px">
+    <p style="font-size:11px;color:var(--text3);margin-bottom:10px">Based on completed (successful) transactions only. Revenue = actual fees/margin earned, not transaction face value.</p>
+
+    <!-- Total revenue hero card -->
+    <div class="card" style="background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:white;margin-bottom:10px">
+      <div style="font-size:11px;opacity:.75;font-weight:600">TOTAL REVENUE (ALL TIME)</div>
+      <div id="revTotalAllTime" style="font-family:var(--font-display);font-size:28px;font-weight:800;margin-top:4px">₦0.00</div>
+      <div style="display:flex;gap:14px;margin-top:10px;flex-wrap:wrap">
+        <div><div style="font-size:10px;opacity:.7">Today</div><div id="revToday" style="font-size:14px;font-weight:700">₦0.00</div></div>
+        <div><div style="font-size:10px;opacity:.7">This Week</div><div id="revWeek" style="font-size:14px;font-weight:700">₦0.00</div></div>
+        <div><div style="font-size:10px;opacity:.7">This Month</div><div id="revMonth" style="font-size:14px;font-weight:700">₦0.00</div></div>
+        <div><div style="font-size:10px;opacity:.7">This Year</div><div id="revYear" style="font-size:14px;font-weight:700">₦0.00</div></div>
+      </div>
+    </div>
+
+    <!-- Period selector for the breakdown chart -->
+    <div class="chip-row" style="margin-bottom:10px">
+      <div class="chip active" onclick="setRevPeriod('daily',this)">Daily</div>
+      <div class="chip" onclick="setRevPeriod('weekly',this)">Weekly</div>
+      <div class="chip" onclick="setRevPeriod('monthly',this)">Monthly</div>
+      <div class="chip" onclick="setRevPeriod('yearly',this)">Yearly</div>
+    </div>
+
+    <div class="card" style="margin-bottom:10px">
+      <div class="section-title" id="revPeriodTitle">Daily Revenue (Last 14 days)</div>
+      <div id="revPeriodList"><div class="loading-spinner" style="margin:20px auto"></div></div>
+    </div>
+
+    <div class="card" style="margin-bottom:10px">
+      <div class="section-title">Revenue by Source</div>
+      <div id="revBySource"><div class="loading-spinner" style="margin:20px auto"></div></div>
+    </div>
+
+    <div style="text-align:right">
+      <span id="revLastUpdated" style="font-size:10px;color:var(--text3)"></span>
+      <button class="btn-sm btn-outline" style="margin-left:8px" onclick="loadAdminRevenue()">↻ Refresh</button>
+    </div>
+  </div>
+</div>
+
 <div class="screen" id="adminAgents">
   <div class="navbar light" style="padding-top:42px"><button class="nav-back" onclick="goBack()">←</button><div class="nav-title">Agent Management</div><div style="width:37px"></div></div>
   <div style="padding:10px 12px 20px" id="adminAgentsList"><div class="loading-spinner"></div></div>
@@ -1905,6 +1950,7 @@ window.navigateTo=(id)=>{
   if(id==='walletScreen'){if(_s.user){if(!window._walletListenerStarted){window._walletListenerStarted=true;listenUD(_s.user.uid);}loadWallet();}}
   if(id==='adminUsers')loadAdminUsers();
   if(id==='adminTransactions')loadAdminTxs();
+  if(id==='adminRevenueScreen')loadAdminRevenue();
   if(id==='adminAPIs'){loadAPISettings();loadCompanyAcct()}
   if(id==='adminAgents')loadAdminAgents();
   if(id==='adminCountries')loadCountries();
@@ -2916,7 +2962,7 @@ async function confirmTx(pin){
         // Sender tx record
         t.set(doc(db,'transactions',tid),{
           id:tid,userId:_s.user.uid,type:'transfer',subType:'koborush',status:'success',
-          amount:d.amount,sendAmount:sendAmt,description:d.description,
+          amount:d.amount,sendAmount:sendAmt,fee:d.amount-sendAmt,description:d.description,
           recipientId:d.recipientId,recipient:d.recipient,recipientName:d.recipientName,
           balanceBefore:sbal,balanceAfter:sbal-d.amount,createdAt:serverTimestamp()
         });
@@ -2944,7 +2990,12 @@ async function confirmTx(pin){
       ].map(i=>`<div class="receipt-row"><span class="r-label">${i.l}</span><span class="r-val">${i.v}</span></div>`).join('');
     } else {
       // ── ALL OTHER TRANSACTIONS (airtime, data, electricity, etc. + bank transfer) ──
-      await runTransaction(db,async(t)=>{const uRef=doc(db,'users',_s.user.uid);const us=await t.get(uRef);const bb=us.data().balance;t.update(uRef,{balance:increment(-d.amount),totalSpent:increment(d.amount)});t.set(doc(db,'transactions',tid),{id:tid,userId:_s.user.uid,type:d.type,status:'success',amount:d.amount,description:d.description||d.type,provider:d.provider||'clubkonnect',phone:d.phone||'',meter:d.meter||'',cardNo:d.cardNo||'',recipient:d.recipient||'',balanceBefore:bb,balanceAfter:bb-d.amount,createdAt:serverTimestamp()})});
+      // Revenue note: only bank transfers carry a real, declared fee (amount - sendAmount).
+      // Airtime/data/electricity/cable/school-pin purchases have no markup recorded in this
+      // app's pricing model, so their fee is correctly 0 — they are NOT revenue sources unless
+      // a real margin field is added to their pricing logic.
+      const _txFee=(d.type==='transfer'&&d.sendAmount!=null)?(d.amount-d.sendAmount):0;
+      await runTransaction(db,async(t)=>{const uRef=doc(db,'users',_s.user.uid);const us=await t.get(uRef);const bb=us.data().balance;t.update(uRef,{balance:increment(-d.amount),totalSpent:increment(d.amount)});t.set(doc(db,'transactions',tid),{id:tid,userId:_s.user.uid,type:d.type,status:'success',amount:d.amount,sendAmount:d.sendAmount||null,fee:_txFee,description:d.description||d.type,provider:d.provider||'clubkonnect',phone:d.phone||'',meter:d.meter||'',cardNo:d.cardNo||'',recipient:d.recipient||'',balanceBefore:bb,balanceAfter:bb-d.amount,createdAt:serverTimestamp()})});
       if(ud.agentLevel&&ud.agentLevel!=='standard'){const r={airtime:0.015,data:0.02,electricity:0.005,cabletv:0.01,schoolpin:0.02};const comm=(r[d.type]||0.01)*d.amount;if(comm>0)await updateDoc(doc(db,'users',_s.user.uid),{agentCommission:increment(comm)})}
       await addNotif(_s.user.uid,'✅ Transaction Successful',`${d.description} completed successfully.`,'success');
       navigateTo('successScreen');document.getElementById('successTitle').textContent='Transaction Successful!';document.getElementById('successMsg').textContent=d.description+' processed.';const _rs=csym(_s.userData?.country);document.getElementById('successReceipt').innerHTML=[{l:'Service',v:d.description},{l:'Amount',v:fmt(d.amount,_rs)},{l:'Status',v:'✅ Success'},{l:'Reference',v:tid},{l:'Date',v:new Date().toLocaleString()}].map(i=>`<div class="receipt-row"><span class="r-label">${i.l}</span><span class="r-val">${i.v}</span></div>`).join('');
@@ -3553,19 +3604,173 @@ window.previewTerms=()=>{
   navigateTo('termsScreen');
 };
 
+// ════════════════════════════════
+// REVENUE CALCULATION — standard business model
+// Revenue = actual fees/margin earned on COMPLETED (status:'success') transactions only.
+// We NEVER count the face value of a transaction (e.g. ₦5,000 airtime topped up) as revenue —
+// only the real fee/markup the business earns is revenue. Money coming IN from users funding
+// their wallet (fund / fund_approved / admin_credit / recharge requests) is also excluded:
+// it is a liability/float, not income.
+// ════════════════════════════════
+const NON_REVENUE_TX_TYPES=['fund','fund_approved','admin_credit'];
+function computeTxRevenue(t){
+  if(!t||t.status!=='success')return 0;
+  if(NON_REVENUE_TX_TYPES.includes(t.type))return 0;
+  // Explicit recorded revenue (e.g. recharge_conversion margin) takes priority.
+  if(typeof t.revenue==='number')return Math.max(0,t.revenue);
+  // Explicit fee field (bank transfer, koborush transfer, withdrawal) is the real earned amount.
+  if(typeof t.fee==='number')return Math.max(0,t.fee);
+  // Anything else (airtime, data, electricity, cable, school PIN, etc.) has no recorded markup
+  // in this app's data model — correctly contributes ₦0 to revenue rather than a guessed %.
+  return 0;
+}
+function txSourceLabel(t){
+  const map={
+    transfer:'Transfer Fees', transfer_received:'Transfer Fees', withdrawal:'Withdrawal Fees',
+    recharge_conversion:'Recharge Conversion', airtime:'Airtime', data:'Data Bundles',
+    electricity:'Electricity', cabletv:'Cable TV', schoolpin:'School PINs'
+  };
+  return map[t.type]||(t.type? (t.type.charAt(0).toUpperCase()+t.type.slice(1)) : 'Other');
+}
+
 async function loadAdminDash(){
   if(!_s.isAdmin)return;
   try{
     const us=await getDocs(collection(db,'users'));const ts=await getDocs(collection(db,'transactions'));
-    let rev=0,ag=0;ts.docs.forEach(d=>{const t=d.data();if(t.status==='success'&&!['fund','fund_approved','admin_credit'].includes(t.type))rev+=t.amount*0.01});
+    let rev=0,ag=0;ts.docs.forEach(d=>{rev+=computeTxRevenue(d.data())});
     us.docs.forEach(d=>{if(d.data().agentLevel&&d.data().agentLevel!=='standard')ag++});
-    document.getElementById('adminUserCount').textContent=us.size;document.getElementById('adminRevenue').textContent='₦'+Math.floor(rev).toLocaleString();document.getElementById('adminTxCount').textContent=ts.size;document.getElementById('adminAgentCount').textContent=ag;
+    document.getElementById('adminUserCount').textContent=us.size;document.getElementById('adminRevenue').textContent='₦'+rev.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});document.getElementById('adminTxCount').textContent=ts.size;document.getElementById('adminAgentCount').textContent=ag;
     document.getElementById('adminGreeting').textContent=`Welcome back, ${_s.userData?.firstName||'Admin'}`;
     document.getElementById('adminUsersList').innerHTML=us.docs.slice(-5).reverse().map(d=>{const u=d.data();return`<div class="user-row"><div class="avatar" style="width:30px;height:30px;font-size:11px">${(u.firstName?.[0]||'?')+(u.lastName?.[0]||'')}</div><div class="user-row-info"><div class="user-row-name">${u.firstName||''} ${u.lastName||''}</div><div class="user-row-meta">${u.email}</div></div><span class="badge badge-${u.isActive?'success':'failed'}">${u.isActive?'Active':'Banned'}</span></div>`}).join('');
     document.getElementById('adminAPIStatus').innerHTML=[{name:'ClubKonnect VTU',on:true},{name:'Paystack',on:true},{name:'Manual Funding',on:true}].map(a=>`<div class="admin-table-row"><div class="tx-icon" style="background:${a.on?'#E0FDF4':'#FEF2F2'}">🔌</div><div class="row-main"><div class="row-title">${a.name}</div></div><span class="badge badge-${a.on?'success':'failed'}">${a.on?'Active':'Off'}</span></div>`).join('');
     document.getElementById('adminServiceControls').innerHTML=['Airtime','Data Bundle','Electricity','Cable TV','School PIN','Transfer'].map(s=>`<div class="admin-table-row"><div class="row-main"><div class="row-title">${s}</div></div><label class="toggle-switch"><input type="checkbox" checked onchange="toggleSvc('${s}',this.checked)"><div class="toggle-slider"></div></label></div>`).join('');
   }catch(e){console.error(e)}
 }
+
+// ════════════════════════════════
+// REVENUE ANALYTICS SCREEN
+// All figures below are computed exclusively from completed (status:'success') transactions,
+// using computeTxRevenue() so the numbers always reflect real fees/margin earned — never the
+// raw face value of a transaction.
+// ════════════════════════════════
+let _revPeriod='daily';
+window.setRevPeriod=(p,el)=>{
+  _revPeriod=p;
+  document.querySelectorAll('#adminRevenueScreen .chip').forEach(c=>c.classList.remove('active'));
+  if(el)el.classList.add('active');
+  renderRevPeriodBreakdown();
+};
+
+function startOfDay(d){const x=new Date(d);x.setHours(0,0,0,0);return x;}
+function startOfWeek(d){const x=startOfDay(d);const day=x.getDay();x.setDate(x.getDate()-day);return x;} // week starts Sunday
+function startOfMonth(d){return new Date(d.getFullYear(),d.getMonth(),1);}
+function startOfYear(d){return new Date(d.getFullYear(),0,1);}
+
+async function loadAdminRevenue(){
+  if(!_s.isAdmin)return;
+  const totalEl=document.getElementById('revTotalAllTime');
+  const sourceEl=document.getElementById('revBySource');
+  const periodEl=document.getElementById('revPeriodList');
+  if(!totalEl)return;
+  periodEl.innerHTML='<div class="loading-spinner" style="margin:20px auto"></div>';
+  sourceEl.innerHTML='<div class="loading-spinner" style="margin:20px auto"></div>';
+  try{
+    const ts=await getDocs(collection(db,'transactions'));
+    const now=new Date();
+    const dayStart=startOfDay(now), weekStart=startOfWeek(now), monthStart=startOfMonth(now), yearStart=startOfYear(now);
+
+    let totalAll=0, totalToday=0, totalWeek=0, totalMonth=0, totalYear=0;
+    const bySource={};
+    const txs=[]; // {date, revenue, type}
+
+    ts.docs.forEach(docSnap=>{
+      const t=docSnap.data();
+      const revAmt=computeTxRevenue(t);
+      if(revAmt<=0)return; // only completed transactions with real recorded revenue count
+      const d=t.createdAt?.toDate?t.createdAt.toDate():(t.createdAt?new Date(t.createdAt):now);
+      totalAll+=revAmt;
+      if(d>=dayStart)totalToday+=revAmt;
+      if(d>=weekStart)totalWeek+=revAmt;
+      if(d>=monthStart)totalMonth+=revAmt;
+      if(d>=yearStart)totalYear+=revAmt;
+      const src=txSourceLabel(t);
+      bySource[src]=(bySource[src]||0)+revAmt;
+      txs.push({date:d,revenue:revAmt});
+    });
+
+    totalEl.textContent=fmt(totalAll);
+    document.getElementById('revToday').textContent=fmt(totalToday);
+    document.getElementById('revWeek').textContent=fmt(totalWeek);
+    document.getElementById('revMonth').textContent=fmt(totalMonth);
+    document.getElementById('revYear').textContent=fmt(totalYear);
+
+    // Revenue by source
+    const sortedSources=Object.entries(bySource).sort((a,b)=>b[1]-a[1]);
+    sourceEl.innerHTML=sortedSources.length?`<div class="admin-panel" style="margin:0">${sortedSources.map(([name,amt])=>{
+      const pct=totalAll>0?((amt/totalAll)*100).toFixed(1):'0.0';
+      return `<div class="admin-table-row"><div class="row-main"><div class="row-title">${name}</div><div class="row-sub">${pct}% of total revenue</div></div><div style="font-size:13px;font-weight:700;color:var(--success-green)">${fmt(amt)}</div></div>`;
+    }).join('')}</div>`:'<div class="empty-state"><p>No revenue recorded yet</p></div>';
+
+    window._revTxCache=txs; // cache for period breakdown re-render without refetching
+    renderRevPeriodBreakdown();
+    document.getElementById('revLastUpdated').textContent='Updated '+new Date().toLocaleTimeString();
+  }catch(e){
+    periodEl.innerHTML='<div class="empty-state"><p>Error: '+e.message+'</p></div>';
+    sourceEl.innerHTML='';
+    console.error(e);
+  }
+}
+
+function renderRevPeriodBreakdown(){
+  const periodEl=document.getElementById('revPeriodList');
+  const titleEl=document.getElementById('revPeriodTitle');
+  const txs=window._revTxCache||[];
+  if(!periodEl)return;
+  const buckets={}; // key -> total revenue
+  const order=[]; // ordered keys (most recent first)
+
+  function bucketKey(d){
+    if(_revPeriod==='daily')return d.toISOString().slice(0,10); // YYYY-MM-DD
+    if(_revPeriod==='weekly'){const ws=startOfWeek(d);return ws.toISOString().slice(0,10);}
+    if(_revPeriod==='monthly')return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+    return String(d.getFullYear());
+  }
+  function bucketLabel(key){
+    if(_revPeriod==='daily')return new Date(key+'T00:00:00').toLocaleDateString('en-NG',{day:'numeric',month:'short',year:'numeric'});
+    if(_revPeriod==='weekly'){const d=new Date(key+'T00:00:00');const end=new Date(d);end.setDate(end.getDate()+6);return d.toLocaleDateString('en-NG',{day:'numeric',month:'short'})+' – '+end.toLocaleDateString('en-NG',{day:'numeric',month:'short'});}
+    if(_revPeriod==='monthly'){const [y,m]=key.split('-');return new Date(y,m-1,1).toLocaleDateString('en-NG',{month:'long',year:'numeric'});}
+    return key;
+  }
+
+  txs.forEach(({date,revenue})=>{
+    const k=bucketKey(date);
+    if(!(k in buckets)){buckets[k]=0;order.push(k);}
+    buckets[k]+=revenue;
+  });
+
+  // Sort buckets descending by key (most recent period first) and cap how many we show
+  const sortedKeys=Array.from(new Set(order)).sort().reverse();
+  const limitMap={daily:14,weekly:12,monthly:12,yearly:10};
+  const shownKeys=sortedKeys.slice(0,limitMap[_revPeriod]||14);
+
+  const titles={daily:'Daily Revenue (Last 14 days)',weekly:'Weekly Revenue (Last 12 weeks)',monthly:'Monthly Revenue (Last 12 months)',yearly:'Yearly Revenue'};
+  titleEl.textContent=titles[_revPeriod];
+
+  if(!shownKeys.length){
+    periodEl.innerHTML='<div class="empty-state"><p>No revenue in this period yet</p></div>';
+    return;
+  }
+  const maxVal=Math.max(...shownKeys.map(k=>buckets[k]||0),1);
+  periodEl.innerHTML=shownKeys.map(k=>{
+    const v=buckets[k]||0;
+    const pct=Math.max(2,Math.round((v/maxVal)*100));
+    return `<div style="margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px"><span style="color:var(--text2);font-weight:600">${bucketLabel(k)}</span><span style="font-weight:700;color:var(--text)">${fmt(v)}</span></div>
+      <div style="background:var(--bg);border-radius:99px;height:7px;overflow:hidden"><div style="background:linear-gradient(90deg,var(--primary-mid),var(--accent));height:100%;width:${pct}%;border-radius:99px"></div></div>
+    </div>`;
+  }).join('');
+}
+
 window.toggleSvc=async(n,e)=>{await setDoc(doc(db,'settings','services'),{[n.toLowerCase().replace(/ /g,'_')]:e},{merge:true});showToast(e?'success':'info',`${n} ${e?'enabled':'disabled'}`)};
 window.loadAdminUsers=async()=>{if(!_s.isAdmin)return;document.getElementById('adminUsersFull').innerHTML='<div class="loading-spinner"></div>';const s=await getDocs(collection(db,'users'));_s.allUsers=s.docs.map(d=>({id:d.id,...d.data()}));renderAdminUsers(_s.allUsers)};
 function renderAdminUsers(users){document.getElementById('adminUsersFull').innerHTML=`<div class="admin-panel" style="margin:0">${users.map(u=>`<div class="user-row"><div class="avatar" style="width:30px;height:30px;font-size:11px">${(u.firstName?.[0]||'?')+(u.lastName?.[0]||'')}</div><div class="user-row-info"><div class="user-row-name">${u.firstName||''} ${u.lastName||''}</div><div class="user-row-meta">${u.email} · ${u.country||'NG'} · ₦${(u.balance||0).toLocaleString()}</div></div><div class="user-row-actions"><button class="action-btn action-btn-p" onclick="viewUser('${u.id}')">View</button><button class="action-btn action-btn-d" onclick="toggleUser('${u.id}',${u.isActive})">${u.isActive?'Ban':'Unban'}</button></div></div>`).join('')}</div>`}
@@ -4504,7 +4709,7 @@ window.loadAdminRechargeRequests = async () => {
         <div style="text-align:right">
           <span class="badge badge-${r.status === 'approved' ? 'success' : r.status === 'rejected' ? 'failed' : 'pending'}">${r.status}</span>
           ${r.status === 'pending' ? `<div style="margin-top:6px;display:flex;gap:6px;justify-content:flex-end">
-            <button class="btn btn-sm" style="background:var(--success-green);color:white;font-size:10px;padding:4px 8px;border:none;border-radius:6px;cursor:pointer" onclick="approveRecharge('${r.id}','${r.userId}',${r.creditAmount})">Approve</button>
+            <button class="btn btn-sm" style="background:var(--success-green);color:white;font-size:10px;padding:4px 8px;border:none;border-radius:6px;cursor:pointer" onclick="approveRecharge('${r.id}','${r.userId}',${r.creditAmount},${r.rechargeAmount})">Approve</button>
             <button class="btn btn-sm" style="background:var(--danger);color:white;font-size:10px;padding:4px 8px;border:none;border-radius:6px;cursor:pointer" onclick="rejectRecharge('${r.id}','${r.userId}')">Reject</button>
           </div>` : ''}
         </div>
@@ -4514,14 +4719,17 @@ window.loadAdminRechargeRequests = async () => {
   }
 };
 
-window.approveRecharge = async (reqId, userId, creditAmt) => {
+window.approveRecharge = async (reqId, userId, creditAmt, rechargeAmt) => {
   try {
     await updateDoc(doc(db, 'rechargeRequests', reqId), { status: 'approved' });
     await updateDoc(doc(db, 'users', userId), { balance: increment(creditAmt) });
     const txId = genId(12);
+    // Revenue earned on this conversion = airtime face value received minus cash credited to user.
+    const margin = Math.max(0, (rechargeAmt || 0) - (creditAmt || 0));
     await setDoc(doc(db, 'transactions', txId), {
       id: txId, userId, type: 'recharge_conversion', status: 'success',
-      amount: creditAmt, description: 'Recharge to Cash Conversion', createdAt: serverTimestamp()
+      amount: creditAmt, rechargeAmount: rechargeAmt || null, revenue: margin,
+      description: 'Recharge to Cash Conversion', createdAt: serverTimestamp()
     });
     await addNotif(userId, '✅ Recharge Approved!', `₦${creditAmt?.toLocaleString()} credited to your wallet.`, 'success').catch(() => {});
     showToast('success', 'Approved & wallet credited!');
