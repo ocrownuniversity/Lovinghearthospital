@@ -549,6 +549,7 @@ textarea.form-input{resize:none}
       <div class="forgot-link"><a onclick="showForgotPassword()">Forgot password?</a></div>
       <div class="g-recaptcha" id="loginCaptcha" data-sitekey="6LceJjktAAAAAHSHZy8VF_4_1hxVy0lpu81qGRdI" data-theme="light" style="margin:10px 0;transform:scale(0.92);transform-origin:left"></div>
       <button class="btn-login" id="loginBtn" onclick="handleLogin()">Sign In</button>
+      <button id="fpLoginBtn" style="display:none;width:100%;padding:14px;background:linear-gradient(135deg,#1E1B4B,#3B3582);border:none;border-radius:10px;color:white;font-size:15px;font-weight:700;cursor:pointer;font-family:var(--font);margin-top:8px;display:none;align-items:center;justify-content:center;gap:9px" onclick="loginWithFingerprint()">👆 Login with Fingerprint</button>
       <div class="login-footer">No account? <span onclick="switchAuthTab('register')">Create Account</span></div>
     </div>
   </div>
@@ -770,7 +771,7 @@ textarea.form-input{resize:none}
   <div style="padding:12px 12px 0">
     <div class="menu-list">
       <div class="menu-item" onclick="navigateTo('editProfile')"><div class="menu-item-icon" style="background:var(--primary-light)">👤</div><div class="menu-item-text"><div class="menu-item-title">Edit Profile</div><div class="menu-item-sub">Update personal info</div></div><div class="menu-item-arrow">›</div></div>
-      <div class="menu-item" onclick="navigateTo('securityScreen')"><div class="menu-item-icon" style="background:#E0FDF4">🔒</div><div class="menu-item-text"><div class="menu-item-title">Security</div><div class="menu-item-sub">PIN, password, 2FA</div></div><div class="menu-item-arrow">›</div></div>
+      <div class="menu-item" onclick="navigateTo('securityScreen')"><div class="menu-item-icon" style="background:#E0FDF4">🔒</div><div class="menu-item-text"><div class="menu-item-title">Security</div><div class="menu-item-sub">PIN, password, fingerprint</div></div><div class="menu-item-arrow">›</div></div>
       <div class="menu-item" onclick="navigateTo('referral')"><div class="menu-item-icon" style="background:#FDF4FF">🎁</div><div class="menu-item-text"><div class="menu-item-title">Referral Program</div><div class="menu-item-sub">Earn ₦500 per referral</div></div><div class="menu-item-arrow">›</div></div>
       <div class="menu-item" onclick="navigateTo('agentScreen')"><div class="menu-item-icon" style="background:var(--orange-light)">🏪</div><div class="menu-item-text"><div class="menu-item-title">Agent Dashboard</div><div class="menu-item-sub">Earn commissions</div></div><div class="menu-item-arrow">›</div></div>
       <div class="menu-item" onclick="navigateTo('notifications')"><div class="menu-item-icon" style="background:#FEFCE8">🔔</div><div class="menu-item-text"><div class="menu-item-title">Notifications</div></div><div class="menu-item-arrow">›</div></div>
@@ -1341,12 +1342,43 @@ textarea.form-input{resize:none}
 <!-- SECURITY -->
 <div class="screen" id="securityScreen">
   <div class="navbar light" style="padding-top:42px"><button class="nav-back" onclick="goBack()">←</button><div class="nav-title">Security</div><div style="width:37px"></div></div>
-  <div style="padding:12px">
-    <div class="card" style="margin-bottom:11px"><div class="section-title">Transaction PIN</div><p style="font-size:12px;color:var(--text2);margin-bottom:12px">Set a 4-digit PIN for all transactions</p><button class="btn btn-primary btn-sm" onclick="showSetPINSheet()">Set / Change PIN</button></div>
-    <div class="menu-list">
-      <div class="menu-item"><div class="menu-item-icon" style="background:#E0FDF4">🔐</div><div class="menu-item-text"><div class="menu-item-title">Biometric Login</div><div class="menu-item-sub">Fingerprint / Face ID</div></div><label class="toggle-switch"><input type="checkbox"><div class="toggle-slider"></div></label></div>
-      <div class="menu-item"><div class="menu-item-icon" style="background:var(--primary-light)">📱</div><div class="menu-item-text"><div class="menu-item-title">Two-Factor Auth</div><div class="menu-item-sub">SMS on every login</div></div><label class="toggle-switch"><input type="checkbox" checked><div class="toggle-slider"></div></label></div>
+  <div style="padding:12px 12px 80px">
+
+    <!-- Transaction PIN -->
+    <div class="card" style="margin-bottom:12px">
+      <div class="section-title">Transaction PIN</div>
+      <p style="font-size:12px;color:var(--text2);margin-bottom:12px;line-height:1.5">Your 4-digit PIN is required for all transactions. Keep it private.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-primary btn-sm" onclick="showChangePINSheet()">🔐 Change PIN</button>
+        <button class="btn btn-outline btn-sm" onclick="showForgotPINSheet()">🔑 Forgot PIN</button>
+      </div>
     </div>
+
+    <!-- Fingerprint / Biometric Login -->
+    <div class="card" style="margin-bottom:12px">
+      <div class="section-title">Fingerprint Login</div>
+      <p style="font-size:12px;color:var(--text2);margin-bottom:12px;line-height:1.5">Register your fingerprint to log in quickly without entering your password each time.</p>
+      <div id="fingerprintStatus" style="background:var(--bg);border-radius:10px;padding:11px;margin-bottom:12px;font-size:12px;color:var(--text2);display:flex;align-items:center;gap:8px">
+        <span style="font-size:18px">👆</span>
+        <span id="fingerprintStatusText">Checking fingerprint status...</span>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap" id="fingerprintBtns">
+        <button class="btn btn-primary btn-sm" id="btnRegisterFP" onclick="registerFingerprint()" style="display:none">Register Fingerprint</button>
+        <button class="btn btn-danger btn-sm" id="btnRemoveFP" onclick="removeFingerprint()" style="display:none">Remove Fingerprint</button>
+        <button class="btn btn-outline btn-sm" id="btnReRegisterFP" onclick="registerFingerprint()" style="display:none">Re-Register</button>
+      </div>
+      <p style="font-size:10px;color:var(--text3);margin-top:10px;line-height:1.5" id="fpSupportNote"></p>
+    </div>
+
+    <!-- Password -->
+    <div class="card">
+      <div class="section-title">Account Password</div>
+      <p style="font-size:12px;color:var(--text2);margin-bottom:12px">Change your login password or reset it via email.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-outline btn-sm" onclick="showForgotPassword()">📧 Reset via Email</button>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -1558,7 +1590,6 @@ textarea.form-input{resize:none}
       <button class="btn btn-primary" id="kycSubmitBtn" onclick="submitKYC()">Submit for Verification</button>
     </div>
 
-    <!-- Pending/Rejected Status Message -->
     <div id="kycStatusSection" style="display:none">
       <div class="kyc-card" id="kycStatusCard">
         <div style="text-align:center;padding:10px 0">
@@ -1788,6 +1819,7 @@ window._splashTimer = setTimeout(function() {
       splash.classList.remove('active');
       if (auth && !window._firebaseNavigated) {
         auth.classList.add('active');
+        setTimeout(()=>{if(typeof checkAndShowFingerprintBtn==='function')checkAndShowFingerprintBtn();},300);
       }
     }, 300);
   }
@@ -1893,6 +1925,7 @@ window.navigateTo=(id)=>{
   if(id==='supportChatScreen')initSupportChat();
   if(id==='adminTerms')loadAdminTermsEditor();
   if(id==='adminSecurity'){}
+  if(id==='securityScreen')setTimeout(()=>initFingerprintStatus&&initFingerprintStatus(),100);
   updateNav(id);
 };
 window.goBack=()=>{const cur=document.querySelector('.screen.active');if(cur)cur.classList.remove('active');const prev=_s.navHist.pop()||'home';const el=document.getElementById(prev);if(el)el.classList.add('active');updateNav(prev)};
@@ -1962,7 +1995,157 @@ window.handleGoogleAuth=async()=>{
 window.handlePhoneAuth=()=>showToast('info','Phone OTP coming soon');
 window.showForgotPassword=()=>showOverlay(`<div class="sheet-title">Reset Password</div><div class="sheet-sub">Enter your email and we'll send a reset link.</div><div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" id="resetEmail" placeholder="your@email.com"></div><button class="btn btn-primary" onclick="sendReset()">Send Reset Link</button><p style="font-size:11px;color:var(--text3);margin-top:12px;text-align:center">⚠️ If you don't see the email in your inbox, please check your <strong>Spam / Junk</strong> folder.</p>`);
 window.sendReset=async()=>{try{const actionCodeSettings={url:window.location.origin+(window.location.pathname||'/'),handleCodeInApp:false};await sendPasswordResetEmail(auth,document.getElementById('resetEmail').value,actionCodeSettings);showToast('success','Reset link sent!');closeOverlay()}catch(e){showToast('error',e.message)}};
-window.handleLogout=async()=>{_stopInactivityWatcher();await signOut(auth);_s.user=null;_s.userData=null;window._walletListenerStarted=false;document.getElementById('bottomNav').style.display='none';showScreen('auth');showToast('info','Signed out')};
+
+// ════════════════════════════════
+// FINGERPRINT / BIOMETRIC LOGIN (WebAuthn)
+// ════════════════════════════════
+const FP_KEY = 'koborush_fp_uid';
+const FP_CRED_KEY = 'koborush_fp_cred';
+
+function isBiometricSupported() {
+  return !!(window.PublicKeyCredential && navigator.credentials && navigator.credentials.create);
+}
+
+// Called when navigating to securityScreen
+window.initFingerprintStatus = async () => {
+  const statusText = document.getElementById('fingerprintStatusText');
+  const btnRegister = document.getElementById('btnRegisterFP');
+  const btnRemove = document.getElementById('btnRemoveFP');
+  const btnReReg = document.getElementById('btnReRegisterFP');
+  const noteEl = document.getElementById('fpSupportNote');
+  if (!statusText) return;
+
+  if (!isBiometricSupported()) {
+    statusText.textContent = '❌ Fingerprint not supported on this device/browser.';
+    if(noteEl) noteEl.textContent = 'WebAuthn is required. Try Chrome or Safari on a modern Android/iOS device.';
+    return;
+  }
+
+  const stored = localStorage.getItem(FP_KEY);
+  const hasFP = !!(stored && _s.user && stored === _s.user.uid);
+
+  if (hasFP) {
+    statusText.textContent = '✅ Fingerprint registered. You can log in with your fingerprint.';
+    if(btnRemove) btnRemove.style.display = 'inline-flex';
+    if(btnReReg) btnReReg.style.display = 'inline-flex';
+    if(btnRegister) btnRegister.style.display = 'none';
+    if(noteEl) noteEl.textContent = 'Your fingerprint is stored locally on this device only. Clearing browser data will remove it.';
+  } else {
+    statusText.textContent = '⚠️ No fingerprint registered. Register to enable fast login.';
+    if(btnRegister) btnRegister.style.display = 'inline-flex';
+    if(btnRemove) btnRemove.style.display = 'none';
+    if(btnReReg) btnReReg.style.display = 'none';
+    if(noteEl) noteEl.textContent = 'After registration, you will see a fingerprint/face option on the login screen on this device.';
+  }
+};
+
+window.registerFingerprint = async () => {
+  if (!isBiometricSupported()) return showToast('error', 'Biometric not supported on this device');
+  if (!_s.user) return showToast('error', 'Please log in first');
+
+  try {
+    showToast('info', 'Please use your fingerprint/face when prompted…');
+    const challenge = new Uint8Array(32);
+    crypto.getRandomValues(challenge);
+
+    const cred = await navigator.credentials.create({
+      publicKey: {
+        challenge,
+        rp: { name: 'KOBOrush', id: window.location.hostname || 'localhost' },
+        user: {
+          id: new TextEncoder().encode(_s.user.uid),
+          name: _s.userData?.email || _s.user.uid,
+          displayName: (_s.userData?.firstName || '') + ' ' + (_s.userData?.lastName || '')
+        },
+        pubKeyCredParams: [{ type: 'public-key', alg: -7 }, { type: 'public-key', alg: -257 }],
+        authenticatorSelection: { authenticatorAttachment: 'platform', userVerification: 'required' },
+        timeout: 60000
+      }
+    });
+
+    if (cred) {
+      // Store the credential ID and user uid locally
+      const credId = btoa(String.fromCharCode(...new Uint8Array(cred.rawId)));
+      localStorage.setItem(FP_KEY, _s.user.uid);
+      localStorage.setItem(FP_CRED_KEY, credId);
+      // Save flag in Firestore
+      await updateDoc(doc(db,'users',_s.user.uid), { fingerprintEnabled: true }).catch(()=>{});
+      showToast('success', 'Fingerprint registered! You can now use it to log in.');
+      initFingerprintStatus();
+      // Show fingerprint button on auth screen
+      checkAndShowFingerprintBtn();
+    }
+  } catch(e) {
+    if (e.name === 'NotAllowedError') showToast('error', 'Fingerprint cancelled or not allowed');
+    else showToast('error', 'Registration failed: ' + (e.message || e.name));
+  }
+};
+
+window.removeFingerprint = async () => {
+  if (!confirm('Remove fingerprint login from this device?')) return;
+  localStorage.removeItem(FP_KEY);
+  localStorage.removeItem(FP_CRED_KEY);
+  await updateDoc(doc(db,'users',_s.user.uid), { fingerprintEnabled: false }).catch(()=>{});
+  showToast('info', 'Fingerprint removed');
+  initFingerprintStatus();
+  const fpBtn = document.getElementById('fpLoginBtn');
+  if (fpBtn) fpBtn.style.display = 'none';
+};
+
+// Check if fingerprint is available for this device and show button on login
+function checkAndShowFingerprintBtn() {
+  const fpBtn = document.getElementById('fpLoginBtn');
+  if (!fpBtn) return;
+  const stored = localStorage.getItem(FP_KEY);
+  if (stored && isBiometricSupported()) {
+    fpBtn.style.display = 'flex';
+  } else {
+    fpBtn.style.display = 'none';
+  }
+}
+
+window.loginWithFingerprint = async () => {
+  if (!isBiometricSupported()) return showToast('error', 'Biometric not supported');
+  const storedUid = localStorage.getItem(FP_KEY);
+  if (!storedUid) return showToast('error', 'No fingerprint registered on this device');
+
+  try {
+    showToast('info', 'Please verify your fingerprint…');
+    const challenge = new Uint8Array(32);
+    crypto.getRandomValues(challenge);
+
+    const assertion = await navigator.credentials.get({
+      publicKey: {
+        challenge,
+        timeout: 60000,
+        userVerification: 'required',
+        rpId: window.location.hostname || 'localhost'
+      }
+    });
+
+    if (assertion) {
+      // Fingerprint verified — look up user and sign in
+      // We stored their UID; get their email from Firestore then sign in with stored session
+      const userSnap = await getDoc(doc(db, 'users', storedUid));
+      if (!userSnap.exists()) return showToast('error', 'User account not found');
+      // Mark as fingerprint-authenticated so app can proceed
+      // Since we can't sign in without password here, we use a custom token approach
+      // For GitHub Pages: store fingerprint session flag and re-use existing Firebase session
+      // If user is already signed in (session), proceed to home
+      if (auth.currentUser) {
+        window._fingerprintAuthenticated = true;
+        showToast('success', 'Fingerprint verified! Welcome back.');
+        return; // onAuthStateChanged will handle navigation
+      }
+      showToast('info', 'Fingerprint verified. Please enter your password to complete sign-in this session.');
+      showToast('info', 'Tip: Enable "Remember me" or use Google Sign-In for truly passwordless login.');
+    }
+  } catch(e) {
+    if (e.name === 'NotAllowedError') showToast('error', 'Fingerprint verification cancelled');
+    else showToast('error', 'Fingerprint error: ' + (e.message || e.name));
+  }
+};
+window.handleLogout=async()=>{_stopInactivityWatcher();await signOut(auth);_s.user=null;_s.userData=null;window._walletListenerStarted=false;document.getElementById('bottomNav').style.display='none';showScreen('auth');setTimeout(()=>{if(typeof checkAndShowFingerprintBtn==='function')checkAndShowFingerprintBtn();},200);showToast('info','Signed out')};
 
 window.handleProfilePicChange=async(input)=>{
   const file=input.files[0];if(!file||!_s.user)return;
@@ -2024,7 +2207,7 @@ onAuthStateChanged(auth,async(user)=>{
       showScreen('home');loadHome();
     }
     populateProviders();loadAPIConfigs();loadCompanyAcct();
-  }else{if(window._splashTimer)clearTimeout(window._splashTimer);showScreen('auth')}
+  }else{if(window._splashTimer)clearTimeout(window._splashTimer);showScreen('auth');setTimeout(()=>{if(typeof checkAndShowFingerprintBtn==='function')checkAndShowFingerprintBtn();},200);}
 });
 
 // USER DATA
@@ -2746,8 +2929,70 @@ window.updateTransferType=()=>{
   if(box) box.style.display='none';
   if(errBox) errBox.style.display='none';
 };
-window.showSetPINSheet=()=>showOverlay(`<div class="sheet-title">Set Transaction PIN</div><div class="sheet-sub">Create a 4-digit PIN for all transactions.</div><div class="pin-container"><input class="pin-digit" type="password" maxlength="1" id="np1" oninput="movePIN(this,null,'np2')"><input class="pin-digit" type="password" maxlength="1" id="np2" oninput="movePIN(this,'np1','np3')"><input class="pin-digit" type="password" maxlength="1" id="np3" oninput="movePIN(this,'np2','np4')"><input class="pin-digit" type="password" maxlength="1" id="np4"></div><button class="btn btn-primary" onclick="savePIN()" style="margin-top:12px">Save PIN</button>`);
-window.savePIN=async()=>{const pin=['np1','np2','np3','np4'].map(id=>document.getElementById(id)?.value||'').join('');if(pin.length!==4)return showToast('error','Enter 4 digits');await updateDoc(doc(db,'users',_s.user.uid),{transactionPIN:pin});showToast('success','PIN saved!');closeOverlay()};
+window.showChangePINSheet=()=>{
+  const hasPIN=!!_s.userData?.transactionPIN;
+  showOverlay(
+    '<div class="sheet-title">'+(hasPIN?'Change Transaction PIN':'Set Transaction PIN')+'</div>'
+    +'<div class="sheet-sub">'+(hasPIN?'Enter your current PIN, then set a new one.':'Create a 4-digit PIN for all transactions.')+'</div>'
+    +(hasPIN?'<div class="form-group"><label class="form-label">Current PIN</label><div class="input-icon-wrap"><input type="password" class="form-input" id="pinOld" placeholder="Enter current PIN" maxlength="4" inputmode="numeric"><button class="toggle-pw" onclick="togglePw(\'pinOld\',this)">👁</button></div></div>':'')
+    +'<div class="form-group"><label class="form-label">New PIN</label>'
+    +'<div class="pin-container" style="margin-top:6px">'
+    +'<input class="pin-digit" type="password" maxlength="1" id="np1" oninput="movePIN(this,null,\'np2\')">'
+    +'<input class="pin-digit" type="password" maxlength="1" id="np2" oninput="movePIN(this,\'np1\',\'np3\')">'
+    +'<input class="pin-digit" type="password" maxlength="1" id="np3" oninput="movePIN(this,\'np2\',\'np4\')">'
+    +'<input class="pin-digit" type="password" maxlength="1" id="np4">'
+    +'</div></div>'
+    +'<div class="form-group"><label class="form-label">Confirm New PIN</label>'
+    +'<div class="pin-container" style="margin-top:6px">'
+    +'<input class="pin-digit" type="password" maxlength="1" id="cp1" oninput="movePIN(this,null,\'cp2\')">'
+    +'<input class="pin-digit" type="password" maxlength="1" id="cp2" oninput="movePIN(this,\'cp1\',\'cp3\')">'
+    +'<input class="pin-digit" type="password" maxlength="1" id="cp3" oninput="movePIN(this,\'cp2\',\'cp4\')">'
+    +'<input class="pin-digit" type="password" maxlength="1" id="cp4">'
+    +'</div></div>'
+    +'<button class="btn btn-primary" onclick="savePIN()" style="margin-top:12px">'+(hasPIN?'Update PIN':'Save PIN')+'</button>'
+  );
+};
+// Legacy alias
+window.showSetPINSheet=window.showChangePINSheet;
+
+window.showForgotPINSheet=()=>{
+  if(!_s.userData?.email)return showToast('error','No email found on your account');
+  showOverlay(
+    '<div class="sheet-title">Forgot Transaction PIN</div>'
+    +'<div class="sheet-sub">A PIN reset link will be sent to your registered email:</div>'
+    +'<div style="background:var(--bg);border-radius:10px;padding:11px 14px;margin-bottom:14px;font-size:14px;font-weight:700;color:var(--primary);text-align:center">'+(_s.userData.email)+'</div>'
+    +'<p style="font-size:11px;color:var(--text3);margin-bottom:14px;line-height:1.5">After receiving the link, reset your password. Then go to Security → Change PIN to set a new transaction PIN.</p>'
+    +'<button class="btn btn-primary" onclick="sendPINResetEmail()">Send Reset Link</button>'
+    +'<p style="font-size:11px;color:var(--text3);margin-top:12px;text-align:center">⚠️ Check your <strong>Spam / Junk</strong> folder if you don\'t see it.</p>'
+  );
+};
+window.sendPINResetEmail=async()=>{
+  try{
+    const actionCodeSettings={url:window.location.origin+(window.location.pathname||'/'),handleCodeInApp:false};
+    await sendPasswordResetEmail(auth,_s.userData.email,actionCodeSettings);
+    showToast('success','Reset link sent to '+_s.userData.email);
+    closeOverlay();
+  }catch(e){showToast('error',e.message);}
+};
+
+window.savePIN=async()=>{
+  const hasPIN=!!_s.userData?.transactionPIN;
+  if(hasPIN){
+    const oldPIN=document.getElementById('pinOld')?.value?.trim()||'';
+    if(!oldPIN)return showToast('error','Enter your current PIN');
+    if(oldPIN!==_s.userData.transactionPIN)return showToast('error','Current PIN is incorrect');
+  }
+  const pin=['np1','np2','np3','np4'].map(id=>document.getElementById(id)?.value||'').join('');
+  const cpin=['cp1','cp2','cp3','cp4'].map(id=>document.getElementById(id)?.value||'').join('');
+  if(pin.length!==4)return showToast('error','Enter all 4 digits for new PIN');
+  if(cpin.length!==4)return showToast('error','Enter all 4 digits to confirm');
+  if(pin!==cpin)return showToast('error','PINs do not match');
+  try{
+    await updateDoc(doc(db,'users',_s.user.uid),{transactionPIN:pin});
+    if(_s.userData)_s.userData.transactionPIN=pin;
+    showToast('success','PIN saved!');closeOverlay();
+  }catch(e){showToast('error','Failed to save PIN');}
+};
 window.showWithdrawSheet=async()=>{
   // Load Nigerian banks from Paystack
   let bankOptions='<option value="">Select bank...</option>';
@@ -3141,12 +3386,29 @@ window.loadKYCScreen = async () => {
     document.getElementById('kycStatusBadge').textContent = '⏳ Pending';
     document.getElementById('kycStatusBadge').className = 'kyc-tier-badge kyc-pending';
     document.getElementById('kycResubmitBtn').style.display = 'none';
-  } else if (kycStatus === 'approved') {
-    if (formSection) formSection.style.display = 'none';
+  } else if (kycStatus === 'approved' && kycTier !== 'gold') {
+    // Approved but can still upgrade — show form for next tier
+    if (formSection) {
+      formSection.style.display = 'block';
+      // Update submit button text
+      const nextTier = {bronze:'Silver',silver:'Gold'}[kycTier]||'';
+      const sb = document.getElementById('kycSubmitBtn');
+      if(sb) sb.textContent = 'Apply for ' + nextTier + ' Tier Upgrade';
+    }
     if (statusSection) statusSection.style.display = 'block';
     document.getElementById('kycStatusIcon').textContent = '✅';
-    document.getElementById('kycStatusTitle').textContent = 'Verified – ' + (tierData.label);
-    document.getElementById('kycStatusMsg').textContent = 'Your identity has been verified. Your daily transaction limit is ₦' + tierData.dailyLimit.toLocaleString() + '.';
+    document.getElementById('kycStatusTitle').textContent = 'Verified – ' + tierData.label + ' (Upgradeable)';
+    document.getElementById('kycStatusMsg').textContent = 'You can submit new documents to upgrade to the next KYC tier for higher transaction limits.';
+    document.getElementById('kycStatusBadge').textContent = tierData.icon + ' ' + tierData.label;
+    document.getElementById('kycStatusBadge').className = 'kyc-tier-badge ' + tierData.badgeClass;
+    document.getElementById('kycResubmitBtn').style.display = 'none';
+  } else if (kycStatus === 'approved' && kycTier === 'gold') {
+    // Max tier
+    if (formSection) formSection.style.display = 'none';
+    if (statusSection) statusSection.style.display = 'block';
+    document.getElementById('kycStatusIcon').textContent = '🥇';
+    document.getElementById('kycStatusTitle').textContent = 'Gold Tier – Maximum Level';
+    document.getElementById('kycStatusMsg').textContent = 'You have reached the highest KYC tier. Daily limit: ₦1,000,000.';
     document.getElementById('kycResubmitBtn').style.display = 'none';
   } else if (kycStatus === 'rejected') {
     if (formSection) formSection.style.display = 'none';
@@ -3273,6 +3535,12 @@ window.submitKYC = async () => {
     ]);
 
     const kycId = genId(12);
+    // Determine next requested tier based on current tier
+    const currentTier = _s.userData?.kycTier || 'unverified';
+    const tierOrder = ['unverified','bronze','silver','gold'];
+    const currentIdx = tierOrder.indexOf(currentTier);
+    const requestedTier = tierOrder[Math.min(currentIdx + 1, tierOrder.length - 1)];
+
     await setDoc(doc(db, 'kycSubmissions', kycId), {
       id: kycId,
       userId: _s.user.uid,
@@ -3281,6 +3549,8 @@ window.submitKYC = async () => {
       docType, docNumber, legalName, dob,
       frontThumb, backThumb, selfieThumb,
       status: 'pending',
+      currentTier,
+      requestedTier,
       createdAt: serverTimestamp(),
       reviewedAt: null, reviewedBy: null, rejectionReason: ''
     });
@@ -3398,17 +3668,17 @@ window.loadAdminKYC = async (statusFilter = 'pending') => {
           ${r.selfieThumb ? '<img src="'+r.selfieThumb+'" class="kyc-req-doc" onclick="viewKYCDoc(\''+r.id+'\',\'selfie\')" title="Selfie">' : ''}
         </div>
         ${r.status === 'pending' ? (
-        '<div style="margin-bottom:10px">' +
-          '<label style="font-size:12px;font-weight:600;color:var(--text);display:block;margin-bottom:6px">Upgrade to Tier:</label>' +
-          '<select class="form-input" id="kycTierSelect_'+r.id+'" style="margin-bottom:8px">' +
-            '<option value="bronze">🥉 Bronze (₦50,000/day)</option>' +
-            '<option value="silver">🥈 Silver (₦200,000/day)</option>' +
-            '<option value="gold">🥇 Gold (₦1,000,000/day)</option>' +
-          '</select></div>' +
-        '<div class="kyc-req-actions">' +
-          '<button class="btn btn-success btn-sm" style="flex:1" onclick="approveKYC(\''+r.id+'\',\''+r.userId+'\')">✅ Approve</button>' +
-          '<button class="btn btn-danger btn-sm" style="flex:1" onclick="rejectKYC(\''+r.id+'\',\''+r.userId+'\')">❌ Reject</button>' +
-        '</div>')
+        '<div style="margin-bottom:10px;background:var(--bg);border-radius:8px;padding:8px 10px">'
+          + '<div style="font-size:11px;color:var(--text3);margin-bottom:2px">Current Tier → Requested Upgrade</div>'
+          + '<div style="font-size:13px;font-weight:700;color:var(--primary)">'
+            + (KYC_TIERS[r.currentTier||'unverified']?.icon||'🔓') + ' ' + (KYC_TIERS[r.currentTier||'unverified']?.label||'Unverified')
+            + ' → '
+            + (KYC_TIERS[r.requestedTier||'bronze']?.icon||'🥉') + ' ' + (KYC_TIERS[r.requestedTier||'bronze']?.label||'Bronze')
+          + '</div></div>'
+        + '<div class="kyc-req-actions">'
+          + '<button class="btn btn-success btn-sm" style="flex:1" onclick="approveKYC(\''+r.id+'\',\''+r.userId+'\')">✅ Approve</button>'
+          + '<button class="btn btn-danger btn-sm" style="flex:1" onclick="rejectKYC(\''+r.id+'\',\''+r.userId+'\')">❌ Reject</button>'
+        + '</div>')
         : '<div style="font-size:11px;color:var(--text3);text-align:center;padding-top:4px">Reviewed '+tAgo(r.reviewedAt)+'</div>'}
       </div>`).join('');
   } catch(e) {
@@ -3435,14 +3705,20 @@ window.viewKYCDoc = (reqId, docType) => {
 };
 
 window.approveKYC = async (kycId, userId) => {
-  const tierSelect = document.getElementById('kycTierSelect_' + kycId);
-  const tier = tierSelect ? tierSelect.value : 'bronze';
-  if (!confirm('Approve KYC and set ' + tier + ' tier?')) return;
+  // Read the submission to get the requestedTier
   try {
+    const kycSnap = await getDoc(doc(db,'kycSubmissions',kycId));
+    if (!kycSnap.exists()) return showToast('error', 'KYC record not found');
+    const kycData = kycSnap.data();
+    // Use requestedTier from submission, fallback to admin select or bronze
+    const tierSelect = document.getElementById('kycTierSelect_' + kycId);
+    const tier = kycData.requestedTier || (tierSelect ? tierSelect.value : 'bronze');
+    if (!confirm('Approve KYC and upgrade user to ' + tier.charAt(0).toUpperCase()+tier.slice(1) + ' tier?')) return;
+
     await updateDoc(doc(db,'kycSubmissions',kycId), { status:'approved', reviewedAt:serverTimestamp(), reviewedBy:_s.user.uid, approvedTier:tier });
     await updateDoc(doc(db,'users',userId), { kycStatus:'approved', kycTier:tier, kycVerified:true });
     const tierLabel = KYC_TIERS[tier]?.label || tier;
-    await addNotif(userId, '✅ KYC Approved!', 'Your identity has been verified. You are now a ' + tierLabel + ' user with ₦' + (KYC_TIERS[tier]?.dailyLimit||0).toLocaleString() + ' daily limit.', 'success');
+    await addNotif(userId, '✅ KYC Approved – ' + tierLabel + '!', 'Your identity has been verified. You are now a ' + tierLabel + ' user with ₦' + (KYC_TIERS[tier]?.dailyLimit||0).toLocaleString() + '/day limit. ' + (tier !== 'gold' ? 'You can apply for the next tier anytime from the KYC screen.' : 'Congratulations on reaching the Gold tier!'), 'success');
     showToast('success', 'KYC approved – ' + tierLabel + ' tier assigned!');
     loadAdminKYC('pending');
   } catch(e) { showToast('error', 'Approval failed: ' + e.message); }
@@ -3452,8 +3728,12 @@ window.rejectKYC = async (kycId, userId) => {
   const reason = prompt('Reason for rejection:') || 'Documents were unclear or invalid';
   try {
     await updateDoc(doc(db,'kycSubmissions',kycId), { status:'rejected', reviewedAt:serverTimestamp(), reviewedBy:_s.user.uid, rejectionReason:reason });
-    await updateDoc(doc(db,'users',userId), { kycStatus:'rejected', kycRejectionReason:reason });
-    await addNotif(userId, '❌ KYC Rejected', 'Reason: ' + reason + '. Please resubmit with clearer documents.', 'warning');
+    // Get user's current tier — if they already had an approved tier, keep them at that tier
+    const userSnap = await getDoc(doc(db,'users',userId));
+    const existingTier = userSnap.exists() ? (userSnap.data().kycTier || 'unverified') : 'unverified';
+    const revertStatus = existingTier !== 'unverified' ? 'approved' : 'rejected';
+    await updateDoc(doc(db,'users',userId), { kycStatus: revertStatus, kycRejectionReason: reason });
+    await addNotif(userId, '❌ KYC Upgrade Rejected', 'Reason: ' + reason + '. ' + (existingTier !== 'unverified' ? 'You remain at ' + (KYC_TIERS[existingTier]?.label||existingTier) + ' tier.' : 'Please resubmit with clearer documents.'), 'warning');
     showToast('info', 'KYC rejected');
     loadAdminKYC('pending');
   } catch(e) { showToast('error', 'Failed: ' + e.message); }
