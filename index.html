@@ -39,9 +39,9 @@ html,body{height:100%;width:100%;overflow:hidden;font-family:var(--font);backgro
 
 /* ── AUTH ── */
 #auth{background:#fff;overflow-y:auto}
-#home,#walletScreen,#profileScreen,#admin,#fundWallet,#adminFundingRequests,#airtimeScreen,#dataScreen,#electricityScreen,#cableTVScreen,#schoolPinScreen,#transferScreen,#historyScreen,#notifications,#referral,#agentScreen,#securityScreen,#supportScreen,#editProfile,#pinScreen,#successScreen,#adminTransactions,#adminAPIs,#adminUsers,#adminWallets,#adminRevenueScreen,#termsScreen,#adminTerms,#adminSecurity,#kycScreen,#adminKYC,#promoScreen,#adminPromos,#adminSupport,#supportChatScreen,#adminChatReply,#rechargeScreen,#adminRechargeRequests{background:var(--bg)}
+#home,#walletScreen,#profileScreen,#admin,#fundWallet,#adminFundingRequests,#airtimeScreen,#dataScreen,#electricityScreen,#cableTVScreen,#bettingScreen,#schoolPinScreen,#transferScreen,#historyScreen,#notifications,#referral,#agentScreen,#securityScreen,#supportScreen,#editProfile,#pinScreen,#successScreen,#adminTransactions,#adminAPIs,#adminUsers,#adminWallets,#adminRevenueScreen,#termsScreen,#adminTerms,#adminSecurity,#kycScreen,#adminKYC,#promoScreen,#adminPromos,#adminSupport,#supportChatScreen,#adminChatReply,#rechargeScreen,#adminRechargeRequests{background:var(--bg)}
 /* All non-splash/auth screens get grey background */
-#home,#walletScreen,#servicesScreen,#profileScreen,#admin,#fundWallet,#adminFundingRequests,#airtimeScreen,#dataScreen,#electricityScreen,#cableTVScreen,#schoolPinScreen,#transferScreen,#historyScreen,#notifications,#referral,#agentScreen,#securityScreen,#supportScreen,#editProfile,#adminTransactions,#adminAPIs,#adminServices,#adminPricing,#adminCountries,#adminNotifications,#adminWallets,#adminRevenueScreen,#adminAgents,#adminUsers,#pinScreen,#successScreen,#termsScreen,#adminTerms,#adminSecurity,#kycScreen,#adminKYC,#promoScreen,#adminPromos,#adminSupport,#supportChatScreen,#adminChatReply,#rechargeScreen,#adminRechargeRequests{background:var(--bg)}
+#home,#walletScreen,#servicesScreen,#profileScreen,#admin,#fundWallet,#adminFundingRequests,#airtimeScreen,#dataScreen,#electricityScreen,#cableTVScreen,#bettingScreen,#schoolPinScreen,#transferScreen,#historyScreen,#notifications,#referral,#agentScreen,#securityScreen,#supportScreen,#editProfile,#adminTransactions,#adminAPIs,#adminServices,#adminPricing,#adminCountries,#adminNotifications,#adminWallets,#adminRevenueScreen,#adminAgents,#adminUsers,#pinScreen,#successScreen,#termsScreen,#adminTerms,#adminSecurity,#kycScreen,#adminKYC,#promoScreen,#adminPromos,#adminSupport,#supportChatScreen,#adminChatReply,#rechargeScreen,#adminRechargeRequests{background:var(--bg)}
 .auth-logo-bar{background:linear-gradient(145deg,#1E1B4B,#3B3582);padding:44px 24px 26px;display:flex;flex-direction:column;align-items:center;gap:10px}
 .auth-logo-box{width:68px;height:68px;background:white;border-radius:14px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,0.25);padding:6px}
 .auth-logo-box img{width:100%;height:100%;object-fit:contain}
@@ -660,6 +660,7 @@ textarea.form-input{resize:none}
         <div class="action-item" onclick="navigateTo('dataScreen')"><div class="action-icon ai-blue">🌐</div><div class="action-label">Data</div></div>
         <div class="action-item" onclick="navigateTo('cableTVScreen')"><div class="action-icon ai-red">📺</div><div class="action-label">Cable TV</div></div>
         <div class="action-item" onclick="navigateTo('electricityScreen')"><div class="action-icon ai-orange">💡</div><div class="action-label">Electricity</div></div>
+        <div class="action-item" onclick="navigateTo('bettingScreen')"><div class="action-icon" style="background:#ECFDF5">🎯</div><div class="action-label">Betting</div></div>
         <div class="action-item" onclick="navigateTo('fundWallet')"><div class="action-icon ai-teal">💳</div><div class="action-label">Fund Wallet</div></div>
         <div class="action-item" onclick="navigateTo('historyScreen')"><div class="action-icon ai-pink">📋</div><div class="action-label">History</div></div>
         <div class="action-item" onclick="navigateTo('transferScreen')"><div class="action-icon ai-yellow">💸</div><div class="action-label">Transfer</div></div>
@@ -752,6 +753,7 @@ textarea.form-input{resize:none}
     <div class="svc-card" onclick="navigateTo('dataScreen')"><div class="svc-icon" style="background:#F5F3FF">📡</div><div class="svc-name">Data Bundle</div><div class="svc-desc">Best data rates</div></div>
     <div class="svc-card" onclick="navigateTo('electricityScreen')"><div class="svc-icon" style="background:var(--orange-light)">⚡</div><div class="svc-name">Electricity</div><div class="svc-desc">All DISCOs covered</div></div>
     <div class="svc-card" onclick="navigateTo('cableTVScreen')"><div class="svc-icon" style="background:#FEF2F2">📺</div><div class="svc-name">Cable TV</div><div class="svc-desc">DSTV, GOtv, Startimes</div></div>
+    <div class="svc-card" onclick="navigateTo('bettingScreen')"><div class="svc-icon" style="background:#ECFDF5">🎯</div><div class="svc-name">Betting Wallet</div><div class="svc-desc">Fund your betting account</div></div>
     <div class="svc-card" onclick="navigateTo('schoolPinScreen')"><div class="svc-icon" style="background:#E0FDF4">🎓</div><div class="svc-name">School PIN</div><div class="svc-desc">WAEC, NECO, JAMB</div></div>
     <div class="svc-card" onclick="navigateTo('transferScreen')"><div class="svc-icon" style="background:#FEFCE8">💸</div><div class="svc-name">Send Money</div><div class="svc-desc">Bank & wallet transfer</div></div>
     <div class="svc-card" onclick="navigateTo('kycScreen')"><div class="svc-icon" style="background:#E0F2FE">🪪</div><div class="svc-name">KYC Verification</div><div class="svc-desc">Unlock higher limits</div></div>
@@ -1063,6 +1065,23 @@ textarea.form-input{resize:none}
     <button class="btn btn-primary" onclick="proceedToPIN('cabletv')">Continue</button>
   </div>
 </div>
+
+<!-- BETTING -->
+<div class="screen svc-form" id="bettingScreen">
+  <div style="background:linear-gradient(145deg,#1E1B4B,#3B3582);padding:48px 16px 20px">
+    <div style="display:flex;align-items:center;gap:9px;margin-bottom:14px"><button class="nav-back white" onclick="goBack()">←</button><div style="font-family:var(--font-display);font-size:16px;font-weight:700;color:white">Betting Wallet</div></div>
+    <div style="font-size:10px;color:rgba(255,255,255,.5);margin-bottom:8px;font-weight:600;letter-spacing:.5px">SELECT BETTING COMPANY</div>
+    <div class="provider-grid" id="bettingProv"></div>
+  </div>
+  <div class="svc-form-body">
+    <div class="form-group"><label class="form-label">Customer ID</label><input type="text" class="form-input" id="bettingCustomerId" placeholder="e.g. 57025731" onblur="verifyBettingCustomer()"></div>
+    <div id="betting-verify-info" class="hidden" style="font-size:12px;margin:-8px 0 10px"></div>
+    <div class="form-group"><label class="form-label">Amount (₦)</label><input type="number" class="form-input" id="bettingAmt" placeholder="Min ₦100"></div>
+    <div class="chip-row"><div class="chip" onclick="setVal('bettingAmt',100)">₦100</div><div class="chip" onclick="setVal('bettingAmt',500)">₦500</div><div class="chip" onclick="setVal('bettingAmt',1000)">₦1K</div><div class="chip" onclick="setVal('bettingAmt',5000)">₦5K</div></div>
+    <button class="btn btn-primary" onclick="proceedToPIN('betting')">Continue</button>
+  </div>
+</div>
+
 
 <!-- SCHOOL PIN -->
 <div class="screen svc-form" id="schoolPinScreen">
@@ -2671,8 +2690,8 @@ async function loadRecentTx(){
 
 function txHTML(tx){
   const ic=['fund','referral_bonus','admin_credit','fund_approved','transfer_received','recharge_conversion'].includes(tx.type);
-  const icons={airtime:'📱',data:'📡',electricity:'⚡',cabletv:'📺',schoolpin:'🎓',fund:'💳',fund_approved:'✅',transfer:'💸',transfer_received:'💰',referral_bonus:'🎁',admin_credit:'💰',recharge_conversion:'💱'};
-  const bg={airtime:'#E0F7FF',data:'#F5F3FF',electricity:'#FEF0E6',cabletv:'#FEF2F2',fund:'#E0FDF4',fund_approved:'#D1FAE5',transfer:'#FEFCE8',transfer_received:'#E0FDF4',schoolpin:'#E0FDF4',recharge_conversion:'#FFF7E0'};
+  const icons={airtime:'📱',data:'📡',electricity:'⚡',cabletv:'📺',betting:'🎯',schoolpin:'🎓',fund:'💳',fund_approved:'✅',transfer:'💸',transfer_received:'💰',referral_bonus:'🎁',admin_credit:'💰',recharge_conversion:'💱'};
+  const bg={airtime:'#E0F7FF',data:'#F5F3FF',electricity:'#FEF0E6',cabletv:'#FEF2F2',betting:'#ECFDF5',fund:'#E0FDF4',fund_approved:'#D1FAE5',transfer:'#FEFCE8',transfer_received:'#E0FDF4',schoolpin:'#E0FDF4',recharge_conversion:'#FFF7E0'};
   const s=csym(_s.userData?.country||'NG');
   return`<div class="tx-item"><div class="tx-icon" style="background:${bg[tx.type]||'#F8FAFC'}">${icons[tx.type]||'💳'}</div><div class="tx-info"><div class="tx-name">${tx.description||tx.type}</div><div class="tx-meta">${tAgo(tx.createdAt)} · <span class="badge badge-${tx.status==='success'?'success':tx.status==='pending'?'pending':tx.status==='review'?'review':'failed'}">${tx.status}</span></div></div><div class="tx-amt"><div class="tx-amt-val ${ic?'cr':'dr'}">${ic?'+':'-'}${fmt(tx.amount,s)}</div></div></div>`;
 }
@@ -3053,6 +3072,19 @@ function populateProviders(){
     {n:'GOtv',logo:mkLogo('GOtv','#E87722'),id:'gotv'},
     {n:'Startimes',logo:mkLogo('STAR','#C8102E'),id:'startimes'}
   ];
+  // Betting company codes confirmed from ClubKonnect's own live "Available
+  // Betting Companies" table (account CK101282080).
+  const BT=[
+    {n:'Nairabet',logo:mkLogo('NAIR','#00843D'),id:'product-nairabet'},
+    {n:'BangBet',logo:mkLogo('BANG','#E40000'),id:'product-bang-bet'},
+    {n:'BetWay',logo:mkLogo('BETW','#00A859'),id:'product-bet-way'},
+    {n:'BetLand',logo:mkLogo('BETL','#1A3A6B'),id:'product-bet-land'},
+    {n:'BetKing',logo:mkLogo('BETK','#000000'),id:'product-bet-king'},
+    {n:'1xBet',logo:mkLogo('1XBT','#1A6B3A'),id:'product-1x-bet'},
+    {n:'NaijaBet',logo:mkLogo('NJBT','#8B1A1A'),id:'product-naija-bet'},
+    {n:'SportyBet',logo:mkLogo('SPRT','#E60000'),id:'prd-sporty-bet'},
+    {n:'MerryBet',logo:mkLogo('MRRY','#6B2D8B'),id:'product-merry-bet'}
+  ];
   const SC=[
     {n:'WAEC',logo:mkLogo('WAEC','#00843D'),id:'waec'},
     {n:'NECO',logo:mkLogo('NECO','#1B4F8A'),id:'neco'},
@@ -3060,7 +3092,7 @@ function populateProviders(){
     {n:'NABTEB',logo:mkLogo('NABT','#8B0000'),id:'nabteb'}
   ];
   const rp=(id,items)=>{const el=document.getElementById(id);if(!el)return;el.innerHTML=items.map((p,i)=>`<div class="prov-opt ${i===0?'selected':''}" onclick="selProv('${id}','${p.id}',this)">${p.logo}<span class="prov-label">${p.n}</span></div>`).join('');_s.selProv[id]=items[0].id};
-  rp('airtimeProv',AT);rp('dataProv',DT);rp('elecProv',EL);rp('cableProv',CB);rp('schoolProv',SC);
+  rp('airtimeProv',AT);rp('dataProv',DT);rp('elecProv',EL);rp('cableProv',CB);rp('bettingProv',BT);rp('schoolProv',SC);
   // Load live data plans from ClubKonnect for default network (MTN)
   loadCKDataPlans('mtn');
   loadCKCablePackages('dstv');
@@ -3075,6 +3107,7 @@ window.selProv=(grid,id,el)=>{document.querySelectorAll(`#${grid} .prov-opt`).fo
   if(grid==='dataProv') loadCKDataPlans(id);
   if(grid==='cableProv') loadCKCablePackages(id);
   if(grid==='schoolProv') loadCKSchoolPlans();
+  if(grid==='bettingProv') verifyBettingCustomer();
 };
 window.selPlan=(el,name,price)=>{el.closest('.data-plans').querySelectorAll('.plan-opt').forEach(p=>p.classList.remove('selected'));el.classList.add('selected');_s.selPlan={name,price}};
 
@@ -3084,6 +3117,7 @@ window.proceedToPIN=async(svc)=>{
   if(svc==='airtime'){const ph=document.getElementById('airtimePhone').value;const am=document.getElementById('airtimeAmt').value;if(!ph||!am)return showToast('error','Fill all fields');_s.pendingData={type:'airtime',phone:ph,amount:parseFloat(am),provider:_s.selProv['airtimeProv']||'mtn',description:`Airtime – ${ph}`};sum=`<div class="sum-row"><span class="sum-lbl">Phone</span><span class="sum-val">${ph}</span></div><div class="sum-row"><span class="sum-lbl">Network</span><span class="sum-val">${(_s.selProv['airtimeProv']||'MTN').toUpperCase()}</span></div><div class="sum-row"><span class="sum-lbl">Amount</span><span class="sum-val" style="color:var(--primary)">₦${parseFloat(am).toLocaleString()}</span></div>`}
   else if(svc==='data'){const ph=document.getElementById('dataPhone').value;if(!ph||!_s.selPlan)return showToast('error','Fill all fields');_s.pendingData={type:'data',phone:ph,amount:_s.selPlan.price,provider:_s.selProv['dataProv']||'mtn',planCode:_s.selPlan.code||'',description:`${_s.selPlan.name} Data – ${ph}`};sum=`<div class="sum-row"><span class="sum-lbl">Plan</span><span class="sum-val">${_s.selPlan.name}</span></div><div class="sum-row"><span class="sum-lbl">Phone</span><span class="sum-val">${ph}</span></div><div class="sum-row"><span class="sum-lbl">Amount</span><span class="sum-val" style="color:var(--primary)">₦${_s.selPlan.price.toLocaleString()}</span></div>`}
   else if(svc==='electricity'){const mt=document.getElementById('elecMeter').value;const am=document.getElementById('elecAmt').value;if(!mt||!am)return showToast('error','Fill all fields');_s.pendingData={type:'electricity',meter:mt,amount:parseFloat(am),provider:_s.selProv['elecProv']||'ikedc',meterType:document.getElementById('elecMeterType').value,description:`Electricity – ${mt}`};sum=`<div class="sum-row"><span class="sum-lbl">Meter</span><span class="sum-val">${mt}</span></div><div class="sum-row"><span class="sum-lbl">DISCO</span><span class="sum-val">${(_s.selProv['elecProv']||'ikedc').toUpperCase()}</span></div><div class="sum-row"><span class="sum-lbl">Amount</span><span class="sum-val" style="color:var(--primary)">₦${parseFloat(am).toLocaleString()}</span></div>`}
+  else if(svc==='betting'){const cid=document.getElementById('bettingCustomerId').value;const am=document.getElementById('bettingAmt').value;const bc=_s.selProv['bettingProv']||'product-nairabet';if(!cid||!am)return showToast('error','Fill all fields');_s.pendingData={type:'betting',customerId:cid,amount:parseFloat(am),provider:bc,description:`Betting Wallet Funding – ${cid}`};sum=`<div class="sum-row"><span class="sum-lbl">Customer ID</span><span class="sum-val">${cid}</span></div><div class="sum-row"><span class="sum-lbl">Company</span><span class="sum-val">${bc.replace(/^prod(uct)?-|^prd-/,'').replace(/-/g,' ').toUpperCase()}</span></div><div class="sum-row"><span class="sum-lbl">Amount</span><span class="sum-val" style="color:var(--primary)">₦${parseFloat(am).toLocaleString()}</span></div>`}
   else if(svc==='cabletv'){const cd=document.getElementById('cableCardNo').value;const ph=document.getElementById('cablePhone')?.value||'';if(!cd||!_s.selPlan)return showToast('error','Fill all fields');_s.pendingData={type:'cabletv',cardNo:cd,phone:ph,amount:_s.selPlan.price,provider:_s.selProv['cableProv']||'dstv',plan:_s.selPlan.name,planCode:_s.selPlan.code||'',description:`${_s.selPlan.name} Cable – ${cd}`};sum=`<div class="sum-row"><span class="sum-lbl">Card No</span><span class="sum-val">${cd}</span></div><div class="sum-row"><span class="sum-lbl">Package</span><span class="sum-val">${_s.selPlan.name}</span></div><div class="sum-row"><span class="sum-lbl">Amount</span><span class="sum-val" style="color:var(--primary)">₦${_s.selPlan.price.toLocaleString()}</span></div>`}
   else if(svc==='schoolpin'){const qty=parseInt(document.getElementById('schoolPinQty').value);const ph=document.getElementById('schoolPhone').value;const ex=_s.selProv['schoolProv']||'waec';if(!ph)return showToast('error','Fill all fields');if(!_s.selPlan)return showToast('error','Price not loaded for this exam body yet');const tot=_s.selPlan.price*qty;_s.pendingData={type:'schoolpin',exam:ex,jambType:ex==='jamb'?(_s.selPlan.code||'utme-no-mock'):'',quantity:qty,phone:ph,amount:tot,planCode:_s.selPlan.code||'',description:`${ex.toUpperCase()} PIN x${qty}`};sum=`<div class="sum-row"><span class="sum-lbl">Exam</span><span class="sum-val">${ex.toUpperCase()}</span></div><div class="sum-row"><span class="sum-lbl">Qty</span><span class="sum-val">${qty}</span></div><div class="sum-row"><span class="sum-lbl">Price/PIN</span><span class="sum-val">₦${_s.selPlan.price.toLocaleString()}</span></div><div class="sum-row"><span class="sum-lbl">Total</span><span class="sum-val" style="color:var(--primary)">₦${tot.toLocaleString()}</span></div>`}
   else if(svc==='transfer'){
@@ -3141,6 +3175,9 @@ cable           : 'APICableTVV1.asp',
 cableVerify     : 'APIVerifyCableTVV1.asp',
 electricity     : 'APIElectricityV1.asp',
 electricityVerify: 'APIVerifyElectricityV1.asp',
+betting         : 'APIBettingV1.asp',
+bettingVerify   : 'APIVerifyBettingV1.asp',
+bettingPlans    : 'APIBettingTypeV2.asp',
 balance         : 'APIWalletBalance.asp',
 dataPlans       : 'APIDataBundlePlansV2.asp',
 cablePlans      : 'APICableTVPackagesV2.asp',
@@ -3826,6 +3863,23 @@ PhoneNo        : phone,
 RequestID      : reqId
 },{ type:'electricity', amount, userId:_s.user?.uid||'' });
 }
+// Betting wallet funding — confirmed params from ClubKonnect's own live
+// docs: BettingCompany (e.g. "product-nairabet"), CustomerID, Amount,
+// RequestID, CallBackURL. No PhoneNo parameter for this endpoint.
+async function apiBetting(bettingCompany, customerId, amount, reqId){
+return apiFetch('betting',{
+BettingCompany: bettingCompany,
+CustomerID    : customerId,
+Amount        : amount,
+RequestID     : reqId
+},{ type:'betting', amount, userId:_s.user?.uid||'' });
+}
+async function apiVerifyBettingCustomer(bettingCompany, customerId){
+return apiFetch('bettingVerify',{
+BettingCompany: bettingCompany,
+CustomerID    : customerId
+},{ type:'diag' });
+}
 async function checkTxStatus(requestId){
 return apiFetch('status',{ RequestID:requestId },{ type:'status_check' });
 }
@@ -4034,6 +4088,36 @@ window.selCKCable = (el, code, name, price) => {
   _s.selPlan = { name, price: Number(price), code };
 };
 
+// ── Betting customer verification (optional, mirrors ClubKonnect's
+// "Verify Customer ID" endpoint). Runs when company changes or customer
+// ID field loses focus; purely informational, never blocks Continue. ──
+window.verifyBettingCustomer = async () => {
+  const infoEl = document.getElementById('betting-verify-info');
+  const company = _s.selProv['bettingProv'] || 'product-nairabet';
+  const cid = document.getElementById('bettingCustomerId')?.value?.trim();
+  if(!infoEl) return;
+  if(!cid){ infoEl.classList.add('hidden'); infoEl.textContent=''; return; }
+  infoEl.classList.remove('hidden');
+  infoEl.style.color = 'var(--text3)';
+  infoEl.textContent = 'Verifying customer ID…';
+  await loadApiConfig();
+  try{
+    const res = await apiVerifyBettingCustomer(company, cid);
+    const name = res?.customer_name || res?.CustomerName || '';
+    if(name && !/error|invalid/i.test(name)){
+      infoEl.style.color = 'var(--success-green)';
+      infoEl.innerHTML = '✓ '+name;
+    } else {
+      infoEl.style.color = '#dc2626';
+      infoEl.textContent = '⚠ Could not verify this Customer ID.';
+    }
+  }catch(e){
+    infoEl.style.color = '#dc2626';
+    infoEl.textContent = '⚠ '+e.message;
+  }
+};
+
+
 // ── School PIN live pricing (WAEC / JAMB via Nellobytesystems) ──
 // NOTE: Nellobytesystems only documents APIWAECV1.asp (WAEC result-checker
 // PINs) and APIJAMBV1.asp (JAMB e-PINs). There is no NECO or NABTEB
@@ -4149,6 +4233,8 @@ async function executeCKVTU(d, tid){
     apiResult = await apiCable(d.cardNo||'', provId, d.planCode||'', d.amount, ref, d.phone||'');
   } else if(d.type==='electricity'){
     apiResult = await apiElectricity(d.meter||'', d.provider||'', d.meterType||'prepaid', d.amount, d.phone||'', ref);
+  } else if(d.type==='betting'){
+    apiResult = await apiBetting(d.provider||'product-nairabet', d.customerId||'', d.amount, ref);
   } else if(d.type==='schoolpin'){
     const examType = (d.exam||'WAEC').toUpperCase();
     if(examType==='JAMB'){
@@ -4225,7 +4311,7 @@ async function confirmTx(pin){
     } else {
       // ── VTU / BANK TRANSFER TRANSACTIONS ──
       const _txFee=(d.type==='transfer'&&d.sendAmount!=null)?(d.amount-d.sendAmount):0;
-      const VTU_TYPES = ['airtime','data','electricity','cabletv','schoolpin'];
+      const VTU_TYPES = ['airtime','data','electricity','cabletv','schoolpin','betting'];
       const isVTU = VTU_TYPES.includes(d.type);
 
       // 1. Deduct wallet first
@@ -4300,7 +4386,7 @@ async function confirmTx(pin){
       }
 
       // 4. Agent commission
-      if(ud.agentLevel&&ud.agentLevel!=='standard'){const r={airtime:0.015,data:0.02,electricity:0.005,cabletv:0.01,schoolpin:0.02};const comm=(r[d.type]||0.01)*d.amount;if(comm>0)await updateDoc(doc(db,'users',_s.user.uid),{agentCommission:increment(comm)})}
+      if(ud.agentLevel&&ud.agentLevel!=='standard'){const r={airtime:0.015,data:0.02,electricity:0.005,cabletv:0.01,schoolpin:0.02,betting:0.005};const comm=(r[d.type]||0.01)*d.amount;if(comm>0)await updateDoc(doc(db,'users',_s.user.uid),{agentCommission:increment(comm)})}
 
       await addNotif(_s.user.uid,'✅ Transaction Successful',`${d.description} completed successfully.`,'success');
       navigateTo('successScreen');
@@ -4951,7 +5037,7 @@ function txSourceLabel(t){
   const map={
     transfer:'Transfer Fees', transfer_received:'Transfer Fees', withdrawal:'Withdrawal Fees',
     recharge_conversion:'Recharge Conversion', airtime:'Airtime', data:'Data Bundles',
-    electricity:'Electricity', cabletv:'Cable TV', schoolpin:'School PINs'
+    electricity:'Electricity', cabletv:'Cable TV', betting:'Betting Wallet', schoolpin:'School PINs'
   };
   return map[t.type]||(t.type? (t.type.charAt(0).toUpperCase()+t.type.slice(1)) : 'Other');
 }
@@ -5106,6 +5192,9 @@ const CK_DEFAULT_ENDPOINTS = {
   cableVerify:      'APIVerifyCableTVV1.asp',
   electricity:      'APIElectricityV1.asp',
   electricityVerify:'APIVerifyElectricityV1.asp',
+  betting:          'APIBettingV1.asp',
+  bettingVerify:    'APIVerifyBettingV1.asp',
+  bettingPlans:     'APIBettingTypeV2.asp',
   balance:          'APIWalletBalance.asp',
   dataPlans:        'APIDataBundlePlansV2.asp',
   cablePlans:       'APICableTVPackagesV2.asp',
