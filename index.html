@@ -3144,35 +3144,33 @@ function _ckURL(endpoint, params){
   return base + '?' + q.toString();
 }
 
-// Generic CK fetch — returns parsed JSON
-async function _ckFetch(endpoint, params){
-  const creds = await _loadCKCreds();
-  if(!creds) throw new Error('ClubKonnect not configured. Ask admin to enter credentials in API Management.');
-  const url = _ckURL(endpoint, params);
-  const resp = await fetch(url);
-  if(!resp.ok) throw new Error('ClubKonnect HTTP ' + resp.status);
-  const text = await resp.text();
-  try{ return JSON.parse(text); }catch(e){ throw new Error('Invalid response from ClubKonnect: ' + text.substring(0,80)); }
+// ── Unified CK fetch — logs every call, returns parsed JSON ──
+async function _ckFetch(endpoint, params, txRef){
+  await _loadCKCreds();
+  if(!_ckCreds) throw new Error('ClubKonnect not configured. Go to Admin → VTU API → Settings.');
+  let httpCode = 0;
+  const epName = Object.entries(CK_DEFAULT_ENDPOINTS||{}).find(([,v])=>v===endpoint)?.[0] || endpoint;
+  try{
+    const url = _ckURL(endpoint, params);
+    const resp = await fetch(url);
+    httpCode = resp.status;
+    const text = await resp.text();
+    let json;
+    try{ json = JSON.parse(text); }
+    catch(e){ throw new Error('Non-JSON response: ' + text.substring(0,100)); }
+    _logAPI(epName, txRef||'', httpCode===200?'completed':'error', httpCode, _s.user?.uid, json);
+    // HTTP 200 is the transport success — CK business errors are in the JSON body
+    return json;
+  }catch(e){
+    _logAPI(epName, txRef||'', 'error', httpCode, _s.user?.uid, null);
+    throw e;
+  }
 }
 
 // Network code map  (ClubKonnect codes)
 const _ckNet = { mtn:'01', glo:'02', airtel:'03', '9mobile':'04', etisalat:'04', mtngh:'05', vodafone:'06' };
 
 // Check CK wallet balance (admin)
-window.checkCKWalletBalance = async () => {
-  const balEl = document.getElementById('ckWalletBal');
-  if(balEl){ balEl.style.display='block'; balEl.textContent='Checking balance…'; }
-  try{
-    const data = await _ckFetch('APIWalletBalance.asp', {});
-    const bal = data?.WALLET_BALANCE ?? data?.Balance ?? data?.balance ?? JSON.stringify(data);
-    if(balEl) balEl.textContent = 'CK Wallet Balance: ₦' + Number(bal).toLocaleString();
-    showToast('success', 'CK Balance: ₦' + Number(bal).toLocaleString());
-  }catch(e){
-    if(balEl) balEl.textContent = 'Balance check failed: ' + e.message;
-    showToast('error', e.message);
-  }
-};
-
 // Load data plans from ClubKonnect for a network
 window.loadCKDataPlans = async (network) => {
   const dp = document.getElementById('dataPlans');
@@ -4300,40 +4298,13 @@ const CK_DEFAULT_ENDPOINTS = {
 window._apiLogs = window._apiLogs || [];
 
 // Save to logs
-function _logAPI(type, ref, status, httpCode, userId){
-  window._apiLogs.unshift({ type, ref:ref||'—', status, httpCode, userId:userId||'—', ts: new Date() });
+function _logAPI(type, ref, status, httpCode, userId, responseData){
+  window._apiLogs.unshift({ type, ref:ref||'—', status, httpCode, userId:userId||'—', ts: new Date(), response: responseData||null });
   if(window._apiLogs.length > 50) window._apiLogs = window._apiLogs.slice(0,50);
-  // Persist to Firestore (best-effort, no await)
   try{
     addDoc(collection(db,'apiLogs'),{type,ref:ref||'',status,httpCode:httpCode||0,userId:userId||'',ts:serverTimestamp()}).catch(()=>{});
   }catch(e){}
 }
-
-// Patch _ckFetch to log calls
-const _origCKFetch = window._ckFetch || (async()=>{});
-async function _ckFetchLogged(endpoint, params, txRef){
-  let httpCode = 0;
-  const epName = Object.entries(CK_DEFAULT_ENDPOINTS).find(([,v])=>v===endpoint)?.[0] || endpoint;
-  try{
-    const creds = await _loadCKCreds();
-    if(!creds) throw new Error('Not configured');
-    const url = _ckURL(endpoint, params);
-    const resp = await fetch(url);
-    httpCode = resp.status;
-    const text = await resp.text();
-    let json;
-    try{ json = JSON.parse(text); }catch(e){ throw new Error('Bad JSON: '+text.substring(0,60)); }
-    const ok = httpCode===200;
-    _logAPI(epName, txRef||'', ok?'completed':'error', httpCode, _s.user?.uid);
-    if(!ok) throw new Error('HTTP '+httpCode);
-    return json;
-  }catch(e){
-    _logAPI(epName, txRef||'', 'error', httpCode, _s.user?.uid);
-    throw e;
-  }
-}
-// Override global _ckFetch
-window._ckFetch = async (endpoint, params, txRef) => _ckFetchLogged(endpoint, params, txRef);
 
 // ── Provider / Sub-tab switching ──
 window.switchVTUProv = (prov, el) => {
@@ -4510,11 +4481,12 @@ window.runDiagnostics = async () => {
   if(btn) btn.disabled = true;
   await _loadCKCreds(true);
 
+  // Only use READ-ONLY endpoints for diagnostics — never send real transactions
   const tests = [
-    { key:'balance',   label:'Wallet Balance',   ep:'balance',   params:{} },
-    { key:'dataPlans', label:'Data Plans (MTN)',  ep:'dataPlans', params:{MobileNetwork:'01'} },
-    { key:'cablePlans',label:'Cable Packages',    ep:'cablePlans',params:{} },
-    { key:'airtime',   label:'Airtime (dry run)', ep:'airtime',   params:{MobileNumber:'08012345678',MobileNetwork:'01',Amount:100,RequestID:'DIAG_'+Date.now()} },
+    { key:'balance',    label:'Wallet Balance',        ep:'balance',    params:{} },
+    { key:'dataPlans',  label:'Data Plans (MTN)',       ep:'dataPlans',  params:{MobileNetwork:'01'} },
+    { key:'cablePlans', label:'Cable TV Packages',      ep:'cablePlans', params:{} },
+    { key:'waecPlans',  label:'WAEC Packages (read)',   ep:'waecPlans',  params:{ExamType:'WAEC'} },
   ];
 
   const rows = [];
@@ -4522,7 +4494,7 @@ window.runDiagnostics = async () => {
     const epFile = document.getElementById(`ep_${t.key}`)?.value || CK_DEFAULT_ENDPOINTS[t.key];
     let ok = false, msg = '';
     try{
-      const r = await window._ckFetch(epFile, t.params, 'DIAG_'+Date.now());
+      const r = await _ckFetch(epFile, t.params, 'DIAG_'+Date.now());
       ok = true;
       msg = 'HTTP 200 · OK';
     }catch(e){ msg = e.message || 'Failed'; }
@@ -4602,7 +4574,7 @@ window.checkTXStatus = async () => {
     }
     // Then check CK API
     const epFile = document.getElementById('ep_status')?.value || CK_DEFAULT_ENDPOINTS.status;
-    const data = await window._ckFetch(epFile, {RequestID: ref}, ref);
+    const data = await _ckFetch(epFile, {RequestID: ref}, ref);
     if(resEl) resEl.innerHTML = '<b>ClubKonnect Response:</b><br><pre style="font-size:11px;white-space:pre-wrap">'+JSON.stringify(data,null,2).substring(0,600)+'</pre>';
   }catch(e){
     if(resEl) resEl.innerHTML = '<span style="color:var(--danger)">Error: '+e.message+'</span>';
@@ -4615,7 +4587,7 @@ window.checkCKWalletBalance = async () => {
   if(balEl){ balEl.textContent = '⏳ Checking…'; }
   try{
     const epFile = document.getElementById('ep_balance')?.value || CK_DEFAULT_ENDPOINTS.balance;
-    const data = await window._ckFetch(epFile, {}, 'balance-check');
+    const data = await _ckFetch(epFile, {}, 'balance-check');
     const bal = data?.WALLET_BALANCE ?? data?.Balance ?? data?.balance ?? '—';
     if(balEl) balEl.textContent = '₦' + Number(bal).toLocaleString(undefined,{minimumFractionDigits:2});
     showToast('success', 'CK Balance: ₦' + Number(bal).toLocaleString());
