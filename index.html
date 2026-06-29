@@ -150,7 +150,30 @@ select.form-input{cursor:pointer;-webkit-appearance:none;background-image:url("d
 .badge-pending{background:#FEF3C7;color:#92400E}
 .badge-failed{background:#FEE2E2;color:#991B1B}
 .badge-review{background:#DBEAFE;color:#1E40AF}
-/* ── KYC VERIFICATION ── */
+/* ── VTU ADMIN PANEL ── */
+.vtu-prov-tab{padding:8px 14px;border-radius:20px;font-size:12px;font-weight:600;color:rgba(255,255,255,.6);cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all .2s}
+.vtu-prov-tab.active{background:rgba(255,255,255,.15);color:white}
+.vtu-sub-tab{padding:8px 14px;border-radius:10px 10px 0 0;font-size:12px;font-weight:600;color:rgba(255,255,255,.55);cursor:pointer;white-space:nowrap;flex-shrink:0;border:none;background:transparent;font-family:var(--font);transition:all .2s}
+.vtu-sub-tab.active{background:white;color:var(--primary)}
+.vtu-field-group{margin-bottom:14px}
+.vtu-label{display:block;font-size:12px;font-weight:600;color:var(--text2);margin-bottom:5px}
+.vtu-input{width:100%;padding:13px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:var(--font);color:var(--text);background:white;outline:none;transition:border-color .2s}
+.vtu-input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(59,53,130,.08)}
+.vtu-input.stale{border-color:var(--orange);background:#FFFBEB}
+.endpoint-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.endpoint-label{font-size:11px;color:var(--text3);font-weight:600;width:100px;flex-shrink:0}
+.endpoint-input{flex:1;padding:9px 11px;border:1.5px solid var(--border);border-radius:8px;font-size:12px;font-family:var(--font);color:var(--text);outline:none;transition:border-color .2s}
+.endpoint-input:focus{border-color:var(--primary)}
+.endpoint-input.stale{border-color:var(--orange);background:#FFFBEB}
+.diag-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.diag-item:last-child{border-bottom:none}
+.diag-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.diag-ok{background:#D1FAE5;color:#065F46}.diag-fail{background:#FEE2E2;color:#991B1B}.diag-run{background:#DBEAFE;color:#1E40AF}
+.log-item{border-radius:12px;border:1.5px solid var(--border);padding:12px;margin-bottom:10px;position:relative;overflow:hidden}
+.log-item::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:12px 0 0 12px}
+.log-ok::before{background:var(--success-green)}.log-err::before{background:var(--danger)}.log-pending::before{background:var(--warning)}
+.log-badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:99px;font-size:10px;font-weight:700;margin-right:6px}
+.log-badge-ok{background:#D1FAE5;color:#065F46}.log-badge-err{background:#FEE2E2;color:#991B1B}
 
 /* ── REFERRAL DASHBOARD ── */
 .ref-link-box{background:white;border:2px dashed var(--primary);border-radius:14px;padding:14px;margin-bottom:12px;text-align:center}
@@ -1654,44 +1677,188 @@ textarea.form-input{resize:none}
 </div>
 
 <div class="screen" id="adminAPIs">
-  <div class="navbar light" style="padding-top:42px"><button class="nav-back" onclick="goBack()">←</button><div class="nav-title">API Management</div><button class="nav-action" onclick="showAddAPISheet()">＋</button></div>
-  <div style="padding:10px 12px 90px">
-    <div class="section-title">ClubKonnect VTU</div>
-    <div class="admin-panel" style="margin:0 0 12px">
-      <div class="api-form">
-        <div class="api-field"><label class="api-label">UserID (ClubKonnect login)</label><input class="api-input" id="ckUser" placeholder="Your ClubKonnect UserID"></div>
-        <div class="api-field"><label class="api-label">APIKey</label><input class="api-input" id="ckToken" type="password" placeholder="Your ClubKonnect APIKey"></div>
-        <div class="api-field"><label class="api-label">Base URL</label><input class="api-input" id="ckURL" value="https://www.nellobytesystems.com/"></div>
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-size:12px;font-weight:600;color:var(--text)">Enable ClubKonnect</span><label class="toggle-switch"><input type="checkbox" id="ckEnabled" checked><div class="toggle-slider"></div></label></div>
-        <div id="ckWalletBal" style="background:var(--primary-light);border-radius:8px;padding:8px 10px;font-size:12px;color:var(--primary);font-weight:600;display:none">CK Wallet Balance: Loading…</div>
-      </div>
-      <div style="padding:12px;display:flex;gap:8px">
-        <button class="btn btn-primary" style="flex:2" onclick="saveAPISettings()">Save Settings</button>
-        <button class="btn btn-outline" style="flex:1;font-size:13px" onclick="checkCKWalletBalance()">Check Balance</button>
-      </div>
+  <!-- Header -->
+  <div style="background:linear-gradient(135deg,#1E1B4B,#3B3582);padding:44px 14px 0;position:sticky;top:0;z-index:10">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <button class="nav-back white" onclick="goBack()">←</button>
+      <div style="font-family:var(--font-display);font-size:17px;font-weight:700;color:white">VTU API</div>
+      <div style="width:37px"></div>
     </div>
-    <div class="section-title">Company Bank Account (for Funding)</div>
-    <div class="admin-panel" style="margin:0 0 12px">
-      <div class="api-form">
-        <div class="api-field"><label class="api-label">Bank Name</label><input class="api-input" id="coBankName" placeholder="e.g. Wema Bank"></div>
-        <div class="api-field"><label class="api-label">Account Number</label><input class="api-input" id="coAcctNo" placeholder="0123456789"></div>
-        <div class="api-field"><label class="api-label">Account Name</label><input class="api-input" id="coAcctName" placeholder="KOBOrush Ltd"></div>
-      </div>
-      <div style="padding:12px"><button class="btn btn-primary" onclick="saveCompanyAccount()">Save Account Details</button></div>
+    <!-- Provider tabs -->
+    <div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:0;-webkit-overflow-scrolling:touch">
+      <div class="vtu-prov-tab active" id="vtuprov-ck" onclick="switchVTUProv('ck',this)">⚙️ Nellobytesystems</div>
+      <div class="vtu-prov-tab" id="vtuprov-bank" onclick="switchVTUProv('bank',this)">🏦 Bank Account</div>
+      <div class="vtu-prov-tab" id="vtuprov-pay" onclick="switchVTUProv('pay',this)">💳 Paystack</div>
     </div>
-    <div class="section-title">Payment Gateways</div>
-    <div class="admin-panel" style="margin:0 0 12px">
-      <div class="api-form">
-        <div class="api-field"><label class="api-label">Paystack Public Key</label><input class="api-input" id="paystackPub" placeholder="pk_live_..."></div>
-        <div class="api-field"><label class="api-label">Paystack Secret Key</label><input class="api-input" id="paystackSec" type="password" placeholder="sk_live_..."></div>
-        <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:12px;font-weight:600;color:var(--text)">Enable Paystack</span><label class="toggle-switch"><input type="checkbox" id="paystackEnabled" checked><div class="toggle-slider"></div></label></div>
-      </div>
-      <div style="padding:12px"><button class="btn btn-primary" onclick="saveAPISettings()">Save Gateways</button></div>
+    <!-- Sub tabs -->
+    <div style="display:flex;gap:6px;padding:10px 0 0;overflow-x:auto;-webkit-overflow-scrolling:touch" id="vtuSubTabs">
+      <button class="vtu-sub-tab active" id="subtab-settings" onclick="switchVTUTab('settings',this)">⚙️ Settings</button>
+      <button class="vtu-sub-tab" id="subtab-diagnostics" onclick="switchVTUTab('diagnostics',this)">🔬 Diagnostics</button>
+      <button class="vtu-sub-tab" id="subtab-logs" onclick="switchVTUTab('logs',this)">📋 API Logs</button>
+      <button class="vtu-sub-tab" id="subtab-txstatus" onclick="switchVTUTab('txstatus',this)">🔍 TX Status</button>
     </div>
-    <div class="section-title">Additional Providers</div>
-    <div id="vtuList"></div>
-    <button class="btn btn-outline" style="margin-top:8px" onclick="showAddAPISheet()">＋ Add Provider</button>
   </div>
+
+  <div style="overflow-y:auto;padding:14px 12px 100px">
+
+    <!-- ── CK PROVIDER PANEL ── -->
+    <div id="vtuprov-ck-panel">
+
+      <!-- SETTINGS TAB -->
+      <div id="vtutab-settings">
+        <div style="background:white;border-radius:16px;padding:16px;box-shadow:var(--shadow);margin-bottom:12px">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
+            <div>
+              <div style="font-size:16px;font-weight:700;color:var(--text)">API Settings</div>
+              <div style="font-size:11px;color:var(--text3);margin-top:2px">Nellobytesystems VTU integration — credentials stored securely in database</div>
+            </div>
+            <label class="toggle-switch"><input type="checkbox" id="ckEnabled" checked onchange="scheduleVTUSave()"><div class="toggle-slider"></div></label>
+          </div>
+          <div style="font-size:10px;font-weight:600;color:var(--success-green);margin-bottom:12px" id="ckEnabledLabel">● Enabled</div>
+
+          <div class="vtu-field-group">
+            <label class="vtu-label">Provider Name</label>
+            <input class="vtu-input" id="ckProvName" value="Nellobytesystems" oninput="scheduleVTUSave()">
+          </div>
+          <div class="vtu-field-group">
+            <label class="vtu-label">Base URL</label>
+            <input class="vtu-input" id="ckURL" value="https://www.nellobytesystems.com/" oninput="scheduleVTUSave()">
+          </div>
+          <div class="vtu-field-group">
+            <label class="vtu-label">User ID</label>
+            <input class="vtu-input" id="ckUser" placeholder="e.g. CK100352389" oninput="scheduleVTUSave()">
+          </div>
+          <div class="vtu-field-group">
+            <label class="vtu-label" style="display:flex;align-items:center;gap:6px">
+              API Key
+              <span id="ckKeyHint" style="font-size:10px;color:var(--orange);font-weight:600;background:var(--orange-light);padding:2px 6px;border-radius:99px;display:none">Enter after deployment</span>
+            </label>
+            <input class="vtu-input" id="ckToken" type="password" placeholder="Your ClubKonnect APIKey" oninput="onCKKeyInput()">
+            <div id="ckKeySavedHint" style="font-size:10px;color:var(--text3);margin-top:4px;display:none">Leave blank to keep your current key. Only fill this in to change it.</div>
+            <button id="ckClearKeyBtn" style="display:none;width:100%;margin-top:8px;padding:10px;background:#FEF2F2;border:1px solid #FCA5A5;border-radius:8px;color:var(--danger);font-size:12px;font-weight:600;cursor:pointer" onclick="clearCKKey()">🗑 Clear Saved Key (use if it's stuck/corrupted)</button>
+          </div>
+          <div class="vtu-field-group">
+            <label class="vtu-label" style="color:var(--text3)">Callback URL <span style="font-size:10px">(optional)</span></label>
+            <input class="vtu-input" id="ckCallback" placeholder="https://yourapp.com/callback" oninput="scheduleVTUSave()">
+          </div>
+
+          <!-- Factory Reset -->
+          <div style="background:#FEF2F2;border:1px solid #FCA5A5;border-radius:12px;padding:14px;margin-top:8px">
+            <div style="font-size:13px;font-weight:700;color:var(--danger);margin-bottom:6px">Factory Reset</div>
+            <div style="font-size:11px;color:#7f1d1d;line-height:1.6;margin-bottom:10px">Wipes ALL saved VTU settings (key, endpoints, base URL) back to clean app defaults. Only your VTU config is affected — no user accounts, balances, or transactions are touched.</div>
+            <button class="btn btn-danger" onclick="vtuFactoryReset()">⚠ Factory Reset VTU Config</button>
+          </div>
+        </div>
+
+        <!-- Editable Endpoints -->
+        <div style="background:white;border-radius:16px;padding:16px;box-shadow:var(--shadow);margin-bottom:12px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+            <div style="font-size:11px;font-weight:700;color:var(--text3);letter-spacing:.5px">API ENDPOINTS</div>
+            <button style="background:#FEFCE8;border:1px solid #FDE047;border-radius:8px;padding:5px 10px;font-size:11px;font-weight:700;color:#713f12;cursor:pointer" onclick="resetEndpointsToDefault()">⚡ Reset to Latest</button>
+          </div>
+          <div style="font-size:10px;color:var(--text3);margin-bottom:12px">Highlighted fields differ from the current app's built-in defaults — usually means they're stale.</div>
+          <div id="endpointsList"></div>
+          <div style="display:flex;gap:8px;margin-top:14px">
+            <button class="btn btn-outline" style="flex:1;font-size:13px" onclick="switchVTUTab('diagnostics',document.getElementById('subtab-diagnostics'))">🔗 Test Connection</button>
+            <button class="btn btn-primary" style="flex:1;font-size:13px" onclick="saveAPISettings()">💾 Save Config</button>
+          </div>
+        </div>
+
+        <!-- Company Bank Account -->
+        <div style="background:white;border-radius:16px;padding:16px;box-shadow:var(--shadow);margin-bottom:12px">
+          <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:12px">🏦 Payment Gateways</div>
+          <div class="vtu-field-group">
+            <label class="vtu-label">Paystack Public Key</label>
+            <input class="vtu-input" id="paystackPub" placeholder="pk_live_...">
+          </div>
+          <div class="vtu-field-group">
+            <label class="vtu-label">Paystack Secret Key</label>
+            <input class="vtu-input" id="paystackSec" type="password" placeholder="sk_live_...">
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+            <span style="font-size:12px;font-weight:600;color:var(--text)">Enable Paystack</span>
+            <label class="toggle-switch"><input type="checkbox" id="paystackEnabled" checked><div class="toggle-slider"></div></label>
+          </div>
+          <button class="btn btn-primary" onclick="saveAPISettings()">Save Gateways</button>
+        </div>
+        <!-- Bank Account for manual funding -->
+        <div style="background:white;border-radius:16px;padding:16px;box-shadow:var(--shadow);margin-bottom:12px">
+          <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:12px">🏦 Company Bank Account</div>
+          <div class="vtu-field-group"><label class="vtu-label">Bank Name</label><input class="vtu-input" id="coBankName" placeholder="e.g. Wema Bank"></div>
+          <div class="vtu-field-group"><label class="vtu-label">Account Number</label><input class="vtu-input" id="coAcctNo" placeholder="0123456789"></div>
+          <div class="vtu-field-group"><label class="vtu-label">Account Name</label><input class="vtu-input" id="coAcctName" placeholder="KOBOrush Ltd"></div>
+          <button class="btn btn-primary" onclick="saveCompanyAccount()">Save Account Details</button>
+        </div>
+      </div>
+
+      <!-- DIAGNOSTICS TAB -->
+      <div id="vtutab-diagnostics" style="display:none">
+        <div style="background:white;border-radius:16px;padding:16px;box-shadow:var(--shadow);margin-bottom:12px">
+          <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px">🔬 API Diagnostics</div>
+          <div id="diagCredSummary" style="font-size:12px;color:var(--text2);margin-bottom:12px"></div>
+          <div id="diagResults"><div style="text-align:center;padding:30px 0;color:var(--text3);font-size:13px">Tap Run Diagnostics to test all endpoints</div></div>
+          <button class="btn btn-primary" onclick="runDiagnostics()" id="diagRunBtn">▶ Run Diagnostics</button>
+        </div>
+      </div>
+
+      <!-- API LOGS TAB -->
+      <div id="vtutab-logs" style="display:none">
+        <div style="background:white;border-radius:16px;padding:16px;box-shadow:var(--shadow);margin-bottom:12px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+            <div style="font-size:16px;font-weight:700;color:var(--text)">📋 API Request Logs <span style="font-size:11px;color:var(--text3);font-weight:400">(last 50)</span></div>
+            <button style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:5px 10px;font-size:11px;cursor:pointer;font-weight:600" onclick="clearAPILogs()">Clear</button>
+          </div>
+          <div id="apiLogsList"><div style="text-align:center;padding:20px;color:var(--text3);font-size:12px">No logs yet. Logs appear here when VTU calls are made.</div></div>
+        </div>
+      </div>
+
+      <!-- TX STATUS TAB -->
+      <div id="vtutab-txstatus" style="display:none">
+        <div style="background:white;border-radius:16px;padding:16px;box-shadow:var(--shadow);margin-bottom:12px">
+          <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px">🔍 Transaction Status</div>
+          <div style="font-size:11px;color:var(--text3);margin-bottom:14px">Check the status of any VTU transaction by its RequestID</div>
+          <div class="vtu-field-group">
+            <label class="vtu-label">Request ID / Transaction Reference</label>
+            <input class="vtu-input" id="txStatusRef" placeholder="e.g. KBR-abc12345">
+          </div>
+          <button class="btn btn-primary" onclick="checkTXStatus()" style="margin-bottom:14px">🔍 Check Status</button>
+          <div id="txStatusResult" style="display:none;background:var(--bg);border-radius:10px;padding:12px;font-size:12px;line-height:1.7"></div>
+        </div>
+
+        <!-- CK Wallet Balance -->
+        <div style="background:white;border-radius:16px;padding:16px;box-shadow:var(--shadow);margin-bottom:12px">
+          <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:10px">💰 CK Wallet Balance</div>
+          <div id="ckWalletBal" style="font-size:24px;font-weight:800;font-family:var(--font-display);color:var(--primary);margin-bottom:10px">—</div>
+          <button class="btn btn-outline" onclick="checkCKWalletBalance()">Refresh Balance</button>
+        </div>
+      </div>
+
+    </div><!-- end ck panel -->
+
+    <!-- Bank / Paystack quick-jump panels (provider tabs) -->
+    <div id="vtuprov-bank-panel" style="display:none">
+      <div style="background:white;border-radius:16px;padding:16px;box-shadow:var(--shadow)">
+        <div style="font-size:14px;font-weight:700;margin-bottom:12px">🏦 Company Bank Account</div>
+        <div class="vtu-field-group"><label class="vtu-label">Bank Name</label><input class="vtu-input" id="coBankName2" placeholder="e.g. Wema Bank"></div>
+        <div class="vtu-field-group"><label class="vtu-label">Account Number</label><input class="vtu-input" id="coAcctNo2" placeholder="0123456789"></div>
+        <div class="vtu-field-group"><label class="vtu-label">Account Name</label><input class="vtu-input" id="coAcctName2" placeholder="KOBOrush Ltd"></div>
+        <button class="btn btn-primary" onclick="saveCompanyAccountAll()">Save Account Details</button>
+      </div>
+    </div>
+    <div id="vtuprov-pay-panel" style="display:none">
+      <div style="background:white;border-radius:16px;padding:16px;box-shadow:var(--shadow)">
+        <div style="font-size:14px;font-weight:700;margin-bottom:12px">💳 Paystack</div>
+        <div class="vtu-field-group"><label class="vtu-label">Public Key</label><input class="vtu-input" id="paystackPub2" placeholder="pk_live_..."></div>
+        <div class="vtu-field-group"><label class="vtu-label">Secret Key</label><input class="vtu-input" id="paystackSec2" type="password" placeholder="sk_live_..."></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <span style="font-size:12px;font-weight:600">Enable Paystack</span>
+          <label class="toggle-switch"><input type="checkbox" id="paystackEnabled2" checked><div class="toggle-slider"></div></label>
+        </div>
+        <button class="btn btn-primary" onclick="savePaystackAll()">Save Paystack Config</button>
+      </div>
+    </div>
+
+  </div><!-- end scroll -->
 </div>
 
 <div class="screen" id="adminServices">
@@ -1814,7 +1981,7 @@ textarea.form-input{resize:none}
 
 <!-- SUCCESS -->
 <div class="screen success-screen" id="successScreen">
-  <div class="success-icon">✅</div>
+  <div class="success-icon" id="successIcon">✅</div>
   <h2 id="successTitle">Transaction Successful!</h2>
   <p id="successMsg">Your transaction has been processed.</p>
   <div class="receipt-card" id="successReceiptWrap" style="padding:0;overflow:hidden">
@@ -1892,7 +2059,7 @@ window.addEventListener('error', function(e) {
 });
 import{initializeApp}from'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import{getAuth,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,onAuthStateChanged,sendPasswordResetEmail,GoogleAuthProvider,signInWithPopup,updateProfile,browserSessionPersistence,setPersistence}from'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
-import{getFirestore,doc,setDoc,getDoc,updateDoc,collection,addDoc,query,where,orderBy,limit,getDocs,onSnapshot,serverTimestamp,increment,runTransaction}from'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+import{getFirestore,doc,setDoc,getDoc,updateDoc,collection,addDoc,query,where,orderBy,limit,getDocs,onSnapshot,serverTimestamp,increment,runTransaction,deleteDoc}from'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 import{getStorage as fbStorage,ref as storageRef,uploadString,getDownloadURL}from'https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js';
 
 const FC={apiKey:"AIzaSyCPyNhUxVqf4nl2FwgoKT26kedQr8L0E_g",authDomain:"fintech-d16e9.firebaseapp.com",projectId:"fintech-d16e9",storageBucket:"fintech-d16e9.firebasestorage.app",messagingSenderId:"500436305722",appId:"1:500436305722:web:e1e5ec4f7b6bd3c70ef203"};
@@ -3015,10 +3182,37 @@ window.loadCKDataPlans = async (network) => {
     const netCode = _ckNet[network] || '01';
     await _loadCKCreds();
     const data = await _ckFetch('APIDataBundlePlansV1.asp', { MobileNetwork: netCode });
-    // Response: { MOBILE_NETWORK:[{ NETWORK_ID, NETWORK_NAME, PRODUCT:[{ PRODUCT_ID, PRODUCT_CODE, PRODUCT_NAME, PRODUCT_AMOUNT }] }] }
-    const networkArr = data?.MOBILE_NETWORK || data?.DATA_NETWORK || [];
+    // CK response shapes vary:
+    // Shape A: { MOBILE_NETWORK: [ { PRODUCT: [...] } ] }
+    // Shape B: [ { PRODUCT_ID, PRODUCT_NAME, PRODUCT_AMOUNT, ... } ]   (flat array)
+    // Shape C: { data: [...] }
+    // Shape D: { STATUS, MOBILE_NETWORK: { "01": { PRODUCT: [...] } } }  (object not array)
     let plans = [];
-    networkArr.forEach(n => { (n.PRODUCT||[]).forEach(p => { plans.push(p); }); });
+    const raw = data;
+
+    if(Array.isArray(raw)){
+      // Shape B — flat array of plans
+      plans = raw;
+    } else if(Array.isArray(raw?.MOBILE_NETWORK)){
+      // Shape A — array of network objects each with PRODUCT array
+      raw.MOBILE_NETWORK.forEach(n => { (n.PRODUCT||[]).forEach(p => plans.push(p)); });
+    } else if(raw?.MOBILE_NETWORK && typeof raw.MOBILE_NETWORK === 'object'){
+      // Shape D — MOBILE_NETWORK is a keyed object
+      Object.values(raw.MOBILE_NETWORK).forEach(n => {
+        if(Array.isArray(n)) n.forEach(p => plans.push(p));
+        else if(n?.PRODUCT) (n.PRODUCT||[]).forEach(p => plans.push(p));
+      });
+    } else if(Array.isArray(raw?.data)){
+      plans = raw.data;
+    } else {
+      // Last resort: search all array values in the response
+      Object.values(raw||{}).forEach(v => {
+        if(Array.isArray(v)) v.forEach(item => {
+          if(item?.PRODUCT_ID||item?.PRODUCT_NAME) plans.push(item);
+          else if(Array.isArray(item?.PRODUCT)) item.PRODUCT.forEach(p => plans.push(p));
+        });
+      });
+    }
     if(!plans.length) throw new Error('No plans returned');
     dp.innerHTML = plans.map((p,i)=>`<div class="plan-opt ${i===0?'selected':''}" onclick="selCKPlan(this,'${p.PRODUCT_CODE||p.PRODUCT_ID}','${p.PRODUCT_NAME}',${p.PRODUCT_AMOUNT})" data-code="${p.PRODUCT_CODE||p.PRODUCT_ID}" data-id="${p.PRODUCT_ID||''}"><div class="plan-name" style="font-size:11px;line-height:1.3">${p.PRODUCT_NAME}</div><div class="plan-price">₦${Number(p.PRODUCT_AMOUNT).toLocaleString()}</div></div>`).join('');
     _s.selPlan = { name: plans[0].PRODUCT_NAME, price: Number(plans[0].PRODUCT_AMOUNT), code: plans[0].PRODUCT_CODE||plans[0].PRODUCT_ID, id: plans[0].PRODUCT_ID||'' };
@@ -3045,10 +3239,26 @@ window.loadCKCablePackages = async (cableProvider) => {
   try{
     await _loadCKCreds();
     const data = await _ckFetch('APICableTVPackagesV2.asp', {});
-    // Response has TV_ID array → each with PRODUCT array
-    const tvArr = data?.TV_ID || [];
-    const prov = tvArr.find(t => (t.TV_NAME||'').toLowerCase().includes(cableProvider.toLowerCase())) || tvArr[0];
-    const plans = prov?.PRODUCT || [];
+    // CK response shapes for cable:
+    // Shape A: { TV_ID: [ { TV_NAME, PRODUCT: [...] } ] }
+    // Shape B: flat array of packages
+    // Shape C: { TV_ID: { "DSTV": { PRODUCT: [...] } } }
+    let plans = [];
+    const raw = data;
+    let tvArr = [];
+
+    if(Array.isArray(raw?.TV_ID)){
+      tvArr = raw.TV_ID;
+    } else if(raw?.TV_ID && typeof raw.TV_ID === 'object'){
+      tvArr = Object.entries(raw.TV_ID).map(([k,v])=>({TV_NAME:k,...(typeof v==='object'?v:{})}));
+    } else if(Array.isArray(raw)){
+      plans = raw;
+    }
+
+    if(tvArr.length && !plans.length){
+      const prov = tvArr.find(t=>(t.TV_NAME||'').toLowerCase().includes(cableProvider.toLowerCase())) || tvArr[0];
+      plans = prov?.PRODUCT || [];
+    }
     if(!plans.length) throw new Error('No packages');
     cp.innerHTML = plans.map((p,i)=>`<div class="plan-opt ${i===0?'selected':''}" onclick="selCKCable(this,'${p.PRODUCT_CODE||p.PRODUCT_ID}','${escHTML(p.PRODUCT_NAME)}',${p.PRODUCT_AMOUNT})"><div class="plan-name" style="font-size:10px;line-height:1.3">${p.PRODUCT_NAME}</div><div class="plan-price">₦${Number(p.PRODUCT_AMOUNT).toLocaleString()}</div></div>`).join('');
     _s.selPlan = { name: plans[0].PRODUCT_NAME, price: Number(plans[0].PRODUCT_AMOUNT), code: plans[0].PRODUCT_CODE||plans[0].PRODUCT_ID };
@@ -3088,14 +3298,31 @@ async function _executeCKTransaction(txType, params, tid){
   const ep = endpoints[txType];
   if(!ep) throw new Error('Unknown VTU type: ' + txType);
   const result = await _ckFetch(ep, { ...params, RequestID: tid });
-  // ClubKonnect typically returns STATUS field: '200' = success
-  const status = String(result?.STATUS||result?.status||result?.Status||'');
-  const msg = result?.MESSAGE || result?.message || result?.RESPONSE || result?.response || JSON.stringify(result);
-  if(status === '200' || status === 'success' || msg?.toLowerCase().includes('successful')){
-    return { success: true, message: msg, data: result };
+  // ClubKonnect success codes:
+  // statuscode "100" + status "ORDER_RECEIVED"  = ✅ transaction queued/processing (treat as success)
+  // statuscode "200" = ✅ explicit success
+  // statuscode "000" = ✅ some endpoints use this
+  // Anything else = ❌ failure
+  const statusCode = String(result?.statuscode || result?.STATUSCODE || result?.StatusCode || '');
+  const statusStr  = String(result?.status || result?.STATUS || result?.Status || '').toUpperCase();
+  const msgStr     = String(result?.message || result?.MESSAGE || result?.response || result?.RESPONSE || '');
+
+  const isSuccess =
+    statusCode === '200' ||
+    statusCode === '100' ||
+    statusCode === '000' ||
+    statusStr === 'ORDER_RECEIVED' ||
+    statusStr === 'SUCCESS' ||
+    statusStr === 'SUCCESSFUL' ||
+    statusStr === 'DELIVERED' ||
+    statusStr === 'COMPLETED' ||
+    msgStr.toLowerCase().includes('successful') ||
+    msgStr.toLowerCase().includes('order received');
+
+  if(isSuccess){
+    return { success: true, message: msgStr || statusStr, data: result };
   }
-  // Error: return failure with message
-  return { success: false, message: msg || 'ClubKonnect error', data: result };
+  return { success: false, message: msgStr || statusStr || `CK error (code ${statusCode})`, data: result };
 }
 
 async function confirmTx(pin){
@@ -3206,12 +3433,18 @@ async function confirmTx(pin){
           if(ckResult && !ckResult.success){
             // CK returned error — refund wallet
             txStatus = 'failed';
-            txNote = ckResult.message || 'Provider error';
+            const rawNote = ckResult.message || '';
+            txNote = (rawNote.startsWith('{') || rawNote.length > 150)
+              ? 'Transaction declined by provider.'
+              : rawNote || 'Transaction declined by provider.';
             await updateDoc(doc(db,'users',_s.user.uid),{balance:increment(d.amount),totalSpent:increment(-d.amount)});
           }
         }catch(ckErr){
           txStatus = 'failed';
-          txNote = ckErr.message || 'ClubKonnect error';
+          const errMsg = ckErr.message || '';
+          txNote = (errMsg.startsWith('{') || errMsg.length > 150)
+            ? 'Could not connect to VTU provider. Please try again.'
+            : errMsg || 'VTU provider error.';
           // Refund wallet
           await updateDoc(doc(db,'users',_s.user.uid),{balance:increment(d.amount),totalSpent:increment(-d.amount)});
         }
@@ -3226,10 +3459,26 @@ async function confirmTx(pin){
       });
 
       if(txStatus === 'failed'){
-        showToast('error', txNote || 'Transaction failed. Wallet refunded.');
-        document.getElementById('successTitle').textContent='Transaction Failed';
-        document.getElementById('successMsg').textContent=txNote||'Wallet refunded.';
-        document.getElementById('successReceipt').innerHTML='<div style="text-align:center;padding:16px;font-size:13px;color:var(--danger)">❌ ' + (txNote||'Failed') + '<br><br>Your wallet has been refunded.</div>';
+        // Extract a clean human-readable message from CK response
+        const ckData = ckResult?.data || {};
+        const cleanMsg = ckResult?.message && !ckResult.message.startsWith('{')
+          ? ckResult.message
+          : (ckData.message || ckData.MESSAGE || ckData.response || ckData.RESPONSE || 'Transaction could not be completed. Please try again.');
+        const displayMsg = String(cleanMsg).length > 120 ? 'Transaction declined by provider. Your wallet has been refunded.' : cleanMsg;
+
+        const iconEl = document.getElementById('successIcon');
+        if(iconEl){ iconEl.textContent='❌'; iconEl.style.background='#FEE2E2'; }
+        showToast('error', displayMsg);
+        document.getElementById('successTitle').textContent = 'Transaction Failed';
+        document.getElementById('successTitle').style.color = 'var(--danger)';
+        document.getElementById('successMsg').textContent = '';
+        document.getElementById('successReceipt').innerHTML = `
+          <div style="text-align:center;padding:20px 16px">
+            <div style="font-size:14px;font-weight:600;color:var(--danger);margin-bottom:8px">${displayMsg}</div>
+            <div style="font-size:12px;color:var(--text3);margin-top:10px;padding:10px;background:var(--bg);border-radius:8px">
+              Your wallet has been refunded.<br>Ref: ${tid}
+            </div>
+          </div>`;
         return;
       }
 
@@ -3238,7 +3487,10 @@ async function confirmTx(pin){
 
       await addNotif(_s.user.uid,'✅ Transaction Successful',`${d.description} completed successfully.`,'success');
       navigateTo('successScreen');
+      const iconEl = document.getElementById('successIcon');
+      if(iconEl){ iconEl.textContent='✅'; iconEl.style.background='#D1FAE5'; }
       document.getElementById('successTitle').textContent='Transaction Successful!';
+      document.getElementById('successTitle').style.color='';
       document.getElementById('successMsg').textContent=d.description+' processed.';
       const _rs=csym(_s.userData?.country);
       const extraRows = ckResult?.data?.TOKEN ? [{l:'Token/PIN', v: ckResult.data.TOKEN||ckResult.data.token||''}] : [];
@@ -4022,6 +4274,406 @@ function renderRevPeriodBreakdown(){
   }).join('');
 }
 
+// ════════════════════════════════════════════════
+// VTU ADMIN PANEL — Settings / Diagnostics / Logs / TX Status
+// ════════════════════════════════════════════════
+
+// Default endpoints (canonical ClubKonnect/Nellobytesystems)
+const CK_DEFAULT_ENDPOINTS = {
+  airtime:          'APIAirtimeV1.asp',
+  data:             'APIDatabundleV1.asp',
+  cable:            'APICableTVV1.asp',
+  cableVerify:      'APIVerifyCableTVV1.asp',
+  electricity:      'APIElectricityV1.asp',
+  electricityVerify:'APIVerifyElectricityV1.asp',
+  balance:          'APIWalletBalance.asp',
+  dataPlans:        'APIDataBundlePlansV1.asp',
+  cablePlans:       'APICableTVPackagesV2.asp',
+  waec:             'APIWAECV1.asp',
+  waecPlans:        'APIWAECPackagesV2.asp',
+  jamb:             'APIJAMBV1.asp',
+  jambPlans:        'APIJAMBPackagesV2.asp',
+  status:           'APIQueryV1.asp',
+};
+
+// In-memory API log
+window._apiLogs = window._apiLogs || [];
+
+// Save to logs
+function _logAPI(type, ref, status, httpCode, userId){
+  window._apiLogs.unshift({ type, ref:ref||'—', status, httpCode, userId:userId||'—', ts: new Date() });
+  if(window._apiLogs.length > 50) window._apiLogs = window._apiLogs.slice(0,50);
+  // Persist to Firestore (best-effort, no await)
+  try{
+    addDoc(collection(db,'apiLogs'),{type,ref:ref||'',status,httpCode:httpCode||0,userId:userId||'',ts:serverTimestamp()}).catch(()=>{});
+  }catch(e){}
+}
+
+// Patch _ckFetch to log calls
+const _origCKFetch = window._ckFetch || (async()=>{});
+async function _ckFetchLogged(endpoint, params, txRef){
+  let httpCode = 0;
+  const epName = Object.entries(CK_DEFAULT_ENDPOINTS).find(([,v])=>v===endpoint)?.[0] || endpoint;
+  try{
+    const creds = await _loadCKCreds();
+    if(!creds) throw new Error('Not configured');
+    const url = _ckURL(endpoint, params);
+    const resp = await fetch(url);
+    httpCode = resp.status;
+    const text = await resp.text();
+    let json;
+    try{ json = JSON.parse(text); }catch(e){ throw new Error('Bad JSON: '+text.substring(0,60)); }
+    const ok = httpCode===200;
+    _logAPI(epName, txRef||'', ok?'completed':'error', httpCode, _s.user?.uid);
+    if(!ok) throw new Error('HTTP '+httpCode);
+    return json;
+  }catch(e){
+    _logAPI(epName, txRef||'', 'error', httpCode, _s.user?.uid);
+    throw e;
+  }
+}
+// Override global _ckFetch
+window._ckFetch = async (endpoint, params, txRef) => _ckFetchLogged(endpoint, params, txRef);
+
+// ── Provider / Sub-tab switching ──
+window.switchVTUProv = (prov, el) => {
+  document.querySelectorAll('.vtu-prov-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  ['ck','bank','pay'].forEach(p=>{ const panel=document.getElementById(`vtuprov-${p}-panel`); if(panel) panel.style.display=p===prov?'':'none'; });
+  const subTabRow = document.getElementById('vtuSubTabs');
+  if(subTabRow) subTabRow.style.display = prov==='ck' ? 'flex' : 'none';
+  // Sync bank/paystack fields from main fields
+  if(prov==='bank'){ syncBankFields(); }
+  if(prov==='pay'){ syncPayFields(); }
+};
+
+window.switchVTUTab = (tab, el) => {
+  document.querySelectorAll('.vtu-sub-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  ['settings','diagnostics','logs','txstatus'].forEach(t=>{
+    const el=document.getElementById(`vtutab-${t}`);
+    if(el) el.style.display = t===tab ? '' : 'none';
+  });
+  if(tab==='logs') renderAPILogs();
+  if(tab==='diagnostics') renderDiagSummary();
+  if(tab==='txstatus') checkCKWalletBalance();
+};
+
+// ── Endpoints panel ──
+function renderEndpoints(saved){
+  const list = document.getElementById('endpointsList');
+  if(!list) return;
+  list.innerHTML = Object.entries(CK_DEFAULT_ENDPOINTS).map(([key, def])=>{
+    const val = saved?.[key] || def;
+    const isStale = val !== def;
+    return `<div class="endpoint-row">
+      <span class="endpoint-label">${key.charAt(0).toUpperCase()+key.slice(1)}</span>
+      <input class="endpoint-input${isStale?' stale':''}" id="ep_${key}" value="${val}" oninput="markEpChanged(this,'${def}')">
+    </div>`;
+  }).join('');
+}
+
+window.markEpChanged = (el, def) => {
+  if(el.value !== def) el.classList.add('stale'); else el.classList.remove('stale');
+};
+
+window.resetEndpointsToDefault = () => {
+  Object.entries(CK_DEFAULT_ENDPOINTS).forEach(([key, def])=>{
+    const el=document.getElementById(`ep_${key}`);
+    if(el){ el.value=def; el.classList.remove('stale'); }
+  });
+  showToast('success','Endpoints reset to latest defaults');
+};
+
+function collectEndpoints(){
+  const eps = {};
+  Object.keys(CK_DEFAULT_ENDPOINTS).forEach(key=>{
+    const el=document.getElementById(`ep_${key}`);
+    if(el) eps[key] = el.value.trim()||CK_DEFAULT_ENDPOINTS[key];
+  });
+  return eps;
+}
+
+// ── Key handling ──
+window.onCKKeyInput = () => {
+  const v = document.getElementById('ckToken')?.value;
+  const hint = document.getElementById('ckKeySavedHint');
+  const clearBtn = document.getElementById('ckClearKeyBtn');
+  if(hint) hint.style.display = v ? 'none' : 'block';
+  if(clearBtn) clearBtn.style.display = 'none';
+};
+
+window.clearCKKey = async () => {
+  if(!confirm('Clear the saved API key? You will need to re-enter it.')) return;
+  try{
+    await setDoc(doc(db,'settings','apis'),{ckToken:'',ckKey:''},{merge:true});
+    _ckCreds=null;
+    document.getElementById('ckToken').value='';
+    document.getElementById('ckToken').placeholder='Enter new APIKey';
+    const h=document.getElementById('ckKeySavedHint');if(h)h.style.display='none';
+    const cb=document.getElementById('ckClearKeyBtn');if(cb)cb.style.display='none';
+    showToast('success','API key cleared. Enter a new one and save.');
+  }catch(e){ showToast('error','Failed: '+e.message); }
+};
+
+// Auto-save debounce
+let _vtuSaveTimer = null;
+window.scheduleVTUSave = () => {
+  clearTimeout(_vtuSaveTimer);
+  _vtuSaveTimer = setTimeout(()=>saveAPISettings().catch(()=>{}), 1500);
+};
+
+// ── Save all settings ──
+window.saveAPISettings = async () => {
+  const pub  = document.getElementById('paystackPub')?.value || document.getElementById('paystackPub2')?.value || '';
+  const sec  = document.getElementById('paystackSec')?.value || document.getElementById('paystackSec2')?.value || '';
+  const ckUser  = document.getElementById('ckUser')?.value?.trim() || '';
+  const ckRawKey = document.getElementById('ckToken')?.value?.trim() || '';
+  const ckUrl   = document.getElementById('ckURL')?.value?.trim() || 'https://www.nellobytesystems.com/';
+  const ckName  = document.getElementById('ckProvName')?.value?.trim() || 'Nellobytesystems';
+  const ckCb    = document.getElementById('ckCallback')?.value?.trim() || '';
+  const endpoints = collectEndpoints();
+
+  const update = {
+    ckUser, ckURL: ckUrl, ckEnabled: document.getElementById('ckEnabled')?.checked,
+    ckProviderName: ckName, ckCallback: ckCb, ckEndpoints: endpoints,
+    paystackPub: pub, paystackPublic: pub, paystackSec: sec, paystackSecret: sec,
+    paystackEnabled: document.getElementById('paystackEnabled')?.checked,
+    updatedAt: serverTimestamp()
+  };
+  // Only overwrite key if user typed something new
+  if(ckRawKey) { update.ckToken = ckRawKey; update.ckKey = ckRawKey; }
+
+  await setDoc(doc(db,'settings','apis'), update, {merge:true});
+  _ckCreds = null; // force reload
+  if(pub && pub.startsWith('pk_')) window._paystackKey = pub;
+
+  // Show saved key hint
+  if(ckRawKey){
+    const tf=document.getElementById('ckToken'); if(tf){ tf.value=''; tf.placeholder=`Key saved (ends in ...${ckRawKey.slice(-4)})`; }
+    const h=document.getElementById('ckKeySavedHint');if(h)h.style.display='block';
+    const kh=document.getElementById('ckKeyHint');if(kh)kh.style.display='none';
+    const cb=document.getElementById('ckClearKeyBtn');if(cb)cb.style.display='block';
+  }
+  showToast('success','✅ VTU config saved!');
+};
+
+window.savePaystackAll = async () => {
+  const pub = document.getElementById('paystackPub2')?.value||'';
+  const sec = document.getElementById('paystackSec2')?.value||'';
+  await setDoc(doc(db,'settings','apis'),{paystackPub:pub,paystackPublic:pub,paystackSec:sec,paystackSecret:sec,paystackEnabled:document.getElementById('paystackEnabled2')?.checked,updatedAt:serverTimestamp()},{merge:true});
+  if(pub&&pub.startsWith('pk_'))window._paystackKey=pub;
+  showToast('success','Paystack config saved!');
+};
+
+window.saveCompanyAccountAll = async () => {
+  const b=document.getElementById('coBankName2')?.value||document.getElementById('coBankName')?.value||'';
+  const n=document.getElementById('coAcctNo2')?.value||document.getElementById('coAcctNo')?.value||'';
+  const a=document.getElementById('coAcctName2')?.value||document.getElementById('coAcctName')?.value||'';
+  if(!b||!n||!a)return showToast('error','Fill all account details');
+  await setDoc(doc(db,'settings','companyAccount'),{bankName:b,accountNumber:n,accountName:a,updatedAt:serverTimestamp()});
+  showToast('success','Company account saved!');
+  const cb=document.getElementById('companyBank');if(cb)cb.textContent=b;
+  const cn=document.getElementById('companyAcctNo');if(cn)cn.textContent=n;
+  const ca=document.getElementById('companyAcctName');if(ca)ca.textContent=a;
+};
+
+// ── Factory Reset ──
+window.vtuFactoryReset = async () => {
+  if(!confirm('⚠️ Reset ALL VTU settings back to defaults? This clears your UserID, APIKey, base URL and custom endpoints. User data is NOT affected.')) return;
+  const defaults = {
+    ckUser:'', ckToken:'', ckKey:'', ckURL:'https://www.nellobytesystems.com/',
+    ckEnabled:true, ckProviderName:'Nellobytesystems', ckCallback:'',
+    ckEndpoints: {...CK_DEFAULT_ENDPOINTS}, updatedAt: serverTimestamp()
+  };
+  await setDoc(doc(db,'settings','apis'), defaults, {merge:true});
+  _ckCreds=null;
+  await loadAPIConfigs();
+  showToast('success','VTU config reset to defaults');
+};
+
+// ── Diagnostics ──
+function renderDiagSummary(){
+  const el = document.getElementById('diagCredSummary');
+  if(!el) return;
+  const c = _ckCreds;
+  if(c){ el.innerHTML=`Provider: <b>${document.getElementById('ckProvName')?.value||'Nellobytesystems'}</b> • UserID: <b>${c.user||'—'}</b> • API Key: <b>Set (${c.key?.length||0} chars)</b> • Enabled: <b style="color:var(--success-green)">Yes</b>`; }
+  else{ el.innerHTML='<span style="color:var(--danger)">⚠️ Credentials not configured. Go to Settings tab first.</span>'; }
+}
+
+window.runDiagnostics = async () => {
+  const res = document.getElementById('diagResults');
+  const btn = document.getElementById('diagRunBtn');
+  if(!res) return;
+  renderDiagSummary();
+  res.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text3);font-size:12px">⏳ Checking all endpoints…<br><br>Running tests...</div>';
+  if(btn) btn.disabled = true;
+  await _loadCKCreds(true);
+
+  const tests = [
+    { key:'balance',   label:'Wallet Balance',   ep:'balance',   params:{} },
+    { key:'dataPlans', label:'Data Plans (MTN)',  ep:'dataPlans', params:{MobileNetwork:'01'} },
+    { key:'cablePlans',label:'Cable Packages',    ep:'cablePlans',params:{} },
+    { key:'airtime',   label:'Airtime (dry run)', ep:'airtime',   params:{MobileNumber:'08012345678',MobileNetwork:'01',Amount:100,RequestID:'DIAG_'+Date.now()} },
+  ];
+
+  const rows = [];
+  for(const t of tests){
+    const epFile = document.getElementById(`ep_${t.key}`)?.value || CK_DEFAULT_ENDPOINTS[t.key];
+    let ok = false, msg = '';
+    try{
+      const r = await window._ckFetch(epFile, t.params, 'DIAG_'+Date.now());
+      ok = true;
+      msg = 'HTTP 200 · OK';
+    }catch(e){ msg = e.message || 'Failed'; }
+    rows.push(`<div class="diag-item">
+      <div class="diag-icon ${ok?'diag-ok':'diag-fail'}">${ok?'✅':'❌'}</div>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:600;color:var(--text)">${t.label}</div>
+        <div style="font-size:10px;color:var(--text3)">${epFile}</div>
+      </div>
+      <div style="font-size:11px;font-weight:600;color:${ok?'var(--success-green)':'var(--danger)'}">${msg}</div>
+    </div>`);
+  }
+  res.innerHTML = rows.join('');
+  if(btn){ btn.disabled=false; btn.textContent='▶ Run Again'; }
+  renderAPILogs();
+};
+
+// ── API Logs ──
+function renderAPILogs(){
+  const el = document.getElementById('apiLogsList');
+  if(!el) return;
+
+  // Try to load from Firestore too
+  getDocs(query(collection(db,'apiLogs'),limit(50))).then(snap=>{
+    const fsLogs = snap.docs.map(d=>d.data()).sort((a,b)=>{
+      const ta=a.ts?.toMillis?a.ts.toMillis():0;
+      const tb=b.ts?.toMillis?b.ts.toMillis():0;
+      return tb-ta;
+    });
+    const allLogs = [...window._apiLogs, ...fsLogs.filter(l=>!window._apiLogs.some(m=>m.ts?.getTime?.()===l.ts?.toMillis?.()))].slice(0,50);
+    _renderLogItems(el, allLogs);
+  }).catch(()=>{ _renderLogItems(el, window._apiLogs); });
+}
+
+function _renderLogItems(el, logs){
+  if(!logs.length){
+    el.innerHTML='<div style="text-align:center;padding:20px;color:var(--text3);font-size:12px">No logs yet. Logs appear here when VTU calls are made.</div>';
+    return;
+  }
+  el.innerHTML = logs.map(l=>{
+    const ok = l.status==='completed'||l.httpCode===200;
+    const ts = l.ts instanceof Date ? l.ts.toLocaleString() : (l.ts?.toDate?l.ts.toDate().toLocaleString():'');
+    return `<div class="log-item ${ok?'log-ok':'log-err'}">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+        <div><span class="log-badge ${ok?'log-badge-ok':'log-badge-err'}">${l.status||'error'}</span><b style="font-size:13px">${l.type||'unknown'}</b></div>
+        <span style="font-size:10px;color:var(--text3)">${ts}</span>
+      </div>
+      <div style="font-size:11px;color:var(--text3)">Ref: ${l.ref||'—'} • HTTP: ${l.httpCode||'—'} • User: ${(l.userId||'—').substring(0,8)}</div>
+      ${l.response?`<div style="margin-top:6px"><span style="font-size:11px;color:var(--primary);cursor:pointer;font-weight:600" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">▶ View response</span><pre style="display:none;font-size:10px;margin-top:4px;background:var(--bg);padding:6px;border-radius:6px;overflow-x:auto;white-space:pre-wrap">${JSON.stringify(l.response,null,2).substring(0,500)}</pre></div>`:'<div style="margin-top:4px"><span style="font-size:11px;color:var(--primary);cursor:pointer;font-weight:600">▶ View response</span></div>'}
+    </div>`;
+  }).join('');
+}
+
+window.clearAPILogs = async () => {
+  window._apiLogs = [];
+  try{
+    const snap = await getDocs(collection(db,'apiLogs'));
+    await Promise.all(snap.docs.map(d=>deleteDoc(doc(db,'apiLogs',d.id))));
+  }catch(e){}
+  renderAPILogs();
+  showToast('success','Logs cleared');
+};
+
+// ── TX Status ──
+window.checkTXStatus = async () => {
+  const ref = document.getElementById('txStatusRef')?.value?.trim();
+  const resEl = document.getElementById('txStatusResult');
+  if(!ref) return showToast('error','Enter a Request ID');
+  if(resEl){ resEl.style.display='block'; resEl.innerHTML='⏳ Checking…'; }
+  try{
+    // Check Firestore first
+    const snap = await getDocs(query(collection(db,'transactions'),where('id','==',ref)));
+    if(!snap.empty){
+      const tx = snap.docs[0].data();
+      if(resEl) resEl.innerHTML = `<b>Found in KOBOrush</b><br>Type: ${tx.type}<br>Status: <b style="color:${tx.status==='success'?'var(--success-green)':'var(--danger)'}">${tx.status}</b><br>Amount: ₦${(tx.amount||0).toLocaleString()}<br>Description: ${tx.description||'—'}<br>Date: ${tx.createdAt?.toDate?tx.createdAt.toDate().toLocaleString():'—'}`;
+      return;
+    }
+    // Then check CK API
+    const epFile = document.getElementById('ep_status')?.value || CK_DEFAULT_ENDPOINTS.status;
+    const data = await window._ckFetch(epFile, {RequestID: ref}, ref);
+    if(resEl) resEl.innerHTML = '<b>ClubKonnect Response:</b><br><pre style="font-size:11px;white-space:pre-wrap">'+JSON.stringify(data,null,2).substring(0,600)+'</pre>';
+  }catch(e){
+    if(resEl) resEl.innerHTML = '<span style="color:var(--danger)">Error: '+e.message+'</span>';
+  }
+};
+
+// ── CK Wallet Balance ──
+window.checkCKWalletBalance = async () => {
+  const balEl = document.getElementById('ckWalletBal');
+  if(balEl){ balEl.textContent = '⏳ Checking…'; }
+  try{
+    const epFile = document.getElementById('ep_balance')?.value || CK_DEFAULT_ENDPOINTS.balance;
+    const data = await window._ckFetch(epFile, {}, 'balance-check');
+    const bal = data?.WALLET_BALANCE ?? data?.Balance ?? data?.balance ?? '—';
+    if(balEl) balEl.textContent = '₦' + Number(bal).toLocaleString(undefined,{minimumFractionDigits:2});
+    showToast('success', 'CK Balance: ₦' + Number(bal).toLocaleString());
+  }catch(e){
+    if(balEl) balEl.textContent = '— (error)';
+    showToast('error', e.message);
+  }
+};
+
+// ── Sync duplicate fields ──
+function syncBankFields(){
+  ['coBankName','coAcctNo','coAcctName'].forEach(id=>{
+    const src=document.getElementById(id); const dst=document.getElementById(id+'2');
+    if(src&&dst) dst.value=src.value;
+  });
+}
+function syncPayFields(){
+  const pub1=document.getElementById('paystackPub'),pub2=document.getElementById('paystackPub2');
+  const sec1=document.getElementById('paystackSec'),sec2=document.getElementById('paystackSec2');
+  const en1=document.getElementById('paystackEnabled'),en2=document.getElementById('paystackEnabled2');
+  if(pub1&&pub2)pub2.value=pub1.value;
+  if(sec1&&sec2)sec2.value=sec1.value;
+  if(en1&&en2)en2.checked=en1.checked;
+}
+
+// ── loadAPISettings override — also init new panel ──
+window.loadAPISettings = async () => {
+  await loadAPIConfigs();
+  // Load saved endpoints
+  try{
+    const snap=await getDoc(doc(db,'settings','apis'));
+    const savedEps = snap.exists() ? (snap.data().ckEndpoints||{}) : {};
+    renderEndpoints(savedEps);
+    // Show "key already saved" hint if key is stored
+    const hasKey = snap.exists() && (snap.data().ckToken||snap.data().ckKey);
+    if(hasKey){
+      const tf=document.getElementById('ckToken');
+      const storedKey = snap.data().ckToken||snap.data().ckKey||'';
+      if(tf){ tf.value=''; tf.placeholder=`Key already saved (ends in ...${storedKey.slice(-4)}) - leave blank to keep`; }
+      const h=document.getElementById('ckKeySavedHint');if(h)h.style.display='block';
+      const kh=document.getElementById('ckKeyHint');if(kh)kh.style.display='none';
+      const cb=document.getElementById('ckClearKeyBtn');if(cb)cb.style.display='block';
+    } else {
+      const kh=document.getElementById('ckKeyHint');if(kh)kh.style.display='inline-flex';
+    }
+    // Provider name
+    if(snap.exists()&&snap.data().ckProviderName){
+      const pn=document.getElementById('ckProvName');if(pn)pn.value=snap.data().ckProviderName;
+    }
+    // Enabled label
+    const enEl=document.getElementById('ckEnabled');
+    const lblEl=document.getElementById('ckEnabledLabel');
+    if(enEl&&lblEl){ lblEl.textContent=enEl.checked?'● Enabled':'○ Disabled'; lblEl.style.color=enEl.checked?'var(--success-green)':'var(--danger)'; }
+  }catch(e){ renderEndpoints({}); }
+  loadVTU();
+};
+
+window.loadAdminSvcs=()=>{document.getElementById('adminSvcsContent').innerHTML=`<div class="admin-panel" style="margin:0">${['Airtime','Data Bundle','Electricity','Cable TV','School PIN','Bank Transfer'].map(s=>`<div class="admin-table-row"><div class="row-main"><div class="row-title">${s}</div></div><label class="toggle-switch"><input type="checkbox" checked onchange="toggleSvc('${s}',this.checked)"><div class="toggle-slider"></div></label></div>`).join('')}</div>`};
 window.toggleSvc=async(n,e)=>{await setDoc(doc(db,'settings','services'),{[n.toLowerCase().replace(/ /g,'_')]:e},{merge:true});showToast(e?'success':'info',`${n} ${e?'enabled':'disabled'}`)};
 window.loadAdminUsers=async()=>{if(!_s.isAdmin)return;document.getElementById('adminUsersFull').innerHTML='<div class="loading-spinner"></div>';const s=await getDocs(collection(db,'users'));_s.allUsers=s.docs.map(d=>({id:d.id,...d.data()}));renderAdminUsers(_s.allUsers)};
 function renderAdminUsers(users){document.getElementById('adminUsersFull').innerHTML=`<div class="admin-panel" style="margin:0">${users.map(u=>`<div class="user-row"><div class="avatar" style="width:30px;height:30px;font-size:11px">${(u.firstName?.[0]||'?')+(u.lastName?.[0]||'')}</div><div class="user-row-info"><div class="user-row-name">${u.firstName||''} ${u.lastName||''}</div><div class="user-row-meta">${u.email} · ${u.country||'NG'} · ₦${(u.balance||0).toLocaleString()}</div></div><div class="user-row-actions"><button class="action-btn action-btn-p" onclick="viewUser('${u.id}')">View</button><button class="action-btn action-btn-d" onclick="toggleUser('${u.id}',${u.isActive})">${u.isActive?'Ban':'Unban'}</button></div></div>`).join('')}</div>`}
@@ -4043,6 +4695,7 @@ window.saveNewProvider=async()=>{const n=document.getElementById('newPN').value;
 window.toggleVTU=async(id,e)=>{await updateDoc(doc(db,'vtuProviders',id),{enabled:e});showToast(e?'success':'info',`Provider ${e?'enabled':'disabled'}`)};
 window.savePricing=async()=>{const s={airtimeDiscount:parseFloat(document.getElementById('airtimeDiscount').value)||0,dataMarkup:parseFloat(document.getElementById('dataMarkup').value)||0,transferFee:parseFloat(document.getElementById('transferFee').value)||25,updatedAt:serverTimestamp()};await setDoc(doc(db,'settings','pricing'),s,{merge:true});showToast('success','Pricing updated!')};
 window.loadAdminSvcs=()=>{document.getElementById('adminSvcsContent').innerHTML=`<div class="admin-panel" style="margin:0">${['Airtime','Data Bundle','Electricity','Cable TV','School PIN','Bank Transfer'].map(s=>`<div class="admin-table-row"><div class="row-main"><div class="row-title">${s}</div></div><label class="toggle-switch"><input type="checkbox" checked onchange="toggleSvc('${s}',this.checked)"><div class="toggle-slider"></div></label></div>`).join('')}</div>`};
+window.toggleSvc=async(n,e)=>{await setDoc(doc(db,'settings','services'),{[n.toLowerCase().replace(/ /g,'_')]:e},{merge:true});showToast(e?'success':'info',`${n} ${e?'enabled':'disabled'}`)};
 window.loadCountries=()=>{const c=document.getElementById('adminCountriesList');const countries=[{name:'Nigeria',flag:'🇳🇬',code:'NG',ccy:'NGN',on:true},{name:'Ghana',flag:'🇬🇭',code:'GH',ccy:'GHS',on:true},{name:'Benin',flag:'🇧🇯',code:'BJ',ccy:'XOF',on:true},{name:'Kenya',flag:'🇰🇪',code:'KE',ccy:'KES',on:false},{name:'Senegal',flag:'🇸🇳',code:'SN',ccy:'XOF',on:false},{name:'Ivory Coast',flag:'🇨🇮',code:'CI',ccy:'XOF',on:false},{name:'Cameroon',flag:'🇨🇲',code:'CM',ccy:'XAF',on:false},{name:'Togo',flag:'🇹🇬',code:'TG',ccy:'XOF',on:false},{name:'Burkina Faso',flag:'🇧🇫',code:'BF',ccy:'XOF',on:false},{name:'Niger',flag:'🇳🇪',code:'NE',ccy:'XOF',on:false},{name:'Mali',flag:'🇲🇱',code:'ML',ccy:'XOF',on:false},{name:'South Africa',flag:'🇿🇦',code:'ZA',ccy:'ZAR',on:false},{name:'Tanzania',flag:'🇹🇿',code:'TZ',ccy:'TZS',on:false},{name:'Uganda',flag:'🇺🇬',code:'UG',ccy:'UGX',on:false},{name:'Rwanda',flag:'🇷🇼',code:'RW',ccy:'RWF',on:false},{name:'Ethiopia',flag:'🇪🇹',code:'ET',ccy:'ETB',on:false}];c.innerHTML=`<div class="admin-panel" style="margin:0">${countries.map(ct=>`<div class="admin-table-row"><div style="font-size:26px;flex-shrink:0">${ct.flag}</div><div class="row-main"><div class="row-title">${ct.name}</div><div class="row-sub">${ct.ccy}</div></div><label class="toggle-switch"><input type="checkbox" ${ct.on?'checked':''} onchange="toggleCountry('${ct.code}',this.checked)"><div class="toggle-slider"></div></label></div>`).join('')}</div>`};
 window.toggleCountry=async(code,e)=>{await setDoc(doc(db,'settings','countries'),{[code]:e},{merge:true});showToast(e?'success':'info',`${code} ${e?'enabled':'disabled'}`)};
 window.adminCreditWallet=async()=>{const ui=document.getElementById('adminFundUser').value;const am=parseFloat(document.getElementById('adminFundAmt').value);const re=document.getElementById('adminFundReason').value;if(!ui||!am)return showToast('error','Fill all fields');try{const q=query(collection(db,'users'),where('email','==',ui));const s=await getDocs(q);if(s.empty)return showToast('error','User not found');const uid=s.docs[0].id;await updateDoc(doc(db,'users',uid),{balance:increment(am)});const tid=genId(12);await setDoc(doc(db,'transactions',tid),{id:tid,userId:uid,type:'admin_credit',status:'success',amount:am,description:`Admin Credit: ${re}`,createdAt:serverTimestamp()});await addNotif(uid,'💰 Wallet Credited',`₦${am.toLocaleString()} added. Reason: ${re}`,'success');showToast('success',`₦${am.toLocaleString()} credited!`)}catch(e){showToast('error','Failed')}};
