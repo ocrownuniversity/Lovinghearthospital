@@ -3142,7 +3142,7 @@ cableVerify     : 'APIVerifyCableTVV1.asp',
 electricity     : 'APIElectricityV1.asp',
 electricityVerify: 'APIVerifyElectricityV1.asp',
 balance         : 'APIWalletBalance.asp',
-dataPlans       : 'APIDataBundlePlansV1.asp',
+dataPlans       : 'APIDataBundlePlansV2.asp',
 cablePlans      : 'APICableTVPackagesV2.asp',
 waec            : 'APIWAECV1.asp',
 waecPlans       : 'APIWAECPackagesV2.asp',
@@ -3197,8 +3197,28 @@ if(logRef){
   }).catch(()=>{});
 }
 let raw='', parsed=null, httpStatus=0;
+// Use a CORS proxy so this works when hosted on GitHub Pages
+const CORS_PROXIES = [
+  'https://corsproxy.io/?',
+  'https://api.allorigins.win/raw?url='
+];
+async function fetchWithCorsProxy(targetUrl){
+  // Try direct first (works in some environments)
+  try{
+    const r = await fetch(targetUrl, {mode:'cors'});
+    if(r.ok || r.status<500){ return r; }
+  }catch(e){ /* fall through to proxy */ }
+  // Try each CORS proxy in order
+  for(const proxy of CORS_PROXIES){
+    try{
+      const r = await fetch(proxy + encodeURIComponent(targetUrl));
+      if(r.ok || r.status<500){ return r; }
+    }catch(e){ /* try next proxy */ }
+  }
+  throw new Error('All CORS proxy attempts failed. Check network or API credentials.');
+}
 try{
-  const res = await fetch(fullUrl);
+  const res = await fetchWithCorsProxy(fullUrl);
   httpStatus = res.status;
   raw = await res.text();
   console.log('[CK] ← HTTP', httpStatus, raw.slice(0,300));
@@ -3848,16 +3868,66 @@ const _KOBO_NET_MAP = {
 };
 
 // ── KOBOrush data plan rendering (tile-based, not select dropdown) ──
+// NBS numeric network IDs for plans endpoint (confirmed from ClubKonnect docs)
+const _NBS_PLANS_NET_MAP = {
+  mtn:'01', MTN:'01',
+  glo:'02', GLO:'02', Glo:'02',
+  t2mobile:'03', T2MOBILE:'03', T2Mobile:'03',
+  airtel:'04', AIRTEL:'04', Airtel:'04',
+  '9mobile':'04', etisalat:'04', ETISALAT:'04', Etisalat:'04'
+};
 window.loadCKDataPlans = async (network) => {
   const dp = document.getElementById('dataPlans');
   if(!dp) return;
   dp.innerHTML = '<div class="loading-spinner" style="margin:16px auto"></div>';
   await loadApiConfig();
-  const nbsNet = _KOBO_NET_MAP[network] || 'MTN';
+  // Use numeric ID for MobileNetwork parameter (01=MTN, 02=Glo, 03=t2mobile, 04=Airtel)
+  const netId = _NBS_PLANS_NET_MAP[network] || _NBS_PLANS_NET_MAP[String(network).toLowerCase()] || '01';
+  const netName = String(network).toUpperCase();
+  console.log('[DataPlans] network:', network, '→ netId:', netId);
   try{
-    const res = await apiFetch('dataPlans', { MobileNetwork: nbsNet }, { type:'prefetch' });
-    const plans = extractNBSPlans(res, nbsNet);
-    if(!plans.length) throw new Error('No plans returned for '+nbsNet);
+    const res = await apiFetch('dataPlans', { MobileNetwork: netId }, { type:'prefetch' });
+    console.log('[DataPlans] raw response keys:', res ? Object.keys(res) : 'null');
+    // V2 endpoint returns: { "MOBILE_NETWORK": { "MTN": [...], "Glo": [...], ... } }
+    // or flat array, or { "MTN": [...] }
+    let plans = [];
+    if(res && typeof res === 'object'){
+      // Try V2 format: MOBILE_NETWORK wrapper
+      if(res.MOBILE_NETWORK){
+        const inner = res.MOBILE_NETWORK;
+        // Find the key matching this network
+        const key = Object.keys(inner).find(k =>
+          k.toUpperCase() === netName ||
+          k === '01' || k === netId ||
+          (netName==='MTN' && k.toUpperCase().includes('MTN')) ||
+          (netName==='GLO' && k.toUpperCase().includes('GLO')) ||
+          (netName==='AIRTEL' && k.toUpperCase().includes('AIRTEL')) ||
+          (netName==='9MOBILE' && (k.toUpperCase().includes('9MOBILE')||k.toUpperCase().includes('ETISALAT')))
+        ) || Object.keys(inner)[0];
+        if(key && inner[key]){
+          const providers = Array.isArray(inner[key]) ? inner[key] : [inner[key]];
+          providers.forEach(prov => {
+            const products = prov.PRODUCT || prov.products || prov.Plans || prov.PACKAGE || [];
+            products.forEach(prod => {
+              const pid = prod.PRODUCT_ID || prod.product_id || prod.PACKAGE_ID || '';
+              const psno = prod.PRODUCT_SNO || prod.SNO || '';
+              const planId = pid || psno || '';
+              if(!planId) return;
+              plans.push({
+                variation_code  : String(planId),
+                variation_sno   : String(psno),
+                variation_name  : String(prod.PRODUCT_NAME || prod.PACKAGE_NAME || prod.description || prod.name || ''),
+                variation_amount: String(prod.PRODUCT_AMOUNT || prod.PACKAGE_AMOUNT || prod.price || prod.amount || 0)
+              });
+            });
+          });
+        }
+      }
+      // Fallback: try extractNBSPlans with netId and then netName
+      if(!plans.length) plans = extractNBSPlans(res, netId);
+      if(!plans.length) plans = extractNBSPlans(res, netName);
+    }
+    if(!plans.length) throw new Error('No plans returned for '+netName+' ('+netId+')');
     dp.innerHTML = plans.map((p,i)=>{
       const code = p.variation_code||'';
       const name = p.variation_name||'';
@@ -4985,7 +5055,7 @@ const CK_DEFAULT_ENDPOINTS = {
   electricity:      'APIElectricityV1.asp',
   electricityVerify:'APIVerifyElectricityV1.asp',
   balance:          'APIWalletBalance.asp',
-  dataPlans:        'APIDataBundlePlansV1.asp',
+  dataPlans:        'APIDataBundlePlansV2.asp',
   cablePlans:       'APICableTVPackagesV2.asp',
   waec:             'APIWAECV1.asp',
   waecPlans:        'APIWAECPackagesV2.asp',
