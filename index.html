@@ -3789,10 +3789,37 @@ RequestID: reqId
 if(profileId) params.ProfileID = profileId;
 return apiFetch('jamb', params, { type:'result', amount, userId:_s.user?.uid||'' });
 }
+// Numeric ElectricCompany codes confirmed from ClubKonnect's own live
+// "Available Electricity Companies" table (account CK101282080):
+// 01=Eko(EKEDC), 02=Ikeja(IKEDC), 03=Abuja(AEDC), 04=Kano(KEDC),
+// 05=Portharcourt(PHEDC), 06=Jos(JEDC), 07=Ibadan(IBEDC), 08=Kaduna(KAEDC),
+// 09=Enugu(EEDC), 10=Benin(BEDC), 11=Yola(YEDC), 12=Aba(APLE).
+// KOBOrush stores the disco as a lowercase string id (ikedc, ekedc, aedc,
+// phed, kedco, bedc) — map those to the numeric codes the API expects.
+const NBS_DISCO_IDS = {
+  ekedc:'01', eko:'01',
+  ikedc:'02', ikeja:'02',
+  aedc:'03', abuja:'03',
+  kedco:'04', kano:'04', kedc:'04',
+  phed:'05', phedc:'05', portharcourt:'05',
+  jedc:'06', jos:'06',
+  ibedc:'07', ibadan:'07',
+  kaedc:'08', kaduna:'08',
+  eedc:'09', enugu:'09',
+  bedc:'10', benin:'10',
+  yedc:'11', yola:'11',
+  aple:'12', aba:'12'
+};
+// Numeric MeterType codes confirmed from ClubKonnect's own live docs:
+// 01=prepaid, 02=postpaid.
+const NBS_METERTYPE_IDS = { prepaid:'01', postpaid:'02' };
 async function apiElectricity(meter, disco, meterType, amount, phone, reqId){
+const discoId = NBS_DISCO_IDS[String(disco).toLowerCase()] || disco;
+const meterTypeId = NBS_METERTYPE_IDS[String(meterType).toLowerCase()] || meterType;
+console.log('[API] Electricity → ElectricCompany:',disco,'->',discoId,' MeterType:',meterType,'->',meterTypeId);
 return apiFetch('electricity',{
-ElectricCompany: disco,
-MeterType      : meterType,
+ElectricCompany: discoId,
+MeterType      : meterTypeId,
 MeterNo        : meter,
 Amount         : amount,
 PhoneNo        : phone,
