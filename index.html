@@ -3667,10 +3667,17 @@ const NET_MAP = {
 'Glo'    :{ airtime:'Glo',      data:'Glo'      },
 '9mobile':{ airtime:'Etisalat', data:'Etisalat' }
 };
+// Confirmed directly from ClubKonnect's own live "Available Mobile
+// Networks" table (account CK101282080, fetched from their Quick Test
+// page): MTN=01, Glo=02, t2mobile=03, Airtel=04. This is the ACTUAL
+// numeric MobileNetwork code required for airtime/data purchase —
+// not a name string. Note Airtel is 04, not 03, and there is no
+// separate Etisalat/9mobile code in this table.
 const NBS_NET_IDS = {
 'MTN'    :'01', 'mtn'    :'01',
 'GLO'    :'02', 'glo'    :'02', 'Glo':'02',
-'AIRTEL' :'03', 'airtel' :'03', 'Airtel':'03',
+'T2MOBILE':'03','t2mobile':'03','T2Mobile':'03',
+'AIRTEL' :'04', 'airtel' :'04', 'Airtel':'04',
 'ETISALAT':'04','etisalat':'04', 'Etisalat':'04', '9mobile':'04', '9MOBILE':'04'
 };
 function resolveNetworkId(name){
@@ -3707,28 +3714,31 @@ const svcId = name.includes('GOTV')?'gotv':name.includes('STAR')?'startimes':nam
 fetchCablePlans(svcId);
 }
 async function apiAirtime(phone, network, amount, reqId){
-// Confirmed against the working site's actual parameters: MobileNetwork
-// for airtime/data is the NAME string (MTN/Glo/Airtel/Etisalat), NOT a
-// numeric code. `network` here is already one of those exact name
-// strings (see _KOBO_NET_MAP) — pass it straight through, no lookup.
-console.log('[API] Airtime MobileNetwork:', network);
+// Confirmed directly from ClubKonnect's own live "Available Mobile
+// Networks" table for this account: MobileNetwork is the NUMERIC code
+// (01=MTN, 02=Glo, 03=t2mobile, 04=Airtel), NOT a name string. Their
+// own Quick-Test example URL uses MobileNetwork=01 for MTN. `network`
+// here is a name string from _KOBO_NET_MAP — convert it to the code.
+const netId = NBS_NET_IDS[network] || NBS_NET_IDS[String(network).toUpperCase()] || network;
+console.log('[API] Airtime MobileNetwork:', network, '->', netId);
 return apiFetch('airtime',{
 MobileNumber:phone,
-MobileNetwork:network,
+MobileNetwork:netId,
 Amount:amount,
 RequestID:reqId
 },{ type:'airtime', amount, userId:_s.user?.uid||'' });
 }
 async function apiData(phone, network, planCode, amount, reqId, planSno){
-// Confirmed against the working site's actual parameters: MobileNetwork
-// is the NAME string (MTN/Glo/Airtel/Etisalat), NOT a numeric code.
+// Same numeric MobileNetwork code as airtime (01=MTN, 02=Glo,
+// 03=t2mobile, 04=Airtel) — confirmed from ClubKonnect's own live docs.
 // DataPlan must be the exact PRODUCT_ID returned by the plans list
 // endpoint — never the name, a made-up code, or the SNO.
+const netId = NBS_NET_IDS[network] || NBS_NET_IDS[String(network).toUpperCase()] || network;
 const cleanPlanId = String(planCode||'').trim();
-console.log('[API] Data &rarr; MobileNetwork:',network,' DataPlan (PRODUCT_ID):',cleanPlanId,' SNO:',planSno);
+console.log('[API] Data &rarr; MobileNetwork:',network,'->',netId,' DataPlan (PRODUCT_ID):',cleanPlanId,' SNO:',planSno);
 return apiFetch('data',{
 MobileNumber : phone,
-MobileNetwork: network,
+MobileNetwork: netId,
 DataPlan     : cleanPlanId,
 Amount       : amount,
 RequestID    : reqId
