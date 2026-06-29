@@ -3115,212 +3115,896 @@ window.proceedToPIN=async(svc)=>{
 window.movePIN=(el,p,n)=>{if(el.value.length===1&&n)document.getElementById(n)?.focus();if(!el.value&&p)document.getElementById(p)?.focus()};
 window.checkPINDone=()=>{const pin=['pin1','pin2','pin3','pin4'].map(id=>document.getElementById(id).value).join('');if(pin.length===4)confirmTx(pin)};
 // ════════════════════════════════════════════════════
-// CLUBKONNECT API LAYER
-// All VTU transactions route through here.
-// Credentials are loaded from Firestore settings/apis.
+// CLUBKONNECT VTU ENGINE
+// Ported exactly from working reference implementation.
+// Uses KOBOrush Firestore (modular SDK) for logging.
 // ════════════════════════════════════════════════════
-let _ckCreds = null;
-async function _loadCKCreds(force=false){
-  if(_ckCreds && !force) return _ckCreds;
+
+const API_DEFAULTS = {
+providerName : 'Nellobytesystems',
+baseUrl      : 'https://www.nellobytesystems.com/',
+userId       : 'CK100352389',
+apiKey       : '',   // entered by admin after deployment
+callbackUrl  : '',
+enabled      : true,
+endpoints    : {
+airtime         : 'APIAirtimeV1.asp',
+data            : 'APIDatabundleV1.asp',
+cable           : 'APICableTVV1.asp',
+cableVerify     : 'APIVerifyCableTVV1.asp',
+electricity     : 'APIElectricityV1.asp',
+electricityVerify: 'APIVerifyElectricityV1.asp',
+balance         : 'APIWalletBalance.asp',
+dataPlans       : 'APIDataBundlePlansV1.asp',
+cablePlans      : 'APICableTVPackagesV2.asp',
+waec            : 'APIWAECV1.asp',
+waecPlans       : 'APIWAECPackagesV2.asp',
+jamb            : 'APIJAMBV1.asp',
+jambPlans       : 'APIJAMBPackagesV2.asp',
+status          : 'APIQueryV1.asp'
+}
+};
+const API_CFG = Object.assign({}, API_DEFAULTS);
+async function loadApiConfig(){
+try{
+const s = await db.collection('settings').doc('apiconfig').get();
+if(s.exists){
+const d = s.data();
+if(d.providerName) API_CFG.providerName = d.providerName;
+if(d.baseUrl)      API_CFG.baseUrl      = String(d.baseUrl).trim().replace(/\/+$/,'')+'/';
+if(d.userId)       API_CFG.userId       = String(d.userId).trim();
+if(d.apiKey)       API_CFG.apiKey       = String(d.apiKey).trim();
+if(d.callbackUrl)  API_CFG.callbackUrl  = String(d.callbackUrl).trim();
+if(typeof d.enabled !== 'undefined') API_CFG.enabled = !!d.enabled;
+if(d.endpoints)    Object.assign(API_CFG.endpoints, d.endpoints);
+}
+}catch(e){ console.warn('[API] Config load error:',e.message); }
+return API_CFG;
+}
+function genRequestId(){
+return 'ZMN'+Date.now()+Math.floor(Math.random()*100000);
+}
+function txRef(){ return genRequestId(); }
+async function apiFetch(endpointKey, params={}, txMeta={}){
+await loadApiConfig();
+if(!API_CFG.enabled){
+throw new Error('API is currently disabled by admin. Please try again later.');
+}
+if(!API_CFG.apiKey){
+throw new Error('API Key not configured. Admin must set the API Key in API Settings.');
+}
+const endpoint = API_CFG.endpoints[endpointKey] || endpointKey;
+const url      = API_CFG.baseUrl + endpoint;
+const allParams = Object.assign({
+UserID : API_CFG.userId,
+APIKey : API_CFG.apiKey,
+output : 'JSON'
+}, params);
+const qs  = Object.entries(allParams).map(([k,v])=>encodeURIComponent(k)+'='+encodeURIComponent(v)).join('&');
+const fullUrl = url + '?' + qs;
+const safeUrl = fullUrl.replace(API_CFG.apiKey, '***HIDDEN***');
+console.log('[API] &rarr;', endpointKey, safeUrl);
+const logRef = db.collection('api_logs').doc();
+const logData = {
+requestId   : params.RequestID || allParams.RequestID || '',
+provider    : API_CFG.providerName,
+endpoint    : endpointKey,
+url         : safeUrl,
+params      : Object.assign({}, allParams, {APIKey:'***HIDDEN***'}),
+status      : 'pending',
+userId      : txMeta.userId || (CU?.uid||''),
+type        : txMeta.type   || endpointKey,
+amount      : txMeta.amount || 0,
+createdAt   : firebase.firestore.FieldValue.serverTimestamp()
+};
+await logRef.set(logData).catch(()=>{});
+let raw='', parsed=null, httpStatus=0;
+try{
+const res = await fetch(fullUrl);
+httpStatus = res.status;
+raw = await res.text();
+console.log('[API] &larr; HTTP', httpStatus, raw.slice(0,300));
+try{ parsed = JSON.parse(raw); }catch(e){ parsed = { status: raw.trim(), raw }; }
+}catch(netErr){
+await logRef.update({ status:'net_error', error:netErr.message, respondedAt:firebase.firestore.FieldValue.serverTimestamp() }).catch(()=>{});
+throw new Error('Network error: '+netErr.message);
+}
+await logRef.update({
+httpStatus,
+rawResponse : raw.slice(0,4000),
+parsed      : parsed ? JSON.stringify(parsed).slice(0,8000) : '',
+status      : 'completed',
+respondedAt : firebase.firestore.FieldValue.serverTimestamp()
+}).catch(()=>{});
+return parsed;
+}
+function isApiSuccess(res){
+if(!res) return false;
+const st   = String(res.status||res.Status||res.statuscode||res.StatusCode||res.code||'').toLowerCase();
+const sc   = String(res.statuscode||res.StatusCode||'').toLowerCase();
+const msg  = String(res.message||res.Message||res.description||'').toLowerCase();
+const NBS_SUCCESS_CODES   = ['100','200','00','0'];
+const NBS_SUCCESS_STATUSES= ['order_received','order_queued','successful','success','completed','delivered'];
+const NBS_FAIL_STATUSES   = ['invalid','missing','error','failed','unauthorized','insufficient','unknown'];
+const codeOk   = NBS_SUCCESS_CODES.some(c => sc===c);
+const statusOk = NBS_SUCCESS_STATUSES.some(s => st.includes(s));
+const isFail   = NBS_FAIL_STATUSES.some(f => st.includes(f) || msg.includes(f));
+const ok = !isFail && (codeOk || statusOk);
+console.log('[isApiSuccess] st='+st+' sc='+sc+' codeOk='+codeOk+' statusOk='+statusOk+' isFail='+isFail+' &rarr; '+ok);
+return ok;
+}
+function getApiStatusLabel(res){
+const st = String(res?.status||res?.Status||'').toUpperCase();
+const labels = {
+'ORDER_RECEIVED':'Processing','ORDER_QUEUED':'Queued',
+'SUCCESSFUL':'Successful','COMPLETED':'Completed','DELIVERED':'Delivered'
+};
+return labels[st] || st || 'Processed';
+}
+function getApiError(res){
+if(!res) return 'No response from API provider.';
+return res.message || res.Message || res.description || res.status || JSON.stringify(res).slice(0,120);
+}
+const planCache = {};
+let currentNetworkId = null;
+let currentPlanMeta  = {};
+async function fetchDataPlans(){}
+function extractNBSPlans(res, networkId){
+if(!res || typeof res !== 'object') return [];
+console.log('[NBS] extractNBSPlans for:', networkId, '| keys:', Object.keys(res));
+const wrapperKey = Object.keys(res).find(k => /MOBILE_NETWORK|CABLE_TV|CABLETV|TV_PACKAGE|TV_ID|PACKAGE|NETWORK/i.test(k));
+if(wrapperKey){
+const wrapper = res[wrapperKey];
+console.log('[NBS] Found wrapper:', wrapperKey, '| type:', Array.isArray(wrapper)?'array':typeof wrapper);
+function extractFromProviders(providers, netName, nId){
+const plans = [];
+(providers||[]).forEach(prov => {
+const provId = prov.ID || prov.id || prov.NetworkID || prov.network_id;
+if(provId){
+nbsNetworkIds[nId]    = String(provId);
+nbsNetworkIds[netName]= String(provId);
+console.log('[NBS] Stored purchase ID for', nId, '(', netName, ') &rarr;', provId);
+}
+const products = prov.PRODUCT || prov.products || prov.Plans || prov.PACKAGE || prov.Packages || [];
+products.forEach((prod, idx) => {
+if(idx===0) console.log('[NBS] First product raw ('+netName+'):', JSON.stringify(prod));
+const pid   = prod.PRODUCT_ID   || prod.product_id   || prod.PACKAGE_ID   || prod.package_id   || '';
+const pcode = prod.PRODUCT_CODE || prod.product_code || prod.PACKAGE_CODE || prod.package_code || prod.code || '';
+const psno  = prod.PRODUCT_SNO  || prod.SNO          || '';
+const planId = pid || pcode || psno || String(idx+1);
+if(idx===0) console.log('[NBS] IDs &rarr; PRODUCT_ID:',pid,' CODE:',pcode,' SNO:',psno,' &rarr; SENDING:',planId);
+plans.push({
+variation_code   : String(planId),
+variation_sno    : String(psno),
+variation_name   : String(prod.PRODUCT_NAME || prod.product_name || prod.PACKAGE_NAME || prod.package_name || prod.description || prod.DESCRIPTION || prod.ExamType || prod.EXAMTYPE || prod.name || prod.PLAN || ''),
+variation_amount : String(prod.PRODUCT_AMOUNT || prod.product_amount || prod.PACKAGE_AMOUNT || prod.package_amount || prod.price || prod.AMOUNT || prod.PRICE || prod.amount || 0),
+description      : String(prod.PRODUCT_NAME || prod.product_name || prod.PACKAGE_NAME || prod.package_name || prod.description || prod.DESCRIPTION || prod.ExamType || prod.EXAMTYPE || prod.name || '')
+});
+});
+});
+return plans;
+}
+// Case A: wrapper value is itself a flat array of product objects directly
+// (e.g. {"PACKAGE":[{code:"dstv-padi",description:"...",amount:"4400"},...]})
+if(Array.isArray(wrapper)){
+const direct = extractFromProviders([{PRODUCT:wrapper}], wrapperKey, networkId);
+if(direct.length){
+console.log('[NBS] Flat array under wrapper key, extracted', direct.length, 'items directly');
+return direct;
+}
+}
+const wrapperKeys = Object.keys(wrapper||{});
+console.log('[NBS] inner keys:', wrapperKeys);
+const netKey = wrapperKeys.find(k => k.toUpperCase() === networkId.toUpperCase())
+|| wrapperKeys.find(k => k.toUpperCase().includes(networkId.toUpperCase()))
+|| wrapperKeys.find(k => networkId.toUpperCase().includes(k.toUpperCase()));
+console.log('[NBS] networkId:', networkId, '&rarr; matched key:', netKey||'NONE', '| all keys:', wrapperKeys);
+if(netKey && Array.isArray(wrapper[netKey])){
+const plans = extractFromProviders(wrapper[netKey], netKey, networkId);
+if(plans.length){
+console.log('[NBS] Extracted', plans.length, 'plans for', networkId);
+return plans;
+}
+}
+if(!netKey){
+console.warn('[NBS] No key matched networkId "'+networkId+'" in wrapper keys:', wrapperKeys);
+for(const k of wrapperKeys){
+if(Array.isArray(wrapper[k])){
+const plans = extractFromProviders(wrapper[k], k, networkId);
+if(plans.length){
+console.warn('[NBS] Using fallback key "'+k+'" for networkId "'+networkId+'"');
+return plans;
+}
+}
+}
+}
+}
+if(Array.isArray(res)){
+return res.map(p => ({
+variation_code   : String(p.PRODUCT_ID||p.product_id||p.PRODUCT_CODE||p.PACKAGE_ID||p.package_id||p.PACKAGE_CODE||p.package_code||p.DataPlanID||p.PlanID||p.id||p.code||''),
+variation_name   : String(p.PRODUCT_NAME||p.PACKAGE_NAME||p.package_name||p.description||p.ExamType||p.DataPlan||p.Plan||p.name||''),
+variation_amount : String(p.PRODUCT_AMOUNT||p.PACKAGE_AMOUNT||p.Price||p.PRICE||p.price||p.Amount||p.amount||0),
+description      : String(p.PRODUCT_NAME||p.PACKAGE_NAME||p.package_name||p.description||p.ExamType||p.DataPlan||p.Plan||p.name||'')
+}));
+}
+for(const key of Object.keys(res)){
+if(Array.isArray(res[key]) && res[key].length > 0){
+const first = res[key][0];
+if(typeof first === 'object' && first !== null){
+console.log('[NBS] Fallback array under key:', key, '| sample:', JSON.stringify(first).slice(0,100));
+return res[key].map(p => ({
+variation_code   : String(p.PRODUCT_ID||p.product_id||p.PRODUCT_CODE||p.PACKAGE_ID||p.package_id||p.PACKAGE_CODE||p.package_code||p.DataPlanID||p.PlanID||p.code||p.id||''),
+variation_name   : String(p.PRODUCT_NAME||p.PACKAGE_NAME||p.package_name||p.ExamType||p.DataPlan||p.Plan||p.name||''),
+variation_amount : String(p.PRODUCT_AMOUNT||p.PACKAGE_AMOUNT||p.Price||p.PRICE||p.price||p.Amount||0),
+description      : String(p.PRODUCT_NAME||p.PACKAGE_NAME||p.package_name||p.ExamType||p.DataPlan||p.Plan||p.name||'')
+}));
+}
+}
+}
+return [];
+}
+async function fetchPlansForNetwork(networkId){
+if(!networkId) return;
+currentNetworkId = networkId;
+const sel    = document.getElementById('s-amt');
+const loadEl = document.getElementById('data-loading');
+const infoEl = document.getElementById('data-info');
+if(!sel) return;
+if(planCache[networkId]){ renderPlansWithAdminSettings(planCache[networkId], sel, infoEl, networkId); return; }
+if(loadEl){ loadEl.style.display='block'; loadEl.textContent='[Loading] Loading plans...'; }
+sel.innerHTML = '<option value="">Loading plans...</option>';
+console.log('[PLANS] Fetching plans for network:', networkId);
+try{
+const res = await apiFetch('dataPlans', { MobileNetwork: networkId });
+if(loadEl) loadEl.style.display='none';
+console.log('[PLANS] Raw response type:', typeof res);
+console.log('[PLANS] Raw response:', JSON.stringify(res));
+if(res && typeof res === 'object') console.log('[PLANS] Response keys:', Object.keys(res));
+let plans = null;
+if(Array.isArray(res)){
+plans = res;
+console.log('[PLANS] Format: top-level array, length:', plans.length);
+} else if(res && typeof res === 'object'){
+const keys = Object.keys(res);
+console.log('[PLANS] Probing object keys:', keys);
+for(const key of keys){
+if(key.toUpperCase() === networkId.toUpperCase() && Array.isArray(res[key]) && res[key].length > 0){
+plans = res[key];
+console.log('[PLANS] Matched networkId key "'+key+'", length:', plans.length);
+break;
+}
+}
+if(!plans){
+for(const key of keys){
+if(Array.isArray(res[key]) && res[key].length > 0){
+plans = res[key];
+console.log('[PLANS] Found array under key "'+key+'", length:', plans.length);
+break;
+}
+}
+}
+if(!plans){
+for(const key of keys){
+if(res[key] && typeof res[key]==='object' && !Array.isArray(res[key])){
+const subKeys = Object.keys(res[key]);
+for(const sk of subKeys){
+if(sk.toUpperCase() === networkId.toUpperCase() && Array.isArray(res[key][sk]) && res[key][sk].length > 0){
+plans = res[key][sk];
+console.log('[PLANS] Matched networkId nested key "'+key+'.'+sk+'", length:', plans.length);
+break;
+}
+}
+if(!plans){
+for(const sk of subKeys){
+if(Array.isArray(res[key][sk]) && res[key][sk].length > 0){
+plans = res[key][sk];
+console.log('[PLANS] Found array under nested key "'+key+'.'+sk+'", length:', plans.length);
+break;
+}
+}
+}
+}
+if(plans) break;
+}
+}
+}
+console.log('[PLANS] Extracted plans count:', plans ? plans.length : 0);
+if(plans && plans.length > 0){
+console.log('[PLANS] First plan sample:', JSON.stringify(plans[0]));
+}
+const norm = extractNBSPlans(res, networkId);
+console.log('[PLANS] Normalized plans count:', norm.length);
+if(norm.length > 0){
+console.log('[PLANS] Sample plan:', JSON.stringify(norm[0]));
+planCache[networkId] = norm;
+renderPlansWithAdminSettings(norm, sel, infoEl, networkId);
+} else {
+const rawStr = JSON.stringify(res).slice(0, 400);
+sel.innerHTML = '<option value="">No plans returned</option>';
+if(infoEl){
+infoEl.style.display='block';
+infoEl.style.color='#dc2626';
+infoEl.innerHTML='<strong>&#9888; No plans from provider for: '+networkId+'</strong><br/>'
++'<span style="font-size:11px;font-family:monospace;word-break:break-all">Raw: '+rawStr+'</span>';
+}
+console.warn('[PLANS] No plans extracted. Full response:', JSON.stringify(res));
+}
+}catch(e){
+if(loadEl) loadEl.style.display='none';
+sel.innerHTML = '<option value="">&#9888; '+e.message.slice(0,60)+'</option>';
+if(infoEl){ infoEl.style.display='block'; infoEl.style.color='#dc2626'; infoEl.textContent='[Error] '+e.message; }
+console.error('[PLANS] fetchPlansForNetwork error:', e.message, e);
+}
+}
+async function fetchCablePlans(provider){
+const sel    = document.getElementById('s-amt');
+const loadEl = document.getElementById('data-loading');
+const infoEl = document.getElementById('data-info');
+if(!sel) return;
+// Confirmed real response shape: {"TV_ID":{"DStv":[{"ID":"dstv","PRODUCT":[...]}], "GOtv":[...], ...}}
+// This is the SAME pattern as Data plans, so we reuse the already-proven extractNBSPlans
+// function instead of custom logic. Cache the raw combined response once, then re-extract
+// per provider on each switch (cheap, synchronous, no extra network calls needed).
+if(planCache['cable_raw_response']){
+const plans = extractNBSPlans(planCache['cable_raw_response'], provider);
+renderPlans(plans, sel, infoEl);
+return;
+}
+if(loadEl){ loadEl.style.display='block'; loadEl.textContent='[Loading] Loading packages...'; }
+sel.innerHTML = '<option value="">Loading packages...</option>';
+console.log('[PLANS] Fetching cable plans (combined list) for provider:', provider);
+try{
+const res = await apiFetch('cablePlans', {});
+planCache['cable_raw_response'] = res;
+const plans = extractNBSPlans(res, provider);
+if(loadEl) loadEl.style.display='none';
+console.log('[PLANS] Cable plans for', provider, ':', plans.length);
+if(plans.length){
+renderPlans(plans, sel, infoEl);
+} else {
+const rawStr = JSON.stringify(res).slice(0,300);
+sel.innerHTML = '<option value="">No packages available</option>';
+if(infoEl){ infoEl.style.display='block'; infoEl.style.color='#dc2626';
+infoEl.innerHTML='<strong>&#9888; No packages from provider for: '+provider+'</strong><br/>'
++'<span style="font-size:11px;color:var(--g500)">The API returned no packages. Check Admin &rarr; API Logs for the raw response.</span><br/>'
++'<span style="font-size:10px;font-family:monospace;word-break:break-all;color:var(--g400)">Raw: '+rawStr+'</span>'; }
+}
+}catch(e){
+if(loadEl) loadEl.style.display='none';
+sel.innerHTML = '<option value="">&#9888; '+e.message.slice(0,60)+'</option>';
+if(infoEl){ infoEl.style.display='block'; infoEl.style.color='#dc2626'; infoEl.textContent='[Error] '+e.message; }
+console.error('[PLANS] fetchCablePlans error:', e.message);
+}
+}
+async function fetchJAMBPlans(){
+const sel    = document.getElementById('s-amt');
+const loadEl = document.getElementById('data-loading');
+const infoEl = document.getElementById('data-info');
+if(!sel) return;
+const examSel = document.getElementById('s-phone');
+if(examSel && examSel.value!=='JAMB'){ return; }
+const jambType = document.getElementById('s-meter')?.value||'UTME';
+const cacheKey = 'jamb_'+jambType;
+if(planCache[cacheKey]){ renderPlans(planCache[cacheKey], sel, infoEl); return; }
+if(loadEl){ loadEl.style.display='block'; loadEl.textContent='[Loading] Loading price...'; }
+sel.innerHTML='<option value="">Loading price...</option>';
+console.log('[PLANS] Fetching JAMB packages for type:', jambType);
+try{
+let res = await apiFetch('jambPlans', { ExamType: jambType });
+let plans = extractNBSPlans(res, jambType);
+if(!plans.length){
+res = await apiFetch('jambPlans', {});
+plans = extractNBSPlans(res, jambType);
+}
+if(loadEl) loadEl.style.display='none';
+console.log('[PLANS] JAMB final response:', JSON.stringify(res));
+console.log('[PLANS] JAMB plans count:', plans.length);
+if(plans.length){
+planCache[cacheKey]=plans;
+renderPlans(plans, sel, infoEl);
+}else{
+const rawStr=JSON.stringify(res).slice(0,300);
+sel.innerHTML='<option value="">No price available</option>';
+if(infoEl){ infoEl.style.display='block'; infoEl.style.color='#dc2626';
+infoEl.innerHTML='<strong>&#9888; No JAMB packages returned</strong><br/>'
++'<span style="font-size:11px;color:var(--g500)">Check Admin &rarr; API Logs for the raw response.</span><br/>'
++'<span style="font-size:10px;font-family:monospace;word-break:break-all;color:var(--g400)">Raw: '+rawStr+'</span>'; }
+}
+}catch(e){
+if(loadEl) loadEl.style.display='none';
+sel.innerHTML='<option value="">&#9888; '+e.message.slice(0,60)+'</option>';
+if(infoEl){ infoEl.style.display='block'; infoEl.style.color='#dc2626'; infoEl.textContent='[Error] '+e.message; }
+console.error('[PLANS] fetchJAMBPlans error:', e.message);
+}
+}
+function onExamTypeChange(){
+const examType = document.getElementById('s-phone')?.value;
+const jambFields = document.getElementById('jamb-extra-fields');
+if(examType==='JAMB'){
+if(jambFields) jambFields.style.display='block';
+fetchJAMBPlans();
+}else{
+if(jambFields) jambFields.style.display='none';
+fetchWAECPlans();
+}
+}
+async function fetchWAECPlans(){
+const sel    = document.getElementById('s-amt');
+const loadEl = document.getElementById('data-loading');
+const infoEl = document.getElementById('data-info');
+if(!sel) return;
+const examSel = document.getElementById('s-phone');
+if(examSel && examSel.value!=='WAEC'){
+sel.innerHTML='<option value="">Not yet available</option>';
+return;
+}
+if(planCache['waec_WAEC']){ renderPlans(planCache['waec_WAEC'], sel, infoEl); return; }
+if(loadEl){ loadEl.style.display='block'; loadEl.textContent='[Loading] Loading price...'; }
+sel.innerHTML='<option value="">Loading price...</option>';
+console.log('[PLANS] Fetching WAEC packages');
+try{
+let res = await apiFetch('waecPlans', { ExamType:'WAEC' });
+let plans = extractNBSPlans(res, 'WAEC');
+if(!plans.length){
+res = await apiFetch('waecPlans', {});
+plans = extractNBSPlans(res, 'WAEC');
+}
+if(loadEl) loadEl.style.display='none';
+console.log('[PLANS] WAEC final response:', JSON.stringify(res));
+console.log('[PLANS] WAEC plans count:', plans.length);
+if(plans.length){
+planCache['waec_WAEC']=plans;
+renderPlans(plans, sel, infoEl);
+}else{
+const rawStr=JSON.stringify(res).slice(0,300);
+sel.innerHTML='<option value="">No price available</option>';
+if(infoEl){ infoEl.style.display='block'; infoEl.style.color='#dc2626';
+infoEl.innerHTML='<strong>&#9888; No WAEC packages returned</strong><br/>'
++'<span style="font-size:11px;color:var(--g500)">The provider returned no pricing data. Please contact ClubKonnect support to confirm WAEC e-PIN is activated on your account.</span><br/>'
++'<span style="font-size:10px;font-family:monospace;word-break:break-all;color:var(--g400)">Raw: '+rawStr+'</span>'; }
+}
+}catch(e){
+if(loadEl) loadEl.style.display='none';
+sel.innerHTML='<option value="">&#9888; '+e.message.slice(0,60)+'</option>';
+if(infoEl){ infoEl.style.display='block'; infoEl.style.color='#dc2626'; infoEl.textContent='[Error] '+e.message; }
+console.error('[PLANS] fetchWAECPlans error:', e.message);
+}
+}
+function extractPlansArray(res){
+if(!res) return [];
+if(Array.isArray(res)) return res;
+if(typeof res !== 'object') return [];
+for(const key of Object.keys(res)){
+if(Array.isArray(res[key]) && res[key].length > 0) return res[key];
+}
+for(const key of Object.keys(res)){
+if(res[key] && typeof res[key]==='object' && !Array.isArray(res[key])){
+for(const sk of Object.keys(res[key])){
+if(Array.isArray(res[key][sk]) && res[key][sk].length > 0) return res[key][sk];
+}
+}
+}
+return [];
+}
+function normalizePlans(plans){
+if(!plans.length) return [];
+const s = plans[0];
+const sk = Object.keys(s);
+const idF    = sk.find(k=>/planid|dataid|bundleid|id$/i.test(k)) || sk[0];
+const nameF  = sk.find(k=>/plan|data|bundle|name/i.test(k)&&!/id|price|amt/i.test(k)) || sk[1];
+const priceF = sk.find(k=>/price|amt|cost|amount/i.test(k)) || sk[2];
+return plans.map(p=>({
+variation_code   : String(p[idF]||p.PRODUCT_ID||p.product_id||p.DataPlanID||p.PlanID||p.id||''),
+variation_name   : String(p[nameF]||p.DataPlan||p.Plan||p.name||''),
+variation_amount : String(p[priceF]||p.Price||p.price||p.Amount||0),
+description      : String(p[nameF]||p.DataPlan||p.Plan||p.name||'')
+}));
+}
+function getPlanCategory(name){
+const n=(name||'').toLowerCase();
+if(/sme/i.test(name))            return 'SME';
+if(/corp/i.test(name))           return 'Corporate';
+if(/gifting|gift/i.test(name))   return 'Gifting';
+if(/social|instagram|whatsapp|facebook|twitter|tiktok/i.test(name)) return 'Social';
+if(/weekly|week/i.test(name))    return 'Weekly';
+if(/hourly|hour/i.test(name))    return 'Hourly';
+if(/yearly|annual|year/i.test(name)) return 'Yearly';
+if(/monthly|month|30\s*day/i.test(name)) return 'Monthly';
+if(/\d+\s*day/i.test(name))     return 'Daily';
+if(/\d+GB|\d+MB/i.test(name))   return 'Standard';
+return 'Other';
+}
+const CATEGORY_ORDER = ['SME','Corporate','Standard','Daily','Weekly','Monthly','Yearly','Gifting','Social','Hourly','Other'];
+function renderPlans(plans, sel, infoEl){
+currentPlanMeta = {};
+sel.innerHTML = '';
+const groups = {};
+plans.forEach(p=>{
+const name  = p.variation_name||'';
+const price = parseFloat(p.variation_amount||0);
+const code  = p.variation_code||'';
+const src   = (name+' '+(p.description||'')).toLowerCase();
+const dm=src.match(/(\d+)\s*day/i), mm=src.match(/(\d+)\s*month/i), hm=src.match(/(\d+)\s*hour/i);
+const validity = hm?hm[1]+' Hours':dm?dm[1]+' Days':mm?mm[1]+' Month'+(parseInt(mm[1])>1?'s':''):'';
+const cat = getPlanCategory(name);
+if(!groups[cat]) groups[cat]=[];
+groups[cat].push({p, name, price, code, validity});
+currentPlanMeta[price+'_'+code] = {code, name, validity, price};
+});
+const placeholder = document.createElement('option');
+placeholder.value = '';
+placeholder.textContent = '-- Select a plan --';
+sel.appendChild(placeholder);
+const cats = CATEGORY_ORDER.filter(c=>groups[c]).concat(Object.keys(groups).filter(c=>!CATEGORY_ORDER.includes(c)));
+cats.forEach(cat=>{
+if(!groups[cat]||!groups[cat].length) return;
+const grp = document.createElement('optgroup');
+grp.label = '-- '+cat+' --';
+groups[cat].forEach(({p, name, price, code, validity})=>{
+const opt = document.createElement('option');
+opt.value = price;
+opt.dataset.code     = p.variation_code  || code;
+opt.dataset.sno      = p.variation_sno   || '';
+opt.dataset.validity = validity;
+opt.dataset.name     = name;
+opt.textContent      = name+(validity?' ('+validity+')':'')+'  -  NGN '+fmt(price);
+grp.appendChild(opt);
+});
+sel.appendChild(grp);
+});
+if(infoEl) infoEl.style.display='none';
+}
+function updateDataAmt(sel){
+const opt   = sel.options[sel.selectedIndex];
+const infoEl= document.getElementById('data-info');
+if(opt && opt.dataset.name && infoEl){
+infoEl.style.display='block';
+infoEl.innerHTML='<strong>'+opt.dataset.name+'</strong>'+(opt.dataset.validity?' &nbsp;|&nbsp; Validity: <strong>'+opt.dataset.validity+'</strong>':'');
+} else if(infoEl) infoEl.style.display='none';
+}
+const nbsNetworkIds = {}; // populated by extractNBSPlans: networkName &rarr; purchaseId
+const NET_MAP = {
+'MTN'    :{ airtime:'MTN',      data:'MTN'      },
+'Airtel' :{ airtime:'Airtel',   data:'Airtel'   },
+'Glo'    :{ airtime:'Glo',      data:'Glo'      },
+'9mobile':{ airtime:'Etisalat', data:'Etisalat' }
+};
+const NBS_NET_IDS = {
+'MTN'    :'01', 'mtn'    :'01',
+'GLO'    :'02', 'glo'    :'02', 'Glo':'02',
+'AIRTEL' :'03', 'airtel' :'03', 'Airtel':'03',
+'ETISALAT':'04','etisalat':'04', 'Etisalat':'04', '9mobile':'04', '9MOBILE':'04'
+};
+function resolveNetworkId(name){
+const fromPlans = nbsNetworkIds[name] || nbsNetworkIds[name.toUpperCase()];
+const hardcoded = NBS_NET_IDS[name];
+const result    = fromPlans || hardcoded || name;
+console.log('[resolveNetworkId]', name, '&rarr;', result, fromPlans?'(from plans)':hardcoded?'(hardcoded)':'(fallback)');
+return result;
+}
+function selNet(btn){
+btn.closest('div').querySelectorAll('button').forEach(b=>{ b.style.borderColor='var(--g200)'; b.style.background='#fff'; });
+btn.style.borderColor='var(--green)'; btn.style.background='var(--green-xl)';
+const netName = btn.textContent.trim();
+const entry   = NET_MAP[netName];
+const amtEl   = document.getElementById('s-amt');
+if(entry){
+if(amtEl && amtEl.tagName==='SELECT'){
+delete planCache[entry.data];
+fetchPlansForNetwork(entry.data);
+} else {
+if(!nbsNetworkIds[entry.data]){
+apiFetch('dataPlans',{MobileNetwork:entry.data},{type:'prefetch'})
+.then(res=>{ if(res) extractNBSPlans(res, entry.data); })
+.catch(()=>{});
+}
+}
+}
+}
+function selCable(btn){
+btn.closest('div').querySelectorAll('button').forEach(b=>{ b.style.borderColor='var(--g200)'; b.style.background='#fff'; });
+btn.style.borderColor='var(--green)'; btn.style.background='var(--green-xl)';
+const name = btn.textContent.trim().toUpperCase();
+const svcId = name.includes('GOTV')?'gotv':name.includes('STAR')?'startimes':name.includes('SHOWMAX')?'showmax':'dstv';
+fetchCablePlans(svcId);
+}
+async function apiAirtime(phone, network, amount, reqId){
+const netId = resolveNetworkId(network);
+console.log('[API] Airtime MobileNetwork resolved:', network, '&rarr;', netId);
+return apiFetch('airtime',{
+MobileNumber:phone,
+MobileNetwork:netId,
+Amount:amount,
+RequestID:reqId
+},{ type:'airtime', amount, userId:CU?.uid||'' });
+}
+async function apiData(phone, network, planCode, amount, reqId, planSno){
+const netId = resolveNetworkId(network);
+const cleanPlanId = String(planCode||'').trim();
+console.log('[API] Data &rarr; MobileNetwork:',netId,' DataPlan (PRODUCT_ID):',cleanPlanId,' SNO:',planSno);
+return apiFetch('data',{
+MobileNumber : phone,
+MobileNetwork: netId,
+DataPlan     : cleanPlanId,
+Amount       : amount,
+RequestID    : reqId
+},{ type:'data', amount, userId:CU?.uid||'' });
+}
+async function apiCable(smartcard, provider, planCode, amount, reqId, phone){
+return apiFetch('cable',{
+CableTV    : provider,
+Package    : planCode,
+SmartCardNo: smartcard,
+PhoneNo    : phone||UD?.phone||'',
+RequestID  : reqId
+},{ type:'cable', amount, userId:CU?.uid||'' });
+}
+async function apiWAEC(examType, phone, amount, reqId){
+return apiFetch('waec',{
+ExamType : examType,
+PhoneNo  : phone||UD?.phone||'',
+RequestID: reqId
+},{ type:'result', amount, userId:CU?.uid||'' });
+}
+async function apiJAMB(jambType, profileId, phone, amount, reqId){
+const params = {
+ExamType : jambType,
+PhoneNo  : phone||UD?.phone||'',
+RequestID: reqId
+};
+if(profileId) params.ProfileID = profileId;
+return apiFetch('jamb', params, { type:'result', amount, userId:CU?.uid||'' });
+}
+async function apiElectricity(meter, disco, meterType, amount, phone, reqId){
+return apiFetch('electricity',{
+ElectricCompany: disco,
+MeterType      : meterType,
+MeterNo        : meter,
+Amount         : amount,
+PhoneNo        : phone,
+RequestID      : reqId
+},{ type:'electricity', amount, userId:CU?.uid||'' });
+}
+async function checkTxStatus(requestId){
+return apiFetch('status',{ RequestID:requestId },{ type:'status_check' });
+}
+
+async function renderPlansWithAdminSettings(plans,sel,infoEl,networkId){
+try{
+const net=networkId||currentNetworkId||'';
+const s=await db.collection('dataPlans').where('network','==',net).get();
+const managed=s.docs.map(d=>({id:d.id,...d.data()}));
+if(!managed.length){_origRenderPlans(plans,sel,infoEl);return;}
+const mgByCode={};
+const mgByName={};
+managed.forEach(m=>{
+if(m.planCode) mgByCode[String(m.planCode).trim().toLowerCase()]=m;
+if(m.name) mgByName[String(m.name).trim().toLowerCase()]=m;
+});
+const matchCount=plans.filter(p=>{
+const code=String(p.variation_code||'').trim().toLowerCase();
+const name=String(p.variation_name||'').trim().toLowerCase();
+return mgByCode[code]||mgByName[name];
+}).length;
+console.log('[AdminPlans] Network:', net, '| Managed records:', managed.length, '| Live plans from provider:', plans.length, '| Matched:', matchCount);
+const unmatchedManaged = managed.filter(m=>{
+const mc=String(m.planCode||'').trim().toLowerCase();
+const mn=String(m.name||'').trim().toLowerCase();
+return !plans.some(p=>String(p.variation_code||'').trim().toLowerCase()===mc || String(p.variation_name||'').trim().toLowerCase()===mn);
+});
+if(unmatchedManaged.length){
+console.warn('[AdminPlans] These managed/enabled plans have NO matching live plan from the provider right now, so they will NEVER show on the site regardless of active status:', unmatchedManaged.map(m=>({name:m.name,planCode:m.planCode,active:m.active})));
+}
+const matchRatio=plans.length>0?matchCount/plans.length:0;
+if(matchRatio<0.2){
+console.warn('[AdminPlans] Low match ratio',matchRatio,'&mdash; showing all plans unfiltered');
+_origRenderPlans(plans,sel,infoEl);
+return;
+}
+const filtered=plans.filter(p=>{
+const code=String(p.variation_code||'').trim().toLowerCase();
+const name=String(p.variation_name||'').trim().toLowerCase();
+const m=mgByCode[code]||mgByName[name];
+if(!m) return true;
+return m.active!==false;
+}).map(p=>{
+const code=String(p.variation_code||'').trim().toLowerCase();
+const name=String(p.variation_name||'').trim().toLowerCase();
+const m=mgByCode[code]||mgByName[name];
+if(m&&m.sellPrice>0) return{...p,variation_amount:String(m.sellPrice)};
+return p;
+});
+if(!filtered.length && plans.length){
+console.warn('[AdminPlans] All managed plans disabled for '+net+' &mdash; falling back to full provider list so the dropdown is never empty');
+_origRenderPlans(plans,sel,infoEl);
+return;
+}
+_origRenderPlans(filtered,sel,infoEl);
+}catch(e){
+console.warn('[AdminPlans] Error applying admin settings, using raw plans:',e.message);
+_origRenderPlans(plans,sel,infoEl);
+}
+}
+
+// ── Adapter: load API config from KOBOrush's Firestore path (settings/apis) ──
+// Override loadApiConfig to read from settings/apis (KOBOrush doc path)
+const _origLoadApiConfig = loadApiConfig;
+loadApiConfig = async function(){
   try{
     const snap = await getDoc(doc(db,'settings','apis'));
     if(snap.exists()){
-      const a = snap.data();
-      if(a.ckEnabled !== false && a.ckUser && a.ckToken){
-        _ckCreds = { user: a.ckUser, key: a.ckToken, base: (a.ckURL||'https://www.nellobytesystems.com/').replace(/\/?$/,'/') };
-        return _ckCreds;
-      }
+      const d = snap.data();
+      if(d.ckUser)       API_CFG.userId       = String(d.ckUser).trim();
+      if(d.ckToken||d.ckKey) API_CFG.apiKey   = String(d.ckToken||d.ckKey).trim();
+      if(d.ckURL)        API_CFG.baseUrl       = String(d.ckURL).trim().replace(/\/+$/,'')+'/';
+      if(d.ckProviderName) API_CFG.providerName= d.ckProviderName;
+      if(typeof d.ckEnabled!=='undefined') API_CFG.enabled = !!d.ckEnabled;
+      if(d.ckEndpoints)  Object.assign(API_CFG.endpoints, d.ckEndpoints);
     }
-  }catch(e){}
-  return null;
-}
+  }catch(e){ console.warn('[CK] Config load error:',e.message); }
+  return API_CFG;
+};
 
-// Build a query-string URL for ClubKonnect
-function _ckURL(endpoint, params){
-  const c = _ckCreds;
-  if(!c) throw new Error('ClubKonnect not configured');
-  const base = c.base + endpoint;
-  const q = new URLSearchParams({ UserID: c.user, APIKey: c.key, output: 'JSON', ...params });
-  return base + '?' + q.toString();
-}
+// ── Adapter: apiFetch logging uses modular Firestore ──
+const _origApiFetch = apiFetch;
+apiFetch = async function(endpointKey, params={}, txMeta={}){
+  await loadApiConfig();
+  if(!API_CFG.enabled) throw new Error('VTU is currently disabled by admin.');
+  if(!API_CFG.apiKey)  throw new Error('API Key not configured. Admin must set the API Key in VTU Settings.');
+  const endpoint = API_CFG.endpoints[endpointKey] || endpointKey;
+  const url      = API_CFG.baseUrl + endpoint;
+  const allParams = { UserID: API_CFG.userId, APIKey: API_CFG.apiKey, output: 'JSON', ...params };
+  const qs       = Object.entries(allParams).map(([k,v])=>encodeURIComponent(k)+'='+encodeURIComponent(v)).join('&');
+  const fullUrl  = url + '?' + qs;
+  const safeUrl  = fullUrl.replace(API_CFG.apiKey, '***');
+  console.log('[CK] →', endpointKey, safeUrl);
 
-// ── Unified CK fetch — logs every call, returns parsed JSON ──
-async function _ckFetch(endpoint, params, txRef){
-  await _loadCKCreds();
-  if(!_ckCreds) throw new Error('ClubKonnect not configured. Go to Admin → VTU API → Settings.');
-  let httpCode = 0;
-  const epName = Object.entries(CK_DEFAULT_ENDPOINTS||{}).find(([,v])=>v===endpoint)?.[0] || endpoint;
-  try{
-    const url = _ckURL(endpoint, params);
-    const resp = await fetch(url);
-    httpCode = resp.status;
-    const text = await resp.text();
-    let json;
-    try{ json = JSON.parse(text); }
-    catch(e){ throw new Error('Non-JSON response: ' + text.substring(0,100)); }
-    _logAPI(epName, txRef||'', httpCode===200?'completed':'error', httpCode, _s.user?.uid, json);
-    // HTTP 200 is the transport success — CK business errors are in the JSON body
-    return json;
-  }catch(e){
-    _logAPI(epName, txRef||'', 'error', httpCode, _s.user?.uid, null);
-    throw e;
+  // Log to Firestore (modular SDK)
+  const logRef = doc(collection(db,'api_logs'));
+  const shouldLog = !['diag','prefetch','status_check','extension'].includes(txMeta.type||'');
+  if(shouldLog){
+    await setDoc(logRef,{
+      requestId: params.RequestID||'', provider: API_CFG.providerName,
+      endpoint: endpointKey, url: safeUrl,
+      params: {...allParams, APIKey:'***'},
+      status:'pending', userId: txMeta.userId||(_s.user?.uid||''),
+      type: txMeta.type||endpointKey, amount: txMeta.amount||0,
+      createdAt: serverTimestamp()
+    }).catch(()=>{});
   }
-}
 
-// Network code map  (ClubKonnect codes)
-const _ckNet = { mtn:'01', glo:'02', airtel:'03', '9mobile':'04', etisalat:'04', mtngh:'05', vodafone:'06' };
+  let raw='', parsed=null, httpStatus=0;
+  try{
+    const res = await fetch(fullUrl);
+    httpStatus = res.status;
+    raw = await res.text();
+    console.log('[CK] ← HTTP', httpStatus, raw.slice(0,300));
+    try{ parsed = JSON.parse(raw); }catch(e){ parsed = { status: raw.trim(), raw }; }
+  }catch(netErr){
+    if(shouldLog) await updateDoc(logRef,{status:'net_error',error:netErr.message,respondedAt:serverTimestamp()}).catch(()=>{});
+    throw new Error('Network error: '+netErr.message);
+  }
+  if(shouldLog){
+    await updateDoc(logRef,{
+      httpStatus, rawResponse: raw.slice(0,4000),
+      parsed: parsed ? JSON.stringify(parsed).slice(0,8000) : '',
+      status:'completed', respondedAt: serverTimestamp()
+    }).catch(()=>{});
+  }
+  return parsed;
+};
 
-// Check CK wallet balance (admin)
-// Load data plans from ClubKonnect for a network
+// ── CK Network map for KOBOrush provider IDs → NBS network IDs ──
+// KOBOrush stores provider as 'mtn','airtel','glo','9mobile' — map to NBS codes
+const _KOBO_NET_MAP = {
+  mtn:'MTN', airtel:'Airtel', glo:'Glo', '9mobile':'9mobile',
+  etisalat:'9mobile', MTN:'MTN', Airtel:'Airtel', Glo:'Glo'
+};
+
+// ── KOBOrush data plan rendering (tile-based, not select dropdown) ──
 window.loadCKDataPlans = async (network) => {
   const dp = document.getElementById('dataPlans');
   if(!dp) return;
-  dp.innerHTML = '<div class="loading-spinner" style="margin:12px auto"></div>';
+  dp.innerHTML = '<div class="loading-spinner" style="margin:16px auto"></div>';
+  await loadApiConfig();
+  const nbsNet = _KOBO_NET_MAP[network] || 'MTN';
+  const netId  = NBS_NET_IDS[nbsNet] || '01';
   try{
-    const netCode = _ckNet[network] || '01';
-    await _loadCKCreds();
-    const data = await _ckFetch('APIDataBundlePlansV1.asp', { MobileNetwork: netCode });
-    // CK response shapes vary:
-    // Shape A: { MOBILE_NETWORK: [ { PRODUCT: [...] } ] }
-    // Shape B: [ { PRODUCT_ID, PRODUCT_NAME, PRODUCT_AMOUNT, ... } ]   (flat array)
-    // Shape C: { data: [...] }
-    // Shape D: { STATUS, MOBILE_NETWORK: { "01": { PRODUCT: [...] } } }  (object not array)
-    let plans = [];
-    const raw = data;
-
-    if(Array.isArray(raw)){
-      // Shape B — flat array of plans
-      plans = raw;
-    } else if(Array.isArray(raw?.MOBILE_NETWORK)){
-      // Shape A — array of network objects each with PRODUCT array
-      raw.MOBILE_NETWORK.forEach(n => { (n.PRODUCT||[]).forEach(p => plans.push(p)); });
-    } else if(raw?.MOBILE_NETWORK && typeof raw.MOBILE_NETWORK === 'object'){
-      // Shape D — MOBILE_NETWORK is a keyed object
-      Object.values(raw.MOBILE_NETWORK).forEach(n => {
-        if(Array.isArray(n)) n.forEach(p => plans.push(p));
-        else if(n?.PRODUCT) (n.PRODUCT||[]).forEach(p => plans.push(p));
-      });
-    } else if(Array.isArray(raw?.data)){
-      plans = raw.data;
-    } else {
-      // Last resort: search all array values in the response
-      Object.values(raw||{}).forEach(v => {
-        if(Array.isArray(v)) v.forEach(item => {
-          if(item?.PRODUCT_ID||item?.PRODUCT_NAME) plans.push(item);
-          else if(Array.isArray(item?.PRODUCT)) item.PRODUCT.forEach(p => plans.push(p));
-        });
-      });
-    }
-    if(!plans.length) throw new Error('No plans returned');
-    dp.innerHTML = plans.map((p,i)=>`<div class="plan-opt ${i===0?'selected':''}" onclick="selCKPlan(this,'${p.PRODUCT_CODE||p.PRODUCT_ID}','${p.PRODUCT_NAME}',${p.PRODUCT_AMOUNT})" data-code="${p.PRODUCT_CODE||p.PRODUCT_ID}" data-id="${p.PRODUCT_ID||''}"><div class="plan-name" style="font-size:11px;line-height:1.3">${p.PRODUCT_NAME}</div><div class="plan-price">₦${Number(p.PRODUCT_AMOUNT).toLocaleString()}</div></div>`).join('');
-    _s.selPlan = { name: plans[0].PRODUCT_NAME, price: Number(plans[0].PRODUCT_AMOUNT), code: plans[0].PRODUCT_CODE||plans[0].PRODUCT_ID, id: plans[0].PRODUCT_ID||'' };
+    const res = await apiFetch('dataPlans', { MobileNetwork: netId }, { type:'prefetch' });
+    const plans = extractNBSPlans(res, nbsNet);
+    if(!plans.length) throw new Error('No plans returned for '+nbsNet);
+    dp.innerHTML = plans.map((p,i)=>{
+      const code = p.variation_code||'';
+      const name = p.variation_name||'';
+      const price= parseFloat(p.variation_amount||0);
+      const safeName = name.replace(/'/g,"&#39;").replace(/"/g,"&quot;");
+      return `<div class="plan-opt ${i===0?'selected':''}" onclick="selCKPlan(this,'${code}','${safeName}',${price})" data-code="${code}">
+        <div class="plan-name" style="font-size:11px;line-height:1.3">${name}</div>
+        <div class="plan-price">₦${price.toLocaleString()}</div>
+      </div>`;
+    }).join('');
+    if(plans[0]) _s.selPlan = { name: plans[0].variation_name, price: parseFloat(plans[0].variation_amount||0), code: plans[0].variation_code };
   }catch(e){
-    dp.innerHTML = `<div style="font-size:11px;color:var(--danger);padding:8px">Could not load live plans: ${e.message}. Using defaults.</div>`;
-    // Fallback to static plans
-    const pl=[{n:'500MB',d:'1 day',p:130,c:'500MB-1DAY'},{n:'1GB',d:'30 days',p:480,c:'1GB-30DAYS'},{n:'2GB',d:'30 days',p:950,c:'2GB-30DAYS'},{n:'5GB',d:'30 days',p:1850,c:'5GB-30DAYS'}];
-    dp.innerHTML += pl.map((p,i)=>`<div class="plan-opt ${i===0?'selected':''}" onclick="selCKPlan(this,'${p.c}','${p.n} – ${p.d}',${p.p})"><div class="plan-name">${p.n}</div><div class="plan-desc">${p.d}</div><div class="plan-price">₦${p.p}</div></div>`).join('');
-    _s.selPlan = { name: pl[0].n, price: pl[0].p, code: pl[0].c };
+    dp.innerHTML = `<div style="font-size:11px;color:var(--danger);padding:8px;grid-column:1/-1">Could not load live plans: ${e.message}</div>`;
+    // Static fallback
+    const pl=[{n:'500MB – 1 day',p:130,c:'500MB-1DAY'},{n:'1GB – 30 days',p:480,c:'1GB-30DAYS'},{n:'2GB – 30 days',p:950,c:'2GB-30DAYS'},{n:'5GB – 30 days',p:1850,c:'5GB-30DAYS'}];
+    dp.innerHTML += pl.map((p,i)=>`<div class="plan-opt ${i===0?'selected':''}" onclick="selCKPlan(this,'${p.c}','${p.n}',${p.p})"><div class="plan-name">${p.n}</div><div class="plan-price">₦${p.p}</div></div>`).join('');
+    if(!_s.selPlan) _s.selPlan = { name: pl[0].n, price: pl[0].p, code: pl[0].c };
   }
 };
 
 window.selCKPlan = (el, code, name, price) => {
-  el.closest('.data-plans').querySelectorAll('.plan-opt').forEach(p=>p.classList.remove('selected'));
-  el.classList.add('selected');
-  _s.selPlan = { name, price: Number(price), code, id: el.dataset.id||'' };
-};
-
-// Load cable TV packages from ClubKonnect
-window.loadCKCablePackages = async (cableProvider) => {
-  const cp = document.getElementById('cablePlans');
-  if(!cp) return;
-  cp.innerHTML = '<div class="loading-spinner" style="margin:12px auto"></div>';
-  try{
-    await _loadCKCreds();
-    const data = await _ckFetch('APICableTVPackagesV2.asp', {});
-    // CK response shapes for cable:
-    // Shape A: { TV_ID: [ { TV_NAME, PRODUCT: [...] } ] }
-    // Shape B: flat array of packages
-    // Shape C: { TV_ID: { "DSTV": { PRODUCT: [...] } } }
-    let plans = [];
-    const raw = data;
-    let tvArr = [];
-
-    if(Array.isArray(raw?.TV_ID)){
-      tvArr = raw.TV_ID;
-    } else if(raw?.TV_ID && typeof raw.TV_ID === 'object'){
-      tvArr = Object.entries(raw.TV_ID).map(([k,v])=>({TV_NAME:k,...(typeof v==='object'?v:{})}));
-    } else if(Array.isArray(raw)){
-      plans = raw;
-    }
-
-    if(tvArr.length && !plans.length){
-      const prov = tvArr.find(t=>(t.TV_NAME||'').toLowerCase().includes(cableProvider.toLowerCase())) || tvArr[0];
-      plans = prov?.PRODUCT || [];
-    }
-    if(!plans.length) throw new Error('No packages');
-    cp.innerHTML = plans.map((p,i)=>`<div class="plan-opt ${i===0?'selected':''}" onclick="selCKCable(this,'${p.PRODUCT_CODE||p.PRODUCT_ID}','${escHTML(p.PRODUCT_NAME)}',${p.PRODUCT_AMOUNT})"><div class="plan-name" style="font-size:10px;line-height:1.3">${p.PRODUCT_NAME}</div><div class="plan-price">₦${Number(p.PRODUCT_AMOUNT).toLocaleString()}</div></div>`).join('');
-    _s.selPlan = { name: plans[0].PRODUCT_NAME, price: Number(plans[0].PRODUCT_AMOUNT), code: plans[0].PRODUCT_CODE||plans[0].PRODUCT_ID };
-  }catch(e){
-    const cl=[{n:'Padi',d:'Access',p:2500},{n:'Yanga',d:'Compact',p:3500},{n:'Compact+',d:'Family',p:7900},{n:'Premium',d:'Full',p:24500}];
-    cp.innerHTML=cl.map((p,i)=>`<div class="plan-opt ${i===0?'selected':''}" onclick="selPlan(this,'${p.n}',${p.p})"><div class="plan-name">${p.n}</div><div class="plan-desc">${p.d}</div><div class="plan-price">₦${p.p.toLocaleString()}</div></div>`).join('');
-  }
-};
-
-window.selCKCable = (el, code, name, price) => {
-  el.closest('.data-plans').querySelectorAll('.plan-opt').forEach(p=>p.classList.remove('selected'));
+  el.closest('.data-plans')?.querySelectorAll('.plan-opt').forEach(p=>p.classList.remove('selected'));
   el.classList.add('selected');
   _s.selPlan = { name, price: Number(price), code };
 };
 
-function escHTML(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/'/g,'&#39;'); }
-
-// Check transaction status by RequestID
-async function _ckCheckStatus(requestId){
+window.loadCKCablePackages = async (cableProvider) => {
+  const cp = document.getElementById('cablePlans');
+  if(!cp) return;
+  cp.innerHTML = '<div class="loading-spinner" style="margin:16px auto"></div>';
+  await loadApiConfig();
   try{
-    return await _ckFetch('APIQueryV1.asp', { RequestID: requestId });
-  }catch(e){ return null; }
-}
-
-// ── EXECUTE VTU via ClubKonnect ──
-// Returns { success, message, data }
-async function _executeCKTransaction(txType, params, tid){
-  await _loadCKCreds();
-  const endpoints = {
-    airtime:     'APIAirtimeV1.asp',
-    data:        'APIDatabundleV1.asp',
-    cabletv:     'APICableTVV1.asp',
-    electricity: 'APIElectricityV1.asp',
-    waec:        'APIWAECV1.asp',
-    jamb:        'APIJAMBV1.asp',
-  };
-  const ep = endpoints[txType];
-  if(!ep) throw new Error('Unknown VTU type: ' + txType);
-  const result = await _ckFetch(ep, { ...params, RequestID: tid });
-  // ClubKonnect success codes:
-  // statuscode "100" + status "ORDER_RECEIVED"  = ✅ transaction queued/processing (treat as success)
-  // statuscode "200" = ✅ explicit success
-  // statuscode "000" = ✅ some endpoints use this
-  // Anything else = ❌ failure
-  const statusCode = String(result?.statuscode || result?.STATUSCODE || result?.StatusCode || '');
-  const statusStr  = String(result?.status || result?.STATUS || result?.Status || '').toUpperCase();
-  const msgStr     = String(result?.message || result?.MESSAGE || result?.response || result?.RESPONSE || '');
-
-  const isSuccess =
-    statusCode === '200' ||
-    statusCode === '100' ||
-    statusCode === '000' ||
-    statusStr === 'ORDER_RECEIVED' ||
-    statusStr === 'SUCCESS' ||
-    statusStr === 'SUCCESSFUL' ||
-    statusStr === 'DELIVERED' ||
-    statusStr === 'COMPLETED' ||
-    msgStr.toLowerCase().includes('successful') ||
-    msgStr.toLowerCase().includes('order received');
-
-  if(isSuccess){
-    return { success: true, message: msgStr || statusStr, data: result };
+    const res = await apiFetch('cablePlans', {}, { type:'prefetch' });
+    const provKey = cableProvider==='gotv'?'GOtv':cableProvider==='startimes'?'StarTimes':cableProvider==='showmax'?'Showmax':'DStv';
+    const plans = extractNBSPlans(res, provKey);
+    if(!plans.length) throw new Error('No packages for '+provKey);
+    cp.innerHTML = plans.map((p,i)=>{
+      const code = p.variation_code||'';
+      const name = p.variation_name||'';
+      const price= parseFloat(p.variation_amount||0);
+      const safeName = name.replace(/'/g,"&#39;").replace(/"/g,"&quot;");
+      return `<div class="plan-opt ${i===0?'selected':''}" onclick="selCKCable(this,'${code}','${safeName}',${price})" data-code="${code}">
+        <div class="plan-name" style="font-size:10px;line-height:1.3">${name}</div>
+        <div class="plan-price">₦${price.toLocaleString()}</div>
+      </div>`;
+    }).join('');
+    if(plans[0]) _s.selPlan = { name: plans[0].variation_name, price: parseFloat(plans[0].variation_amount||0), code: plans[0].variation_code };
+  }catch(e){
+    cp.innerHTML = `<div style="font-size:11px;color:var(--danger);padding:8px;grid-column:1/-1">Could not load packages: ${e.message}</div>`;
   }
-  return { success: false, message: msgStr || statusStr || `CK error (code ${statusCode})`, data: result };
+};
+
+window.selCKCable = (el, code, name, price) => {
+  el.closest('.data-plans')?.querySelectorAll('.plan-opt').forEach(p=>p.classList.remove('selected'));
+  el.classList.add('selected');
+  _s.selPlan = { name, price: Number(price), code };
+};
+
+// ── Execute a VTU transaction using the working engine ──
+// Called from confirmTx in place of the old _executeCKTransaction
+async function executeCKVTU(d, tid){
+  await loadApiConfig();
+  const ref = tid;
+  const nbsNet = _KOBO_NET_MAP[d.provider||'mtn'] || 'MTN';
+  let apiResult = null;
+
+  if(d.type==='airtime'){
+    apiResult = await apiAirtime(d.phone, nbsNet, d.amount, ref);
+  } else if(d.type==='data'){
+    apiResult = await apiData(d.phone, nbsNet, d.planCode||'', d.amount, ref, '');
+  } else if(d.type==='cabletv'){
+    const provKey = (d.provider||'dstv').toLowerCase().replace(/\s/g,'');
+    const validProviders=['dstv','gotv','startimes','showmax'];
+    const provId = validProviders.includes(provKey)?provKey:'dstv';
+    apiResult = await apiCable(d.cardNo||'', provId, d.planCode||'', d.amount, ref, d.phone||'');
+  } else if(d.type==='electricity'){
+    apiResult = await apiElectricity(d.meter||'', d.provider||'', d.meterType||'prepaid', d.amount, d.phone||'', ref);
+  } else if(d.type==='schoolpin'){
+    const examType = (d.exam||'WAEC').toUpperCase();
+    if(examType==='JAMB'){
+      apiResult = await apiJAMB(d.jambType||'UTME', d.profileId||'', d.phone||'', d.amount, ref);
+    } else {
+      apiResult = await apiWAEC(examType, d.phone||'', d.amount, ref);
+    }
+  }
+
+  const success = isApiSuccess(apiResult);
+  return {
+    success,
+    message: success ? getApiStatusLabel(apiResult) : getApiError(apiResult),
+    data: apiResult
+  };
 }
 
 async function confirmTx(pin){
@@ -3381,7 +4065,7 @@ async function confirmTx(pin){
       const VTU_TYPES = ['airtime','data','electricity','cabletv','schoolpin'];
       const isVTU = VTU_TYPES.includes(d.type);
 
-      // 1. Deduct wallet first (pessimistic lock)
+      // 1. Deduct wallet first
       let balanceBefore = 0;
       await runTransaction(db,async(t)=>{
         const uRef=doc(db,'users',_s.user.uid);
@@ -3393,45 +4077,24 @@ async function confirmTx(pin){
         t.set(doc(db,'transactions',tid),{
           id:tid,userId:_s.user.uid,type:d.type,status:'processing',
           amount:d.amount,sendAmount:d.sendAmount||null,fee:_txFee,
-          description:d.description||d.type,provider:'clubkonnect',
+          description:d.description||d.type,provider:API_CFG.providerName||'Nellobytesystems',
           phone:d.phone||'',meter:d.meter||'',cardNo:d.cardNo||'',
           recipient:d.recipient||'',balanceBefore:bb,balanceAfter:bb-d.amount,
           createdAt:serverTimestamp()
         });
       });
 
-      // 2. Call ClubKonnect API for VTU types
+      // 2. Call ClubKonnect via the working engine
       let ckResult = null;
       let txStatus = 'success';
       let txNote = '';
 
       if(isVTU){
         try{
-          let ckParams = {};
-          const netCode = _ckNet[d.provider||'mtn'] || '01';
-
-          if(d.type==='airtime'){
-            ckParams = { MobileNumber: d.phone, MobileNetwork: netCode, Amount: d.amount };
-          } else if(d.type==='data'){
-            ckParams = { MobileNumber: d.phone, MobileNetwork: netCode, DataPlan: d.planCode||d.plan||'', Amount: d.amount };
-          } else if(d.type==='cabletv'){
-            ckParams = { CableTV: (d.provider||'dstv').toUpperCase(), Package: d.planCode||d.plan||'', SmartCardNo: d.cardNo||'', PhoneNo: d.phone||'' };
-          } else if(d.type==='electricity'){
-            ckParams = { ElectricCompany: (d.provider||'ikedc').toUpperCase(), MeterType: d.meterType||'prepaid', MeterNo: d.meter||'', Amount: d.amount, PhoneNo: d.phone||'' };
-          } else if(d.type==='schoolpin'){
-            const examType = (d.exam||'WAEC').toUpperCase();
-            const ep = examType==='JAMB' ? 'jamb' : 'waec';
-            ckResult = await _executeCKTransaction(ep, { ExamType: examType, PhoneNo: d.phone||'' }, tid);
-          }
-
-          if(d.type !== 'schoolpin'){
-            ckResult = await _executeCKTransaction(d.type, ckParams, tid);
-          }
-
+          ckResult = await executeCKVTU(d, tid);
           if(ckResult && !ckResult.success){
-            // CK returned error — refund wallet
             txStatus = 'failed';
-            const rawNote = ckResult.message || '';
+            const rawNote = String(ckResult.message||'');
             txNote = (rawNote.startsWith('{') || rawNote.length > 150)
               ? 'Transaction declined by provider.'
               : rawNote || 'Transaction declined by provider.';
@@ -3439,16 +4102,15 @@ async function confirmTx(pin){
           }
         }catch(ckErr){
           txStatus = 'failed';
-          const errMsg = ckErr.message || '';
+          const errMsg = String(ckErr.message||'');
           txNote = (errMsg.startsWith('{') || errMsg.length > 150)
-            ? 'Could not connect to VTU provider. Please try again.'
+            ? 'Could not reach VTU provider. Please try again.'
             : errMsg || 'VTU provider error.';
-          // Refund wallet
           await updateDoc(doc(db,'users',_s.user.uid),{balance:increment(d.amount),totalSpent:increment(-d.amount)});
         }
       }
 
-      // 3. Update transaction record with final status
+      // 3. Update transaction record
       await updateDoc(doc(db,'transactions',tid),{
         status: txStatus,
         ckResponse: ckResult?.data ? JSON.stringify(ckResult.data).substring(0,500) : '',
@@ -3457,20 +4119,14 @@ async function confirmTx(pin){
       });
 
       if(txStatus === 'failed'){
-        // Extract a clean human-readable message from CK response
-        const ckData = ckResult?.data || {};
-        const cleanMsg = ckResult?.message && !ckResult.message.startsWith('{')
-          ? ckResult.message
-          : (ckData.message || ckData.MESSAGE || ckData.response || ckData.RESPONSE || 'Transaction could not be completed. Please try again.');
-        const displayMsg = String(cleanMsg).length > 120 ? 'Transaction declined by provider. Your wallet has been refunded.' : cleanMsg;
-
+        const displayMsg = txNote || 'Transaction could not be completed. Please try again.';
         const iconEl = document.getElementById('successIcon');
         if(iconEl){ iconEl.textContent='❌'; iconEl.style.background='#FEE2E2'; }
         showToast('error', displayMsg);
-        document.getElementById('successTitle').textContent = 'Transaction Failed';
-        document.getElementById('successTitle').style.color = 'var(--danger)';
-        document.getElementById('successMsg').textContent = '';
-        document.getElementById('successReceipt').innerHTML = `
+        document.getElementById('successTitle').textContent='Transaction Failed';
+        document.getElementById('successTitle').style.color='var(--danger)';
+        document.getElementById('successMsg').textContent='';
+        document.getElementById('successReceipt').innerHTML=`
           <div style="text-align:center;padding:20px 16px">
             <div style="font-size:14px;font-weight:600;color:var(--danger);margin-bottom:8px">${displayMsg}</div>
             <div style="font-size:12px;color:var(--text3);margin-top:10px;padding:10px;background:var(--bg);border-radius:8px">
@@ -3491,12 +4147,15 @@ async function confirmTx(pin){
       document.getElementById('successTitle').style.color='';
       document.getElementById('successMsg').textContent=d.description+' processed.';
       const _rs=csym(_s.userData?.country);
-      const extraRows = ckResult?.data?.TOKEN ? [{l:'Token/PIN', v: ckResult.data.TOKEN||ckResult.data.token||''}] : [];
+      // Show token/PIN if returned (e.g. electricity token, WAEC pin)
+      const ckRaw = ckResult?.data||{};
+      const token = ckRaw.TOKEN||ckRaw.token||ckRaw.Pin||ckRaw.PIN||ckRaw.pin||'';
+      const extraRows = token ? [{l:'Token/PIN', v: token}] : [];
       document.getElementById('successReceipt').innerHTML=[
         {l:'Service',v:d.description},
         {l:'Amount',v:fmt(d.amount,_rs)},
         ...extraRows,
-        {l:'Status',v:'✅ Success'},
+        {l:'Status',v:'✅ '+( ckResult?.message||'Successful')},
         {l:'Reference',v:tid},
         {l:'Date',v:new Date().toLocaleString()}
       ].map(i=>`<div class="receipt-row"><span class="r-label">${i.l}</span><span class="r-val">${i.v}</span></div>`).join('');
