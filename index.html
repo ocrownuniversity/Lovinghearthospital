@@ -3961,9 +3961,30 @@ window.loadCKCablePackages = async (cableProvider) => {
   await loadApiConfig();
   try{
     const res = await apiFetch('cablePlans', {}, { type:'prefetch' });
-    const provKey = cableProvider==='gotv'?'GOtv':cableProvider==='startimes'?'StarTimes':cableProvider==='showmax'?'Showmax':'DStv';
-    const plans = extractNBSPlans(res, provKey);
-    if(!plans.length) throw new Error('No packages for '+provKey);
+    console.log('[Cable] raw response keys:', res ? Object.keys(res) : 'null');
+    // Try several likely casings/names for this provider against the actual response keys
+    const candidates = {
+      dstv     : ['DStv','Dstv','DSTV','dstv'],
+      gotv     : ['GOtv','Gotv','GOTV','gotv'],
+      startimes: ['StarTimes','Startimes','STARTIMES','startimes'],
+      showmax  : ['Showmax','SHOWMAX','showmax']
+    }[cableProvider] || ['DStv'];
+    let plans = [];
+    let matchedKey = '';
+    for(const provKey of candidates){
+      plans = extractNBSPlans(res, provKey);
+      if(plans.length){ matchedKey = provKey; break; }
+    }
+    // Last resort: scan response keys for one that case-insensitively matches the provider name
+    if(!plans.length && res && typeof res==='object'){
+      const wrapperKey = Object.keys(res).find(k => /CABLE_TV|CABLETV|TV_PACKAGE|TV_ID|PACKAGE/i.test(k));
+      const wrapper = wrapperKey ? res[wrapperKey] : res;
+      const innerKeys = wrapper && typeof wrapper==='object' ? Object.keys(wrapper) : [];
+      const fuzzy = innerKeys.find(k => k.toLowerCase().replace(/\s/g,'')===cableProvider.toLowerCase());
+      if(fuzzy){ plans = extractNBSPlans(res, fuzzy); matchedKey = fuzzy; }
+    }
+    console.log('[Cable] provider:', cableProvider, '→ matched key:', matchedKey, '| plans:', plans.length);
+    if(!plans.length) throw new Error('No packages for '+cableProvider);
     cp.innerHTML = plans.map((p,i)=>{
       const code = p.variation_code||'';
       const name = p.variation_name||'';
