@@ -1720,7 +1720,6 @@ textarea.form-input{resize:none}
             <label class="vtu-label">Provider Name</label>
             <input class="vtu-input" id="ckProvName" value="Nellobytesystems" oninput="scheduleVTUSave()">
           </div>
-
           <div class="vtu-field-group">
             <label class="vtu-label">Base URL</label>
             <input class="vtu-input" id="ckURL" value="https://www.nellobytesystems.com/" oninput="scheduleVTUSave()">
@@ -3116,173 +3115,62 @@ window.proceedToPIN=async(svc)=>{
 window.movePIN=(el,p,n)=>{if(el.value.length===1&&n)document.getElementById(n)?.focus();if(!el.value&&p)document.getElementById(p)?.focus()};
 window.checkPINDone=()=>{const pin=['pin1','pin2','pin3','pin4'].map(id=>document.getElementById(id).value).join('');if(pin.length===4)confirmTx(pin)};
 // ════════════════════════════════════════════════════
-// CLUBKONNECT API LAYER — exact implementation from working reference
-// Credentials loaded from Firestore settings/apis (ckUser, ckToken, ckURL)
+// CLUBKONNECT API LAYER
+// All VTU transactions route through here.
+// Credentials are loaded from Firestore settings/apis.
 // ════════════════════════════════════════════════════
-
-// Config object — loaded fresh from Firestore on every call
-const _CK_DEFAULTS = {
-  providerName : 'Nellobytesystems',
-  baseUrl      : 'https://www.nellobytesystems.com/',
-  userId       : '',
-  apiKey       : '',
-  enabled      : true,
-  endpoints    : {
-    airtime          : 'APIAirtimeV1.asp',
-    data             : 'APIDatabundleV1.asp',
-    cable            : 'APICableTVV1.asp',
-    cableVerify      : 'APIVerifyCableTVV1.asp',
-    electricity      : 'APIElectricityV1.asp',
-    electricityVerify: 'APIVerifyElectricityV1.asp',
-    balance          : 'APIWalletBalance.asp',
-    dataPlans        : 'APIDataBundlePlansV1.asp',
-    cablePlans       : 'APICableTVPackagesV2.asp',
-    waec             : 'APIWAECV1.asp',
-    waecPlans        : 'APIWAECPackagesV2.asp',
-    jamb             : 'APIJAMBV1.asp',
-    jambPlans        : 'APIJAMBPackagesV2.asp',
-    status           : 'APIQueryV1.asp'
-  }
-};
-const _CK_CFG = Object.assign({}, _CK_DEFAULTS, { endpoints: Object.assign({}, _CK_DEFAULTS.endpoints) });
-let _ckCreds = null; // legacy compat reference
-
+let _ckCreds = null;
 async function _loadCKCreds(force=false){
+  if(_ckCreds && !force) return _ckCreds;
   try{
     const snap = await getDoc(doc(db,'settings','apis'));
     if(snap.exists()){
       const a = snap.data();
-      const user = a.ckUser || '';
-      const key  = a.ckToken || a.ckKey || '';
-      const base = (a.ckURL||'https://www.nellobytesystems.com/').replace(/\/+$/,'')+'/';
-      if(a.ckEnabled !== false && user && key){
-        _CK_CFG.userId  = user;
-        _CK_CFG.apiKey  = key;
-        _CK_CFG.baseUrl = base;
-        _CK_CFG.enabled = a.ckEnabled !== false;
-        if(a.ckEndpoints) Object.assign(_CK_CFG.endpoints, a.ckEndpoints);
-        _ckCreds = { user, key, base }; // keep legacy compat
+      if(a.ckEnabled !== false && a.ckUser && a.ckToken){
+        _ckCreds = { user: a.ckUser, key: a.ckToken, base: (a.ckURL||'https://www.nellobytesystems.com/').replace(/\/?$/,'/') };
         return _ckCreds;
       }
     }
-  }catch(e){ console.warn('[CK] Config load error:',e.message); }
+  }catch(e){}
   return null;
 }
 
-// Core fetch — direct call exactly like the working reference app
-async function _ckFetch(endpointKey, params, txRef){
-  await _loadCKCreds(true);
-  if(!_CK_CFG.enabled){
-    throw new Error('VTU API is currently disabled by admin.');
-  }
-  if(!_CK_CFG.apiKey){
-    throw new Error('API Key not configured. Admin must set the API Key in VTU Settings.');
-  }
-  // Resolve endpoint: accept both a key like 'airtime' or a literal filename
-  const endpoint = _CK_CFG.endpoints[endpointKey] || endpointKey;
-  const url      = _CK_CFG.baseUrl + endpoint;
-  const allParams = Object.assign({
-    UserID : _CK_CFG.userId,
-    APIKey : _CK_CFG.apiKey,
-    output : 'JSON'
-  }, params);
-  const qs = Object.entries(allParams)
-    .map(([k,v]) => encodeURIComponent(k)+'='+encodeURIComponent(v))
-    .join('&');
-  const fullUrl = url + '?' + qs;
-  const safeUrl = fullUrl.replace(_CK_CFG.apiKey, '***');
-  console.log('[CK] →', endpointKey, safeUrl);
+// Build a query-string URL for ClubKonnect
+function _ckURL(endpoint, params){
+  const c = _ckCreds;
+  if(!c) throw new Error('ClubKonnect not configured');
+  const base = c.base + endpoint;
+  const q = new URLSearchParams({ UserID: c.user, APIKey: c.key, output: 'JSON', ...params });
+  return base + '?' + q.toString();
+}
 
-  // Log to Firestore (best-effort)
-  const logData = {
-    requestId : params?.RequestID || txRef || '',
-    endpoint  : endpointKey,
-    url       : safeUrl,
-    status    : 'pending',
-    userId    : _s.user?.uid || '',
-    type      : endpointKey,
-    amount    : params?.Amount || 0,
-    createdAt : serverTimestamp()
-  };
-  const logDocRef = doc(collection(db,'apiLogs'));
-  setDoc(logDocRef, logData).catch(()=>{});
-
-  // In-memory log (for admin API Logs tab)
-  window._apiLogs = window._apiLogs || [];
-  const memEntry = { type: endpointKey, ref: txRef||params?.RequestID||'', status:'pending', httpCode:0, userId:_s.user?.uid||'', ts: new Date() };
-  window._apiLogs.unshift(memEntry);
-  if(window._apiLogs.length > 50) window._apiLogs = window._apiLogs.slice(0,50);
-
-  let raw='', parsed=null, httpStatus=0;
+// ── Unified CK fetch — logs every call, returns parsed JSON ──
+async function _ckFetch(endpoint, params, txRef){
+  await _loadCKCreds();
+  if(!_ckCreds) throw new Error('ClubKonnect not configured. Go to Admin → VTU API → Settings.');
+  let httpCode = 0;
+  const epName = Object.entries(CK_DEFAULT_ENDPOINTS||{}).find(([,v])=>v===endpoint)?.[0] || endpoint;
   try{
-    const res = await fetch(fullUrl);
-    httpStatus = res.status;
-    raw = await res.text();
-    console.log('[CK] ←', httpStatus, raw.slice(0,300));
-    try{ parsed = JSON.parse(raw); }catch(e){ parsed = { status: raw.trim(), raw }; }
-  }catch(netErr){
-    updateDoc(logDocRef,{ status:'net_error', error:netErr.message, respondedAt:serverTimestamp() }).catch(()=>{});
-    memEntry.status = 'net_error'; memEntry.httpCode = 0;
-    throw new Error('Network error: '+netErr.message);
+    const url = _ckURL(endpoint, params);
+    const resp = await fetch(url);
+    httpCode = resp.status;
+    const text = await resp.text();
+    let json;
+    try{ json = JSON.parse(text); }
+    catch(e){ throw new Error('Non-JSON response: ' + text.substring(0,100)); }
+    _logAPI(epName, txRef||'', httpCode===200?'completed':'error', httpCode, _s.user?.uid, json);
+    // HTTP 200 is the transport success — CK business errors are in the JSON body
+    return json;
+  }catch(e){
+    _logAPI(epName, txRef||'', 'error', httpCode, _s.user?.uid, null);
+    throw e;
   }
-
-  // Update Firestore log with response
-  updateDoc(logDocRef,{
-    httpStatus,
-    rawResponse : raw.slice(0,4000),
-    parsed      : parsed ? JSON.stringify(parsed).slice(0,8000) : '',
-    response    : parsed || {},
-    status      : 'completed',
-    respondedAt : serverTimestamp()
-  }).catch(()=>{});
-
-  // Update in-memory entry
-  memEntry.status   = 'completed';
-  memEntry.httpCode = httpStatus;
-  memEntry.response = parsed;
-
-  return parsed;
 }
 
-// Success detection — exactly from working reference
-function _ckIsSuccess(res){
-  if(!res) return false;
-  const st  = String(res.status||res.Status||res.statuscode||res.StatusCode||res.code||'').toLowerCase();
-  const sc  = String(res.statuscode||res.StatusCode||'').toLowerCase();
-  const msg = String(res.message||res.Message||res.description||'').toLowerCase();
-  const OK_CODES    = ['100','200','00','0'];
-  const OK_STATUSES = ['order_received','order_queued','successful','success','completed','delivered'];
-  const FAIL_WORDS  = ['invalid','missing','error','failed','unauthorized','insufficient','unknown'];
-  const codeOk   = OK_CODES.some(c => sc===c);
-  const statusOk = OK_STATUSES.some(s => st.includes(s));
-  const isFail   = FAIL_WORDS.some(f => st.includes(f)||msg.includes(f));
-  return !isFail && (codeOk || statusOk);
-}
-
-function _ckGetError(res){
-  if(!res) return 'No response from provider.';
-  return res.message||res.Message||res.description||res.status||JSON.stringify(res).slice(0,120);
-}
-
-// Network code map (ClubKonnect numeric codes)
-const _ckNet = { mtn:'01', MTN:'01', glo:'02', GLO:'02', Glo:'02', airtel:'03', Airtel:'03', AIRTEL:'03',
-  '9mobile':'04', '9MOBILE':'04', etisalat:'04', Etisalat:'04', ETISALAT:'04', mtngh:'05', vodafone:'06' };
+// Network code map  (ClubKonnect codes)
+const _ckNet = { mtn:'01', glo:'02', airtel:'03', '9mobile':'04', etisalat:'04', mtngh:'05', vodafone:'06' };
 
 // Check CK wallet balance (admin)
-window.checkCKWalletBalance = async () => {
-  const balEl = document.getElementById('ckWalletBal');
-  if(balEl){ balEl.style.display='block'; balEl.textContent='Checking balance…'; }
-  try{
-    const data = await _ckFetch('balance', {});
-    const bal = data?.WALLET_BALANCE ?? data?.Balance ?? data?.balance ?? JSON.stringify(data);
-    if(balEl) balEl.textContent = 'CK Wallet Balance: ₦' + Number(bal).toLocaleString();
-    showToast('success', 'CK Balance: ₦' + Number(bal).toLocaleString());
-  }catch(e){
-    if(balEl) balEl.textContent = 'Balance check failed: ' + e.message;
-    showToast('error', e.message);
-  }
-};
-
 // Load data plans from ClubKonnect for a network
 window.loadCKDataPlans = async (network) => {
   const dp = document.getElementById('dataPlans');
@@ -3291,7 +3179,7 @@ window.loadCKDataPlans = async (network) => {
   try{
     const netCode = _ckNet[network] || '01';
     await _loadCKCreds();
-    const data = await _ckFetch('dataPlans', { MobileNetwork: netCode });
+    const data = await _ckFetch('APIDataBundlePlansV1.asp', { MobileNetwork: netCode });
     // CK response shapes vary:
     // Shape A: { MOBILE_NETWORK: [ { PRODUCT: [...] } ] }
     // Shape B: [ { PRODUCT_ID, PRODUCT_NAME, PRODUCT_AMOUNT, ... } ]   (flat array)
@@ -3348,7 +3236,7 @@ window.loadCKCablePackages = async (cableProvider) => {
   cp.innerHTML = '<div class="loading-spinner" style="margin:12px auto"></div>';
   try{
     await _loadCKCreds();
-    const data = await _ckFetch('cablePlans', {});
+    const data = await _ckFetch('APICableTVPackagesV2.asp', {});
     // CK response shapes for cable:
     // Shape A: { TV_ID: [ { TV_NAME, PRODUCT: [...] } ] }
     // Shape B: flat array of packages
@@ -3389,31 +3277,50 @@ function escHTML(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').r
 // Check transaction status by RequestID
 async function _ckCheckStatus(requestId){
   try{
-    return await _ckFetch('status', { RequestID: requestId });
+    return await _ckFetch('APIQueryV1.asp', { RequestID: requestId });
   }catch(e){ return null; }
 }
 
 // ── EXECUTE VTU via ClubKonnect ──
 // Returns { success, message, data }
 async function _executeCKTransaction(txType, params, tid){
-  // Map internal type names to _ckFetch endpoint keys (same as _CK_CFG.endpoints)
-  const epKeyMap = {
-    airtime    : 'airtime',
-    data       : 'data',
-    cabletv    : 'cable',
-    electricity: 'electricity',
-    waec       : 'waec',
-    jamb       : 'jamb',
+  await _loadCKCreds();
+  const endpoints = {
+    airtime:     'APIAirtimeV1.asp',
+    data:        'APIDatabundleV1.asp',
+    cabletv:     'APICableTVV1.asp',
+    electricity: 'APIElectricityV1.asp',
+    waec:        'APIWAECV1.asp',
+    jamb:        'APIJAMBV1.asp',
   };
-  const epKey = epKeyMap[txType];
-  if(!epKey) throw new Error('Unknown VTU type: ' + txType);
-  const result = await _ckFetch(epKey, { ...params, RequestID: tid }, tid);
-  const ok = _ckIsSuccess(result);
-  const msg = _ckGetError(result);
-  if(ok){
-    return { success: true, message: msg, data: result };
+  const ep = endpoints[txType];
+  if(!ep) throw new Error('Unknown VTU type: ' + txType);
+  const result = await _ckFetch(ep, { ...params, RequestID: tid });
+  // ClubKonnect success codes:
+  // statuscode "100" + status "ORDER_RECEIVED"  = ✅ transaction queued/processing (treat as success)
+  // statuscode "200" = ✅ explicit success
+  // statuscode "000" = ✅ some endpoints use this
+  // Anything else = ❌ failure
+  const statusCode = String(result?.statuscode || result?.STATUSCODE || result?.StatusCode || '');
+  const statusStr  = String(result?.status || result?.STATUS || result?.Status || '').toUpperCase();
+  const msgStr     = String(result?.message || result?.MESSAGE || result?.response || result?.RESPONSE || '');
+
+  const isSuccess =
+    statusCode === '200' ||
+    statusCode === '100' ||
+    statusCode === '000' ||
+    statusStr === 'ORDER_RECEIVED' ||
+    statusStr === 'SUCCESS' ||
+    statusStr === 'SUCCESSFUL' ||
+    statusStr === 'DELIVERED' ||
+    statusStr === 'COMPLETED' ||
+    msgStr.toLowerCase().includes('successful') ||
+    msgStr.toLowerCase().includes('order received');
+
+  if(isSuccess){
+    return { success: true, message: msgStr || statusStr, data: result };
   }
-  return { success: false, message: msg || 'CK error', data: result };
+  return { success: false, message: msgStr || statusStr || `CK error (code ${statusCode})`, data: result };
 }
 
 async function confirmTx(pin){
@@ -4390,9 +4297,14 @@ const CK_DEFAULT_ENDPOINTS = {
 // In-memory API log
 window._apiLogs = window._apiLogs || [];
 
-
-
-
+// Save to logs
+function _logAPI(type, ref, status, httpCode, userId, responseData){
+  window._apiLogs.unshift({ type, ref:ref||'—', status, httpCode, userId:userId||'—', ts: new Date(), response: responseData||null });
+  if(window._apiLogs.length > 50) window._apiLogs = window._apiLogs.slice(0,50);
+  try{
+    addDoc(collection(db,'apiLogs'),{type,ref:ref||'',status,httpCode:httpCode||0,userId:userId||'',ts:serverTimestamp()}).catch(()=>{});
+  }catch(e){}
+}
 
 // ── Provider / Sub-tab switching ──
 window.switchVTUProv = (prov, el) => {
@@ -4565,15 +4477,16 @@ window.runDiagnostics = async () => {
   const btn = document.getElementById('diagRunBtn');
   if(!res) return;
   renderDiagSummary();
-  res.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text3);font-size:12px">⏳ Checking all endpoints via CORS proxy…<br><br>This may take 10-20 seconds on first run.</div>';
+  res.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text3);font-size:12px">⏳ Checking all endpoints…<br><br>Running tests...</div>';
   if(btn) btn.disabled = true;
   await _loadCKCreds(true);
 
+  // Only use READ-ONLY endpoints for diagnostics — never send real transactions
   const tests = [
-    { key:'balance',   label:'Wallet Balance',   ep:'balance',   params:{} },
-    { key:'dataPlans', label:'Data Plans (MTN)',  ep:'dataPlans', params:{MobileNetwork:'01'} },
-    { key:'cablePlans',label:'Cable Packages',    ep:'cablePlans',params:{} },
-    { key:'airtime',   label:'Airtime (dry run)', ep:'airtime',   params:{MobileNumber:'08012345678',MobileNetwork:'01',Amount:100,RequestID:'DIAG_'+Date.now()} },
+    { key:'balance',    label:'Wallet Balance',        ep:'balance',    params:{} },
+    { key:'dataPlans',  label:'Data Plans (MTN)',       ep:'dataPlans',  params:{MobileNetwork:'01'} },
+    { key:'cablePlans', label:'Cable TV Packages',      ep:'cablePlans', params:{} },
+    { key:'waecPlans',  label:'WAEC Packages (read)',   ep:'waecPlans',  params:{ExamType:'WAEC'} },
   ];
 
   const rows = [];
@@ -4581,13 +4494,10 @@ window.runDiagnostics = async () => {
     const epFile = document.getElementById(`ep_${t.key}`)?.value || CK_DEFAULT_ENDPOINTS[t.key];
     let ok = false, msg = '';
     try{
-      const r = await window._ckFetch(epFile, t.params, 'DIAG_'+Date.now());
+      const r = await _ckFetch(epFile, t.params, 'DIAG_'+Date.now());
       ok = true;
       msg = 'HTTP 200 · OK';
-    }catch(e){
-      const em = e.message || 'Failed';
-      msg = em.includes('proxy') || em.includes('CORS') ? 'Proxy error – check connection' : em.substring(0,60);
-    }
+    }catch(e){ msg = e.message || 'Failed'; }
     rows.push(`<div class="diag-item">
       <div class="diag-icon ${ok?'diag-ok':'diag-fail'}">${ok?'✅':'❌'}</div>
       <div style="flex:1">
@@ -4607,20 +4517,15 @@ function renderAPILogs(){
   const el = document.getElementById('apiLogsList');
   if(!el) return;
 
-  // Show in-memory logs immediately while Firestore loads
-  _renderLogItems(el, window._apiLogs);
-
-  // Also load from Firestore and merge
+  // Try to load from Firestore too
   getDocs(query(collection(db,'apiLogs'),limit(50))).then(snap=>{
-    const fsLogs = snap.docs.map(d=>({...d.data(), _fromFS:true})).sort((a,b)=>{
+    const fsLogs = snap.docs.map(d=>d.data()).sort((a,b)=>{
       const ta=a.ts?.toMillis?a.ts.toMillis():0;
       const tb=b.ts?.toMillis?b.ts.toMillis():0;
       return tb-ta;
     });
-    // Merge: prefer in-memory (has response object) over Firestore for same ref
-    const memRefs = new Set(window._apiLogs.map(l=>l.ref));
-    const merged = [...window._apiLogs, ...fsLogs.filter(l=>!memRefs.has(l.ref))].slice(0,50);
-    _renderLogItems(el, merged);
+    const allLogs = [...window._apiLogs, ...fsLogs.filter(l=>!window._apiLogs.some(m=>m.ts?.getTime?.()===l.ts?.toMillis?.()))].slice(0,50);
+    _renderLogItems(el, allLogs);
   }).catch(()=>{ _renderLogItems(el, window._apiLogs); });
 }
 
@@ -4629,27 +4534,16 @@ function _renderLogItems(el, logs){
     el.innerHTML='<div style="text-align:center;padding:20px;color:var(--text3);font-size:12px">No logs yet. Logs appear here when VTU calls are made.</div>';
     return;
   }
-  el.innerHTML = logs.map((l,idx)=>{
-    const ok = l.status==='completed'||l.httpCode===200||l.httpCode===0;
+  el.innerHTML = logs.map(l=>{
+    const ok = l.status==='completed'||l.httpCode===200;
     const ts = l.ts instanceof Date ? l.ts.toLocaleString() : (l.ts?.toDate?l.ts.toDate().toLocaleString():'');
-    // Build response text for "View response"
-    let respText = null;
-    if(l.response !== undefined && l.response !== null){
-      try{ respText = typeof l.response === 'string' ? l.response : JSON.stringify(l.response, null, 2); }catch(e){}
-    }
-    const viewBtn = respText
-      ? `<div style="margin-top:6px">
-           <span style="font-size:11px;color:var(--primary);cursor:pointer;font-weight:600" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">▶ View response</span>
-           <pre style="display:none;font-size:10px;margin-top:4px;background:var(--bg);padding:8px;border-radius:6px;overflow-x:auto;white-space:pre-wrap;max-height:200px">${respText.substring(0,800)}</pre>
-         </div>`
-      : `<div style="margin-top:4px"><span style="font-size:11px;color:var(--text3)">No response data</span></div>`;
     return `<div class="log-item ${ok?'log-ok':'log-err'}">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
         <div><span class="log-badge ${ok?'log-badge-ok':'log-badge-err'}">${l.status||'error'}</span><b style="font-size:13px">${l.type||'unknown'}</b></div>
         <span style="font-size:10px;color:var(--text3)">${ts}</span>
       </div>
       <div style="font-size:11px;color:var(--text3)">Ref: ${l.ref||'—'} • HTTP: ${l.httpCode||'—'} • User: ${(l.userId||'—').substring(0,8)}</div>
-      ${viewBtn}
+      ${l.response?`<div style="margin-top:6px"><span style="font-size:11px;color:var(--primary);cursor:pointer;font-weight:600" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">▶ View response</span><pre style="display:none;font-size:10px;margin-top:4px;background:var(--bg);padding:6px;border-radius:6px;overflow-x:auto;white-space:pre-wrap">${JSON.stringify(l.response,null,2).substring(0,500)}</pre></div>`:'<div style="margin-top:4px"><span style="font-size:11px;color:var(--primary);cursor:pointer;font-weight:600">▶ View response</span></div>'}
     </div>`;
   }).join('');
 }
@@ -4680,7 +4574,7 @@ window.checkTXStatus = async () => {
     }
     // Then check CK API
     const epFile = document.getElementById('ep_status')?.value || CK_DEFAULT_ENDPOINTS.status;
-    const data = await window._ckFetch(epFile, {RequestID: ref}, ref);
+    const data = await _ckFetch(epFile, {RequestID: ref}, ref);
     if(resEl) resEl.innerHTML = '<b>ClubKonnect Response:</b><br><pre style="font-size:11px;white-space:pre-wrap">'+JSON.stringify(data,null,2).substring(0,600)+'</pre>';
   }catch(e){
     if(resEl) resEl.innerHTML = '<span style="color:var(--danger)">Error: '+e.message+'</span>';
@@ -4693,7 +4587,7 @@ window.checkCKWalletBalance = async () => {
   if(balEl){ balEl.textContent = '⏳ Checking…'; }
   try{
     const epFile = document.getElementById('ep_balance')?.value || CK_DEFAULT_ENDPOINTS.balance;
-    const data = await window._ckFetch(epFile, {}, 'balance-check');
+    const data = await _ckFetch(epFile, {}, 'balance-check');
     const bal = data?.WALLET_BALANCE ?? data?.Balance ?? data?.balance ?? '—';
     if(balEl) balEl.textContent = '₦' + Number(bal).toLocaleString(undefined,{minimumFractionDigits:2});
     showToast('success', 'CK Balance: ₦' + Number(bal).toLocaleString());
