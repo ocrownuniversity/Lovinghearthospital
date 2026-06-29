@@ -3700,20 +3700,16 @@ const svcId = name.includes('GOTV')?'gotv':name.includes('STAR')?'startimes':nam
 fetchCablePlans(svcId);
 }
 async function apiAirtime(phone, network, amount, reqId){
-// Airtime needs the NAME (MTN/Airtel/Glo/Etisalat), NOT the numeric ID
-const AIRTIME_NET_NAMES = {
-  'MTN':'MTN','mtn':'MTN',
-  'AIRTEL':'Airtel','airtel':'Airtel','Airtel':'Airtel',
-  'GLO':'Glo','glo':'Glo','Glo':'Glo',
-  'ETISALAT':'Etisalat','etisalat':'Etisalat','Etisalat':'Etisalat',
-  '9MOBILE':'Etisalat','9mobile':'Etisalat',
-  '01':'MTN','02':'Glo','03':'Airtel','04':'Etisalat'
-};
-const netName = AIRTIME_NET_NAMES[network] || network;
-console.log('[API] Airtime MobileNetwork resolved:', network, '->', netName);
+// Nellobytesystems' APIAirtimeV1.asp expects the numeric MobileNetwork
+// code (01=MTN, 02=Glo, 03=Airtel, 04=Etisalat/9mobile) — same as the
+// data endpoint — NOT the network name. Sending the name caused
+// INVALID_MOBILENETWORK for every network except MTN (which the
+// provider happened to also accept as an alias).
+const netId = resolveNetworkId(network);
+console.log('[API] Airtime MobileNetwork resolved:', network, '->', netId);
 return apiFetch('airtime',{
 MobileNumber:phone,
-MobileNetwork:netName,
+MobileNetwork:netId,
 Amount:amount,
 RequestID:reqId
 },{ type:'airtime', amount, userId:_s.user?.uid||'' });
