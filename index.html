@@ -4154,7 +4154,11 @@ async function executeCKVTU(d, tid){
     if(examType==='JAMB'){
       apiResult = await apiJAMB(d.jambType||'utme-no-mock', d.profileId||'', d.phone||'', d.amount, ref);
     } else {
-      apiResult = await apiWAEC(examType, d.phone||'', d.amount, ref);
+      // ExamType for WAEC must be the actual package code returned by
+      // APIWAECPackagesV2.asp (e.g. "waecdirect", "waec-registration") —
+      // NOT the literal string "WAEC". Use the code the user selected.
+      const waecCode = d.planCode || 'waecdirect';
+      apiResult = await apiWAEC(waecCode, d.phone||'', d.amount, ref);
     }
   }
 
