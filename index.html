@@ -3707,7 +3707,7 @@ MobileNumber:phone,
 MobileNetwork:netId,
 Amount:amount,
 RequestID:reqId
-},{ type:'airtime', amount, userId:CU?.uid||'' });
+},{ type:'airtime', amount, userId:_s.user?.uid||'' });
 }
 async function apiData(phone, network, planCode, amount, reqId, planSno){
 const netId = resolveNetworkId(network);
@@ -3719,7 +3719,7 @@ MobileNetwork: netId,
 DataPlan     : cleanPlanId,
 Amount       : amount,
 RequestID    : reqId
-},{ type:'data', amount, userId:CU?.uid||'' });
+},{ type:'data', amount, userId:_s.user?.uid||'' });
 }
 async function apiCable(smartcard, provider, planCode, amount, reqId, phone){
 return apiFetch('cable',{
@@ -3728,14 +3728,14 @@ Package    : planCode,
 SmartCardNo: smartcard,
 PhoneNo    : phone||UD?.phone||'',
 RequestID  : reqId
-},{ type:'cable', amount, userId:CU?.uid||'' });
+},{ type:'cable', amount, userId:_s.user?.uid||'' });
 }
 async function apiWAEC(examType, phone, amount, reqId){
 return apiFetch('waec',{
 ExamType : examType,
 PhoneNo  : phone||UD?.phone||'',
 RequestID: reqId
-},{ type:'result', amount, userId:CU?.uid||'' });
+},{ type:'result', amount, userId:_s.user?.uid||'' });
 }
 async function apiJAMB(jambType, profileId, phone, amount, reqId){
 const params = {
@@ -3744,7 +3744,7 @@ PhoneNo  : phone||UD?.phone||'',
 RequestID: reqId
 };
 if(profileId) params.ProfileID = profileId;
-return apiFetch('jamb', params, { type:'result', amount, userId:CU?.uid||'' });
+return apiFetch('jamb', params, { type:'result', amount, userId:_s.user?.uid||'' });
 }
 async function apiElectricity(meter, disco, meterType, amount, phone, reqId){
 return apiFetch('electricity',{
@@ -3754,7 +3754,7 @@ MeterNo        : meter,
 Amount         : amount,
 PhoneNo        : phone,
 RequestID      : reqId
-},{ type:'electricity', amount, userId:CU?.uid||'' });
+},{ type:'electricity', amount, userId:_s.user?.uid||'' });
 }
 async function checkTxStatus(requestId){
 return apiFetch('status',{ RequestID:requestId },{ type:'status_check' });
