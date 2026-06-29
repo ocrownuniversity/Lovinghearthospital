@@ -1072,7 +1072,17 @@ textarea.form-input{resize:none}
     <div class="provider-grid" id="schoolProv"></div>
   </div>
   <div class="svc-form-body">
-    <div class="form-group"><label class="form-label">Number of Pins</label><select class="form-input" id="schoolPinQty"><option>1</option><option>2</option><option>5</option><option>10</option></select></div>
+    <div id="school-jamb-fields" class="hidden">
+      <div class="form-group"><label class="form-label">JAMB Type</label>
+        <select class="form-input" id="schoolJambType" onchange="loadCKSchoolPlans()"><option value="UTME">UTME</option><option value="DE">Direct Entry</option></select>
+      </div>
+    </div>
+    <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px">Price per PIN</div>
+    <div id="school-loading" class="hidden" style="text-align:center;padding:10px 0;color:var(--text3);font-size:12px"><div class="loading-spinner"></div></div>
+    <div id="schoolPlans" class="data-plans"></div>
+    <div id="school-info" class="hidden" style="font-size:11px;margin:6px 0 10px"></div>
+    <div class="form-group"><label class="form-label">Number of Pins</label><select class="form-input" id="schoolPinQty" onchange="updateSchoolTotal()"><option>1</option><option>2</option><option>5</option><option>10</option></select></div>
+    <div id="school-total" style="font-size:12px;color:var(--text2);margin-bottom:8px"></div>
     <div class="form-group"><label class="form-label">Phone (for delivery)</label><input type="tel" class="form-input" id="schoolPhone" placeholder="08012345678"></div>
     <div class="form-group"><label class="form-label">Email (for delivery)</label><input type="email" class="form-input" id="schoolEmail" placeholder="your@email.com"></div>
     <button class="btn btn-primary" onclick="proceedToPIN('schoolpin')">Continue</button>
@@ -3059,6 +3069,7 @@ function populateProviders(){
   // Load live data plans from ClubKonnect for default network (MTN)
   loadCKDataPlans('mtn');
   loadCKCablePackages('dstv');
+  loadCKSchoolPlans();
   const dp=document.getElementById('dataPlans');
   if(dp){/* Data plans are loaded live from ClubKonnect via loadCKDataPlans() */}
   const cp=document.getElementById('cablePlans');
@@ -3068,6 +3079,7 @@ window.selProv=(grid,id,el)=>{document.querySelectorAll(`#${grid} .prov-opt`).fo
   // Load live data plans when network selected in data screen
   if(grid==='dataProv') loadCKDataPlans(id);
   if(grid==='cableProv') loadCKCablePackages(id);
+  if(grid==='schoolProv') loadCKSchoolPlans();
 };
 window.selPlan=(el,name,price)=>{el.closest('.data-plans').querySelectorAll('.plan-opt').forEach(p=>p.classList.remove('selected'));el.classList.add('selected');_s.selPlan={name,price}};
 
@@ -3078,7 +3090,7 @@ window.proceedToPIN=async(svc)=>{
   else if(svc==='data'){const ph=document.getElementById('dataPhone').value;if(!ph||!_s.selPlan)return showToast('error','Fill all fields');_s.pendingData={type:'data',phone:ph,amount:_s.selPlan.price,provider:_s.selProv['dataProv']||'mtn',planCode:_s.selPlan.code||'',description:`${_s.selPlan.name} Data – ${ph}`};sum=`<div class="sum-row"><span class="sum-lbl">Plan</span><span class="sum-val">${_s.selPlan.name}</span></div><div class="sum-row"><span class="sum-lbl">Phone</span><span class="sum-val">${ph}</span></div><div class="sum-row"><span class="sum-lbl">Amount</span><span class="sum-val" style="color:var(--primary)">₦${_s.selPlan.price.toLocaleString()}</span></div>`}
   else if(svc==='electricity'){const mt=document.getElementById('elecMeter').value;const am=document.getElementById('elecAmt').value;if(!mt||!am)return showToast('error','Fill all fields');_s.pendingData={type:'electricity',meter:mt,amount:parseFloat(am),provider:_s.selProv['elecProv']||'ikedc',meterType:document.getElementById('elecMeterType').value,description:`Electricity – ${mt}`};sum=`<div class="sum-row"><span class="sum-lbl">Meter</span><span class="sum-val">${mt}</span></div><div class="sum-row"><span class="sum-lbl">DISCO</span><span class="sum-val">${(_s.selProv['elecProv']||'ikedc').toUpperCase()}</span></div><div class="sum-row"><span class="sum-lbl">Amount</span><span class="sum-val" style="color:var(--primary)">₦${parseFloat(am).toLocaleString()}</span></div>`}
   else if(svc==='cabletv'){const cd=document.getElementById('cableCardNo').value;const ph=document.getElementById('cablePhone')?.value||'';if(!cd||!_s.selPlan)return showToast('error','Fill all fields');_s.pendingData={type:'cabletv',cardNo:cd,phone:ph,amount:_s.selPlan.price,provider:_s.selProv['cableProv']||'dstv',plan:_s.selPlan.name,planCode:_s.selPlan.code||'',description:`${_s.selPlan.name} Cable – ${cd}`};sum=`<div class="sum-row"><span class="sum-lbl">Card No</span><span class="sum-val">${cd}</span></div><div class="sum-row"><span class="sum-lbl">Package</span><span class="sum-val">${_s.selPlan.name}</span></div><div class="sum-row"><span class="sum-lbl">Amount</span><span class="sum-val" style="color:var(--primary)">₦${_s.selPlan.price.toLocaleString()}</span></div>`}
-  else if(svc==='schoolpin'){const qty=document.getElementById('schoolPinQty').value;const ph=document.getElementById('schoolPhone').value;const ex=_s.selProv['schoolProv']||'waec';const pr={waec:3750,neco:2100,jamb:4200,nabteb:2500}[ex]||2000;const tot=pr*parseInt(qty);_s.pendingData={type:'schoolpin',exam:ex,quantity:parseInt(qty),phone:ph,amount:tot,description:`${ex.toUpperCase()} PIN x${qty}`};sum=`<div class="sum-row"><span class="sum-lbl">Exam</span><span class="sum-val">${ex.toUpperCase()}</span></div><div class="sum-row"><span class="sum-lbl">Qty</span><span class="sum-val">${qty}</span></div><div class="sum-row"><span class="sum-lbl">Total</span><span class="sum-val" style="color:var(--primary)">₦${tot.toLocaleString()}</span></div>`}
+  else if(svc==='schoolpin'){const qty=parseInt(document.getElementById('schoolPinQty').value);const ph=document.getElementById('schoolPhone').value;const ex=_s.selProv['schoolProv']||'waec';if(!ph)return showToast('error','Fill all fields');if(!_s.selPlan)return showToast('error','Price not loaded for this exam body yet');const tot=_s.selPlan.price*qty;_s.pendingData={type:'schoolpin',exam:ex,jambType:document.getElementById('schoolJambType')?.value||'UTME',quantity:qty,phone:ph,amount:tot,planCode:_s.selPlan.code||'',description:`${ex.toUpperCase()} PIN x${qty}`};sum=`<div class="sum-row"><span class="sum-lbl">Exam</span><span class="sum-val">${ex.toUpperCase()}</span></div><div class="sum-row"><span class="sum-lbl">Qty</span><span class="sum-val">${qty}</span></div><div class="sum-row"><span class="sum-lbl">Price/PIN</span><span class="sum-val">₦${_s.selPlan.price.toLocaleString()}</span></div><div class="sum-row"><span class="sum-lbl">Total</span><span class="sum-val" style="color:var(--primary)">₦${tot.toLocaleString()}</span></div>`}
   else if(svc==='transfer'){
     const am=parseFloat(document.getElementById('transferAmt').value)||0;
     const transferTypeVal=document.getElementById('transferType').value;
@@ -3700,12 +3712,14 @@ const svcId = name.includes('GOTV')?'gotv':name.includes('STAR')?'startimes':nam
 fetchCablePlans(svcId);
 }
 async function apiAirtime(phone, network, amount, reqId){
-// Nellobytesystems' APIAirtimeV1.asp expects the numeric MobileNetwork
-// code (01=MTN, 02=Glo, 03=Airtel, 04=Etisalat/9mobile) — same as the
-// data endpoint — NOT the network name. Sending the name caused
-// INVALID_MOBILENETWORK for every network except MTN (which the
-// provider happened to also accept as an alias).
-const netId = resolveNetworkId(network);
+// Nellobytesystems' APIAirtimeV1.asp expects the FIXED numeric
+// MobileNetwork code (01=MTN, 02=Glo, 03=Airtel, 04=Etisalat/9mobile).
+// IMPORTANT: don't reuse resolveNetworkId() here. That function prefers
+// nbsNetworkIds, which is populated from the data-bundle plans response
+// (purchase/product IDs) and can differ from the airtime network code
+// (e.g. it broke Glo airtime once a Glo data-plan fetch cached a
+// different ID for "Glo"). Airtime must always use the fixed code.
+const netId = NBS_NET_IDS[network] || NBS_NET_IDS[String(network).toUpperCase()] || network;
 console.log('[API] Airtime MobileNetwork resolved:', network, '->', netId);
 return apiFetch('airtime',{
 MobileNumber:phone,
@@ -3897,6 +3911,92 @@ window.selCKCable = (el, code, name, price) => {
   el.closest('.data-plans')?.querySelectorAll('.plan-opt').forEach(p=>p.classList.remove('selected'));
   el.classList.add('selected');
   _s.selPlan = { name, price: Number(price), code };
+};
+
+// ── School PIN live pricing (WAEC / JAMB via Nellobytesystems) ──
+// NOTE: Nellobytesystems only documents APIWAECV1.asp (WAEC result-checker
+// PINs) and APIJAMBV1.asp (JAMB e-PINs). There is no NECO or NABTEB
+// endpoint on this provider, so those two show as unavailable rather than
+// a fake hardcoded price that could never actually be purchased.
+window.loadCKSchoolPlans = async () => {
+  const exam = _s.selProv['schoolProv'] || 'waec';
+  const sp   = document.getElementById('schoolPlans');
+  const loadEl = document.getElementById('school-loading');
+  const infoEl = document.getElementById('school-info');
+  const jambFields = document.getElementById('school-jamb-fields');
+  if(!sp) return;
+  if(jambFields) jambFields.style.display = exam==='jamb' ? 'block' : 'none';
+  if(infoEl){ infoEl.classList.add('hidden'); infoEl.textContent=''; }
+
+  if(exam==='neco' || exam==='nabteb'){
+    sp.innerHTML = '';
+    if(infoEl){
+      infoEl.classList.remove('hidden'); infoEl.style.color = '#dc2626';
+      infoEl.innerHTML = `<strong>&#9888; ${exam.toUpperCase()} is not available from this provider.</strong> Nellobytesystems only supports WAEC and JAMB e-PINs.`;
+    }
+    _s.selPlan = null;
+    updateSchoolTotal();
+    return;
+  }
+
+  sp.innerHTML = '';
+  if(loadEl) loadEl.classList.remove('hidden');
+  await loadApiConfig();
+  try{
+    let plans = [];
+    if(exam==='jamb'){
+      const jambType = document.getElementById('schoolJambType')?.value || 'UTME';
+      let res = await apiFetch('jambPlans', { ExamType: jambType }, { type:'prefetch' });
+      plans = extractNBSPlans(res, jambType);
+      if(!plans.length){
+        res = await apiFetch('jambPlans', {}, { type:'prefetch' });
+        plans = extractNBSPlans(res, jambType);
+      }
+    } else {
+      let res = await apiFetch('waecPlans', { ExamType:'WAEC' }, { type:'prefetch' });
+      plans = extractNBSPlans(res, 'WAEC');
+      if(!plans.length){
+        res = await apiFetch('waecPlans', {}, { type:'prefetch' });
+        plans = extractNBSPlans(res, 'WAEC');
+      }
+    }
+    if(loadEl) loadEl.classList.add('hidden');
+    if(!plans.length) throw new Error('No price returned for '+exam.toUpperCase()+'. Check Admin → API Logs.');
+    sp.innerHTML = plans.map((p,i)=>{
+      const code = p.variation_code||'';
+      const sno  = p.variation_sno||'';
+      const name = p.variation_name || (exam==='jamb'?'JAMB PIN':'WAEC Result Checker PIN');
+      const price= parseFloat(p.variation_amount||0);
+      const safeName = name.replace(/'/g,"&#39;").replace(/"/g,"&quot;");
+      return `<div class="plan-opt ${i===0?'selected':''}" onclick="selCKSchool(this,'${code}','${sno}','${safeName}',${price})" data-code="${code}">
+        <div class="plan-name" style="font-size:11px;line-height:1.3">${name}</div>
+        <div class="plan-price">₦${price.toLocaleString()}</div>
+      </div>`;
+    }).join('');
+    if(plans[0]) _s.selPlan = { name: plans[0].variation_name, price: parseFloat(plans[0].variation_amount||0), code: plans[0].variation_code, sno: plans[0].variation_sno||'' };
+  }catch(e){
+    if(loadEl) loadEl.classList.add('hidden');
+    if(infoEl){ infoEl.classList.remove('hidden'); infoEl.style.color='#dc2626'; infoEl.textContent='[Error] '+e.message; }
+    console.error('[PLANS] loadCKSchoolPlans error:', e.message);
+    _s.selPlan = null;
+  }
+  updateSchoolTotal();
+};
+
+window.selCKSchool = (el, code, sno, name, price) => {
+  el.closest('.data-plans')?.querySelectorAll('.plan-opt').forEach(p=>p.classList.remove('selected'));
+  el.classList.add('selected');
+  _s.selPlan = { name, price: Number(price), code, sno };
+  updateSchoolTotal();
+};
+
+window.updateSchoolTotal = () => {
+  const totEl = document.getElementById('school-total');
+  if(!totEl) return;
+  const qty = parseInt(document.getElementById('schoolPinQty')?.value||'1');
+  if(!_s.selPlan){ totEl.textContent=''; return; }
+  const total = _s.selPlan.price * qty;
+  totEl.innerHTML = `Total: <strong style="color:var(--primary)">₦${total.toLocaleString()}</strong> (₦${_s.selPlan.price.toLocaleString()} × ${qty})`;
 };
 
 // ── Execute a VTU transaction using the working engine ──
