@@ -5238,6 +5238,7 @@ function renderAPILogs(){
         httpCode: data.httpStatus || 0,
         userId: data.userId || '—',
         ts: data.createdAt,
+        url: data.url || '',
         response: parsedResponse
       };
     });
@@ -5261,6 +5262,7 @@ function _renderLogItems(el, logs){
         <span style="font-size:10px;color:var(--text3)">${ts}</span>
       </div>
       <div style="font-size:11px;color:var(--text3)">Ref: ${l.ref||'—'} • HTTP: ${l.httpCode||'—'} • User: ${(l.userId||'—').substring(0,8)}</div>
+      ${l.url?`<div style="font-size:10px;color:var(--text3);margin-top:2px;word-break:break-all">${l.url}</div>`:''}
       ${l.response?`<div style="margin-top:6px"><span style="font-size:11px;color:var(--primary);cursor:pointer;font-weight:600" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">▶ View response</span><pre style="display:none;font-size:10px;margin-top:4px;background:var(--bg);padding:6px;border-radius:6px;overflow-x:auto;white-space:pre-wrap">${JSON.stringify(l.response,null,2).substring(0,500)}</pre></div>`:'<div style="margin-top:4px"><span style="font-size:11px;color:var(--primary);cursor:pointer;font-weight:600">▶ View response</span></div>'}
     </div>`;
   }).join('');
