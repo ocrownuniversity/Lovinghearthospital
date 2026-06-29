@@ -3145,22 +3145,6 @@ status          : 'APIQueryV1.asp'
 }
 };
 const API_CFG = Object.assign({}, API_DEFAULTS);
-async function loadApiConfig(){
-try{
-const s = await db.collection('settings').doc('apiconfig').get();
-if(s.exists){
-const d = s.data();
-if(d.providerName) API_CFG.providerName = d.providerName;
-if(d.baseUrl)      API_CFG.baseUrl      = String(d.baseUrl).trim().replace(/\/+$/,'')+'/';
-if(d.userId)       API_CFG.userId       = String(d.userId).trim();
-if(d.apiKey)       API_CFG.apiKey       = String(d.apiKey).trim();
-if(d.callbackUrl)  API_CFG.callbackUrl  = String(d.callbackUrl).trim();
-if(typeof d.enabled !== 'undefined') API_CFG.enabled = !!d.enabled;
-if(d.endpoints)    Object.assign(API_CFG.endpoints, d.endpoints);
-}
-}catch(e){ console.warn('[API] Config load error:',e.message); }
-return API_CFG;
-}
 function genRequestId(){
 return 'ZMN'+Date.now()+Math.floor(Math.random()*100000);
 }
@@ -3184,7 +3168,7 @@ const qs  = Object.entries(allParams).map(([k,v])=>encodeURIComponent(k)+'='+enc
 const fullUrl = url + '?' + qs;
 const safeUrl = fullUrl.replace(API_CFG.apiKey, '***HIDDEN***');
 console.log('[API] &rarr;', endpointKey, safeUrl);
-const logRef = db.collection('api_logs').doc();
+const logRef = doc(collection(db,'api_logs'));
 const logData = {
 requestId   : params.RequestID || allParams.RequestID || '',
 provider    : API_CFG.providerName,
@@ -3192,12 +3176,12 @@ endpoint    : endpointKey,
 url         : safeUrl,
 params      : Object.assign({}, allParams, {APIKey:'***HIDDEN***'}),
 status      : 'pending',
-userId      : txMeta.userId || (CU?.uid||''),
+userId      : txMeta.userId || (_s.user?.uid||''),
 type        : txMeta.type   || endpointKey,
 amount      : txMeta.amount || 0,
-createdAt   : firebase.firestore.FieldValue.serverTimestamp()
+createdAt   : serverTimestamp()
 };
-await logRef.set(logData).catch(()=>{});
+await setDoc(logRef, logData).catch(()=>{});
 let raw='', parsed=null, httpStatus=0;
 try{
 const res = await fetch(fullUrl);
@@ -3206,15 +3190,15 @@ raw = await res.text();
 console.log('[API] &larr; HTTP', httpStatus, raw.slice(0,300));
 try{ parsed = JSON.parse(raw); }catch(e){ parsed = { status: raw.trim(), raw }; }
 }catch(netErr){
-await logRef.update({ status:'net_error', error:netErr.message, respondedAt:firebase.firestore.FieldValue.serverTimestamp() }).catch(()=>{});
+await updateDoc(logRef,{ status:'net_error', error:netErr.message, respondedAt:serverTimestamp() }).catch(()=>{});
 throw new Error('Network error: '+netErr.message);
 }
-await logRef.update({
+await updateDoc(logRef,{
 httpStatus,
 rawResponse : raw.slice(0,4000),
 parsed      : parsed ? JSON.stringify(parsed).slice(0,8000) : '',
 status      : 'completed',
-respondedAt : firebase.firestore.FieldValue.serverTimestamp()
+respondedAt : serverTimestamp()
 }).catch(()=>{});
 return parsed;
 }
@@ -3772,7 +3756,7 @@ return apiFetch('status',{ RequestID:requestId },{ type:'status_check' });
 async function renderPlansWithAdminSettings(plans,sel,infoEl,networkId){
 try{
 const net=networkId||currentNetworkId||'';
-const s=await db.collection('dataPlans').where('network','==',net).get();
+const s = {docs:[]};
 const managed=s.docs.map(d=>({id:d.id,...d.data()}));
 if(!managed.length){_origRenderPlans(plans,sel,infoEl);return;}
 const mgByCode={};
@@ -5037,7 +5021,7 @@ window.clearCKKey = async () => {
   if(!confirm('Clear the saved API key? You will need to re-enter it.')) return;
   try{
     await setDoc(doc(db,'settings','apis'),{ckToken:'',ckKey:''},{merge:true});
-    _ckCreds=null;
+    // API_CFG reloads on next call
     document.getElementById('ckToken').value='';
     document.getElementById('ckToken').placeholder='Enter new APIKey';
     const h=document.getElementById('ckKeySavedHint');if(h)h.style.display='none';
@@ -5075,7 +5059,7 @@ window.saveAPISettings = async () => {
   if(ckRawKey) { update.ckToken = ckRawKey; update.ckKey = ckRawKey; }
 
   await setDoc(doc(db,'settings','apis'), update, {merge:true});
-  _ckCreds = null; // force reload
+  // API_CFG reloads on next call
   if(pub && pub.startsWith('pk_')) window._paystackKey = pub;
 
   // Show saved key hint
@@ -5117,7 +5101,7 @@ window.vtuFactoryReset = async () => {
     ckEndpoints: {...CK_DEFAULT_ENDPOINTS}, updatedAt: serverTimestamp()
   };
   await setDoc(doc(db,'settings','apis'), defaults, {merge:true});
-  _ckCreds=null;
+  // API_CFG reloads on next call
   await loadAPIConfigs();
   showToast('success','VTU config reset to defaults');
 };
@@ -5126,9 +5110,12 @@ window.vtuFactoryReset = async () => {
 function renderDiagSummary(){
   const el = document.getElementById('diagCredSummary');
   if(!el) return;
-  const c = _ckCreds;
-  if(c){ el.innerHTML=`Provider: <b>${document.getElementById('ckProvName')?.value||'Nellobytesystems'}</b> • UserID: <b>${c.user||'—'}</b> • API Key: <b>Set (${c.key?.length||0} chars)</b> • Enabled: <b style="color:var(--success-green)">Yes</b>`; }
-  else{ el.innerHTML='<span style="color:var(--danger)">⚠️ Credentials not configured. Go to Settings tab first.</span>'; }
+  const c = API_CFG;
+  if(c.userId && c.apiKey){
+    el.innerHTML=`Provider: <b>${c.providerName||'Nellobytesystems'}</b> · UserID: <b>${c.userId}</b> · API Key: <b>Set (${c.apiKey.length} chars)</b> · Enabled: <b style="color:var(--success-green)">${c.enabled?'Yes':'No'}</b>`;
+  } else {
+    el.innerHTML='<span style="color:var(--danger)">⚠️ Credentials not configured. Go to Settings tab first.</span>';
+  }
 }
 
 window.runDiagnostics = async () => {
@@ -5136,24 +5123,23 @@ window.runDiagnostics = async () => {
   const btn = document.getElementById('diagRunBtn');
   if(!res) return;
   renderDiagSummary();
-  res.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text3);font-size:12px">⏳ Checking all endpoints…<br><br>Running tests...</div>';
+  res.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text3);font-size:12px">⏳ Checking all endpoints…</div>';
   if(btn) btn.disabled = true;
-  await _loadCKCreds(true);
+  await loadApiConfig();
 
-  // Only use READ-ONLY endpoints for diagnostics — never send real transactions
+  // READ-ONLY endpoints only — no real transactions
   const tests = [
-    { key:'balance',    label:'Wallet Balance',        ep:'balance',    params:{} },
-    { key:'dataPlans',  label:'Data Plans (MTN)',       ep:'dataPlans',  params:{MobileNetwork:'01'} },
-    { key:'cablePlans', label:'Cable TV Packages',      ep:'cablePlans', params:{} },
-    { key:'waecPlans',  label:'WAEC Packages (read)',   ep:'waecPlans',  params:{ExamType:'WAEC'} },
+    { key:'balance',    label:'Wallet Balance',    params:{} },
+    { key:'dataPlans',  label:'Data Plans (MTN)',   params:{MobileNetwork:'01'} },
+    { key:'cablePlans', label:'Cable TV Packages',  params:{} },
+    { key:'waecPlans',  label:'WAEC Packages',      params:{ExamType:'WAEC'} },
   ];
 
   const rows = [];
   for(const t of tests){
-    const epFile = document.getElementById(`ep_${t.key}`)?.value || CK_DEFAULT_ENDPOINTS[t.key];
     let ok = false, msg = '';
     try{
-      const r = await _ckFetch(epFile, t.params, 'DIAG_'+Date.now());
+      const r = await apiFetch(t.key, t.params, {type:'diag'});
       ok = true;
       msg = 'HTTP 200 · OK';
     }catch(e){ msg = e.message || 'Failed'; }
@@ -5161,14 +5147,13 @@ window.runDiagnostics = async () => {
       <div class="diag-icon ${ok?'diag-ok':'diag-fail'}">${ok?'✅':'❌'}</div>
       <div style="flex:1">
         <div style="font-size:13px;font-weight:600;color:var(--text)">${t.label}</div>
-        <div style="font-size:10px;color:var(--text3)">${epFile}</div>
+        <div style="font-size:10px;color:var(--text3)">${API_CFG.endpoints[t.key]||t.key}</div>
       </div>
       <div style="font-size:11px;font-weight:600;color:${ok?'var(--success-green)':'var(--danger)'}">${msg}</div>
     </div>`);
   }
   res.innerHTML = rows.join('');
   if(btn){ btn.disabled=false; btn.textContent='▶ Run Again'; }
-  renderAPILogs();
 };
 
 // ── API Logs ──
@@ -5232,8 +5217,7 @@ window.checkTXStatus = async () => {
       return;
     }
     // Then check CK API
-    const epFile = document.getElementById('ep_status')?.value || CK_DEFAULT_ENDPOINTS.status;
-    const data = await _ckFetch(epFile, {RequestID: ref}, ref);
+    const data = await apiFetch('status', {RequestID: ref}, {type:'status_check'});
     if(resEl) resEl.innerHTML = '<b>ClubKonnect Response:</b><br><pre style="font-size:11px;white-space:pre-wrap">'+JSON.stringify(data,null,2).substring(0,600)+'</pre>';
   }catch(e){
     if(resEl) resEl.innerHTML = '<span style="color:var(--danger)">Error: '+e.message+'</span>';
@@ -5245,13 +5229,12 @@ window.checkCKWalletBalance = async () => {
   const balEl = document.getElementById('ckWalletBal');
   if(balEl){ balEl.textContent = '⏳ Checking…'; }
   try{
-    const epFile = document.getElementById('ep_balance')?.value || CK_DEFAULT_ENDPOINTS.balance;
-    const data = await _ckFetch(epFile, {}, 'balance-check');
+    const data = await apiFetch('balance', {}, {type:'diag'});
     const bal = data?.WALLET_BALANCE ?? data?.Balance ?? data?.balance ?? '—';
     if(balEl) balEl.textContent = '₦' + Number(bal).toLocaleString(undefined,{minimumFractionDigits:2});
     showToast('success', 'CK Balance: ₦' + Number(bal).toLocaleString());
   }catch(e){
-    if(balEl) balEl.textContent = '— (error)';
+    if(balEl) balEl.textContent = '— (error: '+e.message+')';
     showToast('error', e.message);
   }
 };
@@ -5315,11 +5298,11 @@ window.promoteUser=async(id)=>{const lv=['standard','bronze','silver','gold'];co
 window.loadAdminTxs=async()=>{document.getElementById('adminTxList').innerHTML='<div class="loading-spinner"></div>';try{const s=await getDocs(query(collection(db,'transactions'),limit(100)));const txs=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>{const ta=a.createdAt?.toMillis?a.createdAt.toMillis():0;const tb=b.createdAt?.toMillis?b.createdAt.toMillis():0;return tb-ta;});document.getElementById('adminTxList').innerHTML=txs.length?`<div class="admin-panel" style="margin:0">${txs.map(tx=>`<div class="admin-table-row"><div class="row-main"><div class="row-title">${tx.description||tx.type}</div><div class="row-sub">${tAgo(tx.createdAt)}</div></div><div style="text-align:right"><div style="font-size:12px;font-weight:700;color:${['fund','fund_approved','admin_credit'].includes(tx.type)?'var(--success-green)':'var(--danger)'}">₦${(tx.amount||0).toLocaleString()}</div><span class="badge badge-${tx.status==='success'?'success':tx.status==='pending'?'pending':'failed'}">${tx.status}</span></div></div>`).join('')}</div>`:'<div class="empty-state"><p>No transactions</p></div>';return;}catch(e){document.getElementById('adminTxList').innerHTML='<div class="empty-state"><p>Error: '+e.message+'</p></div>';}const txs=s.docs.map(d=>({id:d.id,...d.data()}));document.getElementById('adminTxList').innerHTML=txs.length?`<div class="admin-panel" style="margin:0">${txs.map(tx=>`<div class="admin-table-row"><div class="row-main"><div class="row-title">${tx.description||tx.type}</div><div class="row-sub">${tAgo(tx.createdAt)}</div></div><div style="text-align:right"><div style="font-size:12px;font-weight:700;color:${['fund','fund_approved','admin_credit'].includes(tx.type)?'var(--success-green)':'var(--danger)'}">₦${(tx.amount||0).toLocaleString()}</div><span class="badge badge-${tx.status==='success'?'success':tx.status==='pending'?'pending':'failed'}">${tx.status}</span></div></div>`).join('')}</div>`:'<div class="empty-state"><p>No transactions</p></div>'};
 window.filterAdminTx=(f,el)=>{document.querySelectorAll('#adminTransactions .chip').forEach(c=>c.classList.remove('active'));el.classList.add('active')};
 window.loadAdminAgents=async()=>{const c=document.getElementById('adminAgentsList');const q=query(collection(db,'users'),where('role','==','agent'));const s=await getDocs(q);c.innerHTML=s.empty?'<div class="empty-state"><div class="empty-icon">🏪</div><h4>No agents yet</h4></div>':`<div class="admin-panel" style="margin:0">${s.docs.map(d=>{const u=d.data();return`<div class="user-row"><div class="avatar" style="width:30px;height:30px;font-size:11px">${(u.firstName?.[0]||'?')+(u.lastName?.[0]||'')}</div><div class="user-row-info"><div class="user-row-name">${u.firstName} ${u.lastName}</div><div class="user-row-meta">Level: ${u.agentLevel} · Comm: ₦${(u.agentCommission||0).toLocaleString()}</div></div><span class="badge badge-success">${u.agentLevel}</span></div>`}).join('')}</div>`};
-async function loadAPIConfigs(){try{const snap=await getDoc(doc(db,'settings','apis'));if(snap.exists()){const a=snap.data();['ckUser','ckToken'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=a[id]||'';});const urlEl=document.getElementById('ckURL');if(urlEl)urlEl.value=a.ckURL||'https://www.nellobytesystems.com/';const ckEnEl=document.getElementById('ckEnabled');if(ckEnEl)ckEnEl.checked=a.ckEnabled!==false;const pub=a.paystackPub||a.paystackPublic||'';const sec=a.paystackSec||a.paystackSecret||'';const pe=document.getElementById('paystackPub');if(pe)pe.value=pub;const se=document.getElementById('paystackSec');if(se)se.value=sec;const en=document.getElementById('paystackEnabled');if(en)en.checked=a.paystackEnabled!==false;if(pub&&pub.startsWith('pk_'))window._paystackKey=pub;_ckCreds=null;// will be reloaded on next use
+async function loadAPIConfigs(){try{const snap=await getDoc(doc(db,'settings','apis'));if(snap.exists()){const a=snap.data();['ckUser','ckToken'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=a[id]||'';});const urlEl=document.getElementById('ckURL');if(urlEl)urlEl.value=a.ckURL||'https://www.nellobytesystems.com/';const ckEnEl=document.getElementById('ckEnabled');if(ckEnEl)ckEnEl.checked=a.ckEnabled!==false;const pub=a.paystackPub||a.paystackPublic||'';const sec=a.paystackSec||a.paystackSecret||'';const pe=document.getElementById('paystackPub');if(pe)pe.value=pub;const se=document.getElementById('paystackSec');if(se)se.value=sec;const en=document.getElementById('paystackEnabled');if(en)en.checked=a.paystackEnabled!==false;if(pub&&pub.startsWith('pk_'))window._paystackKey=pub;// API_CFG reloads on next call
 }}catch(e){console.error('loadAPIConfigs:',e);}}
 window.loadAPISettings=async()=>{await loadAPIConfigs();loadVTU()};
 async function loadVTU(){const el=document.getElementById('vtuList');if(!el)return;try{const s=await getDocs(collection(db,'vtuProviders'));el.innerHTML=s.empty?'<p style="font-size:11px;color:var(--text3);padding:5px 0">No additional providers added.</p>':s.docs.map(d=>{const p=d.data();return`<div class="admin-panel" style="margin:0 0 7px"><div class="admin-table-row"><div class="row-main"><div class="row-title">${p.name}</div><div class="row-sub">${p.url}</div></div><label class="toggle-switch"><input type="checkbox" ${p.enabled?'checked':''} onchange="toggleVTU('${d.id}',this.checked)"><div class="toggle-slider"></div></label></div></div>`}).join('')}catch(e){}}
-window.saveAPISettings=async()=>{const pub=document.getElementById('paystackPub')?.value||'';const sec=document.getElementById('paystackSec')?.value||'';const ckUser=document.getElementById('ckUser')?.value||'';const ckKey=document.getElementById('ckToken')?.value||'';const ckUrl=document.getElementById('ckURL')?.value||'https://www.nellobytesystems.com/';const s={ckUser,ckToken:ckKey,ckURL:ckUrl,ckEnabled:document.getElementById('ckEnabled')?.checked,paystackPub:pub,paystackPublic:pub,paystackSec:sec,paystackSecret:sec,paystackEnabled:document.getElementById('paystackEnabled')?.checked,updatedAt:serverTimestamp()};await setDoc(doc(db,'settings','apis'),s,{merge:true});_ckCreds=null;// force reload of CK creds
+window.saveAPISettings=async()=>{const pub=document.getElementById('paystackPub')?.value||'';const sec=document.getElementById('paystackSec')?.value||'';const ckUser=document.getElementById('ckUser')?.value||'';const ckKey=document.getElementById('ckToken')?.value||'';const ckUrl=document.getElementById('ckURL')?.value||'https://www.nellobytesystems.com/';const s={ckUser,ckToken:ckKey,ckURL:ckUrl,ckEnabled:document.getElementById('ckEnabled')?.checked,paystackPub:pub,paystackPublic:pub,paystackSec:sec,paystackSecret:sec,paystackEnabled:document.getElementById('paystackEnabled')?.checked,updatedAt:serverTimestamp()};await setDoc(doc(db,'settings','apis'),s,{merge:true});// API_CFG reloads on next call
 if(pub&&pub.startsWith('pk_'))window._paystackKey=pub;showToast('success','Settings saved! ClubKonnect & Paystack configured.');};
 window.showAddAPISheet=()=>showOverlay(`<div class="sheet-title">Add VTU Provider</div><div class="api-field"><label class="api-label">Name</label><input class="api-input" id="newPN" placeholder="Provider Name"></div><div class="api-field"><label class="api-label">API URL</label><input class="api-input" id="newPU" placeholder="https://api.provider.com/"></div><div class="api-field"><label class="api-label">API Key</label><input class="api-input" id="newPK" type="password" placeholder="API key"></div><button class="btn btn-primary" style="margin-top:12px" onclick="saveNewProvider()">Add Provider</button>`);
 window.saveNewProvider=async()=>{const n=document.getElementById('newPN').value;const u=document.getElementById('newPU').value;const k=document.getElementById('newPK').value;if(!n||!u)return showToast('error','Fill required fields');await addDoc(collection(db,'vtuProviders'),{name:n,url:u,apiKey:k,enabled:true,createdAt:serverTimestamp()});showToast('success','Provider added!');closeOverlay();loadVTU()};
