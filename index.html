@@ -1720,6 +1720,11 @@ textarea.form-input{resize:none}
             <label class="vtu-label">Provider Name</label>
             <input class="vtu-input" id="ckProvName" value="Nellobytesystems" oninput="scheduleVTUSave()">
           </div>
+          <!-- CORS proxy notice -->
+          <div style="background:#EEF2FF;border:1px solid #C7D2FE;border-radius:10px;padding:11px 13px;margin-bottom:12px">
+            <div style="font-size:12px;font-weight:700;color:#3730A3;margin-bottom:4px">🔒 CORS Proxy Active</div>
+            <div style="font-size:11px;color:#4338CA;line-height:1.6">API calls are routed through a secure CORS proxy (corsproxy.io → allorigins.win → fallback) to bypass browser restrictions. This is required for GitHub Pages. Transactions will work normally.</div>
+          </div>
           <div class="vtu-field-group">
             <label class="vtu-label">Base URL</label>
             <input class="vtu-input" id="ckURL" value="https://www.nellobytesystems.com/" oninput="scheduleVTUSave()">
@@ -3135,6 +3140,14 @@ async function _loadCKCreds(force=false){
   return null;
 }
 
+// CORS proxy list — tried in order until one works
+const _CORS_PROXIES = [
+  'https://corsproxy.io/?',
+  'https://api.allorigins.win/raw?url=',
+  'https://cors-anywhere.herokuapp.com/',
+];
+let _activeCORSProxy = null;
+
 // Build a query-string URL for ClubKonnect
 function _ckURL(endpoint, params){
   const c = _ckCreds;
@@ -3144,33 +3157,57 @@ function _ckURL(endpoint, params){
   return base + '?' + q.toString();
 }
 
-// ── Unified CK fetch — logs every call, returns parsed JSON ──
-async function _ckFetch(endpoint, params, txRef){
-  await _loadCKCreds();
-  if(!_ckCreds) throw new Error('ClubKonnect not configured. Go to Admin → VTU API → Settings.');
-  let httpCode = 0;
-  const epName = Object.entries(CK_DEFAULT_ENDPOINTS||{}).find(([,v])=>v===endpoint)?.[0] || endpoint;
-  try{
-    const url = _ckURL(endpoint, params);
-    const resp = await fetch(url);
-    httpCode = resp.status;
-    const text = await resp.text();
-    let json;
-    try{ json = JSON.parse(text); }
-    catch(e){ throw new Error('Non-JSON response: ' + text.substring(0,100)); }
-    _logAPI(epName, txRef||'', httpCode===200?'completed':'error', httpCode, _s.user?.uid, json);
-    // HTTP 200 is the transport success — CK business errors are in the JSON body
-    return json;
-  }catch(e){
-    _logAPI(epName, txRef||'', 'error', httpCode, _s.user?.uid, null);
-    throw e;
+// Fetch via CORS proxy with auto-fallback
+async function _fetchWithProxy(targetURL, timeoutMs=20000){
+  const proxies = _activeCORSProxy ? [_activeCORSProxy, ..._CORS_PROXIES.filter(p=>p!==_activeCORSProxy)] : _CORS_PROXIES;
+  let lastErr;
+  for(const proxy of proxies){
+    try{
+      const controller = new AbortController();
+      const tid = setTimeout(()=>controller.abort(), timeoutMs);
+      const proxyURL = proxy + encodeURIComponent(targetURL);
+      const resp = await fetch(proxyURL, { signal: controller.signal });
+      clearTimeout(tid);
+      if(!resp.ok && resp.status !== 200) throw new Error('HTTP ' + resp.status);
+      const text = await resp.text();
+      if(!text || text.trim()==='' || text.includes('<html') || text.includes('<!DOCTYPE')) throw new Error('HTML/empty response from proxy');
+      const json = JSON.parse(text);
+      _activeCORSProxy = proxy; // remember the working proxy
+      return json;
+    }catch(e){
+      lastErr = e;
+      console.warn('Proxy failed:', proxy, e.message);
+    }
   }
+  throw new Error('All CORS proxies failed. Error: ' + (lastErr?.message||'Unknown') + '. Check your API credentials and network connection.');
+}
+
+// Generic CK fetch — returns parsed JSON (uses CORS proxy)
+async function _ckFetch(endpoint, params){
+  const creds = await _loadCKCreds();
+  if(!creds) throw new Error('ClubKonnect not configured. Ask admin to enter credentials in API Management.');
+  const url = _ckURL(endpoint, params);
+  return await _fetchWithProxy(url);
 }
 
 // Network code map  (ClubKonnect codes)
 const _ckNet = { mtn:'01', glo:'02', airtel:'03', '9mobile':'04', etisalat:'04', mtngh:'05', vodafone:'06' };
 
 // Check CK wallet balance (admin)
+window.checkCKWalletBalance = async () => {
+  const balEl = document.getElementById('ckWalletBal');
+  if(balEl){ balEl.style.display='block'; balEl.textContent='Checking balance…'; }
+  try{
+    const data = await _ckFetch('APIWalletBalance.asp', {});
+    const bal = data?.WALLET_BALANCE ?? data?.Balance ?? data?.balance ?? JSON.stringify(data);
+    if(balEl) balEl.textContent = 'CK Wallet Balance: ₦' + Number(bal).toLocaleString();
+    showToast('success', 'CK Balance: ₦' + Number(bal).toLocaleString());
+  }catch(e){
+    if(balEl) balEl.textContent = 'Balance check failed: ' + e.message;
+    showToast('error', e.message);
+  }
+};
+
 // Load data plans from ClubKonnect for a network
 window.loadCKDataPlans = async (network) => {
   const dp = document.getElementById('dataPlans');
@@ -4297,14 +4334,69 @@ const CK_DEFAULT_ENDPOINTS = {
 // In-memory API log
 window._apiLogs = window._apiLogs || [];
 
-// Save to logs
-function _logAPI(type, ref, status, httpCode, userId, responseData){
-  window._apiLogs.unshift({ type, ref:ref||'—', status, httpCode, userId:userId||'—', ts: new Date(), response: responseData||null });
+// Save to logs (basic — no response body)
+function _logAPI(type, ref, status, httpCode, userId){
+  window._apiLogs.unshift({ type, ref:ref||'—', status, httpCode, userId:userId||'—', ts: new Date() });
   if(window._apiLogs.length > 50) window._apiLogs = window._apiLogs.slice(0,50);
+  // Persist to Firestore (best-effort, no await)
   try{
     addDoc(collection(db,'apiLogs'),{type,ref:ref||'',status,httpCode:httpCode||0,userId:userId||'',ts:serverTimestamp()}).catch(()=>{});
   }catch(e){}
 }
+
+// Save to logs WITH response body so "View response" works
+function _logAPIWithResponse(type, ref, status, httpCode, userId, responseData){
+  const logEntry = { type, ref:ref||'—', status, httpCode, userId:userId||'—', ts: new Date(), response: responseData };
+  window._apiLogs.unshift(logEntry);
+  if(window._apiLogs.length > 50) window._apiLogs = window._apiLogs.slice(0,50);
+  // Persist to Firestore (best-effort, no await)
+  try{
+    const fsEntry = {type, ref:ref||'', status, httpCode:httpCode||0, userId:userId||'', ts:serverTimestamp()};
+    if(responseData){ try{ fsEntry.response = JSON.parse(JSON.stringify(responseData)); }catch(e){} }
+    addDoc(collection(db,'apiLogs'), fsEntry).catch(()=>{});
+  }catch(e){}
+}
+
+// Patch _ckFetch to log calls (uses CORS proxy via _fetchWithProxy)
+const _origCKFetch = window._ckFetch || (async()=>{});
+async function _ckFetchLogged(endpoint, params, txRef){
+  let httpCode = 0;
+  const epName = Object.entries(CK_DEFAULT_ENDPOINTS).find(([,v])=>v===endpoint)?.[0] || endpoint;
+  try{
+    const creds = await _loadCKCreds();
+    if(!creds) throw new Error('Not configured');
+    const url = _ckURL(endpoint, params);
+    // Use CORS proxy
+    const proxies = _activeCORSProxy ? [_activeCORSProxy, ..._CORS_PROXIES.filter(p=>p!==_activeCORSProxy)] : _CORS_PROXIES;
+    let json = null, lastErr = null;
+    for(const proxy of proxies){
+      try{
+        const controller = new AbortController();
+        const tid = setTimeout(()=>controller.abort(), 20000);
+        const proxyURL = proxy + encodeURIComponent(url);
+        const resp = await fetch(proxyURL, { signal: controller.signal });
+        clearTimeout(tid);
+        httpCode = resp.status || 200;
+        const text = await resp.text();
+        if(!text || text.trim()==='' || text.includes('<html') || text.includes('<!DOCTYPE')) throw new Error('HTML/empty response from proxy');
+        json = JSON.parse(text);
+        _activeCORSProxy = proxy;
+        break;
+      }catch(e){ lastErr = e; }
+    }
+    if(!json) throw lastErr || new Error('All proxies failed');
+    const ok = httpCode === 200 || httpCode === 0;
+    // Save response body so "View response" works in logs
+    _logAPIWithResponse(epName, txRef||'', ok?'completed':'error', httpCode, _s.user?.uid, json);
+    if(!ok) throw new Error('HTTP ' + httpCode);
+    return json;
+  }catch(e){
+    _logAPIWithResponse(epName, txRef||'', 'error', httpCode, _s.user?.uid, null);
+    throw e;
+  }
+}
+// Override global _ckFetch
+window._ckFetch = async (endpoint, params, txRef) => _ckFetchLogged(endpoint, params, txRef);
 
 // ── Provider / Sub-tab switching ──
 window.switchVTUProv = (prov, el) => {
@@ -4477,16 +4569,15 @@ window.runDiagnostics = async () => {
   const btn = document.getElementById('diagRunBtn');
   if(!res) return;
   renderDiagSummary();
-  res.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text3);font-size:12px">⏳ Checking all endpoints…<br><br>Running tests...</div>';
+  res.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text3);font-size:12px">⏳ Checking all endpoints via CORS proxy…<br><br>This may take 10-20 seconds on first run.</div>';
   if(btn) btn.disabled = true;
   await _loadCKCreds(true);
 
-  // Only use READ-ONLY endpoints for diagnostics — never send real transactions
   const tests = [
-    { key:'balance',    label:'Wallet Balance',        ep:'balance',    params:{} },
-    { key:'dataPlans',  label:'Data Plans (MTN)',       ep:'dataPlans',  params:{MobileNetwork:'01'} },
-    { key:'cablePlans', label:'Cable TV Packages',      ep:'cablePlans', params:{} },
-    { key:'waecPlans',  label:'WAEC Packages (read)',   ep:'waecPlans',  params:{ExamType:'WAEC'} },
+    { key:'balance',   label:'Wallet Balance',   ep:'balance',   params:{} },
+    { key:'dataPlans', label:'Data Plans (MTN)',  ep:'dataPlans', params:{MobileNetwork:'01'} },
+    { key:'cablePlans',label:'Cable Packages',    ep:'cablePlans',params:{} },
+    { key:'airtime',   label:'Airtime (dry run)', ep:'airtime',   params:{MobileNumber:'08012345678',MobileNetwork:'01',Amount:100,RequestID:'DIAG_'+Date.now()} },
   ];
 
   const rows = [];
@@ -4494,10 +4585,13 @@ window.runDiagnostics = async () => {
     const epFile = document.getElementById(`ep_${t.key}`)?.value || CK_DEFAULT_ENDPOINTS[t.key];
     let ok = false, msg = '';
     try{
-      const r = await _ckFetch(epFile, t.params, 'DIAG_'+Date.now());
+      const r = await window._ckFetch(epFile, t.params, 'DIAG_'+Date.now());
       ok = true;
       msg = 'HTTP 200 · OK';
-    }catch(e){ msg = e.message || 'Failed'; }
+    }catch(e){
+      const em = e.message || 'Failed';
+      msg = em.includes('proxy') || em.includes('CORS') ? 'Proxy error – check connection' : em.substring(0,60);
+    }
     rows.push(`<div class="diag-item">
       <div class="diag-icon ${ok?'diag-ok':'diag-fail'}">${ok?'✅':'❌'}</div>
       <div style="flex:1">
@@ -4507,7 +4601,8 @@ window.runDiagnostics = async () => {
       <div style="font-size:11px;font-weight:600;color:${ok?'var(--success-green)':'var(--danger)'}">${msg}</div>
     </div>`);
   }
-  res.innerHTML = rows.join('');
+  const proxyNote = _activeCORSProxy ? `<div style="font-size:10px;color:var(--success-green);text-align:center;padding:6px 0">✅ Active proxy: ${_activeCORSProxy}</div>` : '<div style="font-size:10px;color:var(--danger);text-align:center;padding:6px 0">⚠️ No working proxy found</div>';
+  res.innerHTML = proxyNote + rows.join('');
   if(btn){ btn.disabled=false; btn.textContent='▶ Run Again'; }
   renderAPILogs();
 };
@@ -4517,15 +4612,20 @@ function renderAPILogs(){
   const el = document.getElementById('apiLogsList');
   if(!el) return;
 
-  // Try to load from Firestore too
+  // Show in-memory logs immediately while Firestore loads
+  _renderLogItems(el, window._apiLogs);
+
+  // Also load from Firestore and merge
   getDocs(query(collection(db,'apiLogs'),limit(50))).then(snap=>{
-    const fsLogs = snap.docs.map(d=>d.data()).sort((a,b)=>{
+    const fsLogs = snap.docs.map(d=>({...d.data(), _fromFS:true})).sort((a,b)=>{
       const ta=a.ts?.toMillis?a.ts.toMillis():0;
       const tb=b.ts?.toMillis?b.ts.toMillis():0;
       return tb-ta;
     });
-    const allLogs = [...window._apiLogs, ...fsLogs.filter(l=>!window._apiLogs.some(m=>m.ts?.getTime?.()===l.ts?.toMillis?.()))].slice(0,50);
-    _renderLogItems(el, allLogs);
+    // Merge: prefer in-memory (has response object) over Firestore for same ref
+    const memRefs = new Set(window._apiLogs.map(l=>l.ref));
+    const merged = [...window._apiLogs, ...fsLogs.filter(l=>!memRefs.has(l.ref))].slice(0,50);
+    _renderLogItems(el, merged);
   }).catch(()=>{ _renderLogItems(el, window._apiLogs); });
 }
 
@@ -4534,16 +4634,27 @@ function _renderLogItems(el, logs){
     el.innerHTML='<div style="text-align:center;padding:20px;color:var(--text3);font-size:12px">No logs yet. Logs appear here when VTU calls are made.</div>';
     return;
   }
-  el.innerHTML = logs.map(l=>{
-    const ok = l.status==='completed'||l.httpCode===200;
+  el.innerHTML = logs.map((l,idx)=>{
+    const ok = l.status==='completed'||l.httpCode===200||l.httpCode===0;
     const ts = l.ts instanceof Date ? l.ts.toLocaleString() : (l.ts?.toDate?l.ts.toDate().toLocaleString():'');
+    // Build response text for "View response"
+    let respText = null;
+    if(l.response !== undefined && l.response !== null){
+      try{ respText = typeof l.response === 'string' ? l.response : JSON.stringify(l.response, null, 2); }catch(e){}
+    }
+    const viewBtn = respText
+      ? `<div style="margin-top:6px">
+           <span style="font-size:11px;color:var(--primary);cursor:pointer;font-weight:600" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">▶ View response</span>
+           <pre style="display:none;font-size:10px;margin-top:4px;background:var(--bg);padding:8px;border-radius:6px;overflow-x:auto;white-space:pre-wrap;max-height:200px">${respText.substring(0,800)}</pre>
+         </div>`
+      : `<div style="margin-top:4px"><span style="font-size:11px;color:var(--text3)">No response data</span></div>`;
     return `<div class="log-item ${ok?'log-ok':'log-err'}">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
         <div><span class="log-badge ${ok?'log-badge-ok':'log-badge-err'}">${l.status||'error'}</span><b style="font-size:13px">${l.type||'unknown'}</b></div>
         <span style="font-size:10px;color:var(--text3)">${ts}</span>
       </div>
       <div style="font-size:11px;color:var(--text3)">Ref: ${l.ref||'—'} • HTTP: ${l.httpCode||'—'} • User: ${(l.userId||'—').substring(0,8)}</div>
-      ${l.response?`<div style="margin-top:6px"><span style="font-size:11px;color:var(--primary);cursor:pointer;font-weight:600" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">▶ View response</span><pre style="display:none;font-size:10px;margin-top:4px;background:var(--bg);padding:6px;border-radius:6px;overflow-x:auto;white-space:pre-wrap">${JSON.stringify(l.response,null,2).substring(0,500)}</pre></div>`:'<div style="margin-top:4px"><span style="font-size:11px;color:var(--primary);cursor:pointer;font-weight:600">▶ View response</span></div>'}
+      ${viewBtn}
     </div>`;
   }).join('');
 }
@@ -4574,7 +4685,7 @@ window.checkTXStatus = async () => {
     }
     // Then check CK API
     const epFile = document.getElementById('ep_status')?.value || CK_DEFAULT_ENDPOINTS.status;
-    const data = await _ckFetch(epFile, {RequestID: ref}, ref);
+    const data = await window._ckFetch(epFile, {RequestID: ref}, ref);
     if(resEl) resEl.innerHTML = '<b>ClubKonnect Response:</b><br><pre style="font-size:11px;white-space:pre-wrap">'+JSON.stringify(data,null,2).substring(0,600)+'</pre>';
   }catch(e){
     if(resEl) resEl.innerHTML = '<span style="color:var(--danger)">Error: '+e.message+'</span>';
@@ -4587,7 +4698,7 @@ window.checkCKWalletBalance = async () => {
   if(balEl){ balEl.textContent = '⏳ Checking…'; }
   try{
     const epFile = document.getElementById('ep_balance')?.value || CK_DEFAULT_ENDPOINTS.balance;
-    const data = await _ckFetch(epFile, {}, 'balance-check');
+    const data = await window._ckFetch(epFile, {}, 'balance-check');
     const bal = data?.WALLET_BALANCE ?? data?.Balance ?? data?.balance ?? '—';
     if(balEl) balEl.textContent = '₦' + Number(bal).toLocaleString(undefined,{minimumFractionDigits:2});
     showToast('success', 'CK Balance: ₦' + Number(bal).toLocaleString());
