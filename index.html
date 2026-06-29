@@ -1074,7 +1074,7 @@ textarea.form-input{resize:none}
   <div class="svc-form-body">
     <div id="school-jamb-fields" class="hidden">
       <div class="form-group"><label class="form-label">JAMB Type</label>
-        <select class="form-input" id="schoolJambType" onchange="loadCKSchoolPlans()"><option value="UTME">UTME</option><option value="DE">Direct Entry</option></select>
+        <select class="form-input" id="schoolJambType" onchange="loadCKSchoolPlans()"><option value="utme-no-mock">UTME (without mock)</option><option value="utme-mock">UTME (with mock)</option><option value="de">Direct Entry</option></select>
       </div>
     </div>
     <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px">Price per PIN</div>
@@ -3090,7 +3090,7 @@ window.proceedToPIN=async(svc)=>{
   else if(svc==='data'){const ph=document.getElementById('dataPhone').value;if(!ph||!_s.selPlan)return showToast('error','Fill all fields');_s.pendingData={type:'data',phone:ph,amount:_s.selPlan.price,provider:_s.selProv['dataProv']||'mtn',planCode:_s.selPlan.code||'',description:`${_s.selPlan.name} Data – ${ph}`};sum=`<div class="sum-row"><span class="sum-lbl">Plan</span><span class="sum-val">${_s.selPlan.name}</span></div><div class="sum-row"><span class="sum-lbl">Phone</span><span class="sum-val">${ph}</span></div><div class="sum-row"><span class="sum-lbl">Amount</span><span class="sum-val" style="color:var(--primary)">₦${_s.selPlan.price.toLocaleString()}</span></div>`}
   else if(svc==='electricity'){const mt=document.getElementById('elecMeter').value;const am=document.getElementById('elecAmt').value;if(!mt||!am)return showToast('error','Fill all fields');_s.pendingData={type:'electricity',meter:mt,amount:parseFloat(am),provider:_s.selProv['elecProv']||'ikedc',meterType:document.getElementById('elecMeterType').value,description:`Electricity – ${mt}`};sum=`<div class="sum-row"><span class="sum-lbl">Meter</span><span class="sum-val">${mt}</span></div><div class="sum-row"><span class="sum-lbl">DISCO</span><span class="sum-val">${(_s.selProv['elecProv']||'ikedc').toUpperCase()}</span></div><div class="sum-row"><span class="sum-lbl">Amount</span><span class="sum-val" style="color:var(--primary)">₦${parseFloat(am).toLocaleString()}</span></div>`}
   else if(svc==='cabletv'){const cd=document.getElementById('cableCardNo').value;const ph=document.getElementById('cablePhone')?.value||'';if(!cd||!_s.selPlan)return showToast('error','Fill all fields');_s.pendingData={type:'cabletv',cardNo:cd,phone:ph,amount:_s.selPlan.price,provider:_s.selProv['cableProv']||'dstv',plan:_s.selPlan.name,planCode:_s.selPlan.code||'',description:`${_s.selPlan.name} Cable – ${cd}`};sum=`<div class="sum-row"><span class="sum-lbl">Card No</span><span class="sum-val">${cd}</span></div><div class="sum-row"><span class="sum-lbl">Package</span><span class="sum-val">${_s.selPlan.name}</span></div><div class="sum-row"><span class="sum-lbl">Amount</span><span class="sum-val" style="color:var(--primary)">₦${_s.selPlan.price.toLocaleString()}</span></div>`}
-  else if(svc==='schoolpin'){const qty=parseInt(document.getElementById('schoolPinQty').value);const ph=document.getElementById('schoolPhone').value;const ex=_s.selProv['schoolProv']||'waec';if(!ph)return showToast('error','Fill all fields');if(!_s.selPlan)return showToast('error','Price not loaded for this exam body yet');const tot=_s.selPlan.price*qty;_s.pendingData={type:'schoolpin',exam:ex,jambType:document.getElementById('schoolJambType')?.value||'UTME',quantity:qty,phone:ph,amount:tot,planCode:_s.selPlan.code||'',description:`${ex.toUpperCase()} PIN x${qty}`};sum=`<div class="sum-row"><span class="sum-lbl">Exam</span><span class="sum-val">${ex.toUpperCase()}</span></div><div class="sum-row"><span class="sum-lbl">Qty</span><span class="sum-val">${qty}</span></div><div class="sum-row"><span class="sum-lbl">Price/PIN</span><span class="sum-val">₦${_s.selPlan.price.toLocaleString()}</span></div><div class="sum-row"><span class="sum-lbl">Total</span><span class="sum-val" style="color:var(--primary)">₦${tot.toLocaleString()}</span></div>`}
+  else if(svc==='schoolpin'){const qty=parseInt(document.getElementById('schoolPinQty').value);const ph=document.getElementById('schoolPhone').value;const ex=_s.selProv['schoolProv']||'waec';if(!ph)return showToast('error','Fill all fields');if(!_s.selPlan)return showToast('error','Price not loaded for this exam body yet');const tot=_s.selPlan.price*qty;_s.pendingData={type:'schoolpin',exam:ex,jambType:document.getElementById('schoolJambType')?.value||'utme-no-mock',quantity:qty,phone:ph,amount:tot,planCode:_s.selPlan.code||'',description:`${ex.toUpperCase()} PIN x${qty}`};sum=`<div class="sum-row"><span class="sum-lbl">Exam</span><span class="sum-val">${ex.toUpperCase()}</span></div><div class="sum-row"><span class="sum-lbl">Qty</span><span class="sum-val">${qty}</span></div><div class="sum-row"><span class="sum-lbl">Price/PIN</span><span class="sum-val">₦${_s.selPlan.price.toLocaleString()}</span></div><div class="sum-row"><span class="sum-lbl">Total</span><span class="sum-val" style="color:var(--primary)">₦${tot.toLocaleString()}</span></div>`}
   else if(svc==='transfer'){
     const am=parseFloat(document.getElementById('transferAmt').value)||0;
     const transferTypeVal=document.getElementById('transferType').value;
@@ -3729,7 +3729,16 @@ RequestID:reqId
 },{ type:'airtime', amount, userId:_s.user?.uid||'' });
 }
 async function apiData(phone, network, planCode, amount, reqId, planSno){
-const netId = resolveNetworkId(network);
+// IMPORTANT: use the FIXED numeric MobileNetwork code for the actual
+// purchase, never resolveNetworkId()/nbsNetworkIds. nbsNetworkIds is
+// populated from whatever "ID"/"network_id" field came back in the
+// data-bundle PLANS response for each network — and if that response's
+// per-network ID is missing, misaligned, or fuzzy-matched to the wrong
+// block, it silently overwrites nbsNetworkIds[netName] with a wrong
+// value (this is what caused Glo/Airtel purchases to be charged as
+// Etisalat in the ClubKonnect transaction history, for airtime AND data).
+// The purchase call must always use the verified fixed code.
+const netId = NBS_NET_IDS[network] || NBS_NET_IDS[String(network).toUpperCase()] || network;
 const cleanPlanId = String(planCode||'').trim();
 console.log('[API] Data &rarr; MobileNetwork:',netId,' DataPlan (PRODUCT_ID):',cleanPlanId,' SNO:',planSno);
 return apiFetch('data',{
@@ -3944,24 +3953,39 @@ window.loadCKSchoolPlans = async () => {
   await loadApiConfig();
   try{
     let plans = [];
+    let rawRes = null;
     if(exam==='jamb'){
-      const jambType = document.getElementById('schoolJambType')?.value || 'UTME';
-      let res = await apiFetch('jambPlans', { ExamType: jambType }, { type:'prefetch' });
-      plans = extractNBSPlans(res, jambType);
-      if(!plans.length){
-        res = await apiFetch('jambPlans', {}, { type:'prefetch' });
-        plans = extractNBSPlans(res, jambType);
-      }
+      // APIJAMBPackagesV2.asp only takes UserID/APIKey — no ExamType param
+      // (confirmed against Nellobytesystems' own docs page). Fetch the
+      // whole list once; try the flexible extractors to handle whatever
+      // shape it returns (wrapped object, flat array, etc.).
+      rawRes = await apiFetch('jambPlans', {}, { type:'prefetch' });
+      const jambType = document.getElementById('schoolJambType')?.value || 'utme-no-mock';
+      plans = extractPlansArray(rawRes).map(p=>({
+        variation_code   : String(p.PRODUCT_ID||p.product_id||p.PACKAGE_ID||p.package_id||p.code||p.id||''),
+        variation_sno    : String(p.PRODUCT_SNO||p.SNO||''),
+        variation_name   : String(p.PRODUCT_NAME||p.PACKAGE_NAME||p.ExamType||p.EXAMTYPE||p.name||p.description||'JAMB PIN'),
+        variation_amount : String(p.PRODUCT_AMOUNT||p.PACKAGE_AMOUNT||p.Amount||p.AMOUNT||p.price||0),
+        description      : String(p.PRODUCT_NAME||p.PACKAGE_NAME||p.ExamType||p.EXAMTYPE||p.name||'')
+      }));
+      if(!plans.length) plans = extractNBSPlans(rawRes, jambType);
+      // If the response distinguishes UTME vs DE by name, filter to the
+      // selected type; otherwise show whatever came back.
+      const typeMatches = plans.filter(p => p.variation_name.toUpperCase().includes(jambType.toUpperCase().replace(/-/g,' ')) || p.description.toUpperCase().includes(jambType.toUpperCase().replace(/-/g,' ')));
+      if(typeMatches.length) plans = typeMatches;
     } else {
-      let res = await apiFetch('waecPlans', { ExamType:'WAEC' }, { type:'prefetch' });
-      plans = extractNBSPlans(res, 'WAEC');
+      rawRes = await apiFetch('waecPlans', { ExamType:'WAEC' }, { type:'prefetch' });
+      plans = extractNBSPlans(rawRes, 'WAEC');
       if(!plans.length){
-        res = await apiFetch('waecPlans', {}, { type:'prefetch' });
-        plans = extractNBSPlans(res, 'WAEC');
+        rawRes = await apiFetch('waecPlans', {}, { type:'prefetch' });
+        plans = extractNBSPlans(rawRes, 'WAEC');
       }
     }
     if(loadEl) loadEl.classList.add('hidden');
-    if(!plans.length) throw new Error('No price returned for '+exam.toUpperCase()+'. Check Admin → API Logs.');
+    if(!plans.length){
+      const rawStr = JSON.stringify(rawRes).slice(0,300);
+      throw new Error('No price returned for '+exam.toUpperCase()+'. Raw: '+rawStr);
+    }
     sp.innerHTML = plans.map((p,i)=>{
       const code = p.variation_code||'';
       const sno  = p.variation_sno||'';
@@ -4021,7 +4045,7 @@ async function executeCKVTU(d, tid){
   } else if(d.type==='schoolpin'){
     const examType = (d.exam||'WAEC').toUpperCase();
     if(examType==='JAMB'){
-      apiResult = await apiJAMB(d.jambType||'UTME', d.profileId||'', d.phone||'', d.amount, ref);
+      apiResult = await apiJAMB(d.jambType||'utme-no-mock', d.profileId||'', d.phone||'', d.amount, ref);
     } else {
       apiResult = await apiWAEC(examType, d.phone||'', d.amount, ref);
     }
