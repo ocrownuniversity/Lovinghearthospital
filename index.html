@@ -3700,11 +3700,20 @@ const svcId = name.includes('GOTV')?'gotv':name.includes('STAR')?'startimes':nam
 fetchCablePlans(svcId);
 }
 async function apiAirtime(phone, network, amount, reqId){
-const netId = resolveNetworkId(network);
-console.log('[API] Airtime MobileNetwork resolved:', network, '&rarr;', netId);
+// Airtime needs the NAME (MTN/Airtel/Glo/Etisalat), NOT the numeric ID
+const AIRTIME_NET_NAMES = {
+  'MTN':'MTN','mtn':'MTN',
+  'AIRTEL':'Airtel','airtel':'Airtel','Airtel':'Airtel',
+  'GLO':'Glo','glo':'Glo','Glo':'Glo',
+  'ETISALAT':'Etisalat','etisalat':'Etisalat','Etisalat':'Etisalat',
+  '9MOBILE':'Etisalat','9mobile':'Etisalat',
+  '01':'MTN','02':'Glo','03':'Airtel','04':'Etisalat'
+};
+const netName = AIRTIME_NET_NAMES[network] || network;
+console.log('[API] Airtime MobileNetwork resolved:', network, '->', netName);
 return apiFetch('airtime',{
 MobileNumber:phone,
-MobileNetwork:netId,
+MobileNetwork:netName,
 Amount:amount,
 RequestID:reqId
 },{ type:'airtime', amount, userId:_s.user?.uid||'' });
@@ -3820,8 +3829,8 @@ _origRenderPlans(plans,sel,infoEl);
 // ── CK Network map for KOBOrush provider IDs → NBS network IDs ──
 // KOBOrush stores provider as 'mtn','airtel','glo','9mobile' — map to NBS codes
 const _KOBO_NET_MAP = {
-  mtn:'MTN', airtel:'Airtel', glo:'Glo', '9mobile':'9mobile',
-  etisalat:'9mobile', MTN:'MTN', Airtel:'Airtel', Glo:'Glo'
+  mtn:'MTN', airtel:'Airtel', glo:'Glo', '9mobile':'Etisalat',
+  etisalat:'Etisalat', ETisalat:'Etisalat', MTN:'MTN', Airtel:'Airtel', Glo:'Glo'
 };
 
 // ── KOBOrush data plan rendering (tile-based, not select dropdown) ──
