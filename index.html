@@ -1074,7 +1074,7 @@ textarea.form-input{resize:none}
   <div class="svc-form-body">
     <div id="school-jamb-fields" class="hidden">
       <div class="form-group"><label class="form-label">JAMB Type</label>
-        <select class="form-input" id="schoolJambType" onchange="loadCKSchoolPlans()"><option value="utme-no-mock">UTME (without mock)</option><option value="utme-mock">UTME (with mock)</option><option value="de">Direct Entry</option></select>
+        <select class="form-input" id="schoolJambType" onchange="loadCKSchoolPlans()"><option value="utme-no-mock">UTME (without mock)</option><option value="utme-mock">UTME (with mock)</option><option value="de">Direct Entry (DE)</option></select>
       </div>
     </div>
     <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px">Price per PIN</div>
@@ -3255,7 +3255,7 @@ async function fetchDataPlans(){}
 function extractNBSPlans(res, networkId){
 if(!res || typeof res !== 'object') return [];
 console.log('[NBS] extractNBSPlans for:', networkId, '| keys:', Object.keys(res));
-const wrapperKey = Object.keys(res).find(k => /MOBILE_NETWORK|CABLE_TV|CABLETV|TV_PACKAGE|TV_ID|PACKAGE|NETWORK/i.test(k));
+const wrapperKey = Object.keys(res).find(k => /MOBILE_NETWORK|CABLE_TV|CABLETV|TV_PACKAGE|TV_ID|PACKAGE|NETWORK|JAMB|EXAM/i.test(k));
 if(wrapperKey){
 const wrapper = res[wrapperKey];
 console.log('[NBS] Found wrapper:', wrapperKey, '| type:', Array.isArray(wrapper)?'array':typeof wrapper);
@@ -3486,22 +3486,19 @@ const infoEl = document.getElementById('data-info');
 if(!sel) return;
 const examSel = document.getElementById('s-phone');
 if(examSel && examSel.value!=='JAMB'){ return; }
-const jambType = document.getElementById('s-meter')?.value||'UTME';
+const jambType = document.getElementById('s-meter')?.value||'utme-no-mock';
 const cacheKey = 'jamb_'+jambType;
 if(planCache[cacheKey]){ renderPlans(planCache[cacheKey], sel, infoEl); return; }
 if(loadEl){ loadEl.style.display='block'; loadEl.textContent='[Loading] Loading price...'; }
 sel.innerHTML='<option value="">Loading price...</option>';
 console.log('[PLANS] Fetching JAMB packages for type:', jambType);
 try{
-let res = await apiFetch('jambPlans', { ExamType: jambType });
-let plans = extractNBSPlans(res, jambType);
-if(!plans.length){
-res = await apiFetch('jambPlans', {});
-plans = extractNBSPlans(res, jambType);
-}
+// APIJAMBPackagesV2.asp — only needs UserID + APIKey
+const res = await apiFetch('jambPlans', {});
+console.log('[PLANS] JAMB raw response:', JSON.stringify(res).slice(0,500));
+const plans = extractJAMBPlans(res, jambType);
 if(loadEl) loadEl.style.display='none';
-console.log('[PLANS] JAMB final response:', JSON.stringify(res));
-console.log('[PLANS] JAMB plans count:', plans.length);
+console.log('[PLANS] JAMB plans extracted:', plans.length, 'for type:', jambType);
 if(plans.length){
 planCache[cacheKey]=plans;
 renderPlans(plans, sel, infoEl);
@@ -3673,10 +3670,10 @@ const NET_MAP = {
 '9mobile':{ airtime:'Etisalat', data:'Etisalat' }
 };
 const NBS_NET_IDS = {
-'MTN'    :'01', 'mtn'    :'01',
-'GLO'    :'02', 'glo'    :'02', 'Glo':'02',
-'AIRTEL' :'03', 'airtel' :'03', 'Airtel':'03',
-'ETISALAT':'04','etisalat':'04', 'Etisalat':'04', '9mobile':'04', '9MOBILE':'04'
+'MTN'    :'MTN',    'mtn'    :'MTN',    'Mtn':'MTN',
+'GLO'    :'Glo',    'glo'    :'Glo',    'Glo':'Glo',
+'AIRTEL' :'Airtel', 'airtel' :'Airtel', 'Airtel':'Airtel',
+'ETISALAT':'Etisalat','etisalat':'Etisalat','Etisalat':'Etisalat','9mobile':'Etisalat','9MOBILE':'Etisalat','9Mobile':'Etisalat'
 };
 function resolveNetworkId(name){
 const fromPlans = nbsNetworkIds[name] || nbsNetworkIds[name.toUpperCase()];
@@ -3712,42 +3709,31 @@ const svcId = name.includes('GOTV')?'gotv':name.includes('STAR')?'startimes':nam
 fetchCablePlans(svcId);
 }
 async function apiAirtime(phone, network, amount, reqId){
-// Nellobytesystems' APIAirtimeV1.asp expects the FIXED numeric
-// MobileNetwork code (01=MTN, 02=Glo, 03=Airtel, 04=Etisalat/9mobile).
-// IMPORTANT: don't reuse resolveNetworkId() here. That function prefers
-// nbsNetworkIds, which is populated from the data-bundle plans response
-// (purchase/product IDs) and can differ from the airtime network code
-// (e.g. it broke Glo airtime once a Glo data-plan fetch cached a
-// different ID for "Glo"). Airtime must always use the fixed code.
+// ClubKonnect APIAirtimeV1.asp: MobileNetwork = "MTN"|"Airtel"|"Glo"|"Etisalat"
 const netId = NBS_NET_IDS[network] || NBS_NET_IDS[String(network).toUpperCase()] || network;
 console.log('[API] Airtime MobileNetwork resolved:', network, '->', netId);
-return apiFetch('airtime',{
-MobileNumber:phone,
-MobileNetwork:netId,
-Amount:amount,
-RequestID:reqId
-},{ type:'airtime', amount, userId:_s.user?.uid||'' });
+const params = {
+MobileNetwork: netId,
+MobileNumber : phone,
+Amount       : amount,
+RequestID    : reqId
+};
+if(API_CFG.callbackUrl) params.CallBackURL = API_CFG.callbackUrl;
+return apiFetch('airtime', params, { type:'airtime', amount, userId:_s.user?.uid||'' });
 }
 async function apiData(phone, network, planCode, amount, reqId, planSno){
-// IMPORTANT: use the FIXED numeric MobileNetwork code for the actual
-// purchase, never resolveNetworkId()/nbsNetworkIds. nbsNetworkIds is
-// populated from whatever "ID"/"network_id" field came back in the
-// data-bundle PLANS response for each network — and if that response's
-// per-network ID is missing, misaligned, or fuzzy-matched to the wrong
-// block, it silently overwrites nbsNetworkIds[netName] with a wrong
-// value (this is what caused Glo/Airtel purchases to be charged as
-// Etisalat in the ClubKonnect transaction history, for airtime AND data).
-// The purchase call must always use the verified fixed code.
 const netId = NBS_NET_IDS[network] || NBS_NET_IDS[String(network).toUpperCase()] || network;
-const cleanPlanId = String(planCode||'').trim();
-console.log('[API] Data &rarr; MobileNetwork:',netId,' DataPlan (PRODUCT_ID):',cleanPlanId,' SNO:',planSno);
-return apiFetch('data',{
+const cleanPlanId = String(planCode||'').trim(); // Must be exact PRODUCT_ID from plans list
+console.log('[API] Data -> MobileNetwork:',netId,' DataPlan (PRODUCT_ID):',cleanPlanId);
+const params = {
 MobileNumber : phone,
 MobileNetwork: netId,
 DataPlan     : cleanPlanId,
 Amount       : amount,
 RequestID    : reqId
-},{ type:'data', amount, userId:_s.user?.uid||'' });
+};
+if(API_CFG.callbackUrl) params.CallBackURL = API_CFG.callbackUrl;
+return apiFetch('data', params, { type:'data', amount, userId:_s.user?.uid||'' });
 }
 async function apiCable(smartcard, provider, planCode, amount, reqId, phone){
 return apiFetch('cable',{
@@ -3766,12 +3752,15 @@ RequestID: reqId
 },{ type:'result', amount, userId:_s.user?.uid||'' });
 }
 async function apiJAMB(jambType, profileId, phone, amount, reqId){
+// ClubKonnect APIJAMBV1.asp: ExamType = exact code from APIJAMBPackagesV2.asp
 const params = {
 ExamType : jambType,
 PhoneNo  : phone||UD?.phone||'',
 RequestID: reqId
 };
-if(profileId) params.ProfileID = profileId;
+if(profileId && String(profileId).trim()) params.ProfileID = String(profileId).trim();
+if(API_CFG.callbackUrl) params.CallBackURL = API_CFG.callbackUrl;
+console.log('[API] JAMB params:', JSON.stringify({...params, RequestID:'***'}));
 return apiFetch('jamb', params, { type:'result', amount, userId:_s.user?.uid||'' });
 }
 async function apiElectricity(meter, disco, meterType, amount, phone, reqId){
@@ -3784,8 +3773,11 @@ PhoneNo        : phone,
 RequestID      : reqId
 },{ type:'electricity', amount, userId:_s.user?.uid||'' });
 }
-async function checkTxStatus(requestId){
-return apiFetch('status',{ RequestID:requestId },{ type:'status_check' });
+async function checkTxStatus(requestId, orderId){
+const params = {};
+if(requestId) params.RequestID = requestId;
+if(orderId)   params.OrderID   = orderId;
+return apiFetch('status', params, { type:'status_check' });
 }
 
 async function renderPlansWithAdminSettings(plans,sel,infoEl,networkId){
@@ -3922,6 +3914,78 @@ window.selCKCable = (el, code, name, price) => {
   _s.selPlan = { name, price: Number(price), code };
 };
 
+// ── Dedicated JAMB packages parser ──
+// ClubKonnect APIJAMBPackagesV2.asp response formats seen:
+// { "JAMB_PACKAGES": [ { "ExamType":"de","Description":"Direct Entry","Amount":"3500" }, ... ] }
+// { "PACKAGE": [ { "ExamType":"utme-no-mock","Amount":"4700","description":"UTME" } ] }
+// Flat array: [ { "ExamType":"de", "Amount":"3500" }, ... ]
+// variation_code must be the ExamType string — that's what APIJAMBV1.asp needs for purchase.
+function extractJAMBPlans(res, filterType){
+  if(!res || typeof res !== 'object') return [];
+  console.log('[JAMB] extractJAMBPlans raw keys:', Object.keys(res));
+
+  // Collect all items into a flat list
+  let allItems = [];
+  if(Array.isArray(res)){
+    allItems = res;
+  } else {
+    // Search every key for an array of objects
+    for(const key of Object.keys(res)){
+      const val = res[key];
+      if(Array.isArray(val) && val.length > 0 && typeof val[0]==='object'){
+        console.log('[JAMB] Found array under key:', key, 'count:', val.length, 'sample:', JSON.stringify(val[0]).slice(0,100));
+        allItems = allItems.concat(val);
+      }
+    }
+  }
+
+  if(!allItems.length){
+    console.warn('[JAMB] No items found. Full response:', JSON.stringify(res).slice(0,400));
+    return [];
+  }
+
+  // Map to standard plan objects
+  // variation_code = ExamType (sent as ExamType param when buying)
+  const mapped = allItems.map((p, i) => {
+    const examType = String(
+      p.ExamType || p.examtype || p.EXAMTYPE || p.exam_type ||
+      p.CODE || p.code || p.Type || p.type || ''
+    ).trim();
+    const name = String(
+      p.Description || p.description || p.DESCRIPTION ||
+      p.PRODUCT_NAME || p.product_name || p.Name || p.name ||
+      p.ExamType || examType || 'JAMB PIN'
+    ).trim();
+    const amount = String(
+      p.Amount || p.AMOUNT || p.amount ||
+      p.Price || p.PRICE || p.price ||
+      p.PRODUCT_AMOUNT || 0
+    );
+    // variation_code = ExamType string for use when purchasing
+    return {
+      variation_code  : examType || String(i+1),
+      variation_sno   : String(p.SNO || p.sno || i+1),
+      variation_name  : name,
+      variation_amount: amount,
+      examType        : examType.toLowerCase(),
+      description     : name
+    };
+  }).filter(p => parseFloat(p.variation_amount) > 0);
+
+  console.log('[JAMB] Total valid items:', mapped.length);
+  if(mapped[0]) console.log('[JAMB] Sample:', JSON.stringify(mapped[0]));
+
+  // Filter to selected exam type if items have examType field
+  const hasExamType = mapped.some(p => p.examType);
+  if(filterType && hasExamType){
+    const filtered = mapped.filter(p => !p.examType || p.examType === filterType.toLowerCase());
+    console.log('[JAMB] Filtered to', filterType, ':', filtered.length, 'items');
+    // Return filtered if it has results, otherwise return all (better UX than empty)
+    return filtered.length ? filtered : mapped;
+  }
+  return mapped;
+}
+
 // ── School PIN live pricing (WAEC / JAMB via Nellobytesystems) ──
 // NOTE: Nellobytesystems only documents APIWAECV1.asp (WAEC result-checker
 // PINs) and APIJAMBV1.asp (JAMB e-PINs). There is no NECO or NABTEB
@@ -3953,39 +4017,23 @@ window.loadCKSchoolPlans = async () => {
   await loadApiConfig();
   try{
     let plans = [];
-    let rawRes = null;
     if(exam==='jamb'){
-      // APIJAMBPackagesV2.asp only takes UserID/APIKey — no ExamType param
-      // (confirmed against Nellobytesystems' own docs page). Fetch the
-      // whole list once; try the flexible extractors to handle whatever
-      // shape it returns (wrapped object, flat array, etc.).
-      rawRes = await apiFetch('jambPlans', {}, { type:'prefetch' });
       const jambType = document.getElementById('schoolJambType')?.value || 'utme-no-mock';
-      plans = extractPlansArray(rawRes).map(p=>({
-        variation_code   : String(p.PRODUCT_ID||p.product_id||p.PACKAGE_ID||p.package_id||p.code||p.id||''),
-        variation_sno    : String(p.PRODUCT_SNO||p.SNO||''),
-        variation_name   : String(p.PRODUCT_NAME||p.PACKAGE_NAME||p.ExamType||p.EXAMTYPE||p.name||p.description||'JAMB PIN'),
-        variation_amount : String(p.PRODUCT_AMOUNT||p.PACKAGE_AMOUNT||p.Amount||p.AMOUNT||p.price||0),
-        description      : String(p.PRODUCT_NAME||p.PACKAGE_NAME||p.ExamType||p.EXAMTYPE||p.name||'')
-      }));
-      if(!plans.length) plans = extractNBSPlans(rawRes, jambType);
-      // If the response distinguishes UTME vs DE by name, filter to the
-      // selected type; otherwise show whatever came back.
-      const typeMatches = plans.filter(p => p.variation_name.toUpperCase().includes(jambType.toUpperCase().replace(/-/g,' ')) || p.description.toUpperCase().includes(jambType.toUpperCase().replace(/-/g,' ')));
-      if(typeMatches.length) plans = typeMatches;
+      // APIJAMBPackagesV2.asp — dedicated JAMB extractor
+      const res = await apiFetch('jambPlans', {}, { type:'prefetch' });
+      console.log('[JAMB] Raw packages response:', JSON.stringify(res).slice(0,600));
+      plans = extractJAMBPlans(res, jambType);
+      console.log('[JAMB] Plans extracted:', plans.length, '| type filter:', jambType);
     } else {
-      rawRes = await apiFetch('waecPlans', { ExamType:'WAEC' }, { type:'prefetch' });
-      plans = extractNBSPlans(rawRes, 'WAEC');
+      let res = await apiFetch('waecPlans', { ExamType:'WAEC' }, { type:'prefetch' });
+      plans = extractNBSPlans(res, 'WAEC');
       if(!plans.length){
-        rawRes = await apiFetch('waecPlans', {}, { type:'prefetch' });
-        plans = extractNBSPlans(rawRes, 'WAEC');
+        res = await apiFetch('waecPlans', {}, { type:'prefetch' });
+        plans = extractNBSPlans(res, 'WAEC');
       }
     }
     if(loadEl) loadEl.classList.add('hidden');
-    if(!plans.length){
-      const rawStr = JSON.stringify(rawRes).slice(0,300);
-      throw new Error('No price returned for '+exam.toUpperCase()+'. Raw: '+rawStr);
-    }
+    if(!plans.length) throw new Error('No price returned for '+exam.toUpperCase()+'. Check Admin → API Logs.');
     sp.innerHTML = plans.map((p,i)=>{
       const code = p.variation_code||'';
       const sno  = p.variation_sno||'';
@@ -4045,7 +4093,7 @@ async function executeCKVTU(d, tid){
   } else if(d.type==='schoolpin'){
     const examType = (d.exam||'WAEC').toUpperCase();
     if(examType==='JAMB'){
-      apiResult = await apiJAMB(d.jambType||'utme-no-mock', d.profileId||'', d.phone||'', d.amount, ref);
+      apiResult = await apiJAMB(d.jambType||'UTME', d.profileId||'', d.phone||'', d.amount, ref);
     } else {
       apiResult = await apiWAEC(examType, d.phone||'', d.amount, ref);
     }
