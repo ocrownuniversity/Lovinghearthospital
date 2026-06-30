@@ -4,6 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 <title>KOBOrush – Smart Payments</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1E1B4B">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="KOBOrush">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -545,6 +552,9 @@ textarea.form-input{resize:none}
     </div>
     <div class="auth-brand">KOBOrush</div>
     <div class="auth-rc">RC: 979668 · Smart Payments for Africa</div>
+    <button id="pwaInstallBtn" onclick="installPWA()" class="hidden" style="margin:10px auto 0;display:flex;align-items:center;gap:7px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.4);color:white;padding:8px 16px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer">
+      <span style="font-size:15px">⬇</span> Install App
+    </button>
   </div>
 
   <div class="auth-tab-bar">
@@ -1081,7 +1091,6 @@ textarea.form-input{resize:none}
     <button class="btn btn-primary" onclick="proceedToPIN('betting')">Continue</button>
   </div>
 </div>
-
 
 <!-- SCHOOL PIN -->
 <div class="screen svc-form" id="schoolPinScreen">
@@ -3887,6 +3896,7 @@ BettingCompany: bettingCompany,
 CustomerID    : customerId
 },{ type:'diag' });
 }
+
 async function checkTxStatus(requestId){
 return apiFetch('status',{ RequestID:requestId },{ type:'status_check' });
 }
@@ -6856,6 +6866,48 @@ function attachAutoSave(){
 }
 window.showOverlay=(c)=>{document.getElementById('sheetContent').innerHTML=c;document.getElementById('overlayMain').classList.add('active')};
 window.closeOverlay=()=>document.getElementById('overlayMain').classList.remove('active');
+
+// ── PWA: install prompt + service worker registration ──
+// Capture the browser's install prompt event and reveal the "Install App"
+// button on the login screen instead of letting the browser show its own
+// (often-missed) mini-infobar. Works for Chrome/Android (and any Chromium
+// based WebView used to wrap this into a Play Store APK via TWA/Bubblewrap).
+let _deferredInstallPrompt = null;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  _deferredInstallPrompt = e;
+  const btn = document.getElementById('pwaInstallBtn');
+  if (btn) btn.classList.remove('hidden');
+});
+window.installPWA = async () => {
+  const btn = document.getElementById('pwaInstallBtn');
+  if (!_deferredInstallPrompt) {
+    // Already installed, or browser doesn't support the prompt (e.g. iOS Safari)
+    showToast('info', 'To install: use your browser menu → "Add to Home Screen"');
+    return;
+  }
+  _deferredInstallPrompt.prompt();
+  const { outcome } = await _deferredInstallPrompt.userChoice;
+  if (outcome === 'accepted') {
+    showToast('success', 'App installed ✓');
+  }
+  _deferredInstallPrompt = null;
+  if (btn) btn.classList.add('hidden');
+};
+window.addEventListener('appinstalled', () => {
+  const btn = document.getElementById('pwaInstallBtn');
+  if (btn) btn.classList.add('hidden');
+  _deferredInstallPrompt = null;
+});
+// Register the service worker (enables offline shell + is required for the
+// browser to consider this an installable PWA / for TWA packaging).
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(err => {
+      console.warn('[PWA] Service worker registration failed:', err.message);
+    });
+  });
+}
 </script>
 </body>
 </html>
