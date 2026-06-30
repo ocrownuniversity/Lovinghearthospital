@@ -2724,7 +2724,7 @@ async function loadWallet(){
   el.innerHTML='<div class="loading-spinner"></div>';
   try{
     const q=query(collection(db,'transactions'),where('userId','==',_s.user.uid),limit(20));
-    const snap=await getDocs(q);
+    const snap=await Promise.race([getDocs(q),new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),8000))]);
     const txs=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>{
       const ta=a.createdAt?.toMillis?a.createdAt.toMillis():0;
       const tb=b.createdAt?.toMillis?b.createdAt.toMillis():0;
@@ -2736,7 +2736,7 @@ async function loadWallet(){
     // Try fetching funding requests as fallback
     try{
       const fq=query(collection(db,'fundingRequests'),where('userId','==',_s.user.uid),limit(10));
-      const fs=await getDocs(fq);
+      const fs=await Promise.race([getDocs(fq),new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),8000))]);
       if(!fs.empty){
         const items=fs.docs.map(d=>{const r={...d.data(),id:d.id};return txHTML({type:r.status==='approved'?'fund_approved':'fund',status:r.status,amount:r.amount,description:'Wallet Funding',createdAt:r.createdAt});}).join('');
         el.innerHTML=items;
