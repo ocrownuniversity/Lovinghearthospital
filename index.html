@@ -1893,7 +1893,8 @@ textarea.form-input{resize:none}
 <div class="screen" id="adminPricing">
   <div class="navbar light" style="padding-top:42px"><button class="nav-back" onclick="goBack()">←</button><div class="nav-title">Pricing Control</div><div style="width:37px"></div></div>
   <div style="padding:10px 12px 20px">
-    <div class="card"><div class="section-title">Airtime Discount (%)</div><input type="number" class="api-input" id="airtimeDiscount" placeholder="e.g. 3" style="margin-bottom:10px"><button class="btn btn-primary btn-sm" onclick="savePricing()">Save</button></div>
+    <div class="card"><div class="section-title">VTU Margin (%)</div><div style="font-size:11px;color:var(--text3);margin-bottom:10px">Applied to airtime, data, electricity, cable TV, betting and school PIN purchases. This is the % of each transaction recorded as revenue.</div><input type="number" step="0.1" class="api-input" id="vtuMargin" placeholder="e.g. 1" style="margin-bottom:10px"><button class="btn btn-primary btn-sm" onclick="savePricing()">Save</button></div>
+    <div class="card" style="margin-top:10px"><div class="section-title">Airtime Discount (%)</div><input type="number" class="api-input" id="airtimeDiscount" placeholder="e.g. 3" style="margin-bottom:10px"><button class="btn btn-primary btn-sm" onclick="savePricing()">Save</button></div>
     <div class="card" style="margin-top:10px"><div class="section-title">Data Markup (%)</div><input type="number" class="api-input" id="dataMarkup" placeholder="e.g. 2" style="margin-bottom:10px"><button class="btn btn-primary btn-sm" onclick="savePricing()">Save</button></div>
     <div class="card" style="margin-top:10px"><div class="section-title">Transfer Fee (₦)</div><input type="number" class="api-input" id="transferFee" placeholder="e.g. 25" style="margin-bottom:10px"><button class="btn btn-primary btn-sm" onclick="savePricing()">Save</button></div>
   </div>
@@ -2147,6 +2148,7 @@ window.navigateTo=(id)=>{
   if(id==='adminTransactions')loadAdminTxs();
   if(id==='adminRevenueScreen')loadAdminRevenue();
   if(id==='adminAPIs'){loadAPISettings();loadCompanyAcct()}
+  if(id==='adminPricing')loadPricing();
   if(id==='adminAgents')loadAdminAgents();
   if(id==='adminCountries')loadCountries();
   if(id==='adminServices')loadAdminSvcs();
@@ -2612,7 +2614,7 @@ onAuthStateChanged(auth,async(user)=>{
       document.getElementById('bottomNav').style.display='flex';
       showScreen('home');loadHome();
     }
-    populateProviders();loadAPIConfigs();loadCompanyAcct();
+    populateProviders();loadAPIConfigs();loadCompanyAcct();loadPricing();
   }else{if(window._splashTimer)clearTimeout(window._splashTimer);showScreen('auth');setTimeout(()=>{if(typeof checkAndShowFingerprintBtn==='function')checkAndShowFingerprintBtn();},200);}
 });
 
@@ -2669,7 +2671,12 @@ async function loadRecentTx(){
       snap=await getDocs(q2);
     }
     if(snap&&!snap.empty){
-      c.innerHTML=snap.docs.map(d=>txHTML(d.data())).join('');
+      const txs=snap.docs.map(d=>d.data()).sort((a,b)=>{
+        const ta=a.createdAt?.toMillis?a.createdAt.toMillis():0;
+        const tb=b.createdAt?.toMillis?b.createdAt.toMillis():0;
+        return tb-ta;
+      });
+      c.innerHTML=txs.map(t=>txHTML(t)).join('');
       return;
     }
     // Also check fundingRequests (manual funding submissions)
@@ -4310,9 +4317,18 @@ async function confirmTx(pin){
       ].map(i=>`<div class="receipt-row"><span class="r-label">${i.l}</span><span class="r-val">${i.v}</span></div>`).join('');
     } else {
       // ── VTU / BANK TRANSFER TRANSACTIONS ──
-      const _txFee=(d.type==='transfer'&&d.sendAmount!=null)?(d.amount-d.sendAmount):0;
       const VTU_TYPES = ['airtime','data','electricity','cabletv','schoolpin','betting'];
       const isVTU = VTU_TYPES.includes(d.type);
+      // Revenue margin: transfers use the explicit sendAmount/amount fee.
+      // VTU purchases (airtime/data/electricity/cable/betting/schoolpin) use
+      // the admin-configured flat % from Admin → Pricing Control → VTU Margin
+      // (defaults to 1% if never configured). Recorded as `fee` so the
+      // existing computeTxRevenue()/Revenue Analytics screen picks it up
+      // automatically — no other change needed there.
+      const vtuMarginPct = (typeof window._vtuMargin==='number') ? window._vtuMargin : 1;
+      const _txFee=(d.type==='transfer'&&d.sendAmount!=null)
+        ? (d.amount-d.sendAmount)
+        : (isVTU ? Math.round(d.amount*(vtuMarginPct/100)*100)/100 : 0);
 
       // 1. Deduct wallet first
       let balanceBefore = 0;
@@ -5604,7 +5620,22 @@ if(pub&&pub.startsWith('pk_'))window._paystackKey=pub;showToast('success','Setti
 window.showAddAPISheet=()=>showOverlay(`<div class="sheet-title">Add VTU Provider</div><div class="api-field"><label class="api-label">Name</label><input class="api-input" id="newPN" placeholder="Provider Name"></div><div class="api-field"><label class="api-label">API URL</label><input class="api-input" id="newPU" placeholder="https://api.provider.com/"></div><div class="api-field"><label class="api-label">API Key</label><input class="api-input" id="newPK" type="password" placeholder="API key"></div><button class="btn btn-primary" style="margin-top:12px" onclick="saveNewProvider()">Add Provider</button>`);
 window.saveNewProvider=async()=>{const n=document.getElementById('newPN').value;const u=document.getElementById('newPU').value;const k=document.getElementById('newPK').value;if(!n||!u)return showToast('error','Fill required fields');await addDoc(collection(db,'vtuProviders'),{name:n,url:u,apiKey:k,enabled:true,createdAt:serverTimestamp()});showToast('success','Provider added!');closeOverlay();loadVTU()};
 window.toggleVTU=async(id,e)=>{await updateDoc(doc(db,'vtuProviders',id),{enabled:e});showToast(e?'success':'info',`Provider ${e?'enabled':'disabled'}`)};
-window.savePricing=async()=>{const s={airtimeDiscount:parseFloat(document.getElementById('airtimeDiscount').value)||0,dataMarkup:parseFloat(document.getElementById('dataMarkup').value)||0,transferFee:parseFloat(document.getElementById('transferFee').value)||25,updatedAt:serverTimestamp()};await setDoc(doc(db,'settings','pricing'),s,{merge:true});showToast('success','Pricing updated!')};
+window.savePricing=async()=>{const s={vtuMargin:parseFloat(document.getElementById('vtuMargin').value)||0,airtimeDiscount:parseFloat(document.getElementById('airtimeDiscount').value)||0,dataMarkup:parseFloat(document.getElementById('dataMarkup').value)||0,transferFee:parseFloat(document.getElementById('transferFee').value)||25,updatedAt:serverTimestamp()};await setDoc(doc(db,'settings','pricing'),s,{merge:true});window._vtuMargin=s.vtuMargin;showToast('success','Pricing updated!')};
+async function loadPricing(){
+  try{
+    const snap=await getDoc(doc(db,'settings','pricing'));
+    const p=snap.exists()?snap.data():{};
+    window._vtuMargin = typeof p.vtuMargin==='number' ? p.vtuMargin : 1; // default 1% if never set
+    const set=(id,val)=>{const el=document.getElementById(id);if(el && val!=null) el.value=val;};
+    set('vtuMargin', p.vtuMargin!=null?p.vtuMargin:1);
+    set('airtimeDiscount', p.airtimeDiscount);
+    set('dataMarkup', p.dataMarkup);
+    set('transferFee', p.transferFee!=null?p.transferFee:25);
+  }catch(e){
+    window._vtuMargin = 1; // safe default if settings doc unreadable
+    console.warn('loadPricing:',e.message);
+  }
+}
 window.loadAdminSvcs=()=>{document.getElementById('adminSvcsContent').innerHTML=`<div class="admin-panel" style="margin:0">${['Airtime','Data Bundle','Electricity','Cable TV','School PIN','Bank Transfer'].map(s=>`<div class="admin-table-row"><div class="row-main"><div class="row-title">${s}</div></div><label class="toggle-switch"><input type="checkbox" checked onchange="toggleSvc('${s}',this.checked)"><div class="toggle-slider"></div></label></div>`).join('')}</div>`};
 window.toggleSvc=async(n,e)=>{await setDoc(doc(db,'settings','services'),{[n.toLowerCase().replace(/ /g,'_')]:e},{merge:true});showToast(e?'success':'info',`${n} ${e?'enabled':'disabled'}`)};
 window.loadCountries=()=>{const c=document.getElementById('adminCountriesList');const countries=[{name:'Nigeria',flag:'🇳🇬',code:'NG',ccy:'NGN',on:true},{name:'Ghana',flag:'🇬🇭',code:'GH',ccy:'GHS',on:true},{name:'Benin',flag:'🇧🇯',code:'BJ',ccy:'XOF',on:true},{name:'Kenya',flag:'🇰🇪',code:'KE',ccy:'KES',on:false},{name:'Senegal',flag:'🇸🇳',code:'SN',ccy:'XOF',on:false},{name:'Ivory Coast',flag:'🇨🇮',code:'CI',ccy:'XOF',on:false},{name:'Cameroon',flag:'🇨🇲',code:'CM',ccy:'XAF',on:false},{name:'Togo',flag:'🇹🇬',code:'TG',ccy:'XOF',on:false},{name:'Burkina Faso',flag:'🇧🇫',code:'BF',ccy:'XOF',on:false},{name:'Niger',flag:'🇳🇪',code:'NE',ccy:'XOF',on:false},{name:'Mali',flag:'🇲🇱',code:'ML',ccy:'XOF',on:false},{name:'South Africa',flag:'🇿🇦',code:'ZA',ccy:'ZAR',on:false},{name:'Tanzania',flag:'🇹🇿',code:'TZ',ccy:'TZS',on:false},{name:'Uganda',flag:'🇺🇬',code:'UG',ccy:'UGX',on:false},{name:'Rwanda',flag:'🇷🇼',code:'RW',ccy:'RWF',on:false},{name:'Ethiopia',flag:'🇪🇹',code:'ET',ccy:'ETB',on:false}];c.innerHTML=`<div class="admin-panel" style="margin:0">${countries.map(ct=>`<div class="admin-table-row"><div style="font-size:26px;flex-shrink:0">${ct.flag}</div><div class="row-main"><div class="row-title">${ct.name}</div><div class="row-sub">${ct.ccy}</div></div><label class="toggle-switch"><input type="checkbox" ${ct.on?'checked':''} onchange="toggleCountry('${ct.code}',this.checked)"><div class="toggle-slider"></div></label></div>`).join('')}</div>`};
